@@ -17,14 +17,30 @@ class _DevicesViewState extends State<DevicesView> {
   @override
   void initState() {
     _deviceController = Provider.of<DevicesController>(context, listen: false);
-    _deviceController.disconnect();
+    startBle();
     super.initState();
   }
 
   @override
   void dispose() {
-    _deviceController.disconnect();
+    stopBle();
     super.dispose();
+  }
+
+  void startBle() {
+    _deviceController.startBle();
+  }
+
+  void stopBle() {
+    _deviceController.stopBle();
+  }
+
+  void deviceTapped() {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return const DeviceView();
+      },
+    ));
   }
 
   @override
@@ -42,13 +58,9 @@ class _DevicesViewState extends State<DevicesView> {
                 itemBuilder: (context, index) {
                   var device = devices[index];
                   return GestureDetector(
-                    onTap: () {
-                      _deviceController.connect(device);
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return const DeviceView();
-                        },
-                      ));
+                    onTap: () async {
+                      await deviceController.connect(device);
+                      deviceTapped();
                     },
                     child: Card(
                       elevation: 6,

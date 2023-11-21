@@ -1,28 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:livipod_app/models/livi_pod.dart';
 
 class DevicesController extends ChangeNotifier {
   final List<BluetoothDevice> _liviPodDevices = [];
   BluetoothAdapterState _state = BluetoothAdapterState.off;
   BluetoothDevice? _connectedDevice;
   BluetoothCharacteristic? _wifiCredentialsCharacteristic;
+  LiviPod? _liviPod;
 
   BluetoothAdapterState get state => _state;
   List<BluetoothDevice> get liviPodDevices => _liviPodDevices;
   BluetoothDevice? get connectedDevice => _connectedDevice;
+  LiviPod? get liviPod => _liviPod;
 
   DevicesController() {
     FlutterBluePlus.adapterState.listen((event) {
       _state = event;
-      if (_state == BluetoothAdapterState.on) {
-        FlutterBluePlus.startScan(
-            withNames: ['LiviPod'],
-            continuousUpdates: true,
-            removeIfGone: const Duration(seconds: 15));
-      } else {
-        // handle state changes
-      }
-
       notifyListeners();
     });
 
@@ -48,6 +42,36 @@ class DevicesController extends ChangeNotifier {
     });
   }
 
+  void startBle() {
+    _liviPodDevices.clear();
+    if (_state == BluetoothAdapterState.on) {
+      if (kDebugMode) {
+        print('Starting BLE scanning');
+      }
+      FlutterBluePlus.startScan(
+          withNames: ['LiviPod'],
+          continuousUpdates: true,
+          removeIfGone: const Duration(seconds: 15));
+    } else {
+      if (kDebugMode) {
+        print('Cannot scan when bluetooth adapter is off');
+      }
+    }
+  }
+
+  void stopBle() {
+    if (_state == BluetoothAdapterState.on) {
+      if (kDebugMode) {
+        print('Stopping BLE scanning');
+      }
+      FlutterBluePlus.stopScan();
+    } else {
+      if (kDebugMode) {
+        print('Cannot scan when bluetooth adapter is off');
+      }
+    }
+  }
+
   Future<void> connect(BluetoothDevice device) async {
     device.connectionState.listen((event) {
       if (event == BluetoothConnectionState.disconnected) {
@@ -58,7 +82,6 @@ class DevicesController extends ChangeNotifier {
           print(
               "${device.disconnectReason?.code}: ${device.disconnectReason?.description}");
         }
-        _connectedDevice = null;
       } else if (event == BluetoothConnectionState.connected) {
         _connectedDevice = device;
         discoverServices();
@@ -70,7 +93,10 @@ class DevicesController extends ChangeNotifier {
   }
 
   Future<void> disconnect() async {
+    final remoteId = _connectedDevice?.remoteId;
     await _connectedDevice?.disconnect();
+    _liviPodDevices.removeWhere((element) => element.remoteId == remoteId);
+    notifyListeners();
   }
 
   Future<void> discoverServices() async {
@@ -93,29 +119,42 @@ class DevicesController extends ChangeNotifier {
       } else if (characteristic.uuid
           .toString()
           .startsWith("b9662ed7-3a33-4c4d-b0d6-4adb77ad4d28")) {
-        setupDetection(characteristic);
+        setupDeviceInfoListener(characteristic);
       }
     }
   }
 
-  Future<void> setupDetection(BluetoothCharacteristic characteristic) async {
-    await characteristic.setNotifyValue(true);
-    characteristic.lastValueStream.listen((event) {
-      print(event);
-      if (event.isNotEmpty) {
-        // decode
-        notifyListeners();
-      }
-    });
+  Future handleNotification(List<int> event) async {
+    final remoteId = _connectedDevice!.remoteId;
+    var temp = String.fromCharCodes(event);
+    var list = temp.split(',');
+    var mac = list[0];
+    var ipAddress = list[1];
+    var online = list[1] != '0';
+
+    _liviPod = LiviPod(
+        macAddress: mac,
+        ipAddress: ipAddress,
+        online: online,
+        remoteId: remoteId.toString());
+
+    await disconnect();
+    notifyListeners();
   }
 
-  // Future<void> setCredentials(String ssid, String pwd) async {
-  //   if (_connectedDevice != null && _wifiCredentialsCharacteristic != null) {
-  //     var temp = '$ssid,$pwd';
-  //     temp.
+  Future<void> setupDeviceInfoListener(
+      BluetoothCharacteristic characteristic) async {
+    if (_connectedDevice?.isConnected ?? false) {
+      await characteristic.setNotifyValue(true);
+      characteristic.onValueReceived.listen(handleNotification);
+    }
+  }
 
-  //     await _wifiCredentialsCharacteristic!.write([qty]);
-  //     notifyListeners();
-  //   }
-  // }
+  Future<void> sendCredentials(String ssid, String pwd) async {
+    if (_connectedDevice != null && _wifiCredentialsCharacteristic != null) {
+      var temp = '$ssid,$pwd;';
+      await _wifiCredentialsCharacteristic!.write(temp.codeUnits);
+      notifyListeners();
+    }
+  }
 }
