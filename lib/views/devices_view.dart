@@ -17,23 +17,23 @@ class _DevicesViewState extends State<DevicesView> {
   @override
   void initState() {
     _deviceController = Provider.of<DevicesController>(context, listen: false);
-    startBle();
+    //startBle();
     super.initState();
   }
 
   @override
   void dispose() {
-    stopBle();
+    //stopBle();
     super.dispose();
   }
 
-  void startBle() {
-    _deviceController.startBle();
-  }
+  // void startBle() {
+  //   _deviceController.startBle();
+  // }
 
-  void stopBle() {
-    _deviceController.stopBle();
-  }
+  // void stopBle() {
+  //   _deviceController.stopBle();
+  // }
 
   void deviceTapped() {
     Navigator.push(context, MaterialPageRoute(

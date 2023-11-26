@@ -15,11 +15,6 @@ class DevicesController extends ChangeNotifier {
   LiviPod? get liviPod => _liviPod;
 
   DevicesController() {
-    FlutterBluePlus.adapterState.listen((event) {
-      _state = event;
-      notifyListeners();
-    });
-
     FlutterBluePlus.scanResults.listen((event) {
       List<BluetoothDevice> devicesToRemove = [];
       for (var c in _liviPodDevices) {
@@ -40,10 +35,20 @@ class DevicesController extends ChangeNotifier {
       }
       notifyListeners();
     });
+
+    FlutterBluePlus.adapterState.listen((event) {
+      _state = event;
+      notifyListeners();
+
+      if (_state == BluetoothAdapterState.on &&
+          !FlutterBluePlus.isScanningNow) {
+        startBle();
+      }
+    });
   }
 
   void startBle() {
-    _liviPodDevices.clear();
+    //_liviPodDevices.clear();
     if (_state == BluetoothAdapterState.on) {
       if (kDebugMode) {
         print('Starting BLE scanning');

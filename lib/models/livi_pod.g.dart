@@ -11,7 +11,11 @@ LiviPod _$LiviPodFromJson(Map<String, dynamic> json) => LiviPod(
       ipAddress: json['ipAddress'] as String,
       online: json['online'] as bool,
       remoteId: json['remoteId'] as String,
-    )..id = json['id'] as String;
+    )
+      ..id = json['id'] as String
+      ..medication = json['medication'] == null
+          ? null
+          : Medication.fromJson(json['medication'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$LiviPodToJson(LiviPod instance) => <String, dynamic>{
       'id': instance.id,
@@ -19,4 +23,5 @@ Map<String, dynamic> _$LiviPodToJson(LiviPod instance) => <String, dynamic>{
       'remoteId': instance.remoteId,
       'ipAddress': instance.ipAddress,
       'online': instance.online,
+      'medication': instance.medication?.toJson(),
     };

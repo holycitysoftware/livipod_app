@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livipod_app/controllers/livi_pod_controller.dart';
+import 'package:livipod_app/controllers/communication_controller.dart';
 import 'package:livipod_app/views/home_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,14 +11,29 @@ import 'controllers/devices_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final DevicesController devicesController = DevicesController();
+
   final LiviPodController _liviPodController = LiviPodController();
+
+  late final CommunicationController _webSocketController;
+
+  @override
+  void initState() {
+    _webSocketController =
+        CommunicationController(liviPodController: _liviPodController);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +44,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => _liviPodController,
+          ),
+          ChangeNotifierProvider(
+            create: (context) => _webSocketController,
           ),
         ],
         child: MaterialApp(
