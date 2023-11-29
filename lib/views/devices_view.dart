@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:livipod_app/views/device_view.dart';
 import 'package:provider/provider.dart';
 
@@ -12,11 +13,11 @@ class DevicesView extends StatefulWidget {
 }
 
 class _DevicesViewState extends State<DevicesView> {
-  late final DevicesController _deviceController;
+  //late final DevicesController _deviceController;
 
   @override
   void initState() {
-    _deviceController = Provider.of<DevicesController>(context, listen: false);
+    //_deviceController = Provider.of<DevicesController>(context, listen: false);
     //startBle();
     super.initState();
   }
@@ -35,10 +36,12 @@ class _DevicesViewState extends State<DevicesView> {
   //   _deviceController.stopBle();
   // }
 
-  void deviceTapped() {
+  void deviceTapped(BluetoothDevice device) {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {
-        return const DeviceView();
+        return DeviceView(
+          device: device,
+        );
       },
     ));
   }
@@ -57,26 +60,15 @@ class _DevicesViewState extends State<DevicesView> {
                 itemCount: devices.length,
                 itemBuilder: (context, index) {
                   var device = devices[index];
-                  return GestureDetector(
-                    onTap: () async {
-                      await deviceController.connect(device);
-                      deviceTapped();
+                  return ListTile(
+                    onTap: () {
+                      deviceTapped(device);
                     },
-                    child: Card(
-                      elevation: 6,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(device.platformName),
-                            Text(
-                              device.remoteId.toString(),
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ],
-                        ),
-                      ),
+                    contentPadding: const EdgeInsets.all(20),
+                    title: Text(device.platformName),
+                    subtitle: Text(
+                      device.remoteId.toString(),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   );
                 },

@@ -102,6 +102,8 @@ class CommunicationController extends ChangeNotifier {
             });
 
         _liviPodCommManagers.add(liviPodCommManager);
+      } else {
+        _liviPodCommManagers[index].liviPod = liviPod;
       }
     }
   }

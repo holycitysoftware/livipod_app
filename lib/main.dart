@@ -22,7 +22,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final DevicesController devicesController = DevicesController();
+  late final DevicesController _devicesController;
 
   final LiviPodController _liviPodController = LiviPodController();
 
@@ -32,6 +32,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     _webSocketController =
         CommunicationController(liviPodController: _liviPodController);
+    _devicesController =
+        DevicesController(liviPodController: _liviPodController);
     super.initState();
   }
 
@@ -40,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) => devicesController,
+            create: (context) => _devicesController,
           ),
           ChangeNotifierProvider(
             create: (context) => _liviPodController,
