@@ -9,9 +9,9 @@ part 'schedule.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Schedule {
   DateTime startDate = DateTime.now();
-  DateTime? stopDate;
+  DateTime? endDate;
   ScheduleType type = ScheduleType.daily;
-  List<int> frequency = [];
+  int frequency = 1;
   List<int> dayPattern = [1, 1, 1, 1, 1, 1, 1];
   List<int> monthPattern = [
     1,
@@ -59,14 +59,14 @@ class Schedule {
     if (type != ScheduleType.asNeeded) {
       for (var dosing in scheduledDosings) {
         str =
-            '$str ${utils.removeDecimalZeroFormat(dosing.qty)} at ${dosing.hour.toString().padLeft(2, '0')}:${dosing.minute.toString().padLeft(2, '0')},';
+            '$str ${utils.removeDecimalZeroFormat(dosing.qty)} at ${dosing.timeOfDay.hour.toString().padLeft(2, '0')}:${dosing.timeOfDay.minute.toString().padLeft(2, '0')},';
       }
 
       if (type == ScheduleType.daily) {
         var freqStr = 'daily';
-        if (frequency[0] == 2) {
+        if (frequency == 2) {
           freqStr = 'every other day';
-        } else if (frequency[0] == 3) {
+        } else if (frequency == 3) {
           freqStr = 'every third day';
         }
         str = '$str $freqStr.';
@@ -74,9 +74,9 @@ class Schedule {
 
       if (type == ScheduleType.weekly) {
         var freqStr = 'every week';
-        if (frequency[0] == 2) {
+        if (frequency == 2) {
           freqStr = 'every other week';
-        } else if (frequency[0] == 3) {
+        } else if (frequency == 3) {
           freqStr = 'every three weeks';
         }
 
@@ -97,9 +97,9 @@ class Schedule {
 
       if (type == ScheduleType.monthly) {
         var freqStr = 'every month';
-        if (frequency[0] == 2) {
+        if (frequency == 2) {
           freqStr = 'every other month';
-        } else if (frequency[0] == 3) {
+        } else if (frequency == 3) {
           freqStr = 'every three months';
         }
 

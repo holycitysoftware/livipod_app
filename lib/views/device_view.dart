@@ -35,6 +35,7 @@ class _DeviceViewState extends State<DeviceView> {
   }
 
   Future getNetworkInfo() async {
+    await _devicesController.connect(widget.device);
     if (await Permission.locationWhenInUse.request().isGranted) {
       final wifiName = await info.getWifiName();
       ssidController.text = wifiName ?? '';

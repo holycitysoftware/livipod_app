@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:livipod_app/controllers/livi_pod_controller.dart';
 import 'package:livipod_app/models/livi_pod.dart';
+import 'package:livipod_app/models/schedule_type.dart';
+import 'package:livipod_app/views/schedule_view.dart';
 import 'package:provider/provider.dart';
 
 import '../models/medication.dart';
@@ -27,9 +29,6 @@ class _MedicationViewState extends State<MedicationView> {
           widget.liviPod.medication!.schedules.isEmpty) {
         _state = MedicationState.named;
         _medNameController.text = widget.liviPod.medication!.name;
-      } else if (widget.liviPod.medication!.name.isNotEmpty &&
-          widget.liviPod.medication!.schedules.isNotEmpty) {
-        _state = MedicationState.scheduled;
       }
     }
     super.initState();
@@ -137,9 +136,13 @@ class _MedicationViewState extends State<MedicationView> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        setState(() {
-                          _state = MedicationState.scheduling;
-                        });
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return ScheduleView(
+                              liviPod: widget.liviPod,
+                            );
+                          },
+                        ));
                       },
                       child: const Text('Add a schedule'),
                     )
@@ -152,4 +155,4 @@ class _MedicationViewState extends State<MedicationView> {
   }
 }
 
-enum MedicationState { none, naming, named, scheduling, scheduled }
+enum MedicationState { none, naming, named }

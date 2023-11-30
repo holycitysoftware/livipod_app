@@ -53,7 +53,9 @@ class LiviPodCommManager {
         },
       );
     } else {
-      initWebSocketConnection();
+      Timer(const Duration(seconds: 10), () {
+        initWebSocketConnection();
+      });
     }
   }
 

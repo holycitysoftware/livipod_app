@@ -8,12 +8,10 @@ part of 'schedule.dart';
 
 Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule()
   ..startDate = DateTime.parse(json['startDate'] as String)
-  ..stopDate = json['stopDate'] == null
-      ? null
-      : DateTime.parse(json['stopDate'] as String)
+  ..endDate =
+      json['endDate'] == null ? null : DateTime.parse(json['endDate'] as String)
   ..type = $enumDecode(_$ScheduleTypeEnumMap, json['type'])
-  ..frequency =
-      (json['frequency'] as List<dynamic>).map((e) => e as int).toList()
+  ..frequency = json['frequency'] as int
   ..dayPattern =
       (json['dayPattern'] as List<dynamic>).map((e) => e as int).toList()
   ..monthPattern =
@@ -29,7 +27,7 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule()
 
 Map<String, dynamic> _$ScheduleToJson(Schedule instance) => <String, dynamic>{
       'startDate': instance.startDate.toIso8601String(),
-      'stopDate': instance.stopDate?.toIso8601String(),
+      'endDate': instance.endDate?.toIso8601String(),
       'type': _$ScheduleTypeEnumMap[instance.type]!,
       'frequency': instance.frequency,
       'dayPattern': instance.dayPattern,

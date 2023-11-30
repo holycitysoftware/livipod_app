@@ -45,7 +45,7 @@ class DevicesController extends ChangeNotifier {
         if (!_liviPodDevices
             .any((element) => element.remoteId == r.device.remoteId)) {
           _liviPodDevices.add(r.device);
-          _connect(r.device);
+          connect(r.device);
         }
       }
       notifyListeners();
@@ -82,24 +82,26 @@ class DevicesController extends ChangeNotifier {
   //   }
   // }
 
-  Future _connect(BluetoothDevice device) async {
-    device.connectionState.listen((event) {
-      if (event == BluetoothConnectionState.disconnected) {
-        // 1. typically, start a periodic timer that tries to
-        //    reconnect, or just call connect() again right now
-        // 2. you must always re-discover services after disconnection!
-        if (kDebugMode) {
-          print(
-              "${device.disconnectReason?.code}: ${device.disconnectReason?.description}");
+  Future connect(BluetoothDevice device) async {
+    if (!device.isConnected) {
+      device.connectionState.listen((event) {
+        if (event == BluetoothConnectionState.disconnected) {
+          // 1. typically, start a periodic timer that tries to
+          //    reconnect, or just call connect() again right now
+          // 2. you must always re-discover services after disconnection!
+          if (kDebugMode) {
+            print(
+                "${device.disconnectReason?.code}: ${device.disconnectReason?.description}");
+          }
+        } else if (event == BluetoothConnectionState.connected) {
+          _connectedDevices.add(device);
+          discoverServices(device);
         }
-      } else if (event == BluetoothConnectionState.connected) {
-        _connectedDevices.add(device);
-        discoverServices(device);
-      }
-      notifyListeners();
-    });
+        notifyListeners();
+      });
 
-    await device.connect();
+      await device.connect();
+    }
   }
 
   // Future<void> disconnect(BluetoothDevice device) async {

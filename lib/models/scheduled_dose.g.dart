@@ -9,12 +9,11 @@ part of 'scheduled_dose.dart';
 ScheduledDose _$ScheduledDoseFromJson(Map<String, dynamic> json) =>
     ScheduledDose()
       ..qty = (json['qty'] as num).toDouble()
-      ..hour = json['hour'] as int
-      ..minute = json['minute'] as int;
+      ..timeOfDay =
+          const DayOfTimeConverter().fromJson(json['timeOfDay'] as String?);
 
 Map<String, dynamic> _$ScheduledDoseToJson(ScheduledDose instance) =>
     <String, dynamic>{
       'qty': instance.qty,
-      'hour': instance.hour,
-      'minute': instance.minute,
+      'timeOfDay': const DayOfTimeConverter().toJson(instance.timeOfDay),
     };
