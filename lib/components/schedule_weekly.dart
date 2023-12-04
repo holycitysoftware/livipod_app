@@ -5,20 +5,15 @@ import 'scheduled_dosing_card.dart';
 
 class ScheduleWeekly extends StatefulWidget {
   final Schedule schedule;
-  final Function onChange;
-  const ScheduleWeekly(
-      {super.key, required this.onChange, required this.schedule});
+  const ScheduleWeekly({super.key, required this.schedule});
 
   @override
   State<ScheduleWeekly> createState() => _ScheduleWeeklyState();
 }
 
 class _ScheduleWeeklyState extends State<ScheduleWeekly> {
-  late Schedule _schedule;
-
   @override
   void initState() {
-    _schedule = widget.schedule;
     super.initState();
   }
 
@@ -43,8 +38,7 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
           height: 10,
         ),
         ScheduledDosingCard(
-          onChange: widget.onChange,
-          scheduledDosings: _schedule.scheduledDosings,
+          scheduledDosings: widget.schedule.scheduledDosings,
         ),
         const SizedBox(
           height: 10,
@@ -71,10 +65,10 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
         child: ElevatedButton(
             onPressed: () {
               setState(() {
-                if (_schedule.dayPattern[i] == 0) {
-                  _schedule.dayPattern[i] = 1;
+                if (widget.schedule.dayPattern[i] == 0) {
+                  widget.schedule.dayPattern[i] = 1;
                 } else {
-                  _schedule.dayPattern[i] = 0;
+                  widget.schedule.dayPattern[i] = 0;
                 }
               });
             },
@@ -95,7 +89,7 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
     return Row(
       children: [
         DropdownButton(
-          value: _schedule.frequency,
+          value: widget.schedule.frequency,
           items: const [
             DropdownMenuItem(
               value: 1,
@@ -112,7 +106,7 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
           ],
           onChanged: (value) {
             setState(() {
-              _schedule.frequency = value!;
+              widget.schedule.frequency = value!;
             });
           },
         ),
@@ -121,7 +115,7 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
   }
 
   Color getBackgroundColor(int index) {
-    if (_schedule.dayPattern[index] == 1) {
+    if (widget.schedule.dayPattern[index] == 1) {
       return Colors.amber;
     }
     return const Color.fromRGBO(255, 255, 193, 0.3);

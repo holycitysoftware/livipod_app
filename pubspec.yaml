@@ -47,7 +47,7 @@ dependencies:
   web_socket_channel: ^2.4.0
   flutter_spinbox: ^0.13.1
   intl: ^0.18.1
-  numberpicker: ^2.1.2
+  input_quantity: ^2.2.0
 
 dev_dependencies:
   flutter_test:

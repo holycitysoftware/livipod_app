@@ -22,18 +22,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final DevicesController _devicesController;
-
+  final DevicesController _devicesController = DevicesController();
   final LiviPodController _liviPodController = LiviPodController();
 
-  late final CommunicationController _webSocketController;
+  //late final CommunicationController _webSocketController;
 
   @override
   void initState() {
-    _webSocketController =
-        CommunicationController(liviPodController: _liviPodController);
-    _devicesController =
-        DevicesController(liviPodController: _liviPodController);
+    // _devicesController =
+    //     DevicesController(liviPodController: _liviPodController);
     super.initState();
   }
 
@@ -47,9 +44,9 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(
             create: (context) => _liviPodController,
           ),
-          ChangeNotifierProvider(
-            create: (context) => _webSocketController,
-          ),
+          // ChangeNotifierProvider(
+          //   create: (context) => _webSocketController,
+          // ),
         ],
         child: MaterialApp(
           title: 'Flutter Demo',

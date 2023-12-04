@@ -1,23 +1,18 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'medication.dart';
+import 'schedule.dart';
 
 part 'livi_pod.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class LiviPod {
   String id = '';
-  final String macAddress;
   final String remoteId;
-  String ipAddress;
-  bool online;
-  Medication? medication;
+  String medicationName;
+  @JsonKey(defaultValue: <Schedule>[])
+  List<Schedule> schedules = [];
 
-  LiviPod(
-      {required this.macAddress,
-      required this.ipAddress,
-      required this.online,
-      required this.remoteId});
+  LiviPod({required this.remoteId, required this.medicationName});
 
   factory LiviPod.fromJson(Map<String, dynamic> json) =>
       _$LiviPodFromJson(json);

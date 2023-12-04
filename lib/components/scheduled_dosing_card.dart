@@ -5,10 +5,8 @@ import '../models/scheduled_dose.dart';
 
 class ScheduledDosingCard extends StatefulWidget {
   final List<ScheduledDose> scheduledDosings;
-  final Function onChange;
 
-  const ScheduledDosingCard(
-      {super.key, required this.onChange, required this.scheduledDosings});
+  const ScheduledDosingCard({super.key, required this.scheduledDosings});
 
   @override
   State<ScheduledDosingCard> createState() => _ScheduledDosingCardState();
@@ -109,7 +107,6 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                           widget.scheduledDosings.add(scheduledDose);
                           widget.scheduledDosings.sort((a, b) =>
                               a.timeOfDay.hour.compareTo(b.timeOfDay.hour));
-                          widget.onChange();
                         }
                         setState(() {});
                       },
@@ -150,7 +147,6 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                 ),
                 onDeleted: () {
                   widget.scheduledDosings.removeAt(index);
-                  widget.onChange();
                   setState(() {});
                 },
               );

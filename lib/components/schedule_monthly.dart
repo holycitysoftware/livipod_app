@@ -5,20 +5,15 @@ import 'scheduled_dosing_card.dart';
 
 class ScheduleMonthly extends StatefulWidget {
   final Schedule schedule;
-  final Function onChange;
-  const ScheduleMonthly(
-      {super.key, required this.onChange, required this.schedule});
+  const ScheduleMonthly({super.key, required this.schedule});
 
   @override
   State<ScheduleMonthly> createState() => _ScheduleMonthlyState();
 }
 
 class _ScheduleMonthlyState extends State<ScheduleMonthly> {
-  late Schedule _schedule;
-
   @override
   void initState() {
-    _schedule = widget.schedule;
     super.initState();
   }
 
@@ -43,8 +38,7 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
           height: 10,
         ),
         ScheduledDosingCard(
-          onChange: widget.onChange,
-          scheduledDosings: _schedule.scheduledDosings,
+          scheduledDosings: widget.schedule.scheduledDosings,
         ),
         const SizedBox(
           height: 10,
@@ -76,10 +70,10 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
         child: ElevatedButton(
             onPressed: () {
               setState(() {
-                if (_schedule.monthPattern[i] == 0) {
-                  _schedule.monthPattern[i] = 1;
+                if (widget.schedule.monthPattern[i] == 0) {
+                  widget.schedule.monthPattern[i] = 1;
                 } else {
-                  _schedule.monthPattern[i] = 0;
+                  widget.schedule.monthPattern[i] = 0;
                 }
               });
             },
@@ -97,7 +91,7 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
   }
 
   Color getBackgroundColor(int index) {
-    if (_schedule.monthPattern[index] == 1) {
+    if (widget.schedule.monthPattern[index] == 1) {
       return Colors.amber;
     }
     return const Color.fromRGBO(255, 255, 193, 0.3);
@@ -107,7 +101,7 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
     return Row(
       children: [
         DropdownButton(
-          value: _schedule.frequency,
+          value: widget.schedule.frequency,
           items: const [
             DropdownMenuItem(
               value: 1,
@@ -124,7 +118,7 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
           ],
           onChanged: (value) {
             setState(() {
-              _schedule.frequency = value!;
+              widget.schedule.frequency = value!;
             });
           },
         ),

@@ -5,20 +5,15 @@ import 'scheduled_dosing_card.dart';
 
 class ScheduleDaily extends StatefulWidget {
   final Schedule schedule;
-  final Function onChange;
-  const ScheduleDaily(
-      {super.key, required this.onChange, required this.schedule});
+  const ScheduleDaily({super.key, required this.schedule});
 
   @override
   State<ScheduleDaily> createState() => _ScheduleDailyState();
 }
 
 class _ScheduleDailyState extends State<ScheduleDaily> {
-  late Schedule _schedule;
-
   @override
   void initState() {
-    _schedule = widget.schedule;
     super.initState();
   }
 
@@ -40,8 +35,7 @@ class _ScheduleDailyState extends State<ScheduleDaily> {
           height: 10,
         ),
         ScheduledDosingCard(
-          onChange: widget.onChange,
-          scheduledDosings: _schedule.scheduledDosings,
+          scheduledDosings: widget.schedule.scheduledDosings,
         ),
         const SizedBox(
           height: 10,
@@ -55,7 +49,7 @@ class _ScheduleDailyState extends State<ScheduleDaily> {
     return Row(
       children: [
         DropdownButton(
-          value: _schedule.frequency,
+          value: widget.schedule.frequency,
           items: const [
             DropdownMenuItem(
               value: 1,
@@ -72,7 +66,7 @@ class _ScheduleDailyState extends State<ScheduleDaily> {
           ],
           onChanged: (value) {
             setState(() {
-              _schedule.frequency = value!;
+              widget.schedule.frequency = value!;
             });
           },
         ),

@@ -7,21 +7,18 @@ part of 'livi_pod.dart';
 // **************************************************************************
 
 LiviPod _$LiviPodFromJson(Map<String, dynamic> json) => LiviPod(
-      macAddress: json['macAddress'] as String,
-      ipAddress: json['ipAddress'] as String,
-      online: json['online'] as bool,
       remoteId: json['remoteId'] as String,
+      medicationName: json['medicationName'] as String,
     )
       ..id = json['id'] as String
-      ..medication = json['medication'] == null
-          ? null
-          : Medication.fromJson(json['medication'] as Map<String, dynamic>);
+      ..schedules = (json['schedules'] as List<dynamic>?)
+              ?.map((e) => Schedule.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
 
 Map<String, dynamic> _$LiviPodToJson(LiviPod instance) => <String, dynamic>{
       'id': instance.id,
-      'macAddress': instance.macAddress,
       'remoteId': instance.remoteId,
-      'ipAddress': instance.ipAddress,
-      'online': instance.online,
-      'medication': instance.medication?.toJson(),
+      'medicationName': instance.medicationName,
+      'schedules': instance.schedules.map((e) => e.toJson()).toList(),
     };

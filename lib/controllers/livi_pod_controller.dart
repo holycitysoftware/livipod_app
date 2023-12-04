@@ -21,7 +21,7 @@ class LiviPodController extends ChangeNotifier {
       var jsonMap = liviPod.toJson();
       final pod = await FirebaseFirestore.instance
           .collection('livipods')
-          .where('macAddress', isEqualTo: liviPod.macAddress)
+          .where('remoteId', isEqualTo: liviPod.remoteId)
           .get()
           .then((querySnapshot) {
         return querySnapshot.docs[0].reference;
@@ -38,11 +38,19 @@ class LiviPodController extends ChangeNotifier {
     return Future.value();
   }
 
+  Future<void> removeLiviPod(LiviPod liviPod) async {
+    await FirebaseFirestore.instance
+        .collection('livipods')
+        .doc(liviPod.id)
+        .delete();
+    return Future.value();
+  }
+
   Future<bool> liviPodExists(LiviPod liviPod) async {
     var exists = false;
     await FirebaseFirestore.instance
         .collection('livipods')
-        .where('macAddress', isEqualTo: liviPod.macAddress)
+        .where('remoteId', isEqualTo: liviPod.remoteId)
         .get()
         .then((querySnapshot) {
       exists = querySnapshot.size > 0;

@@ -5,24 +5,23 @@ import 'package:livipod_app/models/schedule.dart';
 import '../components/schedule_as_needed.dart';
 import '../components/schedule_monthly.dart';
 import '../components/schedule_weekly.dart';
-import '../models/livi_pod.dart';
 import '../models/schedule_type.dart';
 import '../utils/utils.dart' as utils;
 
 class ScheduleView extends StatefulWidget {
-  final LiviPod liviPod;
-  Schedule? schedule;
-  ScheduleView({super.key, required this.liviPod, this.schedule});
+  final Schedule? schedule;
+  final Function(Schedule) onAdd;
+  final Function onUpdate;
+  const ScheduleView(
+      {super.key, this.schedule, required this.onAdd, required this.onUpdate});
 
   @override
   State<ScheduleView> createState() => _ScheduleViewState();
 }
 
 class _ScheduleViewState extends State<ScheduleView> {
-  ScheduleType _scheduleType = ScheduleType.daily;
-  late DateTime _startDate;
-  late DateTime _endDate;
-  late Schedule _schedule;
+  late bool _isNew;
+  late final Schedule _schedule;
   final TextEditingController _startDosingWindowController =
       TextEditingController();
   final TextEditingController _endDosingWindowController =
@@ -30,9 +29,18 @@ class _ScheduleViewState extends State<ScheduleView> {
 
   @override
   void initState() {
-    _schedule = widget.schedule ?? Schedule();
-    _startDate = DateTime.now();
-    _endDate = DateTime(_startDate.year + 1, _startDate.month, _startDate.day);
+    if (widget.schedule == null) {
+      _isNew = true;
+      _schedule = Schedule();
+      _schedule.type = ScheduleType.daily;
+      _schedule.startDate = DateTime.now();
+      _schedule.endDate = DateTime(_schedule.startDate.year + 1,
+          _schedule.startDate.month, _schedule.startDate.day);
+    } else {
+      _isNew = false;
+      _schedule = widget.schedule!;
+    }
+
     super.initState();
   }
 
@@ -44,6 +52,18 @@ class _ScheduleViewState extends State<ScheduleView> {
         lastDate: DateTime(initialDate.year + 5));
   }
 
+  Future update() async {
+    if (_isNew) {
+      widget.onAdd(_schedule);
+    } else {
+      widget.onUpdate();
+    }
+  }
+
+  void close() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,86 +71,110 @@ class _ScheduleViewState extends State<ScheduleView> {
       body: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
-                const Text('Start date'),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                        onPressed: () async {
-                          final dt = await getDate(_startDate);
-                          if (dt != null) {
-                            setState(() {
-                              _startDate = dt;
-                            });
-                          }
-                        },
-                        icon: const Icon(Icons.calendar_month)),
-                    Text(utils.getFormattedDate(_startDate)),
+                    const Text('Start date'),
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () async {
+                              final dt = await getDate(_schedule.startDate);
+                              if (dt != null) {
+                                setState(() {
+                                  _schedule.startDate = dt;
+                                });
+                              }
+                            },
+                            icon: const Icon(Icons.calendar_month)),
+                        Text(utils.getFormattedDate(_schedule.startDate)),
+                      ],
+                    )
                   ],
-                )
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('End date'),
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () async {
+                              final dt = await getDate(_schedule.endDate!);
+                              if (dt != null) {
+                                setState(() {
+                                  _schedule.endDate = dt;
+                                });
+                              }
+                            },
+                            icon: const Icon(Icons.calendar_month)),
+                        Text(utils.getFormattedDate(_schedule.endDate!)),
+                      ],
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Schedule type'),
+                    DropdownButton<ScheduleType>(
+                        value: _schedule.type,
+                        items: const [
+                          DropdownMenuItem(
+                            value: ScheduleType.daily,
+                            child: Text('Daily'),
+                          ),
+                          DropdownMenuItem(
+                            value: ScheduleType.asNeeded,
+                            child: Text('As-needed'),
+                          )
+                        ],
+                        onChanged: (scheduleType) {
+                          setState(() {
+                            _schedule.type = scheduleType!;
+                          });
+                        })
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                if (_schedule.type == ScheduleType.daily)
+                  ScheduleDaily(schedule: _schedule),
+                if (_schedule.type == ScheduleType.weekly)
+                  ScheduleWeekly(schedule: _schedule),
+                if (_schedule.type == ScheduleType.monthly)
+                  ScheduleMonthly(schedule: _schedule),
+                if (_schedule.type == ScheduleType.asNeeded)
+                  ScheduleAsNeeded(schedule: _schedule),
+                if (_schedule.type != ScheduleType.asNeeded) ...[
+                  buildStartDosingWindow(),
+                  buildEndDosingWindow(),
+                ],
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('End date'),
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: () async {
-                          final dt = await getDate(_endDate);
-                          if (dt != null) {
-                            setState(() {
-                              _endDate = dt;
-                            });
-                          }
-                        },
-                        icon: const Icon(Icons.calendar_month)),
-                    Text(utils.getFormattedDate(_endDate)),
-                  ],
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Schedule type'),
-                DropdownButton<ScheduleType>(
-                    value: _scheduleType,
-                    items: const [
-                      DropdownMenuItem(
-                        value: ScheduleType.daily,
-                        child: Text('Daily'),
-                      ),
-                      DropdownMenuItem(
-                        value: ScheduleType.asNeeded,
-                        child: Text('As-needed'),
-                      )
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                update();
+                                close();
+                              },
+                              child: _isNew
+                                  ? const Text('Add')
+                                  : const Text('Update)')))
                     ],
-                    onChanged: (scheduleType) {
-                      setState(() {
-                        _scheduleType = scheduleType!;
-                      });
-                    })
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            if (_scheduleType == ScheduleType.daily)
-              ScheduleDaily(schedule: _schedule, onChange: () {}),
-            if (_scheduleType == ScheduleType.weekly)
-              ScheduleWeekly(schedule: _schedule, onChange: () => {}),
-            if (_scheduleType == ScheduleType.monthly)
-              ScheduleMonthly(schedule: _schedule, onChange: () => {}),
-            if (_scheduleType == ScheduleType.asNeeded)
-              ScheduleAsNeeded(schedule: _schedule, onChange: () => {}),
-            if (_scheduleType != ScheduleType.asNeeded) ...[
-              buildStartDosingWindow(),
-              buildEndDosingWindow(),
-            ],
+                  )
+                ],
+              ),
+            )
           ])),
     );
   }

@@ -6,21 +6,16 @@ import 'prn_dosing_card.dart';
 
 class ScheduleAsNeeded extends StatefulWidget {
   final Schedule schedule;
-  final Function onChange;
-  const ScheduleAsNeeded(
-      {super.key, required this.onChange, required this.schedule});
+  const ScheduleAsNeeded({super.key, required this.schedule});
 
   @override
   State<ScheduleAsNeeded> createState() => _ScheduleAsNeededState();
 }
 
 class _ScheduleAsNeededState extends State<ScheduleAsNeeded> {
-  late Schedule _schedule;
-
   @override
   void initState() {
-    _schedule = widget.schedule;
-    _schedule.prnDosing ??= PrnDose();
+    widget.schedule.prnDosing ??= PrnDose();
     super.initState();
   }
 
@@ -31,7 +26,7 @@ class _ScheduleAsNeededState extends State<ScheduleAsNeeded> {
         const SizedBox(
           height: 20,
         ),
-        PrnDosingCard(prnDose: _schedule.prnDosing!, onChange: widget.onChange)
+        PrnDosingCard(prnDose: widget.schedule.prnDosing!)
       ],
     );
   }
