@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livipod_app/controllers/livi_pod_controller.dart';
-import 'package:livipod_app/controllers/communication_controller.dart';
+// import 'package:livipod_app/controllers/communication_controller.dart';
 import 'package:livipod_app/views/home_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,15 +22,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final DevicesController _devicesController = DevicesController();
+  late final DevicesController _devicesController;
   final LiviPodController _liviPodController = LiviPodController();
-
-  //late final CommunicationController _webSocketController;
 
   @override
   void initState() {
-    // _devicesController =
-    //     DevicesController(liviPodController: _liviPodController);
+    _devicesController =
+        DevicesController(liviPodController: _liviPodController);
     super.initState();
   }
 

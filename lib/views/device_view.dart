@@ -8,11 +8,10 @@ import 'package:livipod_app/models/livi_pod.dart';
 import 'package:livipod_app/views/schedule_view.dart';
 import 'package:provider/provider.dart';
 
-import '../models/schedule.dart';
-
 class DeviceView extends StatefulWidget {
-  final BluetoothDevice device;
-  const DeviceView({super.key, required this.device});
+  final LiviPod liviPod;
+  final bool claim;
+  const DeviceView({super.key, required this.liviPod, required this.claim});
 
   @override
   State<DeviceView> createState() => _DeviceViewState();
@@ -25,39 +24,40 @@ class _DeviceViewState extends State<DeviceView> {
   final TextEditingController _nameController = TextEditingController();
   bool _claimed = false;
   bool _connected = false;
-  LiviPod? liviPod;
+  bool _editName = false;
+  late LiviPod liviPod;
 
   @override
   void initState() {
     _liviPodController = Provider.of<LiviPodController>(context, listen: false);
-    _liviPodController.listenToLiviPodsRealTime().listen(handleLiviPods);
     _devicesController = Provider.of<DevicesController>(context, listen: false);
-    _devicesController.connect(widget.device);
+    connect(widget.liviPod, widget.claim);
+    liviPod = widget.liviPod;
+    _claimed = !widget.claim;
     super.initState();
+  }
+
+  Future<void> connect(LiviPod liviPod, bool claim) async {
+    if (claim) {
+      final device =
+          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+      await _devicesController.connect(device);
+    }
+  }
+
+  Future<void> disconnect() async {
+    if (!_claimed) {
+      final device =
+          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+      await _devicesController.disconnect(device);
+    }
   }
 
   @override
   void dispose() {
-    _liviPodController
-        .listenToLiviPodsRealTime()
-        .listen(handleLiviPods)
-        .cancel();
     _nameController.dispose();
-    _devicesController.disconnect(widget.device);
+    disconnect();
     super.dispose();
-  }
-
-  void handleLiviPods(List<LiviPod> liviPods) {
-    for (final pod in liviPods) {
-      if (pod.remoteId == widget.device.remoteId.toString()) {
-        liviPod = pod;
-        if (mounted) {
-          setState(() {
-            _claimed = true;
-          });
-        }
-      }
-    }
   }
 
   void pop() {
@@ -69,15 +69,23 @@ class _DeviceViewState extends State<DeviceView> {
       await showAlert();
     } else {
       // save to database
-      var liviPod = LiviPod(
-          remoteId: widget.device.remoteId.toString(),
-          medicationName: _nameController.text);
+      liviPod.medicationName = _nameController.text;
+
       if (!await _liviPodController.liviPodExists(liviPod)) {
         liviPod = await _liviPodController.addLiviPod(liviPod);
+
         // write livipod id to device so nobody else can grab it
-        await _devicesController.claim(widget.device, liviPod.id);
+        final device =
+            BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+        await _devicesController.claim(device, liviPod.id);
+        setState(() {
+          _claimed = true;
+        });
       } else {
-        await showError();
+        await _liviPodController.updateLiviPod(liviPod);
+        setState(() {
+          _editName = false;
+        });
       }
     }
   }
@@ -86,25 +94,17 @@ class _DeviceViewState extends State<DeviceView> {
     if (!_connected) {
       await showAlert();
     } else {
-      await _devicesController.unclaim(widget.device);
-      await _liviPodController.removeLiviPod(liviPod!);
+      final device =
+          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+      await _devicesController.unclaim(device);
+      await _liviPodController.removeLiviPod(liviPod);
       if (mounted) {
         setState(() {
+          _nameController.clear();
           _claimed = false;
-          liviPod = null;
         });
       }
     }
-  }
-
-  Future showError() async {
-    await showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            title: Text('This Pod has already been claimied'),
-          );
-        });
   }
 
   Future showAlert() async {
@@ -131,8 +131,43 @@ class _DeviceViewState extends State<DeviceView> {
         });
   }
 
+  Future showUnclaimAlert() async {
+    void pop() {
+      Navigator.pop(context);
+    }
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.red[200],
+            content: const Text(
+              'This action will remove the medication and schedule from your LiviPod.  This action cannot be undone.  Are you sure you want to unclaim this device?',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14),
+            ),
+            title: const Text('Unclaim'),
+            actions: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No')),
+                ElevatedButton(
+                    onPressed: () async {
+                      await clearClaim();
+                      pop();
+                    },
+                    child: const Text('Yes'))
+              ])
+            ],
+          );
+        });
+  }
+
   Future updateSchedule() async {
-    await _liviPodController.updateLiviPod(liviPod!);
+    await _liviPodController.updateLiviPod(liviPod);
     if (mounted) {
       setState(() {});
     }
@@ -141,12 +176,11 @@ class _DeviceViewState extends State<DeviceView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DevicesController>(builder: (context, controller, child) {
-      _connected = widget.device.isConnected;
-
       if (controller.connectedDevices
-          .any((element) => element.remoteId == widget.device.remoteId)) {
+          .any((element) => element.remoteId.toString() == liviPod.remoteId)) {
         _connected = true;
       }
+
       return Scaffold(
           appBar: AppBar(
             title: const Text('LiviPod'),
@@ -166,7 +200,7 @@ class _DeviceViewState extends State<DeviceView> {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(children: [
-                if (!_claimed) ...[
+                if (!_claimed || _editName) ...[
                   Column(
                     children: [
                       Form(
@@ -204,53 +238,122 @@ class _DeviceViewState extends State<DeviceView> {
                     ],
                   ),
                 ] else ...[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (liviPod != null &&
-                              liviPod!.schedules.isEmpty) ...[
-                            ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return ScheduleView(
-                                        onAdd: (schedule) async {
-                                          liviPod!.schedules.add(schedule);
-                                          await updateSchedule();
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      liviPod.medicationName,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          _nameController.text =
+                                              liviPod.medicationName;
+                                          setState(() {
+                                            _editName = true;
+                                          });
                                         },
-                                        onUpdate: () async {
-                                          await updateSchedule();
-                                        },
-                                      );
-                                    },
-                                  ));
-                                },
-                                child: const Text('Add a schedule'))
-                          ] else ...[
-                            Text('there is a schedule')
-                          ]
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                                'LiviPod ${liviPod?.id} has been claimed by you and associated with ${liviPod?.medicationName}.  Tap the Unclaim button below if you want to remove the medication assigment and association to your account.'),
-                          )
-                        ],
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await clearClaim();
-                        },
-                        child: const Text(
-                          'Unclaim',
+                                        icon: const Icon(Icons.edit))
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                if (liviPod.schedule == null) ...[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                              builder: (context) {
+                                                return ScheduleView(
+                                                  onAdd: (schedule) async {
+                                                    liviPod.schedule = schedule;
+                                                    await updateSchedule();
+                                                  },
+                                                  onUpdate: () async {
+                                                    await updateSchedule();
+                                                  },
+                                                );
+                                              },
+                                            ));
+                                          },
+                                          child: const Text('Add a schedule'))
+                                    ],
+                                  ),
+                                ] else ...[
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          liviPod.schedule!
+                                              .getScheduleDescription(),
+                                          textAlign: TextAlign.center,
+                                          softWrap: true,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                              builder: (context) {
+                                                return ScheduleView(
+                                                  schedule: liviPod.schedule,
+                                                  onAdd: (schedule) async {
+                                                    liviPod.schedule = schedule;
+                                                    await updateSchedule();
+                                                  },
+                                                  onUpdate: () async {
+                                                    await updateSchedule();
+                                                  },
+                                                );
+                                              },
+                                            ));
+                                          },
+                                          icon: const Icon(Icons.edit)),
+                                      IconButton(
+                                          onPressed: () async {
+                                            liviPod.schedule = null;
+                                            await updateSchedule();
+                                          },
+                                          icon: const Icon(Icons.delete))
+                                    ],
+                                  )
+                                ]
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                await showUnclaimAlert();
+                              },
+                              child: const Text(
+                                'Unclaim',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ]
               ]),

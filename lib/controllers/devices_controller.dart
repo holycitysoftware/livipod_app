@@ -2,8 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:livipod_app/controllers/livi_pod_controller.dart';
+
+import '../models/livi_pod.dart';
 
 class DevicesController extends ChangeNotifier {
+  final LiviPodController liviPodController;
   final List<BluetoothDevice> _scannedDevices = [];
   BluetoothAdapterState _state = BluetoothAdapterState.off;
   final List<BluetoothDevice> _connectedDevices = [];
@@ -14,11 +18,24 @@ class DevicesController extends ChangeNotifier {
   List<BluetoothDevice> get scannedDevices => _scannedDevices;
   List<BluetoothDevice> get connectedDevices => _connectedDevices;
 
-  DevicesController() {
+  DevicesController({required this.liviPodController}) {
+    liviPodController.listenToLiviPodsRealTime().listen(handleLiviPods);
+
     FlutterBluePlus.adapterState.listen((event) {
       _state = event;
       notifyListeners();
     });
+  }
+
+  Future<void> handleLiviPods(List<LiviPod> liviPods) async {
+    for (var liviPod in liviPods) {
+      final device =
+          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+      if (!_connectedDevices
+          .any((element) => element.remoteId == device.remoteId)) {
+        await connect(device);
+      }
+    }
   }
 
   void startBle() {
@@ -30,9 +47,9 @@ class DevicesController extends ChangeNotifier {
         print('Starting BLE scanning');
       }
       FlutterBluePlus.startScan(
-        withNames: ['LiviPod'],
-        continuousUpdates: true, /*removeIfGone: const Duration(seconds: 15)*/
-      );
+          withNames: ['LiviPod'],
+          continuousUpdates: true,
+          removeIfGone: const Duration(seconds: 15));
     } else {
       if (kDebugMode) {
         print('Cannot scan when bluetooth adapter is off');
@@ -66,41 +83,35 @@ class DevicesController extends ChangeNotifier {
   }
 
   Future connect(BluetoothDevice device) async {
-    if (!device.isConnected) {
-      device.connectionState.listen((event) {
-        if (event == BluetoothConnectionState.disconnected) {
-          if (kDebugMode) {
-            print(
-                "${device.disconnectReason?.code}: ${device.disconnectReason?.description}");
-          }
-          _connectedDevices
-              .removeWhere((element) => element.remoteId == device.remoteId);
-          // 1. typically, start a periodic timer that tries to
-          //    reconnect, or just call connect() again right now
-          // 2. you must always re-discover services after disconnection!
-          Timer.periodic(const Duration(seconds: 5), (timer) async {
-            if (device.isConnected) {
-              timer.cancel();
-            } else {
-              await device.connect();
-              notifyListeners();
-            }
-          });
-        } else if (event == BluetoothConnectionState.connected) {
-          _connectedDevices.add(device);
-          discoverServices(device);
-        }
-        notifyListeners();
-      });
-
-      try {
-        await device.connect();
-      } catch (e) {
-        if (kDebugMode) {
-          print(e);
-        }
-      }
+    if (!_connectedDevices
+        .any((element) => element.remoteId == device.remoteId)) {
+      _connectedDevices.add(device);
     }
+
+    device.connectionState.listen((event) {
+      if (event == BluetoothConnectionState.disconnected) {
+        if (kDebugMode) {
+          print(
+              "${device.disconnectReason?.code}: ${device.disconnectReason?.description}");
+        }
+        // 1. typically, start a periodic timer that tries to
+        //    reconnect, or just call connect() again right now
+        // 2. you must always re-discover services after disconnection!
+        Timer.periodic(const Duration(seconds: 5), (timer) async {
+          if (device.isConnected) {
+            timer.cancel();
+          } else {
+            await device.connect();
+            notifyListeners();
+          }
+        });
+      } else if (event == BluetoothConnectionState.connected) {
+        discoverServices(device);
+      }
+      notifyListeners();
+    });
+
+    await device.connect();
   }
 
   Future<void> disconnect(BluetoothDevice device) async {

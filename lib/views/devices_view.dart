@@ -68,15 +68,18 @@ class _DevicesViewState extends State<DevicesView> {
     _devicesController.stopBle();
   }
 
-  void deviceTapped(BluetoothDevice device) {
+  void deviceTapped(LiviPod liviPod, bool claim) {
     Navigator.push(context, MaterialPageRoute(
       builder: (context) {
         return DeviceView(
-          device: device,
+          liviPod: liviPod,
+          claim: claim,
         );
       },
     ));
   }
+
+  void podTapped(LiviPod liviPod) {}
 
   @override
   Widget build(BuildContext context) {
@@ -109,14 +112,17 @@ class _DevicesViewState extends State<DevicesView> {
                       itemCount: _liviPods.length,
                       itemBuilder: (context, index) {
                         final liviPod = _liviPods[index];
-                        return ListTile(
+                        return GestureDetector(
                           onTap: () {
-                            deviceTapped(BluetoothDevice(
-                                remoteId: DeviceIdentifier(liviPod.remoteId)));
+                            deviceTapped(liviPod, false);
                           },
-                          dense: true,
-                          contentPadding: const EdgeInsets.all(20),
-                          title: Text(liviPod.medicationName),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 20),
+                              child: Text(liviPod.medicationName),
+                            ),
+                          ),
                         );
                       }),
                 ],
@@ -144,15 +150,26 @@ class _DevicesViewState extends State<DevicesView> {
                         itemCount: devices.length,
                         itemBuilder: (context, index) {
                           var device = devices[index];
-                          return ListTile(
+                          return GestureDetector(
                             onTap: () {
-                              deviceTapped(device);
+                              final liviPod = LiviPod(
+                                  remoteId: device.remoteId.toString(),
+                                  medicationName: '');
+                              deviceTapped(liviPod, true);
                             },
-                            contentPadding: const EdgeInsets.all(20),
-                            title: Text(device.platformName),
-                            subtitle: Text(
-                              device.remoteId.toString(),
-                              style: Theme.of(context).textTheme.bodySmall,
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(device.platformName),
+                                    Text(device.remoteId.toString(),
+                                        style: const TextStyle(fontSize: 10)),
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         },

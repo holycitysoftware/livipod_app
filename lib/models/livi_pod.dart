@@ -9,8 +9,7 @@ class LiviPod {
   String id = '';
   final String remoteId;
   String medicationName;
-  @JsonKey(defaultValue: <Schedule>[])
-  List<Schedule> schedules = [];
+  Schedule? schedule;
 
   LiviPod({required this.remoteId, required this.medicationName});
 

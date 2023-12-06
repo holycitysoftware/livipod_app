@@ -11,14 +11,13 @@ LiviPod _$LiviPodFromJson(Map<String, dynamic> json) => LiviPod(
       medicationName: json['medicationName'] as String,
     )
       ..id = json['id'] as String
-      ..schedules = (json['schedules'] as List<dynamic>?)
-              ?.map((e) => Schedule.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [];
+      ..schedule = json['schedule'] == null
+          ? null
+          : Schedule.fromJson(json['schedule'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$LiviPodToJson(LiviPod instance) => <String, dynamic>{
       'id': instance.id,
       'remoteId': instance.remoteId,
       'medicationName': instance.medicationName,
-      'schedules': instance.schedules.map((e) => e.toJson()).toList(),
+      'schedule': instance.schedule?.toJson(),
     };

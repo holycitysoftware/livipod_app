@@ -169,7 +169,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                               },
                               child: _isNew
                                   ? const Text('Add')
-                                  : const Text('Update)')))
+                                  : const Text('Update')))
                     ],
                   )
                 ],
