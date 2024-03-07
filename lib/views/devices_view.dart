@@ -16,14 +16,14 @@ class DevicesView extends StatefulWidget {
 }
 
 class _DevicesViewState extends State<DevicesView> {
-  late final DevicesController _devicesController;
+  late final BleController _devicesController;
   late final LiviPodController _liviPodController;
   final List<LiviPod> _liviPods = [];
 
   @override
   void initState() {
     _liviPodController = Provider.of<LiviPodController>(context, listen: false);
-    _devicesController = Provider.of<DevicesController>(context, listen: false);
+    _devicesController = Provider.of<BleController>(context, listen: false);
     startBle();
     super.initState();
   }
@@ -89,7 +89,9 @@ class _DevicesViewState extends State<DevicesView> {
         if (info.visibleFraction == 1.0) {
           _liviPods.clear();
           listenForPods();
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         } else {
           stopListeningForPods();
         }
@@ -136,7 +138,7 @@ class _DevicesViewState extends State<DevicesView> {
                       Text('Available to claim'),
                     ],
                   ),
-                  Consumer<DevicesController>(
+                  Consumer<BleController>(
                     builder: (context, deviceController, child) {
                       List<BluetoothDevice> devices = [];
                       for (final device in deviceController.scannedDevices) {

@@ -8,6 +8,24 @@ class LiviPodController extends ChangeNotifier {
   final StreamController<List<LiviPod>> _liviPodStreamController =
       StreamController<List<LiviPod>>.broadcast();
 
+  Future<List<LiviPod>> getLiviPods(/* accountId */) async {
+    final List<LiviPod> liviPods = [];
+    await FirebaseFirestore.instance
+        .collection('livipods')
+        //.where('accountId', isEqualTo: )
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        liviPods.addAll(querySnapshot.docs.map((snapshot) {
+          var liviPod = LiviPod.fromJson(snapshot.data());
+          liviPod.id = snapshot.id;
+          return liviPod;
+        }).toList());
+      }
+    });
+    return Future.value(liviPods);
+  }
+
   Future<LiviPod> addLiviPod(LiviPod liviPod) async {
     var json = await FirebaseFirestore.instance
         .collection('livipods')

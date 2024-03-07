@@ -39,6 +39,9 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
         ),
         ScheduledDosingCard(
           scheduledDosings: widget.schedule.scheduledDosings,
+          onChange: () {
+            setState(() {});
+          },
         ),
         const SizedBox(
           height: 10,

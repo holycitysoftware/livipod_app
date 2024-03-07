@@ -19,7 +19,7 @@ Dosing _$DosingFromJson(Map<String, dynamic> json) => Dosing()
   ..qtySkipped = (json['qtySkipped'] as num?)?.toDouble() ?? 0
   ..qtyMissed = (json['qtyMissed'] as num?)?.toDouble() ?? 0
   ..qtyDispensed = (json['qtyDispensed'] as num?)?.toDouble() ?? 0
-  ..outcome = json['outcome'] as String? ?? '';
+  ..outcome = $enumDecodeNullable(_$DosingOutcomeEnumMap, json['outcome']);
 
 Map<String, dynamic> _$DosingToJson(Dosing instance) => <String, dynamic>{
       'dosingId': instance.dosingId,
@@ -30,5 +30,11 @@ Map<String, dynamic> _$DosingToJson(Dosing instance) => <String, dynamic>{
       'qtySkipped': instance.qtySkipped,
       'qtyMissed': instance.qtyMissed,
       'qtyDispensed': instance.qtyDispensed,
-      'outcome': instance.outcome,
+      'outcome': _$DosingOutcomeEnumMap[instance.outcome],
     };
+
+const _$DosingOutcomeEnumMap = {
+  DosingOutcome.dispensed: 'dispensed',
+  DosingOutcome.skipped: 'skipped',
+  DosingOutcome.missed: 'missed',
+};

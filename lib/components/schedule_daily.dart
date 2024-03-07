@@ -5,7 +5,9 @@ import 'scheduled_dosing_card.dart';
 
 class ScheduleDaily extends StatefulWidget {
   final Schedule schedule;
-  const ScheduleDaily({super.key, required this.schedule});
+  final Function onChange;
+  const ScheduleDaily(
+      {super.key, required this.schedule, required this.onChange});
 
   @override
   State<ScheduleDaily> createState() => _ScheduleDailyState();
@@ -36,6 +38,10 @@ class _ScheduleDailyState extends State<ScheduleDaily> {
         ),
         ScheduledDosingCard(
           scheduledDosings: widget.schedule.scheduledDosings,
+          onChange: () {
+            widget.onChange();
+            setState(() {});
+          },
         ),
         const SizedBox(
           height: 10,

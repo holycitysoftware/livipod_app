@@ -19,7 +19,7 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView> {
   late final LiviPodController _liviPodController;
-  late final DevicesController _devicesController;
+  late final BleController _devicesController;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   bool _claimed = false;
@@ -30,7 +30,7 @@ class _DeviceViewState extends State<DeviceView> {
   @override
   void initState() {
     _liviPodController = Provider.of<LiviPodController>(context, listen: false);
-    _devicesController = Provider.of<DevicesController>(context, listen: false);
+    _devicesController = Provider.of<BleController>(context, listen: false);
     connect(widget.liviPod, widget.claim);
     liviPod = widget.liviPod;
     _claimed = !widget.claim;
@@ -38,19 +38,21 @@ class _DeviceViewState extends State<DeviceView> {
   }
 
   Future<void> connect(LiviPod liviPod, bool claim) async {
+    final device =
+        BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
     if (claim) {
-      final device =
-          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
       await _devicesController.connect(device);
     }
+    await _devicesController.startBlink(device);
   }
 
   Future<void> disconnect() async {
+    final device =
+        BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
     if (!_claimed) {
-      final device =
-          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
       await _devicesController.disconnect(device);
     }
+    await _devicesController.stopBlink(device);
   }
 
   @override
@@ -78,14 +80,18 @@ class _DeviceViewState extends State<DeviceView> {
         final device =
             BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
         await _devicesController.claim(device, liviPod.id);
-        setState(() {
-          _claimed = true;
-        });
+        if (mounted) {
+          setState(() {
+            _claimed = true;
+          });
+        }
       } else {
         await _liviPodController.updateLiviPod(liviPod);
-        setState(() {
-          _editName = false;
-        });
+        if (mounted) {
+          setState(() {
+            _editName = false;
+          });
+        }
       }
     }
   }
@@ -175,10 +181,12 @@ class _DeviceViewState extends State<DeviceView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DevicesController>(builder: (context, controller, child) {
+    return Consumer<BleController>(builder: (context, controller, child) {
       if (controller.connectedDevices
           .any((element) => element.remoteId.toString() == liviPod.remoteId)) {
         _connected = true;
+      } else {
+        _connected = false;
       }
 
       return Scaffold(
@@ -258,9 +266,11 @@ class _DeviceViewState extends State<DeviceView> {
                                         onPressed: () {
                                           _nameController.text =
                                               liviPod.medicationName;
-                                          setState(() {
-                                            _editName = true;
-                                          });
+                                          if (mounted) {
+                                            setState(() {
+                                              _editName = true;
+                                            });
+                                          }
                                         },
                                         icon: const Icon(Icons.edit))
                                   ],
@@ -294,6 +304,7 @@ class _DeviceViewState extends State<DeviceView> {
                                   ),
                                 ] else ...[
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Flexible(
                                         child: Text(

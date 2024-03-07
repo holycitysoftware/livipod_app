@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livipod_app/controllers/livi_pod_controller.dart';
+import 'package:livipod_app/controllers/schedule_controller.dart';
 // import 'package:livipod_app/controllers/communication_controller.dart';
 import 'package:livipod_app/views/home_tab_view.dart';
 import 'package:provider/provider.dart';
@@ -22,13 +23,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late final DevicesController _devicesController;
+  late final BleController _devicesController;
+  late final ScheduleController _scheduleController;
   final LiviPodController _liviPodController = LiviPodController();
 
   @override
   void initState() {
-    _devicesController =
-        DevicesController(liviPodController: _liviPodController);
+    _devicesController = BleController(liviPodController: _liviPodController);
+    _scheduleController =
+        ScheduleController(liviPodController: _liviPodController);
     super.initState();
   }
 
@@ -36,6 +39,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
+          ChangeNotifierProvider(
+            create: (context) => _scheduleController,
+          ),
           ChangeNotifierProvider(
             create: (context) => _devicesController,
           ),

@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:input_quantity/input_quantity.dart';
 
 import '../models/scheduled_dose.dart';
 
 class ScheduledDosingCard extends StatefulWidget {
   final List<ScheduledDose> scheduledDosings;
+  final Function onChange;
 
-  const ScheduledDosingCard({super.key, required this.scheduledDosings});
+  const ScheduledDosingCard(
+      {super.key, required this.scheduledDosings, required this.onChange});
 
   @override
   State<ScheduledDosingCard> createState() => _ScheduledDosingCardState();
 }
 
 class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
-  final TextEditingController _qtyController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
+  int _quantity = 1;
+  TimeOfDay _timeOfDay = const TimeOfDay(hour: 8, minute: 0);
 
   @override
   void initState() {
-    _qtyController.text = '1';
-    _timeController.text = '08:00';
     widget.scheduledDosings
         .sort((a, b) => a.timeOfDay.hour.compareTo(b.timeOfDay.hour));
     super.initState();
@@ -27,14 +27,11 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
 
   @override
   void dispose() {
-    _qtyController.dispose();
-    _timeController.dispose();
     super.dispose();
   }
 
   Future<TimeOfDay?> getTimeOfDay() async {
-    return await showTimePicker(
-        context: context, initialTime: const TimeOfDay(hour: 8, minute: 0));
+    return await showTimePicker(context: context, initialTime: _timeOfDay);
   }
 
   @override
@@ -44,7 +41,7 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
         Card(
           elevation: 6,
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,17 +52,19 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                     const SizedBox(
                       width: 10,
                     ),
-                    SizedBox(
-                      width: 75,
-                      child: TextField(
-                        controller: _qtyController,
-                        decoration:
-                            const InputDecoration(label: Text('Quantity')),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r"[0-9.]"))
-                        ],
+                    InputQty.int(
+                      decoration: const QtyDecorationProps(
+                        qtyStyle: QtyStyle.btnOnRight,
                       ),
+                      maxVal: 99,
+                      initVal: _quantity,
+                      minVal: 1,
+                      steps: 1,
+                      onQtyChanged: (val) {
+                        setState(() {
+                          _quantity = val;
+                        });
+                      },
                     ),
                     const SizedBox(
                       width: 10,
@@ -79,9 +78,14 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                         IconButton(
                             onPressed: () async {
                               final t = await getTimeOfDay();
-                              if (t != null) {}
+                              if (t != null) {
+                                setState(() {
+                                  _timeOfDay = t;
+                                });
+                              }
                             },
-                            icon: const Icon(Icons.access_time))
+                            icon: const Icon(Icons.access_time)),
+                        Text(_timeOfDay.format(context))
                       ],
                     )
                   ],
@@ -89,17 +93,13 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                 Flexible(
                   child: IconButton(
                       onPressed: () {
-                        double? qty = double.tryParse(_qtyController.text);
-                        int? hour =
-                            int.tryParse(_timeController.text.split(":")[0]);
-                        int? minute =
-                            int.tryParse(_timeController.text.split(":")[1]);
-                        if (qty != null &&
-                            hour != null &&
-                            minute != null &&
-                            !widget.scheduledDosings.any((element) =>
-                                element.timeOfDay.hour == hour &&
-                                element.timeOfDay.minute == minute)) {
+                        double? qty = _quantity.toDouble();
+                        int hour = _timeOfDay.hour;
+
+                        int minute = _timeOfDay.minute;
+                        if (!widget.scheduledDosings.any((element) =>
+                            element.timeOfDay.hour == hour &&
+                            element.timeOfDay.minute == minute)) {
                           var scheduledDose = ScheduledDose();
                           scheduledDose.qty = qty;
                           scheduledDose.timeOfDay =
@@ -108,6 +108,7 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                           widget.scheduledDosings.sort((a, b) =>
                               a.timeOfDay.hour.compareTo(b.timeOfDay.hour));
                         }
+                        widget.onChange();
                         setState(() {});
                       },
                       icon: const Icon(Icons.add)),
@@ -117,8 +118,8 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
           ),
         ),
         if (widget.scheduledDosings.isEmpty) ...[
-          Column(
-            children: const [
+          const Column(
+            children: [
               SizedBox(
                 width: 20,
               ),
@@ -148,11 +149,12 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                 onDeleted: () {
                   widget.scheduledDosings.removeAt(index);
                   setState(() {});
+                  widget.onChange();
                 },
               );
             },
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: 2,
               mainAxisSpacing: 5,
               crossAxisSpacing: 5,
               mainAxisExtent: 50,

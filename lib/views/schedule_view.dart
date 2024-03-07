@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:input_quantity/input_quantity.dart';
 import 'package:livipod_app/components/schedule_daily.dart';
 import 'package:livipod_app/models/schedule.dart';
 import '../components/schedule_as_needed.dart';
@@ -142,7 +143,12 @@ class _ScheduleViewState extends State<ScheduleView> {
                   height: 10,
                 ),
                 if (_schedule.type == ScheduleType.daily)
-                  ScheduleDaily(schedule: _schedule),
+                  ScheduleDaily(
+                    schedule: _schedule,
+                    onChange: () {
+                      setState(() {});
+                    },
+                  ),
                 if (_schedule.type == ScheduleType.weekly)
                   ScheduleWeekly(schedule: _schedule),
                 if (_schedule.type == ScheduleType.monthly)
@@ -150,8 +156,63 @@ class _ScheduleViewState extends State<ScheduleView> {
                 if (_schedule.type == ScheduleType.asNeeded)
                   ScheduleAsNeeded(schedule: _schedule),
                 if (_schedule.type != ScheduleType.asNeeded) ...[
-                  buildStartDosingWindow(),
-                  buildEndDosingWindow(),
+                  const Row(
+                    children: [Text('The dosing window will open')],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(children: [
+                    InputQty.int(
+                      decoration: const QtyDecorationProps(
+                        qtyStyle: QtyStyle.btnOnRight,
+                      ),
+                      maxVal: 720,
+                      initVal: _schedule.startWarningMinutes,
+                      minVal: 1,
+                      steps: 1,
+                      onQtyChanged: (val) {
+                        setState(() {
+                          _schedule.startWarningMinutes = val;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const Text('minutes before'),
+                  ]),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const Row(
+                    children: [const Text('and close')],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      InputQty.int(
+                        decoration: const QtyDecorationProps(
+                          qtyStyle: QtyStyle.btnOnRight,
+                        ),
+                        maxVal: 720,
+                        initVal: _schedule.stopWarningMinutes,
+                        minVal: 1,
+                        steps: 1,
+                        onQtyChanged: (val) {
+                          setState(() {
+                            _schedule.stopWarningMinutes = val;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      const Text('minutes after'),
+                    ],
+                  ),
                 ],
               ],
             ),
@@ -163,10 +224,14 @@ class _ScheduleViewState extends State<ScheduleView> {
                     children: [
                       Expanded(
                           child: ElevatedButton(
-                              onPressed: () async {
-                                update();
-                                close();
-                              },
+                              onPressed:
+                                  _schedule.type == ScheduleType.asNeeded ||
+                                          _schedule.scheduledDosings.isNotEmpty
+                                      ? () async {
+                                          update();
+                                          close();
+                                        }
+                                      : null,
                               child: _isNew
                                   ? const Text('Add')
                                   : const Text('Update')))

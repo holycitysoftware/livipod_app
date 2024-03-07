@@ -23,7 +23,10 @@ class DayOfTimeConverter implements JsonConverter<TimeOfDay, String?> {
 
   @override
   TimeOfDay fromJson(String? json) {
-    return TimeOfDay.fromDateTime(DateFormat.jm().parse(json ?? ''));
+    var parts = json!.split(':');
+    var hour = int.parse(parts[0]);
+    var minute = int.parse(parts[1]);
+    return TimeOfDay(hour: hour, minute: minute);
   }
 
   @override

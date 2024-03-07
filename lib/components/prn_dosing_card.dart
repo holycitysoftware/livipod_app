@@ -39,17 +39,18 @@ class _PrnDosingCardState extends State<PrnDosingCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Take'),
-                    InputQty.double(
+                    InputQty.int(
                       decoration: const QtyDecorationProps(
                         qtyStyle: QtyStyle.btnOnRight,
                       ),
                       maxVal: 10,
                       initVal: widget.prnDose.maxQty,
                       minVal: 1,
-                      steps: 0.5,
+                      steps: 1,
+                      decimalPlaces: 0,
                       onQtyChanged: (val) {
                         setState(() {
-                          widget.prnDose.maxQty = val;
+                          widget.prnDose.maxQty = val.toDouble();
                         });
                       },
                     ),
@@ -82,17 +83,18 @@ class _PrnDosingCardState extends State<PrnDosingCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Do not exceed'),
-                    InputQty.double(
+                    InputQty.int(
                       decoration: const QtyDecorationProps(
                         qtyStyle: QtyStyle.btnOnRight,
                       ),
                       maxVal: 24,
                       initVal: widget.prnDose.nteQty,
                       minVal: 1,
-                      steps: 0.5,
+                      steps: 1,
+                      decimalPlaces: 0,
                       onQtyChanged: (val) {
                         setState(() {
-                          widget.prnDose.nteQty = val;
+                          widget.prnDose.nteQty = val.toDouble();
                         });
                       },
                     ),

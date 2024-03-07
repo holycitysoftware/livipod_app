@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'dosing.g.dart';
 
+enum DosingOutcome { dispensed, skipped, missed }
+
 @JsonSerializable(explicitToJson: true)
 class Dosing {
   int dosingId = 0;
@@ -15,8 +17,7 @@ class Dosing {
   double qtyMissed = 0;
   @JsonKey(defaultValue: 0)
   double qtyDispensed = 0;
-  @JsonKey(defaultValue: '')
-  String outcome = '';
+  DosingOutcome? outcome;
 
   Dosing();
 

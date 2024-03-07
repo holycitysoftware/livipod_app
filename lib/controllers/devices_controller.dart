@@ -6,19 +6,20 @@ import 'package:livipod_app/controllers/livi_pod_controller.dart';
 
 import '../models/livi_pod.dart';
 
-class DevicesController extends ChangeNotifier {
+class BleController extends ChangeNotifier {
   final LiviPodController liviPodController;
   final List<BluetoothDevice> _scannedDevices = [];
   BluetoothAdapterState _state = BluetoothAdapterState.off;
   final List<BluetoothDevice> _connectedDevices = [];
   final List<BluetoothCharacteristic> _claimCharacteristics = [];
   final List<BluetoothCharacteristic> _unclaimCharacteristics = [];
+  final List<BluetoothCharacteristic> _blinkCharacteristics = [];
 
   BluetoothAdapterState get state => _state;
   List<BluetoothDevice> get scannedDevices => _scannedDevices;
   List<BluetoothDevice> get connectedDevices => _connectedDevices;
 
-  DevicesController({required this.liviPodController}) {
+  BleController({required this.liviPodController}) {
     liviPodController.listenToLiviPodsRealTime().listen(handleLiviPods);
 
     FlutterBluePlus.adapterState.listen((event) {
@@ -83,17 +84,21 @@ class DevicesController extends ChangeNotifier {
   }
 
   Future connect(BluetoothDevice device) async {
-    if (!_connectedDevices
-        .any((element) => element.remoteId == device.remoteId)) {
-      _connectedDevices.add(device);
-    }
-
     device.connectionState.listen((event) {
       if (event == BluetoothConnectionState.disconnected) {
         if (kDebugMode) {
           print(
               "${device.disconnectReason?.code}: ${device.disconnectReason?.description}");
         }
+        _blinkCharacteristics.removeWhere(
+            (element) => element.device.remoteId == device.remoteId);
+        _claimCharacteristics.removeWhere(
+            (element) => element.device.remoteId == device.remoteId);
+        _unclaimCharacteristics.removeWhere(
+            (element) => element.device.remoteId == device.remoteId);
+
+        _connectedDevices
+            .removeWhere((element) => element.remoteId == device.remoteId);
         // 1. typically, start a periodic timer that tries to
         //    reconnect, or just call connect() again right now
         // 2. you must always re-discover services after disconnection!
@@ -101,11 +106,21 @@ class DevicesController extends ChangeNotifier {
           if (device.isConnected) {
             timer.cancel();
           } else {
-            await device.connect();
-            notifyListeners();
+            try {
+              await device.connect();
+              notifyListeners();
+            } on FlutterBluePlusException catch (ex) {
+              if (kDebugMode) {
+                print(ex);
+              }
+            }
           }
         });
       } else if (event == BluetoothConnectionState.connected) {
+        if (!_connectedDevices
+            .any((element) => element.remoteId == device.remoteId)) {
+          _connectedDevices.add(device);
+        }
         discoverServices(device);
       }
       notifyListeners();
@@ -123,12 +138,18 @@ class DevicesController extends ChangeNotifier {
 
   Future<void> discoverServices(BluetoothDevice device) async {
     if (device.isConnected) {
-      List<BluetoothService> services = await device.discoverServices();
-      for (var service in services) {
-        if (kDebugMode) {
-          print(service);
+      try {
+        List<BluetoothService> services = await device.discoverServices();
+        for (var service in services) {
+          if (kDebugMode) {
+            print(service);
+          }
+          discoverServiceCharacteristics(device, service);
         }
-        discoverServiceCharacteristics(device, service);
+      } on FlutterBluePlusException catch (fbpEx) {
+        if (kDebugMode) {
+          print(fbpEx);
+        }
       }
     }
   }
@@ -148,6 +169,10 @@ class DevicesController extends ChangeNotifier {
           .toString()
           .startsWith("7736aff1-758b-45ae-8349-95581a16f905")) {
         _unclaimCharacteristics.add(characteristic);
+      } else if (characteristic.uuid
+          .toString()
+          .startsWith('7832d8b7-d7df-4501-894e-1ac87edc8c3d')) {
+        _blinkCharacteristics.add(characteristic);
       }
     }
   }
@@ -209,5 +234,21 @@ class DevicesController extends ChangeNotifier {
       await _unclaimCharacteristics[index].write([0x01]);
     }
     notifyListeners();
+  }
+
+  Future startBlink(BluetoothDevice device) async {
+    final index = _blinkCharacteristics
+        .indexWhere((element) => element.device.remoteId == device.remoteId);
+    if (index != -1 && _blinkCharacteristics[index].device.isConnected) {
+      await _blinkCharacteristics[index].write([0x01]);
+    }
+  }
+
+  Future stopBlink(BluetoothDevice device) async {
+    final index = _blinkCharacteristics
+        .indexWhere((element) => element.device.remoteId == device.remoteId);
+    if (index != -1 && _blinkCharacteristics[index].device.isConnected) {
+      await _blinkCharacteristics[index].write([0x02]);
+    }
   }
 }

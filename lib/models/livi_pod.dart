@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'dosing.dart';
 import 'schedule.dart';
 
 part 'livi_pod.g.dart';
@@ -10,6 +11,8 @@ class LiviPod {
   final String remoteId;
   String medicationName;
   Schedule? schedule;
+  Dosing? nextDosing;
+  Dosing? lastDosing;
 
   LiviPod({required this.remoteId, required this.medicationName});
 
