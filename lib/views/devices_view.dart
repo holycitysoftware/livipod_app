@@ -1,11 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:livipod_app/views/device_view.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../controllers/devices_controller.dart';
-import '../controllers/livi_pod_controller.dart';
+import '../controllers/ble_controller.dart';
 import '../models/livi_pod.dart';
 
 class DevicesView extends StatefulWidget {
@@ -16,27 +17,18 @@ class DevicesView extends StatefulWidget {
 }
 
 class _DevicesViewState extends State<DevicesView> {
-  late final BleController _devicesController;
-  late final LiviPodController _liviPodController;
-  final List<LiviPod> _liviPods = [];
-
+  late final BleController _bleController;
+  List<LiviPod> liviPodDevices = [];
   @override
   void initState() {
-    _liviPodController = Provider.of<LiviPodController>(context, listen: false);
-    _devicesController = Provider.of<BleController>(context, listen: false);
+    _bleController = Provider.of<BleController>(context, listen: false);
     startBle();
     super.initState();
   }
 
-  void listenForPods() {
-    _liviPodController.listenToLiviPodsRealTime().listen(handleLiviPods);
-  }
-
-  void stopListeningForPods() {
-    _liviPodController
-        .listenToLiviPodsRealTime()
-        .listen(handleLiviPods)
-        .cancel();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -45,27 +37,12 @@ class _DevicesViewState extends State<DevicesView> {
     super.dispose();
   }
 
-  void handleLiviPods(List<LiviPod> liviPods) {
-    for (final pod in liviPods) {
-      final index =
-          _liviPods.indexWhere((element) => element.remoteId == pod.remoteId);
-      if (index == -1) {
-        _liviPods.add(pod);
-      } else {
-        _liviPods[index] = pod;
-      }
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
   void startBle() {
-    _devicesController.startBle();
+    _bleController.startScan();
   }
 
   void stopBle() {
-    _devicesController.stopBle();
+    _bleController.stopScan();
   }
 
   void deviceTapped(LiviPod liviPod, bool claim) {
@@ -79,111 +56,116 @@ class _DevicesViewState extends State<DevicesView> {
     ));
   }
 
-  void podTapped(LiviPod liviPod) {}
-
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
       key: const Key('devices-view'),
       onVisibilityChanged: (info) {
         if (info.visibleFraction == 1.0) {
-          _liviPods.clear();
-          listenForPods();
+          _bleController.startScan();
           if (mounted) {
             setState(() {});
           }
         } else {
-          stopListeningForPods();
+          _bleController.stopScan();
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Column(
-                children: [
-                  const Row(
-                    children: [
-                      Text('Your Pods'),
-                    ],
-                  ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _liviPods.length,
-                      itemBuilder: (context, index) {
-                        final liviPod = _liviPods[index];
-                        return GestureDetector(
-                          onTap: () {
-                            deviceTapped(liviPod, false);
-                          },
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0, vertical: 20),
-                              child: Text(liviPod.medicationName),
-                            ),
-                          ),
-                        );
-                      }),
-                ],
-              ),
-            ),
-            Flexible(
-              child: Column(
-                children: [
-                  const Row(
-                    children: [
-                      Text('Available to claim'),
-                    ],
-                  ),
-                  Consumer<BleController>(
-                    builder: (context, deviceController, child) {
-                      List<BluetoothDevice> devices = [];
-                      for (final device in deviceController.scannedDevices) {
-                        if (!_liviPods.any((element) =>
-                            element.remoteId == device.remoteId.toString())) {
-                          devices.add(device);
-                        }
-                      }
-                      return ListView.builder(
+      child: Consumer<BleController>(builder: (context, controller, child) {
+        liviPodDevices.clear();
+        liviPodDevices.addAll(controller.liviPodDevices);
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Column(
+                  children: [
+                    const Row(
+                      children: [
+                        Text('Your Pods'),
+                      ],
+                    ),
+                    ListView.builder(
                         shrinkWrap: true,
-                        itemCount: devices.length,
+                        itemCount: liviPodDevices.length,
                         itemBuilder: (context, index) {
-                          var device = devices[index];
+                          final liviPod = liviPodDevices[index];
                           return GestureDetector(
                             onTap: () {
-                              final liviPod = LiviPod(
-                                  remoteId: device.remoteId.toString(),
-                                  medicationName: '');
-                              deviceTapped(liviPod, true);
+                              deviceTapped(liviPod, false);
                             },
                             child: Card(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0, vertical: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(device.platformName),
-                                    Text(device.remoteId.toString(),
-                                        style: const TextStyle(fontSize: 10)),
-                                  ],
-                                ),
+                                child: Text(liviPod.medicationName),
                               ),
                             ),
                           );
-                        },
-                      );
-                    },
-                  ),
-                ],
+                        })
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+              Flexible(
+                child: Column(
+                  children: [
+                    const Row(
+                      children: [
+                        Text('Available to claim'),
+                      ],
+                    ),
+                    Consumer<BleController>(
+                      builder: (context, deviceController, child) {
+                        List<ScanResult> scanResults = [];
+                        for (final scanResult in deviceController.scanResults) {
+                          if (!liviPodDevices.any((element) =>
+                              element.remoteId ==
+                              scanResult.device.remoteId.toString())) {
+                            scanResults.add(scanResult);
+                          }
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: scanResults.length,
+                          itemBuilder: (context, index) {
+                            var scanResult = scanResults[index];
+                            return GestureDetector(
+                              onTap: () {
+                                final liviPod = LiviPod(
+                                    remoteId:
+                                        scanResult.device.remoteId.toString(),
+                                    medicationName: '');
+                                deviceTapped(liviPod, true);
+                              },
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0, vertical: 20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(scanResult.device.platformName),
+                                      Text(
+                                          scanResult.device.remoteId.toString(),
+                                          style: const TextStyle(fontSize: 10)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

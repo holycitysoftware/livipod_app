@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-import 'controllers/devices_controller.dart';
+import 'controllers/ble_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:livipod_app/controllers/ble_device_controller.dart';
 
 import 'dosing.dart';
 import 'schedule.dart';
@@ -13,6 +14,8 @@ class LiviPod {
   Schedule? schedule;
   Dosing? nextDosing;
   Dosing? lastDosing;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  BleDeviceController? bleDeviceController;
 
   LiviPod({required this.remoteId, required this.medicationName});
 
@@ -20,4 +23,20 @@ class LiviPod {
       _$LiviPodFromJson(json);
 
   Map<String, dynamic> toJson() => _$LiviPodToJson(this);
+
+  Future<void> startBlink() async {
+    await bleDeviceController?.startBlink();
+  }
+
+  Future<void> stopBlink() async {
+    await bleDeviceController?.stopBlink();
+  }
+
+  Future<void> claim() async {
+    await bleDeviceController?.claim(id);
+  }
+
+  Future<void> unclaim() async {
+    await bleDeviceController?.unclaim();
+  }
 }

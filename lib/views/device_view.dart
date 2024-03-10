@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:livipod_app/controllers/devices_controller.dart';
+import 'package:livipod_app/controllers/ble_controller.dart';
 import 'package:livipod_app/controllers/livi_pod_controller.dart';
 import 'package:livipod_app/models/livi_pod.dart';
 import 'package:livipod_app/views/schedule_view.dart';
@@ -19,7 +19,7 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView> {
   late final LiviPodController _liviPodController;
-  late final BleController _devicesController;
+  late final BleController _bleController;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   bool _claimed = false;
@@ -30,7 +30,7 @@ class _DeviceViewState extends State<DeviceView> {
   @override
   void initState() {
     _liviPodController = Provider.of<LiviPodController>(context, listen: false);
-    _devicesController = Provider.of<BleController>(context, listen: false);
+    _bleController = Provider.of<BleController>(context, listen: false);
     connect(widget.liviPod, widget.claim);
     liviPod = widget.liviPod;
     _claimed = !widget.claim;
@@ -38,21 +38,23 @@ class _DeviceViewState extends State<DeviceView> {
   }
 
   Future<void> connect(LiviPod liviPod, bool claim) async {
-    final device =
-        BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
     if (claim) {
-      await _devicesController.connect(device);
+      final device =
+          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+      var bleDeviceController = _bleController.connect(device);
+      liviPod.bleDeviceController = bleDeviceController;
     }
-    await _devicesController.startBlink(device);
+    liviPod.startBlink();
   }
 
-  Future<void> disconnect() async {
-    final device =
-        BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+  void disconnect() {
     if (!_claimed) {
-      await _devicesController.disconnect(device);
+      final device =
+          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+      _bleController.disconnect(device);
+      liviPod.bleDeviceController = null;
     }
-    await _devicesController.stopBlink(device);
+    liviPod.stopBlink();
   }
 
   @override
@@ -77,9 +79,7 @@ class _DeviceViewState extends State<DeviceView> {
         liviPod = await _liviPodController.addLiviPod(liviPod);
 
         // write livipod id to device so nobody else can grab it
-        final device =
-            BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
-        await _devicesController.claim(device, liviPod.id);
+        liviPod.claim();
         if (mounted) {
           setState(() {
             _claimed = true;
@@ -100,9 +100,10 @@ class _DeviceViewState extends State<DeviceView> {
     if (!_connected) {
       await showAlert();
     } else {
-      final device =
-          BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
-      await _devicesController.unclaim(device);
+      await liviPod.stopBlink();
+      await liviPod.unclaim();
+      _bleController.disconnect(liviPod.bleDeviceController!.bluetoothDevice);
+      liviPod.bleDeviceController = null;
       await _liviPodController.removeLiviPod(liviPod);
       if (mounted) {
         setState(() {
@@ -182,9 +183,13 @@ class _DeviceViewState extends State<DeviceView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<BleController>(builder: (context, controller, child) {
-      if (controller.connectedDevices
-          .any((element) => element.remoteId.toString() == liviPod.remoteId)) {
-        _connected = true;
+      if (controller.connectedDevices.any((element) =>
+          element.bluetoothDevice.remoteId.toString() == liviPod.remoteId)) {
+        final bleDeviceController = controller.connectedDevices.firstWhere(
+            (element) =>
+                element.bluetoothDevice.remoteId.toString() ==
+                liviPod.remoteId);
+        _connected = bleDeviceController.bluetoothDevice.isConnected;
       } else {
         _connected = false;
       }
