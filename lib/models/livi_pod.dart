@@ -10,6 +10,10 @@ part 'livi_pod.g.dart';
 class LiviPod {
   String id = '';
   final String remoteId;
+  @JsonKey(defaultValue: '')
+  String macAddress = '';
+  @JsonKey(defaultValue: '')
+  String ipAddress = '';
   String medicationName;
   Schedule? schedule;
   Dosing? nextDosing;

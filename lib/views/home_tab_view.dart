@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:livipod_app/views/devices_view.dart';
+import 'package:livipod_app/views/profile_view.dart';
 
 class HomeTabView extends StatefulWidget {
   const HomeTabView({super.key});
@@ -20,6 +21,7 @@ class _HomeTabViewState extends State<HomeTabView> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.circle), label: 'Pods'),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Profile'),
         ],
         currentIndex: _index,
         onTap: (value) {
@@ -38,7 +40,7 @@ class _HomeTabViewState extends State<HomeTabView> {
       case 1:
         return DevicesView();
       default:
-        return Placeholder();
+        return ProfileView();
     }
   }
 }

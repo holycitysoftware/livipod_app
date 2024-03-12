@@ -17,6 +17,7 @@ class BleDeviceController {
   final List<BluetoothCharacteristic> _claimCharacteristics = [];
   final List<BluetoothCharacteristic> _unclaimCharacteristics = [];
   final List<BluetoothCharacteristic> _blinkCharacteristics = [];
+  final List<BluetoothCharacteristic> _wifiCredentialsCharacteristics = [];
 
   BleDeviceController({required this.bluetoothDevice});
 
@@ -86,6 +87,10 @@ class BleDeviceController {
             .toString()
             .startsWith('7832d8b7-d7df-4501-894e-1ac87edc8c3d')) {
           _blinkCharacteristics.add(characteristic);
+        } else if (characteristic.uuid
+            .toString()
+            .startsWith('8a336a00-8c6d-49f6-840b-ca88987c636b')) {
+          _wifiCredentialsCharacteristics.add(characteristic);
         }
       }
     }
@@ -109,6 +114,18 @@ class BleDeviceController {
       );
     }
   }
+
+  Future enableWifi(String ssid, String password) async {
+    final index = _wifiCredentialsCharacteristics.indexWhere(
+        (element) => element.device.remoteId == bluetoothDevice.remoteId);
+    if (index != -1 &&
+        _wifiCredentialsCharacteristics[index].device.isConnected) {
+      var data = '$ssid,$password;';
+      await _wifiCredentialsCharacteristics[index].write(data.codeUnits);
+    }
+  }
+
+  Future disableWifi() async {}
 
   Future claim(String id) async {
     final index = _claimCharacteristics.indexWhere(

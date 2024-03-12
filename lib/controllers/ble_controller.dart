@@ -45,9 +45,17 @@ class BleController extends ChangeNotifier {
     });
 
     _deviceInfoStreamGroup.stream.listen((event) {
-      if (kDebugMode) {
-        print(event);
-      }
+      // get the livipod
+      var liviPod = _liviPodDevices.firstWhere((element) =>
+          element.bleDeviceController == event.bleDeviceController);
+
+      // update mac and ip address
+      liviPod.macAddress = event.macAddress;
+      liviPod.ipAddress = event.ipAddress;
+
+      // update database
+      liviPodController.updateLiviPod(liviPod);
+
       notifyListeners();
     });
 
@@ -152,6 +160,18 @@ class BleController extends ChangeNotifier {
       final bleDevice = _connectedDevices.firstWhere(
           (element) => element.bluetoothDevice.remoteId == device.remoteId);
       bleDevice.stopBlink();
+    }
+  }
+
+  Future<void> enableWifi(String ssid, String pwd) async {
+    for (var liviPodDevice in _liviPodDevices) {
+      await liviPodDevice.bleDeviceController?.enableWifi(ssid, pwd);
+    }
+  }
+
+  Future<void> disableWifi() async {
+    for (var liviPodDevice in _liviPodDevices) {
+      await liviPodDevice.bleDeviceController?.disableWifi();
     }
   }
 }
