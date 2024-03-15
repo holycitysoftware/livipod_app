@@ -1,4 +1,4 @@
-package com.example.livipod_app
+package com.pharmright.livipodapp
 
 import io.flutter.embedding.android.FlutterActivity
 
