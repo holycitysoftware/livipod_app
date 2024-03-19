@@ -8,11 +8,11 @@ part of 'account.dart';
 
 Account _$AccountFromJson(Map<String, dynamic> json) => Account()
   ..id = json['id'] as String
-  ..owner = json['owner'] == null
-      ? null
-      : AppUser.fromJson(json['owner'] as Map<String, dynamic>);
+  ..ownerId = json['ownerId'] as String
+  ..enabled = json['enabled'] as bool;
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'id': instance.id,
-      'owner': instance.owner?.toJson(),
+      'ownerId': instance.ownerId,
+      'enabled': instance.enabled,
     };

@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:livipod_app/models/app_user_type.dart';
 
-import 'account.dart';
 import 'livi_pod.dart';
 
 part 'app_user.g.dart';
@@ -17,6 +16,7 @@ class AppUser {
   List<LiviPod> podsList = [];
   String email = '';
   String authToken = '';
+  bool enabled = true;
 
   AppUser();
 

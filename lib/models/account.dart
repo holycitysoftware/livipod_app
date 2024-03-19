@@ -1,12 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:livipod_app/models/app_user.dart';
 
 part 'account.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Account {
   String id = '';
-  AppUser? owner;
+  String ownerId = '';
+  bool enabled = true;
 
   Account();
 

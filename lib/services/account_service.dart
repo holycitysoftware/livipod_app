@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import '../models/account.dart';
 import '../models/app_user.dart';
 
-class AccountService extends ChangeNotifier {
+class AccountService {
   final StreamController<List<Account>> _accountsController =
       StreamController<List<Account>>.broadcast();
 

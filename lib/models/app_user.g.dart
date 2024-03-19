@@ -17,7 +17,8 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser()
       .map((e) => LiviPod.fromJson(e as Map<String, dynamic>))
       .toList()
   ..email = json['email'] as String
-  ..authToken = json['authToken'] as String;
+  ..authToken = json['authToken'] as String
+  ..enabled = json['enabled'] as bool;
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'id': instance.id,
@@ -29,6 +30,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'podsList': instance.podsList.map((e) => e.toJson()).toList(),
       'email': instance.email,
       'authToken': instance.authToken,
+      'enabled': instance.enabled,
     };
 
 const _$AppUserTypeEnumMap = {
