@@ -8,9 +8,7 @@ part of 'app_user.dart';
 
 AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser()
   ..id = json['id'] as String
-  ..account = json['account'] == null
-      ? null
-      : Account.fromJson(json['account'] as Map<String, dynamic>)
+  ..accountId = json['accountId'] as String
   ..firstName = json['firstName'] as String
   ..lastName = json['lastName'] as String
   ..appUserType = $enumDecode(_$AppUserTypeEnumMap, json['appUserType'])
@@ -23,7 +21,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser()
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'id': instance.id,
-      'account': instance.account?.toJson(),
+      'accountId': instance.accountId,
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'appUserType': _$AppUserTypeEnumMap[instance.appUserType]!,

@@ -9,7 +9,7 @@ part 'app_user.g.dart';
 @JsonSerializable(explicitToJson: true)
 class AppUser {
   String id = '';
-  Account? account;
+  String accountId = '';
   String firstName = '';
   String lastName = '';
   AppUserType appUserType = AppUserType.selfGuidedUser;
