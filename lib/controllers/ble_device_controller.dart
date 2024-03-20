@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleDeviceController {
@@ -60,6 +61,14 @@ class BleDeviceController {
             } on FlutterBluePlusException catch (ex) {
               if (kDebugMode) {
                 print(ex);
+              }
+            } on PlatformException catch (pex) {
+              if (kDebugMode) {
+                print(pex);
+              }
+            } catch (e) {
+              if (kDebugMode) {
+                print(e);
               }
             }
           }

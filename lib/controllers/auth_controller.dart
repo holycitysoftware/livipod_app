@@ -31,10 +31,12 @@ class AuthController extends ChangeNotifier {
         });
   }
 
-  Future<void> verifyPhoneNumber(AppUser appUser) async {
+  Future<void> verifyPhoneNumber(String phoneNumber) async {
+    _verificationError = '';
+    _promptForUserCode = false;
     _verificationId = '';
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: appUser.mobile,
+      phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
         // This handler will only be called on Android devices
         // which support automatic SMS code resolution.
@@ -44,9 +46,12 @@ class AuthController extends ChangeNotifier {
       },
       verificationFailed: (FirebaseAuthException e) {
         _verificationError = e.message ?? e.code;
+        _promptForUserCode = false;
+        _verificationId = '';
         notifyListeners();
       },
       codeSent: (String verificationId, int? resendToken) {
+        _verificationId = verificationId;
         _promptForUserCode = true;
         notifyListeners();
       },
@@ -68,13 +73,25 @@ class AuthController extends ChangeNotifier {
   }
 
   Future<void> _authenticate(PhoneAuthCredential credential) async {
-    await FirebaseAuth.instance.signInWithCredential(credential);
+    try {
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      // session-expired - use refresh token
+
+      _verificationError = e.message ?? e.code;
+      notifyListeners();
+    }
   }
 
   Future<void> validate(String code) async {
+    _promptForUserCode = false;
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: code);
     await _authenticate(credential);
+  }
+
+  Future<void> signOut() async {
+    FirebaseAuth.instance.signOut();
   }
 }
