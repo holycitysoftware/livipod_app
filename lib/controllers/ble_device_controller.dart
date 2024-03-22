@@ -19,6 +19,7 @@ class BleDeviceController {
   final List<BluetoothCharacteristic> _unclaimCharacteristics = [];
   final List<BluetoothCharacteristic> _blinkCharacteristics = [];
   final List<BluetoothCharacteristic> _wifiCredentialsCharacteristics = [];
+  final List<BluetoothCharacteristic> _resetCharacteristics = [];
 
   bool get readyForCommands => _readyForCommands;
 
@@ -108,6 +109,10 @@ class BleDeviceController {
             .toString()
             .startsWith('8a336a00-8c6d-49f6-840b-ca88987c636b')) {
           _wifiCredentialsCharacteristics.add(characteristic);
+        } else if (characteristic.uuid
+            .toString()
+            .startsWith('de0f7bcc-cdc7-4beb-b006-d182ad7ca6cb')) {
+          _resetCharacteristics.add(characteristic);
         }
       }
     }
@@ -206,6 +211,14 @@ class BleDeviceController {
         print(error);
       }
     });
+  }
+
+  Future<void> reset() async {
+    final index = _resetCharacteristics.indexWhere(
+        (element) => element.device.remoteId == bluetoothDevice.remoteId);
+    if (index != -1 && _resetCharacteristics[index].device.isConnected) {
+      await _resetCharacteristics[index].write([0x01]);
+    }
   }
 }
 

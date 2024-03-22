@@ -178,10 +178,65 @@ class _DeviceViewState extends State<DeviceView> {
         });
   }
 
+  Future showResetAlert() async {
+    void pop() {
+      Navigator.pop(context);
+    }
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.red[200],
+            content: const Text(
+              'This action will remove this LiviPod from your account and reset the firmware.  This action cannot be undone.  Are you sure you want to reset this device?',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14),
+            ),
+            title: const Text('Reset'),
+            actions: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No')),
+                ElevatedButton(
+                    onPressed: () async {
+                      await reset();
+                      pop();
+                    },
+                    child: const Text('Yes'))
+              ])
+            ],
+          );
+        });
+  }
+
   Future updateSchedule() async {
     await _liviPodController.updateLiviPod(liviPod);
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  Future<void> reset() async {
+    if (!_connected) {
+      await showAlert();
+    } else {
+      await liviPod.stopBlink();
+      await liviPod.unclaim();
+      await liviPod.reset();
+      _bleController.disconnectFromUnclaimedDevice(
+          liviPod.bleDeviceController!.bluetoothDevice);
+      liviPod.bleDeviceController = null;
+      await _liviPodController.removeLiviPod(liviPod);
+      if (mounted) {
+        setState(() {
+          _nameController.clear();
+          _claimed = false;
+        });
+      }
     }
   }
 
@@ -372,6 +427,17 @@ class _DeviceViewState extends State<DeviceView> {
                               },
                               child: const Text(
                                 'Unclaim',
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await showResetAlert();
+                              },
+                              child: const Text(
+                                'Reset Pod',
                               ),
                             ),
                           ],

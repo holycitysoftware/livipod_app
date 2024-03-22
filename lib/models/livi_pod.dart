@@ -51,4 +51,8 @@ class LiviPod {
   void disconnect() {
     bleDeviceController?.disconnect();
   }
+
+  Future<void> reset() async {
+    await bleDeviceController?.reset();
+  }
 }

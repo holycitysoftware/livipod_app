@@ -141,8 +141,8 @@ class BleController extends ChangeNotifier {
           (element) => element.bluetoothDevice.remoteId == device.remoteId);
       bleDevice.disconnect();
       _connectedDevices.remove(bleDevice);
-      // _liviPodDevices
-      //     .removeWhere((element) => element.bleDeviceController == bleDevice);
+      _liviPodDevices
+          .removeWhere((element) => element.bleDeviceController == bleDevice);
     }
   }
 
