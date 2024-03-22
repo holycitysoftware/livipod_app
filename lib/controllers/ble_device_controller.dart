@@ -14,7 +14,7 @@ class BleDeviceController {
   final List<BluetoothService> _services = [];
   BluetoothConnectionState deviceState = BluetoothConnectionState.disconnected;
 
-  bool _userDisconnect = false;
+  //bool _userDisconnect = false;
   final List<BluetoothCharacteristic> _claimCharacteristics = [];
   final List<BluetoothCharacteristic> _unclaimCharacteristics = [];
   final List<BluetoothCharacteristic> _blinkCharacteristics = [];
@@ -47,33 +47,33 @@ class BleDeviceController {
       if (kDebugMode) {
         print('The ${bluetoothDevice.advName} device is disconnected');
       }
-      // 1. typically, start a periodic timer that tries to
-      //    reconnect, or just call connect() again right now
-      // 2. you must always re-discover services after disconnection!
-      if (!_userDisconnect) {
-        Timer.periodic(const Duration(seconds: 5), (timer) async {
-          if (bluetoothDevice.isConnected) {
-            timer.cancel();
-            _userDisconnect = false;
-          } else {
-            try {
-              await bluetoothDevice.connect();
-            } on FlutterBluePlusException catch (ex) {
-              if (kDebugMode) {
-                print(ex);
-              }
-            } on PlatformException catch (pex) {
-              if (kDebugMode) {
-                print(pex);
-              }
-            } catch (e) {
-              if (kDebugMode) {
-                print(e);
-              }
-            }
-          }
-        });
-      }
+      // // 1. typically, start a periodic timer that tries to
+      // //    reconnect, or just call connect() again right now
+      // // 2. you must always re-discover services after disconnection!
+      // if (!_userDisconnect) {
+      //   Timer.periodic(const Duration(seconds: 5), (timer) async {
+      //     if (bluetoothDevice.isConnected) {
+      //       timer.cancel();
+      //       _userDisconnect = false;
+      //     } else {
+      //       try {
+      //         await bluetoothDevice.connect();
+      //       } on FlutterBluePlusException catch (ex) {
+      //         if (kDebugMode) {
+      //           print(ex);
+      //         }
+      //       } on PlatformException catch (pex) {
+      //         if (kDebugMode) {
+      //           print(pex);
+      //         }
+      //       } catch (e) {
+      //         if (kDebugMode) {
+      //           print(e);
+      //         }
+      //       }
+      //     }
+      //   });
+      // }
     }
   }
 
@@ -169,7 +169,7 @@ class BleDeviceController {
   }
 
   void connect() {
-    _userDisconnect = false;
+    //_userDisconnect = false;
     _setupStreams();
     bluetoothDevice
         .connect()
@@ -186,7 +186,7 @@ class BleDeviceController {
   }
 
   void disconnect() async {
-    _userDisconnect = true;
+    //_userDisconnect = true;
     bluetoothDevice.disconnect().then((value) {
       _cancelStreams();
     }).onError((error, stackTrace) {

@@ -94,4 +94,6 @@ class AuthController extends ChangeNotifier {
   Future<void> signOut() async {
     FirebaseAuth.instance.signOut();
   }
+
+  Future<void> refreshToken() async {}
 }

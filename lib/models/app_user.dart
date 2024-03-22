@@ -12,7 +12,7 @@ class AppUser {
   String firstName = '';
   String lastName = '';
   AppUserType appUserType = AppUserType.selfGuidedUser;
-  String mobile = '';
+  String phoneNumber = '';
   List<LiviPod> podsList = [];
   String email = '';
   String authToken = '';
