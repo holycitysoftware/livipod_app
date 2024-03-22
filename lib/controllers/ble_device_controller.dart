@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleDeviceController {
@@ -13,12 +12,15 @@ class BleDeviceController {
   final BluetoothDevice bluetoothDevice;
   final List<BluetoothService> _services = [];
   BluetoothConnectionState deviceState = BluetoothConnectionState.disconnected;
+  bool _readyForCommands = false;
 
   //bool _userDisconnect = false;
   final List<BluetoothCharacteristic> _claimCharacteristics = [];
   final List<BluetoothCharacteristic> _unclaimCharacteristics = [];
   final List<BluetoothCharacteristic> _blinkCharacteristics = [];
   final List<BluetoothCharacteristic> _wifiCredentialsCharacteristics = [];
+
+  bool get readyForCommands => _readyForCommands;
 
   BleDeviceController({required this.bluetoothDevice});
 
@@ -32,9 +34,7 @@ class BleDeviceController {
 
   void _handleConnectionState(BluetoothConnectionState event) {
     deviceState = event;
-    // this will stream to all clients listening
-    connectionStateStreamController.sink
-        .add({bluetoothDevice.remoteId.str: event});
+
     if (event == BluetoothConnectionState.connected) {
       if (kDebugMode) {
         print('The ${bluetoothDevice.advName} device is connected');
@@ -42,11 +42,19 @@ class BleDeviceController {
       bluetoothDevice.discoverServices().then((services) {
         _services.addAll(services);
         _discoverServiceCharacteristics();
+        _readyForCommands = true;
+        // this will stream to all clients listening
+        connectionStateStreamController.sink
+            .add({bluetoothDevice.remoteId.str: event});
       });
     } else {
       if (kDebugMode) {
         print('The ${bluetoothDevice.advName} device is disconnected');
       }
+      _readyForCommands = false;
+      // this will stream to all clients listening
+      connectionStateStreamController.sink
+          .add({bluetoothDevice.remoteId.str: event});
       // // 1. typically, start a periodic timer that tries to
       // //    reconnect, or just call connect() again right now
       // // 2. you must always re-discover services after disconnection!

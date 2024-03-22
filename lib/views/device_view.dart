@@ -43,18 +43,22 @@ class _DeviceViewState extends State<DeviceView> {
           BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
       var bleDeviceController = _bleController.connectToUnclaimedDevice(device);
       liviPod.bleDeviceController = bleDeviceController;
+    } else {
+      liviPod.connect();
     }
-    liviPod.startBlink();
   }
 
   void disconnect() {
     if (!_claimed) {
       final device =
           BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
+      _bleController.stopBlinkOnUnclaimedDevice(device);
       _bleController.disconnectFromUnclaimedDevice(device);
       liviPod.bleDeviceController = null;
+    } else {
+      liviPod.stopBlink();
+      liviPod.disconnect();
     }
-    liviPod.stopBlink();
   }
 
   @override
@@ -191,6 +195,9 @@ class _DeviceViewState extends State<DeviceView> {
                 element.bluetoothDevice.remoteId.toString() ==
                 liviPod.remoteId);
         _connected = bleDeviceController.bluetoothDevice.isConnected;
+        if (bleDeviceController.readyForCommands) {
+          liviPod.startBlink();
+        }
       } else {
         _connected = false;
       }
