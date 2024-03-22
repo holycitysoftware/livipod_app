@@ -60,10 +60,10 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
   }
 
   List<Widget> getDaysOfWeek() {
-    var list = <Widget>[];
+    final list = <Widget>[];
 
     for (var i = 0; i < 7; i++) {
-      var btn = SizedBox(
+      final btn = SizedBox(
         width: 90,
         child: ElevatedButton(
             onPressed: () {

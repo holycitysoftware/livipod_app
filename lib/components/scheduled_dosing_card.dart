@@ -31,7 +31,7 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
   }
 
   Future<TimeOfDay?> getTimeOfDay() async {
-    return await showTimePicker(context: context, initialTime: _timeOfDay);
+    return showTimePicker(context: context, initialTime: _timeOfDay);
   }
 
   @override
@@ -62,7 +62,7 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                       steps: 1,
                       onQtyChanged: (val) {
                         setState(() {
-                          _quantity = val;
+                          _quantity = val as int;
                         });
                       },
                     ),

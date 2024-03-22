@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:livipod_app/models/app_user.dart';
 
 class AuthController extends ChangeNotifier {
   User? _user;

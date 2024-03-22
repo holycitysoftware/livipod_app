@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:livipod_app/controllers/ble_controller.dart';
-import 'package:livipod_app/controllers/livi_pod_controller.dart';
-import 'package:livipod_app/models/livi_pod.dart';
-import 'package:livipod_app/views/schedule_view.dart';
 import 'package:provider/provider.dart';
+
+import '../controllers/ble_controller.dart';
+import '../controllers/livi_pod_controller.dart';
+import '../models/livi_pod.dart';
+import 'schedule_view.dart';
 
 class DeviceView extends StatefulWidget {
   final LiviPod liviPod;
@@ -41,7 +42,7 @@ class _DeviceViewState extends State<DeviceView> {
     if (claim) {
       final device =
           BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
-      var bleDeviceController = _bleController.connect(device);
+      final bleDeviceController = _bleController.connect(device);
       liviPod.bleDeviceController = bleDeviceController;
     }
     liviPod.startBlink();

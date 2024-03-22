@@ -78,19 +78,19 @@ class BleDeviceController {
   }
 
   void _discoverServiceCharacteristics() {
-    for (var service in _services) {
-      for (var characteristic in service.characteristics) {
+    for (final service in _services) {
+      for (final characteristic in service.characteristics) {
         if (characteristic.uuid
             .toString()
-            .startsWith("7cd5e90e-6379-41a5-9ad8-5ad71bc6d144")) {
+            .startsWith('7cd5e90e-6379-41a5-9ad8-5ad71bc6d144')) {
           _claimCharacteristics.add(characteristic);
         } else if (characteristic.uuid
             .toString()
-            .startsWith("b9662ed7-3a33-4c4d-b0d6-4adb77ad4d28")) {
+            .startsWith('b9662ed7-3a33-4c4d-b0d6-4adb77ad4d28')) {
           _setupDeviceInfoListener(characteristic);
         } else if (characteristic.uuid
             .toString()
-            .startsWith("7736aff1-758b-45ae-8349-95581a16f905")) {
+            .startsWith('7736aff1-758b-45ae-8349-95581a16f905')) {
           _unclaimCharacteristics.add(characteristic);
         } else if (characteristic.uuid
             .toString()
@@ -112,11 +112,11 @@ class BleDeviceController {
       characteristic.onValueReceived.listen(
         (event) {
           // parse the ip and mac address
-          var temp = String.fromCharCodes(event);
-          var list = temp.split(',');
-          var mac = list[0];
-          var ipAddress = list[1];
-          var deviceInfo = BleDeviceInfo(
+          final temp = String.fromCharCodes(event);
+          final list = temp.split(',');
+          final mac = list[0];
+          final ipAddress = list[1];
+          final deviceInfo = BleDeviceInfo(
               bleDeviceController: this, macAddress: mac, ipAddress: ipAddress);
           deviceInfoStreamController.sink.add(deviceInfo);
         },

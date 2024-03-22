@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:livipod_app/controllers/auth_controller.dart';
 import 'package:provider/provider.dart';
+
+import '../../controllers/auth_controller.dart';
 
 class TestCreateUser extends StatefulWidget {
   const TestCreateUser({super.key});
@@ -62,7 +63,7 @@ class _TestCreateUserState extends State<TestCreateUser> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   // Handle form submission
-                  String phoneNumber = _phoneNumberController.text;
+                  final String phoneNumber = _phoneNumberController.text;
                   controller.verifyPhoneNumber(phoneNumber);
                 }
               },
@@ -105,7 +106,7 @@ class _TestCreateUserState extends State<TestCreateUser> {
               onPressed: () {
                 if (_smsFormKey.currentState!.validate()) {
                   // Handle form submission
-                  String code = _smsCodeController.text;
+                  final String code = _smsCodeController.text;
                   controller.validate(code);
                 }
               },

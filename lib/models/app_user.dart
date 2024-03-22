@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:livipod_app/models/app_user_type.dart';
+import 'app_user_type.dart';
 
 import 'livi_pod.dart';
 

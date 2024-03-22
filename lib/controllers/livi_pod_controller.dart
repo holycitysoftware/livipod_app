@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:livipod_app/models/livi_pod.dart';
+import '../models/livi_pod.dart';
 
 class LiviPodController extends ChangeNotifier {
   final StreamController<List<LiviPod>> _liviPodStreamController =
@@ -27,7 +27,7 @@ class LiviPodController extends ChangeNotifier {
   }
 
   Future<LiviPod> addLiviPod(LiviPod liviPod) async {
-    var json = await FirebaseFirestore.instance
+    final json = await FirebaseFirestore.instance
         .collection('livipods')
         .add(liviPod.toJson());
     liviPod.id = json.id;
@@ -36,7 +36,7 @@ class LiviPodController extends ChangeNotifier {
 
   Future updateLiviPod(LiviPod liviPod) async {
     try {
-      var jsonMap = liviPod.toJson();
+      final jsonMap = liviPod.toJson();
       final pod = await FirebaseFirestore.instance
           .collection('livipods')
           .where('remoteId', isEqualTo: liviPod.remoteId)

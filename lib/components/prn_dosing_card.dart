@@ -50,7 +50,7 @@ class _PrnDosingCardState extends State<PrnDosingCard> {
                       decimalPlaces: 0,
                       onQtyChanged: (val) {
                         setState(() {
-                          widget.prnDose.maxQty = val.toDouble();
+                          widget.prnDose.maxQty = (val as int).toDouble();
                         });
                       },
                     ),
@@ -65,7 +65,7 @@ class _PrnDosingCardState extends State<PrnDosingCard> {
                       steps: 1,
                       onQtyChanged: (val) {
                         setState(() {
-                          widget.prnDose.hourInterval = val;
+                          widget.prnDose.hourInterval = val as int;
                         });
                       },
                     ),
@@ -94,7 +94,7 @@ class _PrnDosingCardState extends State<PrnDosingCard> {
                       decimalPlaces: 0,
                       onQtyChanged: (val) {
                         setState(() {
-                          widget.prnDose.nteQty = val.toDouble();
+                          widget.prnDose.nteQty = (val as int).toDouble();
                         });
                       },
                     ),

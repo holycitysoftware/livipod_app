@@ -64,10 +64,10 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
   }
 
   List<Widget> getDaysOfMonth() {
-    var list = <Widget>[];
+    final list = <Widget>[];
 
     for (var i = 0; i < 31; i++) {
-      var btn = SizedBox(
+      final btn = SizedBox(
         width: 40,
         height: 40,
         child: ElevatedButton(

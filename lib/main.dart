@@ -1,15 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:livipod_app/controllers/auth_controller.dart';
-import 'package:livipod_app/controllers/livi_pod_controller.dart';
-import 'package:livipod_app/controllers/schedule_controller.dart';
-// import 'package:livipod_app/controllers/communication_controller.dart';
-import 'package:livipod_app/views/home_tab_view.dart';
-import 'package:livipod_app/views/testing_only/create_user.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'controllers/controllers.dart';
 import 'firebase_options.dart';
-
-import 'controllers/ble_controller.dart';
+import 'views/views.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

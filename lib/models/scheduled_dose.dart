@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'scheduled_dose.g.dart';
@@ -23,9 +22,9 @@ class DayOfTimeConverter implements JsonConverter<TimeOfDay, String?> {
 
   @override
   TimeOfDay fromJson(String? json) {
-    var parts = json!.split(':');
-    var hour = int.parse(parts[0]);
-    var minute = int.parse(parts[1]);
+    final parts = json!.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
     return TimeOfDay(hour: hour, minute: minute);
   }
 

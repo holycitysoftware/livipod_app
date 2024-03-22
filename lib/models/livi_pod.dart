@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:livipod_app/controllers/ble_device_controller.dart';
 
+import '../controllers/controllers.dart';
 import 'dosing.dart';
 import 'schedule.dart';
 
