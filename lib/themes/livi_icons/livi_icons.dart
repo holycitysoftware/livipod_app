@@ -1,3 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../livi_themes.dart';
+
 class LiviIcons {
-  // IconData get openingStore => const IconData(0xe800, fontFamily: fontFamily);
+  static const String svgPath = 'assets/svg';
+  Widget get liviPod => SvgPicture.asset(
+        '$svgPath/livipod.svg',
+      );
 }

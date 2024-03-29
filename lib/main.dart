@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
 import 'firebase_options.dart';
+import 'views/registration/welcome_view.dart';
 import 'views/views.dart';
 
 void main() async {
@@ -35,31 +36,31 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => _authController,
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => _authController,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _scheduleController,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _devicesController,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _liviPodController,
+        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => _webSocketController,
+        // ),
+      ],
+      child: MaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
           ),
-          ChangeNotifierProvider(
-            create: (context) => _scheduleController,
-          ),
-          ChangeNotifierProvider(
-            create: (context) => _devicesController,
-          ),
-          ChangeNotifierProvider(
-            create: (context) => _liviPodController,
-          ),
-          // ChangeNotifierProvider(
-          //   create: (context) => _webSocketController,
-          // ),
-        ],
-        child: MaterialApp(
-            title: 'Flutter Demo',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
-            ),
-            home: const TestCreateUser() //const HomeTabView(),
-            ));
+          home: const WelcomeView()),
+    );
   }
 }

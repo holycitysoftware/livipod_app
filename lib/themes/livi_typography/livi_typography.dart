@@ -89,6 +89,13 @@ class LiviTypography {
   /// Size: 14
   ///
   /// Font weight: 600
+  TextStyle get interSemiBold_18 => TextStyle(
+        fontSize: 18.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
   TextStyle get interSemiBold_14 => TextStyle(
         fontSize: 14.sp,
         fontWeight: FontWeight.w600,
