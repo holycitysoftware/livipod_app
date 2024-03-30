@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:input_quantity/input_quantity.dart';
 
-import '../models/prn_dose.dart';
+import '../../models/prn_dose.dart';
 
 class PrnDosingCard extends StatefulWidget {
   final PrnDose prnDose;

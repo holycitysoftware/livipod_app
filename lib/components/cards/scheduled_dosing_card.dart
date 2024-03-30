@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:input_quantity/input_quantity.dart';
 
-import '../models/scheduled_dose.dart';
+import '../../models/scheduled_dose.dart';
 
 class ScheduledDosingCard extends StatefulWidget {
   final List<ScheduledDose> scheduledDosings;

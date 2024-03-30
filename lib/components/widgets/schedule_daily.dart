@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../models/schedule.dart';
-import 'scheduled_dosing_card.dart';
+import '../../models/schedule.dart';
+import '../cards/scheduled_dosing_card.dart';
 
 class ScheduleDaily extends StatefulWidget {
   final Schedule schedule;

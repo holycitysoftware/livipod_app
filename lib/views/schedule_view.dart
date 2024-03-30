@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:input_quantity/input_quantity.dart';
 
-import '../components/schedule_as_needed.dart';
-import '../components/schedule_daily.dart';
-import '../components/schedule_monthly.dart';
-import '../components/schedule_weekly.dart';
+import '../components/widgets/schedule_as_needed.dart';
+import '../components/widgets/schedule_daily.dart';
+import '../components/widgets/schedule_monthly.dart';
+import '../components/widgets/schedule_weekly.dart';
 import '../models/schedule.dart';
 import '../models/schedule_type.dart';
 import '../utils/utils.dart' as utils;

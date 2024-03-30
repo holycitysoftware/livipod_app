@@ -10,7 +10,7 @@ class LiviThemes {
 
   static LiviColors get colors => LiviColors();
 
-  static LiviSpacing get spacing => LiviSpacing();
+  static LiviSpacing get spacing => const LiviSpacing();
 
   static LiviTypography get typography => LiviTypography();
 

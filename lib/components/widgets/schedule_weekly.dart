@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/schedule.dart';
-import '../utils/utils.dart' as utils;
-import 'scheduled_dosing_card.dart';
+import '../../models/schedule.dart';
+import '../../utils/utils.dart' as utils;
+import '../cards/scheduled_dosing_card.dart';
 
 class ScheduleWeekly extends StatefulWidget {
   final Schedule schedule;
