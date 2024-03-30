@@ -1,74 +1,73 @@
 import 'package:flutter/painting.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LiviTypography {
   static const _letterSpacing = 0.0;
 
   TextStyle get objectiveBold_36 => TextStyle(
-        fontSize: 36.sp,
+        fontSize: 36,
         fontWeight: FontWeight.w500,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveBold_24 => TextStyle(
-        fontSize: 24.sp,
+        fontSize: 24,
         fontWeight: FontWeight.w700,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveBold_20 => TextStyle(
-        fontSize: 20.sp,
+        fontSize: 20,
         fontWeight: FontWeight.w700,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveBold_18 => TextStyle(
-        fontSize: 18.sp,
+        fontSize: 18,
         fontWeight: FontWeight.w700,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveBold_16 => TextStyle(
-        fontSize: 16.sp,
+        fontSize: 16,
         fontWeight: FontWeight.w700,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveBold_14 => TextStyle(
-        fontSize: 14.sp,
+        fontSize: 14,
         fontWeight: FontWeight.w700,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveMedium_22 => TextStyle(
-        fontSize: 22.sp,
+        fontSize: 22,
         fontWeight: FontWeight.w500,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveRegular_20 => TextStyle(
-        fontSize: 20.sp,
+        fontSize: 20,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveRegular_18 => TextStyle(
-        fontSize: 18.sp,
+        fontSize: 18,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
       );
 
   TextStyle get objectiveRegular_16 => TextStyle(
-        fontSize: 16.sp,
+        fontSize: 16,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Objective',
@@ -79,7 +78,7 @@ class LiviTypography {
   ///
   /// Font weight: 700
   TextStyle get interBold_18 => TextStyle(
-        fontSize: 18.sp,
+        fontSize: 18,
         fontWeight: FontWeight.w700,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
@@ -89,71 +88,78 @@ class LiviTypography {
   /// Size: 14
   ///
   /// Font weight: 600
+  TextStyle get interSemiBold_24 => TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
   TextStyle get interSemiBold_18 => TextStyle(
-        fontSize: 18.sp,
+        fontSize: 18,
         fontWeight: FontWeight.w600,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interSemiBold_14 => TextStyle(
-        fontSize: 14.sp,
+        fontSize: 14,
         fontWeight: FontWeight.w600,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interSemiBold_12 => TextStyle(
-        fontSize: 12.sp,
+        fontSize: 12,
         fontWeight: FontWeight.w600,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interSemiBold_11 => TextStyle(
-        fontSize: 11.sp,
+        fontSize: 11,
         fontWeight: FontWeight.w600,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interRegular_14 => TextStyle(
-        fontSize: 14.sp,
+        fontSize: 14,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interRegular_12 => TextStyle(
-        fontSize: 12.sp,
+        fontSize: 12,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interRegular_11 => TextStyle(
-        fontSize: 11.sp,
+        fontSize: 11,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interRegular_10 => TextStyle(
-        fontSize: 10.sp,
+        fontSize: 10,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interRegular_9 => TextStyle(
-        fontSize: 9.sp,
+        fontSize: 9,
         fontWeight: FontWeight.w600,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
 
   TextStyle get interRegular_8 => TextStyle(
-        fontSize: 8.sp,
+        fontSize: 8,
         fontWeight: FontWeight.w600,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',

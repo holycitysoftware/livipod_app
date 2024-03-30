@@ -29,8 +29,8 @@ class LiviTextComponent extends StatelessWidget {
       child: Text(
         data!,
         style: textStyle != null
-            ? textStyle!.copyWith(color: color ?? LiviThemes.colors.black)
-            : TextStyle(color: LiviThemes.colors.black),
+            ? textStyle!.copyWith(color: color ?? LiviThemes.colors.baseBlack)
+            : TextStyle(color: LiviThemes.colors.baseBlack),
         overflow: overflow,
         maxLines: maxLines,
         textAlign: textAlign,

@@ -1,21 +1,38 @@
 import 'package:flutter/material.dart';
 
+import '../../themes/livi_themes.dart';
 import '../text/livi_text_styles.dart';
 
 class LiviTextButton extends StatelessWidget {
   final String text;
   final Function() onTap;
+  final EdgeInsets? margin;
   const LiviTextButton({
     super.key,
+    this.margin,
     required this.text,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onTap,
-      child: LiviTextStyles.interSemiBold18(data: text),
+    return Padding(
+      padding: margin ?? EdgeInsets.zero,
+      child: TextButton(
+        onPressed: onTap,
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+          maximumSize: WidgetStateProperty.all(
+            Size(double.infinity, 52),
+          ),
+          minimumSize: WidgetStateProperty.all(
+            Size(double.infinity, 52),
+          ),
+        ),
+        child: LiviTextStyles.interSemiBold18(
+            data: text, color: LiviThemes.colors.brand600),
+      ),
     );
   }
 }

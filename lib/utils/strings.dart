@@ -1,6 +1,6 @@
 class Strings {
   static const String logIn = 'Log in';
-  static const String signUp = 'Log in';
+  static const String signUp = 'Sign Up';
   static const String welcomeToLiviPod = 'Welcome to LiviPod®';
   static const String back = 'Back';
   static const String createAnAccount = 'Create an account';
