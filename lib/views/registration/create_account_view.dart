@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../components/components.dart';
+import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 
@@ -21,8 +23,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: LiviThemes.colors.baseWhite,
+      resizeToAvoidBottomInset: true,
+      bottomNavigationBar: LiviFilledButton(
+        text: Strings.continueText,
+        onTap: () {},
+      ),
       appBar: AppBar(
-        title: Text(Strings.createAnAccount),
+        toolbarHeight: 30,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -30,70 +38,63 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              LiviThemes.icons.logo,
-              Text(Strings.createAnAccount),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: "Full Name*",
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your full name';
-                  }
-                  return null;
-                },
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
+          children: [
+            LiviThemes.icons.logo,
+            LiviThemes.spacing.heightSpacer16(),
+            Align(
+              child: LiviTextStyles.interSemiBold24(Strings.createAnAccount),
+            ),
+            LiviThemes.spacing.heightSpacer16(),
+            LiviTextStyles.interRegular16(
+              Strings.afterCreatingYourAccount,
+              textAlign: TextAlign.center,
+            ),
+            Spacer(),
+            LiviInputField(
+              title: Strings.fullName,
+              hint: Strings.steveJobsFullName,
+            ),
+            LiviInputField(
+              title: Strings.email,
+              subTitle: Strings.optional,
+              hint: Strings.steveJobsEmail,
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: "Phone number*",
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: "Email (Optional)",
-                ),
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: "Phone number*",
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  return null;
-                },
-              ),
-              Row(
-                children: [
-                  // Checkbox(
-                  //   value: _agreedToTOS,
-                  //   onChanged: _setAgreedToTOS,
-                  // ),
-                  GestureDetector(
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your phone number';
+                }
+                return null;
+              },
+            ),
+            Row(
+              children: [
+                // Checkbox(
+                //   value: _agreedToTOS,
+                //   onChanged: _setAgreedToTOS,
+                // ),
+                Expanded(
+                  child: GestureDetector(
                     onTap: () => _setAgreedToTOS(!_agreedToTOS),
-                    child: const Text(
-                      'I have read and agree to the Privacy Policy and Terms of Service',
+                    child: LiviTextStyles.interRegular16(
+                      Strings.afterCreatingYourAccount,
+                      textAlign: TextAlign.start,
+                      maxLines: 3,
                     ),
                   ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
-                  onPressed: _agreedToTOS
-                      ? () {
-                          if (_formKey.currentState!.validate()) {
-                            // Process data.
-                          }
-                        }
-                      : null,
-                  child: Text('Continue'),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+            Spacer(flex: 2),
+          ],
         ),
       ),
     );

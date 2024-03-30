@@ -22,7 +22,7 @@ class WelcomeView extends StatelessWidget {
             Spacer(flex: 3),
             LiviThemes.icons.logo,
             Spacer(),
-            LiviTextStyles.interSemiBold24(data: Strings.welcomeToLiviPod),
+            LiviTextStyles.interSemiBold24(Strings.welcomeToLiviPod),
             Spacer(flex: 2),
             LiviPodWidget(),
             Spacer(flex: 3),

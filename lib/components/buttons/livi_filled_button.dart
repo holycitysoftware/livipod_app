@@ -34,8 +34,8 @@ class LiviFilledButton extends StatelessWidget {
           backgroundColor: WidgetStateProperty.all(LiviThemes.colors.brand600),
         ),
         onPressed: onTap,
-        child: LiviTextStyles.interSemiBold18(
-            data: text, color: LiviThemes.colors.baseWhite),
+        child: LiviTextStyles.interSemiBold18(text,
+            color: LiviThemes.colors.baseWhite),
       ),
     );
   }
