@@ -21,12 +21,12 @@ class LiviTextButton extends StatelessWidget {
       child: TextButton(
         onPressed: onTap,
         style: ButtonStyle(
-          shape: WidgetStateProperty.all(
+          shape: MaterialStatePropertyAll(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-          maximumSize: WidgetStateProperty.all(
+          maximumSize: MaterialStatePropertyAll(
             Size(double.infinity, 52),
           ),
-          minimumSize: WidgetStateProperty.all(
+          minimumSize: MaterialStatePropertyAll(
             Size(double.infinity, 52),
           ),
         ),

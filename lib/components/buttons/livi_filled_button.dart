@@ -20,18 +20,18 @@ class LiviFilledButton extends StatelessWidget {
       padding: margin ?? EdgeInsets.zero,
       child: ElevatedButton(
         style: ButtonStyle(
-          shape: WidgetStateProperty.all(
+          shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          maximumSize: WidgetStateProperty.all(
+          maximumSize: MaterialStatePropertyAll(
             Size(double.infinity, 48),
           ),
-          minimumSize: WidgetStateProperty.all(
+          minimumSize: MaterialStatePropertyAll(
             Size(double.infinity, 48),
           ),
-          backgroundColor: WidgetStateProperty.all(LiviThemes.colors.brand600),
+          backgroundColor: MaterialStatePropertyAll(LiviThemes.colors.brand600),
         ),
         onPressed: onTap,
         child: LiviTextStyles.interSemiBold18(text,

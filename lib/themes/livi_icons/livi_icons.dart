@@ -15,4 +15,12 @@ class LiviIcons {
   Widget get logo => SvgPicture.asset(
         '$svgPath/logo.svg',
       );
+
+  Widget get logoWhite => SvgPicture.asset(
+        '$svgPath/logo_white.svg',
+      );
+
+  Widget get livipodText => SvgPicture.asset(
+        '$svgPath/livipod_text.svg',
+      );
 }
