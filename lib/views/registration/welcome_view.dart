@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../components/buttons/livi_filled_button.dart';
-import '../../components/buttons/livi_text_button.dart';
 import '../../components/components.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';

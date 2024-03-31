@@ -6,6 +6,7 @@ import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 
 class CreateAccountPage extends StatefulWidget {
+  const CreateAccountPage({super.key});
   @override
   _CreateAccountPageState createState() => _CreateAccountPageState();
 }

@@ -9,9 +9,6 @@ class LiviIcons {
         '$svgPath/livipod.svg',
       );
 
-  Widget get liviPodImage => Image.asset(
-        '$imagesPath/livipod.png',
-      );
   Widget get logo => SvgPicture.asset(
         '$svgPath/logo.svg',
       );
@@ -23,4 +20,16 @@ class LiviIcons {
   Widget get livipodText => SvgPicture.asset(
         '$svgPath/livipod_text.svg',
       );
+
+  Widget get checkCircle => SvgPicture.asset(
+        '$svgPath/check_circle.svg',
+      );
+
+  //Images
+  Widget get liviPodImage => Image.asset(
+        '$imagesPath/livipod.png',
+      );
+
+  AssetImage get splashBackgroundImage =>
+      AssetImage('$imagesPath/splash_background.png');
 }

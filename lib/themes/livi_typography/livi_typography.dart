@@ -101,6 +101,12 @@ class LiviTypography {
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
+  TextStyle get interSemiBold_16 => TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
 
   TextStyle get interSemiBold_14 => TextStyle(
         fontSize: 14,
@@ -123,8 +129,50 @@ class LiviTypography {
         fontFamily: 'Inter',
       );
 
+  TextStyle get interMedium_24 => TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w500,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  TextStyle get interMedium_20 => TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  TextStyle get interMedium_18 => TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
   TextStyle get interMedium_16 => TextStyle(
         fontSize: 16,
+        fontWeight: FontWeight.w500,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  TextStyle get interMedium_14 => TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  TextStyle get interMedium_12 => TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  TextStyle get interMedium_11 => TextStyle(
+        fontSize: 12,
         fontWeight: FontWeight.w500,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',

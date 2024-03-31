@@ -81,4 +81,6 @@ class Strings {
   static const String letUsHelpYouFindOut = 'Let us help you find out';
   static const String createMyAccount = 'Create my Account';
   static const String identifyMyPersona = 'Identify my Persona';
+  static const String checkYourSms = 'Check your SMS';
+  static const String verifyCode = 'Verify Code';
 }
