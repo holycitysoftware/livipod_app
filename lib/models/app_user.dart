@@ -17,6 +17,11 @@ class AppUser {
   String email = '';
   String authToken = '';
   bool enabled = true;
+  String fcmToken = ''; // firebase cloud messaging token
+  String timezone = 'US/Eastern';
+  bool useEmail = false;
+  bool useSMS = false;
+  bool usePushNotifications = true;
 
   AppUser();
 
