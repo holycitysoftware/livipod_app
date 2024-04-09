@@ -14,7 +14,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser()
   ..firstName = json['firstName'] as String
   ..lastName = json['lastName'] as String
   ..appUserType = $enumDecode(_$AppUserTypeEnumMap, json['appUserType'])
-  ..mobile = json['mobile'] as String
+  ..phoneNumber = json['mobile'] as String
   ..podsList = (json['podsList'] as List<dynamic>)
       .map((e) => LiviPod.fromJson(e as Map<String, dynamic>))
       .toList()
@@ -28,7 +28,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'appUserType': _$AppUserTypeEnumMap[instance.appUserType]!,
-      'mobile': instance.mobile,
+      'mobile': instance.phoneNumber,
       'podsList': instance.podsList.map((e) => e.toJson()).toList(),
       'email': instance.email,
       'authToken': instance.authToken,

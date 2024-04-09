@@ -81,14 +81,10 @@ class BleController extends ChangeNotifier {
       final device =
           BluetoothDevice(remoteId: DeviceIdentifier(liviPod.remoteId));
 
-      if (kDebugMode) {
-        print('The livi pod remoteId is ${device.remoteId}');
-      }
-
       if (!_liviPodDevices.any((element) => element.id == liviPod.id) &&
           !_connectedDevices.any((element) =>
               element.bluetoothDevice.remoteId == device.remoteId)) {
-        liviPod.bleDeviceController = connect(device);
+        liviPod.bleDeviceController = _addBleDeviceController(device);
         _liviPodDevices.add(liviPod);
       } else if (!_liviPodDevices.any((element) => element.id == liviPod.id)) {
         // the bluetooth device is already connected
@@ -123,17 +119,22 @@ class BleController extends ChangeNotifier {
     }
   }
 
-  BleDeviceController? connect(BluetoothDevice device) {
+  BleDeviceController? connectToUnclaimedDevice(BluetoothDevice device) {
+    final bleDevice = _addBleDeviceController(device);
+    bleDevice.connect();
+    return bleDevice;
+  }
+
+  BleDeviceController _addBleDeviceController(BluetoothDevice device) {
     final bleDevice = BleDeviceController(bluetoothDevice: device);
     _connectionStateStreamGroup
         .add(bleDevice.connectionStateStreamController.stream);
     _deviceInfoStreamGroup.add(bleDevice.deviceInfoStreamController.stream);
     _connectedDevices.add(bleDevice);
-    bleDevice.connect();
     return bleDevice;
   }
 
-  void disconnect(BluetoothDevice device) {
+  void disconnectFromUnclaimedDevice(BluetoothDevice device) {
     if (_connectedDevices.any(
         (element) => element.bluetoothDevice.remoteId == device.remoteId)) {
       final bleDevice = _connectedDevices.firstWhere(
@@ -145,7 +146,7 @@ class BleController extends ChangeNotifier {
     }
   }
 
-  void startBlink(BluetoothDevice device) {
+  void startBlinkOnUnclaimedDevice(BluetoothDevice device) {
     if (_connectedDevices.any(
         (element) => element.bluetoothDevice.remoteId == device.remoteId)) {
       final bleDevice = _connectedDevices.firstWhere(
@@ -154,7 +155,7 @@ class BleController extends ChangeNotifier {
     }
   }
 
-  void stopBlink(BluetoothDevice device) {
+  void stopBlinkOnUnclaimedDevice(BluetoothDevice device) {
     if (_connectedDevices.any(
         (element) => element.bluetoothDevice.remoteId == device.remoteId)) {
       final bleDevice = _connectedDevices.firstWhere(

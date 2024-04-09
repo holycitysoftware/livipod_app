@@ -43,4 +43,16 @@ class LiviPod {
   Future<void> unclaim() async {
     await bleDeviceController?.unclaim();
   }
+
+  void connect() {
+    bleDeviceController?.connect();
+  }
+
+  void disconnect() {
+    bleDeviceController?.disconnect();
+  }
+
+  Future<void> reset() async {
+    await bleDeviceController?.reset();
+  }
 }

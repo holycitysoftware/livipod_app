@@ -12,11 +12,16 @@ class AppUser {
   String firstName = '';
   String lastName = '';
   AppUserType appUserType = AppUserType.selfGuidedUser;
-  String mobile = '';
+  String phoneNumber = '';
   List<LiviPod> podsList = [];
   String email = '';
   String authToken = '';
   bool enabled = true;
+  String fcmToken = ''; // firebase cloud messaging token
+  String timezone = 'US/Eastern';
+  bool useEmail = false;
+  bool useSMS = false;
+  bool usePushNotifications = true;
 
   AppUser();
 

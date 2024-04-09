@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BleDeviceController {
@@ -13,12 +12,16 @@ class BleDeviceController {
   final BluetoothDevice bluetoothDevice;
   final List<BluetoothService> _services = [];
   BluetoothConnectionState deviceState = BluetoothConnectionState.disconnected;
+  bool _readyForCommands = false;
 
-  bool _userDisconnect = false;
+  //bool _userDisconnect = false;
   final List<BluetoothCharacteristic> _claimCharacteristics = [];
   final List<BluetoothCharacteristic> _unclaimCharacteristics = [];
   final List<BluetoothCharacteristic> _blinkCharacteristics = [];
   final List<BluetoothCharacteristic> _wifiCredentialsCharacteristics = [];
+  final List<BluetoothCharacteristic> _resetCharacteristics = [];
+
+  bool get readyForCommands => _readyForCommands;
 
   BleDeviceController({required this.bluetoothDevice});
 
@@ -32,9 +35,7 @@ class BleDeviceController {
 
   void _handleConnectionState(BluetoothConnectionState event) {
     deviceState = event;
-    // this will stream to all clients listening
-    connectionStateStreamController.sink
-        .add({bluetoothDevice.remoteId.str: event});
+
     if (event == BluetoothConnectionState.connected) {
       if (kDebugMode) {
         print('The ${bluetoothDevice.advName} device is connected');
@@ -42,38 +43,46 @@ class BleDeviceController {
       bluetoothDevice.discoverServices().then((services) {
         _services.addAll(services);
         _discoverServiceCharacteristics();
+        _readyForCommands = true;
+        // this will stream to all clients listening
+        connectionStateStreamController.sink
+            .add({bluetoothDevice.remoteId.str: event});
       });
     } else {
       if (kDebugMode) {
         print('The ${bluetoothDevice.advName} device is disconnected');
       }
-      // 1. typically, start a periodic timer that tries to
-      //    reconnect, or just call connect() again right now
-      // 2. you must always re-discover services after disconnection!
-      if (!_userDisconnect) {
-        Timer.periodic(const Duration(seconds: 5), (timer) async {
-          if (bluetoothDevice.isConnected) {
-            timer.cancel();
-            _userDisconnect = false;
-          } else {
-            try {
-              await bluetoothDevice.connect();
-            } on FlutterBluePlusException catch (ex) {
-              if (kDebugMode) {
-                print(ex);
-              }
-            } on PlatformException catch (pex) {
-              if (kDebugMode) {
-                print(pex);
-              }
-            } catch (e) {
-              if (kDebugMode) {
-                print(e);
-              }
-            }
-          }
-        });
-      }
+      _readyForCommands = false;
+      // this will stream to all clients listening
+      connectionStateStreamController.sink
+          .add({bluetoothDevice.remoteId.str: event});
+      // // 1. typically, start a periodic timer that tries to
+      // //    reconnect, or just call connect() again right now
+      // // 2. you must always re-discover services after disconnection!
+      // if (!_userDisconnect) {
+      //   Timer.periodic(const Duration(seconds: 5), (timer) async {
+      //     if (bluetoothDevice.isConnected) {
+      //       timer.cancel();
+      //       _userDisconnect = false;
+      //     } else {
+      //       try {
+      //         await bluetoothDevice.connect();
+      //       } on FlutterBluePlusException catch (ex) {
+      //         if (kDebugMode) {
+      //           print(ex);
+      //         }
+      //       } on PlatformException catch (pex) {
+      //         if (kDebugMode) {
+      //           print(pex);
+      //         }
+      //       } catch (e) {
+      //         if (kDebugMode) {
+      //           print(e);
+      //         }
+      //       }
+      //     }
+      //   });
+      // }
     }
   }
 
@@ -100,6 +109,10 @@ class BleDeviceController {
             .toString()
             .startsWith('8a336a00-8c6d-49f6-840b-ca88987c636b')) {
           _wifiCredentialsCharacteristics.add(characteristic);
+        } else if (characteristic.uuid
+            .toString()
+            .startsWith('de0f7bcc-cdc7-4beb-b006-d182ad7ca6cb')) {
+          _resetCharacteristics.add(characteristic);
         }
       }
     }
@@ -169,7 +182,7 @@ class BleDeviceController {
   }
 
   void connect() {
-    _userDisconnect = false;
+    //_userDisconnect = false;
     _setupStreams();
     bluetoothDevice
         .connect()
@@ -186,7 +199,7 @@ class BleDeviceController {
   }
 
   void disconnect() async {
-    _userDisconnect = true;
+    //_userDisconnect = true;
     bluetoothDevice.disconnect().then((value) {
       _cancelStreams();
     }).onError((error, stackTrace) {
@@ -198,6 +211,14 @@ class BleDeviceController {
         print(error);
       }
     });
+  }
+
+  Future<void> reset() async {
+    final index = _resetCharacteristics.indexWhere(
+        (element) => element.device.remoteId == bluetoothDevice.remoteId);
+    if (index != -1 && _resetCharacteristics[index].device.isConnected) {
+      await _resetCharacteristics[index].write([0x01]);
+    }
   }
 }
 
