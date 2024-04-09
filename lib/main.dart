@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
 import 'firebase_options.dart';
+import 'views/splash_page.dart';
 import 'views/views.dart';
 
 void main() async {
@@ -59,7 +60,7 @@ class _MyAppState extends State<MyApp> {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
           ),
-          home: CreateAccountPage()),
+          home: SplashPage()),
     );
   }
 }

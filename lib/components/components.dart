@@ -1,4 +1,5 @@
 export 'buttons/livi_filled_button.dart';
+export 'buttons/livi_gesture_detector.dart';
 export 'buttons/livi_inkwell.dart';
 export 'buttons/livi_text_button.dart';
 export 'cards/prn_dosing_card.dart';

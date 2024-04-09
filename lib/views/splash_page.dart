@@ -9,10 +9,8 @@ import '../themes/livi_themes.dart';
 import '../utils/strings.dart';
 
 class SplashPage extends StatefulWidget {
-  final bool? trialHasExpired;
   const SplashPage({
     super.key,
-    this.trialHasExpired,
   });
 
   @override
@@ -24,9 +22,7 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   void initState() {
-    if (widget.trialHasExpired != true) {
-      _handleAuth();
-    }
+    _handleAuth();
     super.initState();
   }
 

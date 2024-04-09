@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../components/buttons/livi_gesture_detector.dart';
 import '../../components/components.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
@@ -27,10 +28,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _fullNameController = TextEditingController();
-    final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _phoneNumberController =
-        TextEditingController();
+    final TextEditingController fullNameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController phoneNumberController = TextEditingController();
     return Scaffold(
       backgroundColor: LiviThemes.colors.baseWhite,
       resizeToAvoidBottomInset: true,
@@ -53,7 +53,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   onTap: pop,
                   child: LiviThemes.icons.chevronLeft,
                 ),
-                LiviInkWell(
+                LiviGestureDetector(
                   onTap: pop,
                   child: LiviTextStyles.interRegular16(Strings.back,
                       color: LiviThemes.colors.brand600),
@@ -79,7 +79,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   horizontal: kSpacer_16, vertical: kSpacer_8),
               title: Strings.fullName,
               hint: Strings.steveJobsFullName,
-              controller: _fullNameController,
+              controller: fullNameController,
             ),
             LiviInputField(
               padding: const EdgeInsets.symmetric(
@@ -87,7 +87,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               title: Strings.email,
               subTitle: Strings.optional,
               hint: Strings.steveJobsEmail,
-              controller: _emailController,
+              controller: emailController,
             ),
             LiviInputField(
               padding: const EdgeInsets.symmetric(
@@ -95,7 +95,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               title: Strings.phoneNumber,
               subTitle: Strings.optional,
               hint: Strings.steveJobsNumber,
-              controller: _phoneNumberController,
+              controller: phoneNumberController,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
