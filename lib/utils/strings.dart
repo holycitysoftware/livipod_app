@@ -1,8 +1,12 @@
 class Strings {
   static const String logIn = 'Log in';
-  static const String signUp = 'Log in';
+  static const String signUp = 'Sign Up';
   static const String yourAccountHasBeenCreated =
       'Your account has been created!';
+  static const String loginToYourAccount = 'Log in to your account';
+  static const String dontHaveAnAccount = "Don’t have an account?";
+  static const String welcomeBackPleaseEnterDetails =
+      'Welcome back! Please enter your details.';
   static const String yourAccountHasBeenCreatedStart =
       'Your account has been created, start by registering your first medication.';
   static const String welcomeToLiviPod = 'Welcome to LiviPod®';

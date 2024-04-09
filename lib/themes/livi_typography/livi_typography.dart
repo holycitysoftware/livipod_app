@@ -178,6 +178,13 @@ class LiviTypography {
         fontFamily: 'Inter',
       );
 
+  TextStyle get interRegular_30 => TextStyle(
+        fontSize: 30,
+        fontWeight: FontWeight.w400,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
   TextStyle get interRegular_16 => TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,

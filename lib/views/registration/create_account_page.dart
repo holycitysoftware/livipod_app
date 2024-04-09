@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../components/buttons/livi_gesture_detector.dart';
 import '../../components/components.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
@@ -14,6 +13,9 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
   bool _agreedToTOS = false;
 
   void _setAgreedToTOS(bool newValue) {
@@ -22,21 +24,20 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
   }
 
-  void pop() {
-    Navigator.pop(context);
+  Future<void> goToCreateAccountPage(BuildContext context) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController fullNameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController phoneNumberController = TextEditingController();
     return Scaffold(
       backgroundColor: LiviThemes.colors.baseWhite,
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: LiviFilledButton(
+          showArrow: true,
           text: Strings.continueText,
           onTap: () {},
         ),
@@ -46,20 +47,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         child: ListView(
           children: [
             LiviThemes.spacing.heightSpacer8(),
-            Row(
-              children: [
-                LiviInkWell(
-                  padding: const EdgeInsets.all(16),
-                  onTap: pop,
-                  child: LiviThemes.icons.chevronLeft,
-                ),
-                LiviGestureDetector(
-                  onTap: pop,
-                  child: LiviTextStyles.interRegular16(Strings.back,
-                      color: LiviThemes.colors.brand600),
-                ),
-              ],
-            ),
+            BackBar(),
             LiviThemes.icons.logo,
             LiviThemes.spacing.heightSpacer16(),
             Align(

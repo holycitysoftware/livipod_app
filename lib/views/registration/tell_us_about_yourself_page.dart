@@ -24,16 +24,15 @@ class TellUsAboutYourselfPage extends StatelessWidget {
           LiviTextStyles.interSemiBold16(Strings.selfGuidedUsers),
           LiviTextStyles.interRegular16(Strings.iAmFullyIndependentAndCapable),
           LiviTextStyles.interRegular16(Strings.selectPersona),
-          LiviTextStyles.interSemiBold16(Strings.assistedUsers),  
+          LiviTextStyles.interSemiBold16(Strings.assistedUsers),
           LiviTextStyles.interRegular16(Strings.iMayRequireSomeLevelOf),
           LiviTextStyles.interRegular16(Strings.selectPersona),
-      LiviTextStyles.interSemiBold16(Strings.caredForUsers),         
-      LiviTextStyles.interRegular16(Strings.iRelyHeavily),
-           LiviTextStyles.interRegular16(Strings.selectPersona), 
-                   LiviTextStyles.interRegular16(Strings.notSure),       
-            LiviTextStyles.interRegular16(Strings.letUsHelpYouFindOut),  
+          LiviTextStyles.interSemiBold16(Strings.caredForUsers),
+          LiviTextStyles.interRegular16(Strings.iRelyHeavily),
+          LiviTextStyles.interRegular16(Strings.selectPersona),
+          LiviTextStyles.interRegular16(Strings.notSure),
+          LiviTextStyles.interRegular16(Strings.letUsHelpYouFindOut),
         ],
-        
       ),
     );
   }

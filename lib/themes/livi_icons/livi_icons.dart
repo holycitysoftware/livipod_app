@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../livi_themes.dart';
+
 class LiviIcons {
   static const String svgPath = 'assets/svg';
   static const String imagesPath = 'assets/images';
@@ -19,6 +21,12 @@ class LiviIcons {
 
   Widget get livipodText => SvgPicture.asset(
         '$svgPath/livipod_text.svg',
+      );
+
+  Widget get arrowNarrowright => SvgPicture.asset(
+        '$svgPath/arrow_narrow_right.svg',
+        colorFilter:
+            ColorFilter.mode(LiviThemes.colors.baseWhite, BlendMode.srcIn),
       );
 
   Widget get checkCircle => SvgPicture.asset(

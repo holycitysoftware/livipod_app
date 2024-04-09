@@ -7,11 +7,13 @@ class LiviFilledButton extends StatelessWidget {
   final String text;
   final Function() onTap;
   final EdgeInsets? margin;
+  final bool showArrow;
   const LiviFilledButton({
     super.key,
     required this.text,
     this.margin,
     required this.onTap,
+    this.showArrow = false,
   });
 
   @override
@@ -34,8 +36,15 @@ class LiviFilledButton extends StatelessWidget {
           backgroundColor: MaterialStatePropertyAll(LiviThemes.colors.brand600),
         ),
         onPressed: onTap,
-        child: LiviTextStyles.interSemiBold18(text,
-            color: LiviThemes.colors.baseWhite),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LiviTextStyles.interSemiBold18(text,
+                color: LiviThemes.colors.baseWhite),
+            LiviThemes.spacing.widthSpacer8(),
+            if (showArrow) LiviThemes.icons.arrowNarrowright
+          ],
+        ),
       ),
     );
   }

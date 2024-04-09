@@ -6,6 +6,29 @@ import 'livi_text_component.dart';
 class LiviTextStyles {
   LiviTextStyles._();
 
+  static LiviTextComponent interRegular30(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interRegular_30.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+
   static LiviTextComponent interSemiBold18(
     String data, {
     Color? color,

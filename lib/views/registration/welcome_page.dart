@@ -4,9 +4,22 @@ import '../../components/components.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
+import '../views.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({super.key});
+
+  Future<void> goToLoginPage(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
+  Future<void> goToCreateAccountPage(BuildContext context) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +37,12 @@ class WelcomeView extends StatelessWidget {
             Spacer(flex: 2),
             LiviPodWidget(),
             Spacer(flex: 3),
-            LiviFilledButton(text: Strings.logIn, onTap: () {}),
+            LiviFilledButton(
+                text: Strings.logIn, onTap: () => goToLoginPage(context)),
             LiviThemes.spacing.heightSpacer8(),
-            LiviTextButton(text: Strings.signUp, onTap: () {}),
+            LiviTextButton(
+                text: Strings.signUp,
+                onTap: () => goToCreateAccountPage(context)),
             LiviThemes.spacing.heightSpacer16(),
           ],
         ),
