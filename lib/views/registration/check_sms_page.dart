@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../components/components.dart';
+import '../../controllers/controllers.dart';
+import '../../models/app_user.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
+import 'tell_us_about_yourself_page.dart';
 
 class CheckSmsPage extends StatefulWidget {
-  const CheckSmsPage({super.key});
+  final AppUser appUser;
+  const CheckSmsPage({
+    super.key,
+    required this.appUser,
+  });
 
   @override
   State<CheckSmsPage> createState() => _CheckSmsPageState();
@@ -25,11 +33,19 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
     await SmsAutoFill().listenForCode();
   }
 
+  Future<void> validateSmsCode() async {
+    await Provider.of<AuthController>(context, listen: false)
+        .validate(pinController.text);
+  }
+
   Future<void> goToIdentifyPersonPage() async {
+    await validateSmsCode();
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => IdentifyPersonaPage(),
+        builder: (context) => TellUsAboutYourselfPage(
+          appUser: widget.appUser,
+        ),
       ),
     );
   }

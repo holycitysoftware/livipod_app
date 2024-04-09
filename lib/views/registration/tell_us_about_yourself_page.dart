@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
+import '../../models/app_user.dart';
+import '../../models/app_user_type.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 
 class TellUsAboutYourselfPage extends StatelessWidget {
-  const TellUsAboutYourselfPage({super.key});
+  final AppUser appUser;
+
+  const TellUsAboutYourselfPage({
+    super.key,
+    required this.appUser,
+  });
+
+  void createUser() {
+    final AppUser newUser = appUser;
+    newUser.appUserType = AppUserType.caredForUser;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -6,8 +6,8 @@ import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
 
-class WelcomeView extends StatelessWidget {
-  const WelcomeView({super.key});
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
 
   Future<void> goToLoginPage(BuildContext context) async {
     await Navigator.push(
