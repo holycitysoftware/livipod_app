@@ -3,6 +3,8 @@ class Strings {
   static const String signUp = 'Log in';
   static const String yourAccountHasBeenCreated =
       'Your account has been created!';
+  static const String yourAccountHasBeenCreatedStart =
+      'Your account has been created, start by registering your first medication.';
   static const String welcomeToLiviPod = 'Welcome to LiviPod®';
   static const String back = 'Back';
   static const String didntReceiveTheSMS = "Didn't receive the SMS?";
@@ -13,6 +15,8 @@ class Strings {
   static const String fullName = 'Full Name*';
   static const String phoneNumber = 'Phone number*';
   static const String email = 'Email';
+  static const String pleaseEnterYourPhoneNumber =
+      'Please enter your phone number';
   static const String optional = '(Optional)';
   static const String steveJobsEmail = 'stevejobs@apple.com';
   static const String steveJobsFullName = 'Steven Paul Jobs';
@@ -44,7 +48,7 @@ class Strings {
   static const String iMayRequireSomeLevelOf =
       'I may require some level of support or reminders, but I am still relatively independent. This means a caregiver/loved one will likely set everything up for me.';
   static const String caredForUsers = 'Cared-for Users';
-  static const String iRelyHe =
+  static const String iRelyHeavily =
       'I rely heavily on caregivers or family members for my medication management due to significant cognitive decline or other limitations.';
   static const String notSure = 'Not sure?';
   static const String verification = 'Verification';
@@ -83,4 +87,7 @@ class Strings {
   static const String identifyMyPersona = 'Identify my Persona';
   static const String checkYourSms = 'Check your SMS';
   static const String verifyCode = 'Verify Code';
+  static const String selectPersona = 'Select Persona';
+  static const String iHaveReadAndAgreeToThePrivacyPolicy =
+      'I have read and agree to the Privacy Policy and Terms of Use';
 }

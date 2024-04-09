@@ -25,6 +25,10 @@ class LiviIcons {
         '$svgPath/check_circle.svg',
       );
 
+  Widget get chevronLeft => SvgPicture.asset(
+        '$svgPath/chevron_left.svg',
+      );
+
   //Images
   Widget get liviPodImage => Image.asset(
         '$imagesPath/livipod.png',

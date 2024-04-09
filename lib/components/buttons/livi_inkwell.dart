@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class LiviInkWell extends StatelessWidget {
   final Function() onTap;
   final Widget child;
+  final EdgeInsets? padding;
   final Duration debounceDuration;
   const LiviInkWell({
     super.key,
     required this.onTap,
+    this.padding,
     required this.child,
     this.debounceDuration = const Duration(milliseconds: 2000),
   });
@@ -32,8 +34,12 @@ class LiviInkWell extends StatelessWidget {
     }
 
     return InkWell(
+      borderRadius: BorderRadius.circular(64),
       onTap: handleTap,
-      child: child,
+      child: Padding(
+        padding: padding ?? EdgeInsets.zero,
+        child: child,
+      ),
     );
   }
 }

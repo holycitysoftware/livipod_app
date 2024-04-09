@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 class LiviColors {
   Color get baseBlack => const Color(0xFF000000);
   Color get baseWhite => const Color(0xFFFFFFFF);
+  Color get transparent => Color.fromARGB(0, 255, 255, 255);
 
   Color get gray25 => const Color(0xFFFCFCFD);
   Color get gray50 => const Color(0xFFF9FAFB);

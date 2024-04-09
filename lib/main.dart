@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
 import 'firebase_options.dart';
-import 'views/registration/welcome_view.dart';
 import 'views/views.dart';
 
 void main() async {
