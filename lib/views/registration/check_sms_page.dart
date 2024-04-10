@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -8,7 +10,6 @@ import '../../models/app_user.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
-import 'tell_us_about_yourself_page.dart';
 
 class CheckSmsPage extends StatefulWidget {
   final AppUser appUser;
@@ -23,6 +24,7 @@ class CheckSmsPage extends StatefulWidget {
 
 class _CheckSmsPageState extends State<CheckSmsPage> {
   final TextEditingController pinController = TextEditingController();
+  String code = '';
   @override
   void initState() {
     autoFill();
@@ -30,7 +32,9 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   }
 
   Future<void> autoFill() async {
-    await SmsAutoFill().listenForCode();
+    if (Platform.isAndroid) {
+      await SmsAutoFill().listenForCode();
+    }
   }
 
   Future<void> validateSmsCode() async {
@@ -38,26 +42,34 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
         .validate(pinController.text);
   }
 
-  Future<void> goToIdentifyPersonPage() async {
+  Future<void> goToIdentifyPersonPage(String code) async {
     await validateSmsCode();
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TellUsAboutYourselfPage(
-          appUser: widget.appUser,
-        ),
+        builder: (context) => TestCreateUser(),
       ),
     );
   }
 
   @override
+  void dispose() {
+    if (Platform.isAndroid) {
+      SmsAutoFill().unregisterListener();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: LiviFilledButton(
+        isCloseToNotch: true,
         margin: const EdgeInsets.all(16),
         showArrow: true,
         text: Strings.continueText,
-        onTap: goToIdentifyPersonPage,
+        onTap: () => goToIdentifyPersonPage(''),
       ),
       body: Column(
         children: [
@@ -77,6 +89,17 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
                 Expanded(
                   child: PinFieldAutoFill(
                     controller: pinController,
+                    autoFocus: true,
+                    currentCode: code,
+                    onCodeSubmitted: goToIdentifyPersonPage,
+                    onCodeChanged: (code) {
+                      if (code!.length == 6) {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        setState(() {
+                          this.code = code;
+                        });
+                      }
+                    },
                     decoration: BoxLooseDecoration(
                         radius: Radius.circular(6.47),
                         strokeWidth: 1.08,

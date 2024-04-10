@@ -36,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(16),
         child: LiviFilledButton(
           showArrow: true,
+          isCloseToNotch: true,
           text: Strings.logIn,
           onTap: () {},
         ),
@@ -86,14 +87,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   LiviThemes.spacing.widthSpacer4(),
-                  GestureDetector(
+                  LiviTextButton(
                     onTap: () => goToCreateAccountPage(context),
-                    child: LiviTextStyles.interSemiBold16(
-                      Strings.signUp,
-                      color: LiviThemes.colors.brand600,
-                      textAlign: TextAlign.start,
-                      maxLines: 3,
-                    ),
+                    text: Strings.signUp,
+                    isCloseToNotch: true,
                   ),
                 ],
               ),

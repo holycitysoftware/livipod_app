@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../components/components.dart';
-import '../controllers/controllers.dart';
 import '../themes/livi_themes.dart';
 import '../utils/strings.dart';
 

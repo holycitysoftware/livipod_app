@@ -41,8 +41,10 @@ class WelcomePage extends StatelessWidget {
                 text: Strings.logIn, onTap: () => goToLoginPage(context)),
             LiviThemes.spacing.heightSpacer8(),
             LiviTextButton(
-                text: Strings.signUp,
-                onTap: () => goToCreateAccountPage(context)),
+              text: Strings.signUp,
+              onTap: () => goToCreateAccountPage(context),
+              isCloseToNotch: true,
+            ),
             LiviThemes.spacing.heightSpacer16(),
           ],
         ),

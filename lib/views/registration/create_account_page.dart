@@ -21,6 +21,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   bool agreedToTOS = false;
+  bool loading = false;
   late AppUser appUser;
 
   void _setAgreedToTOS(bool newValue) {
@@ -39,7 +40,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         .verifyPhoneNumber(phoneNumberController.text);
   }
 
-  Future<void> goToCheckSmsPage() async {
+//  Future<String> getTimeZone() async{
+// return await FlutterNativeTimezone.getLocal();
+//   }
+
+  Future<void> verifyNumber() async {
+    setState(() {
+      loading = true;
+    });
     appUser = AppUser(
       firstName: fullNameController.text,
       useEmail: emailController.text.isNotEmpty,
@@ -47,6 +55,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       phoneNumber: phoneNumberController.text,
     );
     await verifyPhoneNumber();
+  }
+
+  Future<void> goToCheckSmsPge() async {
+    loading = false;
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -64,11 +76,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
-        child: LiviFilledButton(
-          showArrow: true,
-          text: Strings.continueText,
-          onTap: goToCheckSmsPage,
-        ),
+        child: Consumer<AuthController>(builder: (context, value, child) {
+          return LiviFilledButton(
+            showArrow: true,
+            text: Strings.continueText,
+            isLoading: loading,
+            isCloseToNotch: true,
+            onTap: verifyNumber,
+          );
+        }),
       ),
       body: Form(
         key: formKey,
@@ -76,6 +92,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           child: Column(
             children: [
               BackBar(),
+              Consumer<AuthController>(
+                builder: (context, authController, child) {
+                  if (authController.promptForUserCode &&
+                      authController.firebaseAuthUser == null) {
+                    goToCheckSmsPge();
+                  }
+                  return SizedBox();
+                },
+              ),
               LiviThemes.icons.logo,
               LiviThemes.spacing.heightSpacer16(),
               Align(
@@ -119,7 +144,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   children: [
                     Checkbox(
                       value: agreedToTOS,
-                      onChanged: (e) {},
+                      onChanged: (e) {
+                        setState(() {
+                          agreedToTOS = !(e ?? false);
+                        });
+                      },
                     ),
                     Expanded(
                       child: GestureDetector(
