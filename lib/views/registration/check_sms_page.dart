@@ -24,6 +24,7 @@ class CheckSmsPage extends StatefulWidget {
 
 class _CheckSmsPageState extends State<CheckSmsPage> {
   final TextEditingController pinController = TextEditingController();
+  final FocusNode pinFocusNode = FocusNode();
   String code = '';
   @override
   void initState() {
@@ -64,12 +65,14 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      bottomNavigationBar: LiviFilledButton(
-        isCloseToNotch: true,
-        margin: const EdgeInsets.all(16),
-        showArrow: true,
-        text: Strings.continueText,
-        onTap: () => goToIdentifyPersonPage(''),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16),
+        child: LiviFilledButton(
+          isCloseToNotch: true,
+          showArrow: true,
+          text: Strings.continueText,
+          onTap: () => goToIdentifyPersonPage(''),
+        ),
       ),
       body: Column(
         children: [
@@ -80,7 +83,8 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
           Align(
               child: LiviTextStyles.interRegular16(
                   Strings.weSentAVerificationCodeTo)),
-          Align(child: LiviTextStyles.interRegular16(Strings.steveJobsNumber)),
+          Align(
+              child: LiviTextStyles.interRegular16(widget.appUser.phoneNumber)),
           LiviThemes.spacing.heightSpacer24(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -100,10 +104,12 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
                         });
                       }
                     },
+                    focusNode: pinFocusNode,
                     decoration: BoxLooseDecoration(
                         radius: Radius.circular(6.47),
                         strokeWidth: 1.08,
-                        textStyle: LiviThemes.typography.interRegular_30,
+                        textStyle: LiviThemes.typography.interRegular_30
+                            .copyWith(color: LiviThemes.colors.baseBlack),
                         strokeColorBuilder: FixedColorListBuilder([
                           LiviThemes.colors.gray200,
                           LiviThemes.colors.gray200,

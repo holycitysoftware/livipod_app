@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../registration/welcome_page.dart';
 
 class TestCreateUser extends StatefulWidget {
   const TestCreateUser({super.key});
@@ -23,11 +24,26 @@ class _TestCreateUserState extends State<TestCreateUser> {
     super.dispose();
   }
 
+  Future<void> goToWelcomePage() async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => WelcomePage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthController>(builder: (context, controller, child) {
+      if (!controller.promptForUserCode &&
+          controller.firebaseAuthUser == null) {
+        if (mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            goToWelcomePage();
+          });
+        }
+      }
+
       return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text('Create User'),
         ),
         body: Padding(

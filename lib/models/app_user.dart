@@ -14,7 +14,7 @@ class AppUser {
   AppUserType appUserType;
   String phoneNumber = '';
   List<LiviPod> podsList;
-  String email = '';
+  String? email;
   String authToken = '';
   bool enabled;
   String fcmToken = ''; // firebase cloud messaging token
@@ -31,7 +31,7 @@ class AppUser {
     this.appUserType = AppUserType.selfGuidedUser,
     required this.phoneNumber,
     this.podsList = const [],
-    required this.email,
+    this.email,
     this.authToken = '',
     this.enabled = true,
     this.fcmToken = '',

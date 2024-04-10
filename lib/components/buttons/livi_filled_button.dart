@@ -45,18 +45,19 @@ class LiviFilledButton extends StatelessWidget {
           backgroundColor: MaterialStatePropertyAll(LiviThemes.colors.brand600),
         ),
         onPressed: onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LiviTextStyles.interSemiBold18(text,
-                color: LiviThemes.colors.baseWhite),
-            LiviThemes.spacing.widthSpacer8(),
-            if (showArrow)
-              LiviThemes.icons.arrowNarrowright
-            else if (isLoading ?? false)
-              CircularProgressIndicator()
-          ],
-        ),
+        child: (isLoading ?? false)
+            ? CircularProgressIndicator(
+                color: Colors.white,
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LiviTextStyles.interSemiBold18(text,
+                      color: LiviThemes.colors.baseWhite),
+                  LiviThemes.spacing.widthSpacer8(),
+                  if (showArrow) LiviThemes.icons.arrowNarrowright
+                ],
+              ),
       ),
     );
   }

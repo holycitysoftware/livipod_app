@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
+import '../../controllers/controllers.dart';
+import '../../models/app_user.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
@@ -14,21 +17,48 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  bool loading = false;
+  late AppUser appUser;
+
+  Future<void> goToCreateAccountPage(BuildContext context) async {
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
+  }
+
+  Future<void> verifyPhoneNumber() async {
+    await Provider.of<AuthController>(context, listen: false)
+        .verifyPhoneNumber(phoneNumberController.text);
+  }
+
+  Future<void> verifyNumber() async {
+    setState(() {
+      loading = true;
+    });
+    appUser = AppUser(
+      firstName: fullNameController.text,
+      phoneNumber: phoneNumberController.text,
+    );
+    await verifyPhoneNumber();
+  }
+
+  Future<void> goToCheckSmsPge() async {
+    if (loading) {
+      loading = false;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CheckSmsPage(
+            appUser: appUser,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController fullNameController = TextEditingController();
-    final TextEditingController phoneNumberController = TextEditingController();
-
-    Future<void> goToCreateAccountPage(BuildContext context) async {
-      await Navigator.push(context,
-          MaterialPageRoute(builder: (context) => CreateAccountPage()));
-    }
-
-    Future<void> login(BuildContext context) async {
-      //  Provider.of<AuthController>(context,listen: false).
-    }
-
     return Scaffold(
       backgroundColor: LiviThemes.colors.baseWhite,
       resizeToAvoidBottomInset: true,
@@ -37,14 +67,28 @@ class _LoginPageState extends State<LoginPage> {
         child: LiviFilledButton(
           showArrow: true,
           isCloseToNotch: true,
+          isLoading: loading,
           text: Strings.logIn,
-          onTap: () {},
+          onTap: verifyNumber,
         ),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           children: [
+            Consumer<AuthController>(
+              builder: (context, authController, child) {
+                if (authController.promptForUserCode &&
+                    authController.firebaseAuthUser == null) {
+                  if (mounted) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      goToCheckSmsPge();
+                    });
+                  }
+                }
+                return SizedBox();
+              },
+            ),
             LiviThemes.spacing.heightSpacer8(),
             LiviThemes.icons.logo,
             LiviThemes.spacing.heightSpacer16(),
@@ -69,12 +113,11 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.symmetric(
                   horizontal: kSpacer_16, vertical: kSpacer_8),
               title: Strings.phoneNumber,
-              subTitle: Strings.optional,
               hint: Strings.steveJobsNumber,
               controller: phoneNumberController,
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -87,10 +130,14 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   LiviThemes.spacing.widthSpacer4(),
-                  LiviTextButton(
+                  GestureDetector(
                     onTap: () => goToCreateAccountPage(context),
-                    text: Strings.signUp,
-                    isCloseToNotch: true,
+                    child: LiviTextStyles.interSemiBold16(
+                      Strings.signUp,
+                      color: LiviThemes.colors.brand600,
+                      textAlign: TextAlign.start,
+                      maxLines: 3,
+                    ),
                   ),
                 ],
               ),

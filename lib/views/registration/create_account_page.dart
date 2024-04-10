@@ -76,15 +76,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
-        child: Consumer<AuthController>(builder: (context, value, child) {
-          return LiviFilledButton(
-            showArrow: true,
-            text: Strings.continueText,
-            isLoading: loading,
-            isCloseToNotch: true,
-            onTap: verifyNumber,
-          );
-        }),
+        child: LiviFilledButton(
+          showArrow: true,
+          text: Strings.continueText,
+          isLoading: loading,
+          isCloseToNotch: true,
+          onTap: verifyNumber,
+        ),
       ),
       body: Form(
         key: formKey,
@@ -96,7 +94,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 builder: (context, authController, child) {
                   if (authController.promptForUserCode &&
                       authController.firebaseAuthUser == null) {
-                    goToCheckSmsPge();
+                    if (mounted) {
+                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        goToCheckSmsPge();
+                      });
+                    }
                   }
                   return SizedBox();
                 },
@@ -134,7 +136,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: kSpacer_16, vertical: kSpacer_8),
                 title: Strings.phoneNumber,
-                subTitle: Strings.optional,
                 hint: Strings.steveJobsNumber,
                 controller: phoneNumberController,
               ),
