@@ -9,3 +9,4 @@ export 'registration/login_page.dart';
 export 'registration/welcome_page.dart';
 export 'schedule_view.dart';
 export 'testing_only/create_user.dart';
+export 'testing_only/fda_search_test.dart';
