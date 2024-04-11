@@ -40,33 +40,30 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
-      child: SafeArea(
-        bottom: false,
-        child: Scaffold(
-          backgroundColor: LiviThemes.colors.baseWhite,
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Spacer(flex: 3),
-                LiviThemes.icons.logo,
-                Spacer(),
-                LiviTextStyles.interSemiBold24(Strings.welcomeToLiviPod),
-                Spacer(flex: 2),
-                LiviPodWidget(),
-                Spacer(flex: 3),
-                LiviFilledButton(
-                    text: Strings.logIn, onTap: () => goToLoginPage(context)),
-                LiviThemes.spacing.heightSpacer8(),
-                LiviTextButton(
-                  text: Strings.signUp,
-                  onTap: () => goToCreateAccountPage(context),
-                  isCloseToNotch: true,
-                ),
-                LiviThemes.spacing.heightSpacer16(),
-              ],
-            ),
+      child: Scaffold(
+        backgroundColor: LiviThemes.colors.baseWhite,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(flex: 3),
+              LiviThemes.icons.logo,
+              Spacer(),
+              LiviTextStyles.interSemiBold24(Strings.welcomeToLiviPod),
+              Spacer(flex: 2),
+              LiviPodWidget(),
+              Spacer(flex: 3),
+              LiviFilledButton(
+                  text: Strings.logIn, onTap: () => goToLoginPage(context)),
+              LiviThemes.spacing.heightSpacer8(),
+              LiviTextButton(
+                text: Strings.signUp,
+                onTap: () => goToCreateAccountPage(context),
+                isCloseToNotch: true,
+              ),
+              LiviThemes.spacing.heightSpacer16(),
+            ],
           ),
         ),
       ),
