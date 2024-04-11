@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:livipod_app/views/device_view.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../controllers/ble_controller.dart';
 import '../models/livi_pod.dart';
+import 'device_view.dart';
 
 class DevicesView extends StatefulWidget {
   const DevicesView({super.key});
@@ -117,7 +115,7 @@ class _DevicesViewState extends State<DevicesView> {
                     ),
                     Consumer<BleController>(
                       builder: (context, deviceController, child) {
-                        List<ScanResult> scanResults = [];
+                        final List<ScanResult> scanResults = [];
                         for (final scanResult in deviceController.scanResults) {
                           if (!liviPodDevices.any((element) =>
                               element.remoteId ==
@@ -129,7 +127,7 @@ class _DevicesViewState extends State<DevicesView> {
                           shrinkWrap: true,
                           itemCount: scanResults.length,
                           itemBuilder: (context, index) {
-                            var scanResult = scanResults[index];
+                            final scanResult = scanResults[index];
                             return GestureDetector(
                               onTap: () {
                                 final liviPod = LiviPod(

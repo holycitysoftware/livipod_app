@@ -1,18 +1,47 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:livipod_app/controllers/auth_controller.dart';
-import 'package:livipod_app/controllers/livi_pod_controller.dart';
-import 'package:livipod_app/controllers/schedule_controller.dart';
 // import 'package:livipod_app/controllers/communication_controller.dart';
-import 'package:livipod_app/views/home_tab_view.dart';
-import 'package:livipod_app/views/testing_only/create_user.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'controllers/controllers.dart';
 import 'firebase_options.dart';
+import 'views/views.dart';
 
-import 'controllers/ble_controller.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Set the background messaging handler early on, as a named top-level function
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  if (!kIsWeb) {
+    await setupFlutterNotifications();
+  }
+  await FirebaseAppCheck.instance.activate(
+    // You can also use a `ReCaptchaEnterpriseProvider` provider instance as an
+    // argument for `webProvider`
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    // Default provider for Android is the Play Integrity provider. You can use the "AndroidProvider" enum to choose
+    // your preferred provider. Choose from:
+    // 1. Debug provider
+    // 2. Safety Net provider
+    // 3. Play Integrity provider
+    androidProvider: AndroidProvider.debug,
+    // Default provider for iOS/macOS is the Device Check provider. You can use the "AppleProvider" enum to choose
+    // your preferred provider. Choose from:
+    // 1. Debug provider
+    // 2. Device Check provider
+    // 3. App Attest provider
+    // 4. App Attest provider with fallback to Device Check provider (App Attest provider is only available on iOS 14.0+, macOS 14.0+)
+    appleProvider: AppleProvider.appAttest,
+  );
+  runApp(const MyApp());
+}
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -64,8 +93,8 @@ Future<void> setupFlutterNotifications() async {
 }
 
 void showFlutterNotification(RemoteMessage message) {
-  RemoteNotification? notification = message.notification;
-  AndroidNotification? android = message.notification?.android;
+  final RemoteNotification? notification = message.notification;
+  final AndroidNotification? android = message.notification?.android;
   if (notification != null && android != null && !kIsWeb) {
     flutterLocalNotificationsPlugin.show(
       notification.hashCode,
@@ -85,20 +114,6 @@ void showFlutterNotification(RemoteMessage message) {
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // Set the background messaging handler early on, as a named top-level function
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  if (!kIsWeb) {
-    await setupFlutterNotifications();
-  }
-
-  runApp(const MyApp());
-}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -124,31 +139,32 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (context) => _authController,
-          ),
-          ChangeNotifierProvider(
-            create: (context) => _scheduleController,
-          ),
-          ChangeNotifierProvider(
-            create: (context) => _devicesController,
-          ),
-          ChangeNotifierProvider(
-            create: (context) => _liviPodController,
-          ),
-          // ChangeNotifierProvider(
-          //   create: (context) => _webSocketController,
-          // ),
-        ],
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: const HomeTabView(), //const TestCreateUser()
-        ));
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => _authController,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _scheduleController,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _devicesController,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _liviPodController,
+        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => _webSocketController,
+        // ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const WelcomePage(), //const TestCreateUser()
+      ),
+    );
   }
 }

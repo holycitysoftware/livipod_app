@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:livipod_app/views/devices_view.dart';
-import 'package:livipod_app/views/profile_view.dart';
+
+import 'devices_view.dart';
+import 'profile_view.dart';
 
 class HomeTabView extends StatefulWidget {
   const HomeTabView({super.key});

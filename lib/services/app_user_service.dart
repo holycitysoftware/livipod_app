@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:livipod_app/models/app_user.dart';
-import 'package:livipod_app/models/app_user_type.dart';
 
-import '../models/account.dart';
+import '../models/models.dart';
 
 class AppUserService {
   AppUser? _appUser;
@@ -21,14 +19,14 @@ class AppUserService {
   List<AppUser> get appUsers => _appUsers;
 
   Future<AppUser> createUser(AppUser user) async {
-    var json =
+    final json =
         await FirebaseFirestore.instance.collection('users').add(user.toJson());
     user.id = json.id;
     return Future.value(user);
   }
 
   Future<void> updateUser(AppUser user) async {
-    var jsonMap = user.toJson();
+    final jsonMap = user.toJson();
     await FirebaseFirestore.instance
         .collection('users')
         .doc(user.id)
@@ -60,8 +58,8 @@ class AppUserService {
         .where('accountId', isEqualTo: account.id)
         .get()
         .then((snapshot) async {
-      for (var doc in snapshot.docs) {
-        var user = AppUser.fromJson(doc.data());
+      for (final doc in snapshot.docs) {
+        final user = AppUser.fromJson(doc.data());
         user.enabled = account.enabled;
         await updateUser(user);
       }
@@ -112,8 +110,8 @@ class AppUserService {
         .listen(
             (usersSnapshot) {
               if (usersSnapshot.docs.isNotEmpty) {
-                var users = usersSnapshot.docs.map((snapshot) {
-                  var user = AppUser.fromJson(snapshot.data());
+                final users = usersSnapshot.docs.map((snapshot) {
+                  final user = AppUser.fromJson(snapshot.data());
                   user.id = snapshot.id;
                   return user;
                 }).toList();
@@ -139,7 +137,7 @@ class AppUserService {
       if (querySnapshot.docs.isEmpty) {
         exists = false;
       }
-      for (var result in querySnapshot.docs) {
+      for (final result in querySnapshot.docs) {
         exists = result.id != currentUser?.id;
       }
     }).catchError((error) {
@@ -156,8 +154,8 @@ class AppUserService {
           .where('accountId', isEqualTo: appUser.accountId)
           .get()
           .then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          var user = AppUser.fromJson(result.data());
+        for (final result in querySnapshot.docs) {
+          final user = AppUser.fromJson(result.data());
           if (user.id != appUser.id &&
               user.appUserType == AppUserType.caregiver) {
             user.id = result.id;
@@ -182,7 +180,7 @@ class AppUserService {
         .listen(
             (userSnapshot) {
               if (userSnapshot.exists) {
-                var user = AppUser.fromJson(userSnapshot.data()!);
+                final user = AppUser.fromJson(userSnapshot.data()!);
                 user.id = userSnapshot.id;
                 _userController.add(user);
               }

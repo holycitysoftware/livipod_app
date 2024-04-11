@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:livipod_app/models/app_user.dart';
 
 class AuthController extends ChangeNotifier {
   User? _user;
@@ -31,8 +30,12 @@ class AuthController extends ChangeNotifier {
         });
   }
 
-  Future<void> verifyPhoneNumber(String phoneNumber) async {
+  void clearVerificationError() {
     _verificationError = '';
+  }
+
+  Future<void> verifyPhoneNumber(String phoneNumber) async {
+    clearVerificationError();
     _promptForUserCode = false;
     _verificationId = '';
     await FirebaseAuth.instance.verifyPhoneNumber(

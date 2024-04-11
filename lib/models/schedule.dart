@@ -86,7 +86,7 @@ class Schedule {
           var dayStr = '$freqStr on';
           for (var day = 0; day < dayPattern.length; day++) {
             if (dayPattern[day] == 1) {
-              var d = utils.getDay(day).toLowerCase();
+              final d = utils.getDay(day).toLowerCase();
               dayStr = '$dayStr $d,';
             }
           }

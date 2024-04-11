@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:livipod_app/controllers/ble_controller.dart';
 import 'package:provider/provider.dart';
+
+import '../controllers/ble_controller.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -73,8 +74,8 @@ class _ProfileViewState extends State<ProfileView> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     // Handle WiFi credentials submission
-                    String ssid = _ssidController.text;
-                    String password = _passwordController.text;
+                    final String ssid = _ssidController.text;
+                    final String password = _passwordController.text;
                     _bleController.enableWifi(ssid, password);
                   }
                 },

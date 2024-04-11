@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:input_quantity/input_quantity.dart';
-import 'package:livipod_app/components/schedule_daily.dart';
-import 'package:livipod_app/models/schedule.dart';
-import '../components/schedule_as_needed.dart';
-import '../components/schedule_monthly.dart';
-import '../components/schedule_weekly.dart';
+
+import '../components/widgets/schedule_as_needed.dart';
+import '../components/widgets/schedule_daily.dart';
+import '../components/widgets/schedule_monthly.dart';
+import '../components/widgets/schedule_weekly.dart';
+import '../models/schedule.dart';
 import '../models/schedule_type.dart';
 import '../utils/utils.dart' as utils;
 
@@ -46,7 +47,7 @@ class _ScheduleViewState extends State<ScheduleView> {
   }
 
   Future<DateTime?> getDate(DateTime initialDate) async {
-    return await showDatePicker(
+    return showDatePicker(
         context: context,
         firstDate: DateTime.now(),
         currentDate: initialDate,
@@ -111,7 +112,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                               }
                             },
                             icon: const Icon(Icons.calendar_month)),
-                        Text(utils.getFormattedDate(_schedule.endDate!)),
+                        Text(utils.getFormattedDate(_schedule.endDate)),
                       ],
                     )
                   ],
@@ -173,7 +174,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                       steps: 1,
                       onQtyChanged: (val) {
                         setState(() {
-                          _schedule.startWarningMinutes = val;
+                          _schedule.startWarningMinutes = val as int;
                         });
                       },
                     ),
@@ -186,7 +187,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                     height: 10,
                   ),
                   const Row(
-                    children: [const Text('and close')],
+                    children: [Text('and close')],
                   ),
                   const SizedBox(
                     height: 10,
@@ -203,7 +204,7 @@ class _ScheduleViewState extends State<ScheduleView> {
                         steps: 1,
                         onQtyChanged: (val) {
                           setState(() {
-                            _schedule.stopWarningMinutes = val;
+                            _schedule.stopWarningMinutes = val as int;
                           });
                         },
                       ),
@@ -262,7 +263,7 @@ class _ScheduleViewState extends State<ScheduleView> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (value) {
-              var startWarningMinutes =
+              final startWarningMinutes =
                   int.tryParse(_startDosingWindowController.text);
               if (startWarningMinutes != null) {
                 _schedule.startWarningMinutes = startWarningMinutes;
@@ -296,7 +297,7 @@ class _ScheduleViewState extends State<ScheduleView> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (value) {
-              var stopWarningMinutes =
+              final stopWarningMinutes =
                   int.tryParse(_endDosingWindowController.text);
               if (stopWarningMinutes != null) {
                 _schedule.stopWarningMinutes = stopWarningMinutes;

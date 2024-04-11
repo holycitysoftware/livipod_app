@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:livipod_app/controllers/livi_pod_controller.dart';
-import 'package:livipod_app/models/livi_pod.dart';
-import 'package:livipod_app/models/schedule_type.dart';
 
 import '../models/dosing.dart';
+import '../models/livi_pod.dart';
+import '../models/schedule_type.dart';
+import 'livi_pod_controller.dart';
 
 class ScheduleController extends ChangeNotifier {
   final LiviPodController liviPodController;

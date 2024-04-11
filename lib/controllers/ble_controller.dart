@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:livipod_app/controllers/ble_device_controller.dart';
-import 'package:livipod_app/controllers/livi_pod_controller.dart';
 
 import '../models/livi_pod.dart';
+import 'ble_device_controller.dart';
+import 'livi_pod_controller.dart';
 
 class BleController extends ChangeNotifier {
   final LiviPodController liviPodController;
@@ -46,7 +46,7 @@ class BleController extends ChangeNotifier {
 
     _deviceInfoStreamGroup.stream.listen((event) {
       // get the livipod
-      var liviPod = _liviPodDevices.firstWhere((element) =>
+      final liviPod = _liviPodDevices.firstWhere((element) =>
           element.bleDeviceController == event.bleDeviceController);
 
       // update mac and ip address
