@@ -70,6 +70,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   @override
+  void dispose() {
+    Provider.of<AuthController>(context, listen: false)
+        .clearVerificationError();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: LiviThemes.colors.baseWhite,

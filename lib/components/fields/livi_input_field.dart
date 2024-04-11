@@ -7,6 +7,7 @@ class LiviInputField extends StatelessWidget {
   final String title;
   final String? subTitle;
   final String? hint;
+  final String? errorText;
   final TextInputType? keyboardType;
   final EdgeInsets? padding;
   final TextEditingController? controller;
@@ -15,6 +16,7 @@ class LiviInputField extends StatelessWidget {
     super.key,
     required this.title,
     this.keyboardType,
+    this.errorText,
     this.padding,
     this.subTitle,
     this.hint,
@@ -54,6 +56,7 @@ class LiviInputField extends StatelessWidget {
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 10, horizontal: 14),
                 fillColor: LiviThemes.colors.baseWhite,
+                errorText: errorText,
                 border: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: LiviThemes.colors.gray300,

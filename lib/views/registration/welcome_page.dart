@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../components/components.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
@@ -21,32 +24,50 @@ class WelcomePage extends StatelessWidget {
         context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
   }
 
+  SystemUiOverlayStyle getStyle(BuildContext context) {
+    final brightness = MediaQuery.of(context).platformBrightness;
+    final darkMode = brightness == Brightness.dark;
+    if (Platform.isIOS) {
+      return SystemUiOverlayStyle.dark;
+    }
+    if (darkMode) {
+      return SystemUiOverlayStyle.light;
+    }
+    return SystemUiOverlayStyle.dark;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: LiviThemes.colors.baseWhite,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(flex: 3),
-            LiviThemes.icons.logo,
-            Spacer(),
-            LiviTextStyles.interSemiBold24(Strings.welcomeToLiviPod),
-            Spacer(flex: 2),
-            LiviPodWidget(),
-            Spacer(flex: 3),
-            LiviFilledButton(
-                text: Strings.logIn, onTap: () => goToLoginPage(context)),
-            LiviThemes.spacing.heightSpacer8(),
-            LiviTextButton(
-              text: Strings.signUp,
-              onTap: () => goToCreateAccountPage(context),
-              isCloseToNotch: true,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: SafeArea(
+        bottom: false,
+        child: Scaffold(
+          backgroundColor: LiviThemes.colors.baseWhite,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Spacer(flex: 3),
+                LiviThemes.icons.logo,
+                Spacer(),
+                LiviTextStyles.interSemiBold24(Strings.welcomeToLiviPod),
+                Spacer(flex: 2),
+                LiviPodWidget(),
+                Spacer(flex: 3),
+                LiviFilledButton(
+                    text: Strings.logIn, onTap: () => goToLoginPage(context)),
+                LiviThemes.spacing.heightSpacer8(),
+                LiviTextButton(
+                  text: Strings.signUp,
+                  onTap: () => goToCreateAccountPage(context),
+                  isCloseToNotch: true,
+                ),
+                LiviThemes.spacing.heightSpacer16(),
+              ],
             ),
-            LiviThemes.spacing.heightSpacer16(),
-          ],
+          ),
         ),
       ),
     );

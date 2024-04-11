@@ -30,8 +30,12 @@ class AuthController extends ChangeNotifier {
         });
   }
 
-  Future<void> verifyPhoneNumber(String phoneNumber) async {
+  void clearVerificationError() {
     _verificationError = '';
+  }
+
+  Future<void> verifyPhoneNumber(String phoneNumber) async {
+    clearVerificationError();
     _promptForUserCode = false;
     _verificationId = '';
     await FirebaseAuth.instance.verifyPhoneNumber(
