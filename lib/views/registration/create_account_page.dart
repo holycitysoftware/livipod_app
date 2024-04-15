@@ -28,7 +28,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   bool navigateToCheckSmsPage = false;
   bool agreedToTOS = false;
   bool loading = false;
-  late AppUser appUser;
   Country country = getUS();
 
   @override
@@ -76,6 +75,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         .verifyPhoneNumber(country.dialCode + phoneNumberController.text);
   }
 
+  void setAppUser() {
+    Provider.of<AuthController>(context, listen: false).setAppUser(
+        fullNameController: fullNameController.text,
+        emailController: emailController.text,
+        phoneNumberController: phoneNumberController.text);
+  }
+
 //  Future<String> getTimeZone() async{
 // return await FlutterNativeTimezone.getLocal();
 //   }
@@ -84,24 +90,25 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     setState(() {
       loading = true;
     });
+    setAppUser();
     await verifyPhoneNumber();
     setState(() {
       loading = false;
     });
   }
 
-  Future<void> goToCheckSmsPge() async {
-    loading = false;
-    navigateToCheckSmsPage = true;
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CheckSmsPage(
-          appUser: appUser,
-        ),
-      ),
-    );
-  }
+  // Future<void> goToCheckSmsPge() async {
+  //   loading = false;
+  //   navigateToCheckSmsPage = true;
+  //   await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => CheckSmsPage(
+  //         appUser: appUser,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -151,21 +158,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             child: Column(
               children: [
                 BackBar(),
-                Consumer<AuthController>(
-                  builder: (context, authController, child) {
-                    if (authController.promptForUserCode &&
-                        authController.firebaseAuthUser == null &&
-                        !navigateToCheckSmsPage) {
-                      if (mounted) {
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((timeStamp) {
-                          goToCheckSmsPge();
-                        });
-                      }
-                    }
-                    return SizedBox();
-                  },
-                ),
                 LiviThemes.icons.logo,
                 LiviThemes.spacing.heightSpacer16(),
                 Align(
@@ -186,7 +178,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: kSpacer_16, vertical: kSpacer_8),
                   title: Strings.fullName,
-                  textCapitalization: TextCapitalization.characters,
+                  textCapitalization: TextCapitalization.words,
                   hint: Strings.steveJobsFullName,
                   controller: fullNameController,
                 ),

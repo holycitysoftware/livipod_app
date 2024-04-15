@@ -163,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                     horizontal: kSpacer_16, vertical: kSpacer_8),
                 title: Strings.fullName,
                 textCapitalization: TextCapitalization.words,
+                keyboardType: TextInputType.text,
                 hint: Strings.steveJobsFullName,
                 onFieldSubmitted: (value) {
                   phoneFocus.requestFocus();

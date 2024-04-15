@@ -23,7 +23,7 @@ class LiviInputField extends StatelessWidget {
   const LiviInputField({
     super.key,
     required this.title,
-    this.keyboardType,
+    this.keyboardType = TextInputType.text,
     this.onFieldSubmitted,
     this.errorText,
     this.padding,
@@ -54,16 +54,17 @@ class LiviInputField extends StatelessWidget {
           ),
           LiviThemes.spacing.heightSpacer6(),
           TextFormField(
-            textCapitalization: textCapitalization ?? TextCapitalization.none,
+            textCapitalization: TextCapitalization.words,
             controller: controller,
             onFieldSubmitted: onFieldSubmitted,
             focusNode: focusNode,
-            keyboardType: keyboardType ?? TextInputType.text,
+            keyboardType: TextInputType.text,
             decoration: InputDecoration(
               prefixIcon: prefix,
               contentPadding:
                   EdgeInsets.symmetric(vertical: 10, horizontal: 14),
               fillColor: LiviThemes.colors.baseWhite,
+              errorMaxLines: 2,
               errorText: errorText,
               border: OutlineInputBorder(
                 borderSide: BorderSide(
