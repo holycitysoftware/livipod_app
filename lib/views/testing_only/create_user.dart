@@ -40,30 +40,33 @@ class _TestCreateUserState extends State<TestCreateUser> {
       return CheckSmsPage(appUser: controller.appUser!);
     } else {
       return SafeArea(
-        child: Scaffold(
-          body: Center(
-            child: Column(
-              children: [
-                const Text('You are authenticated'),
-                const SizedBox(height: 16.0),
-                Text(controller.firebaseAuthUser!.uid),
-                const SizedBox(height: 16.0),
-                Text(controller.firebaseAuthUser!.refreshToken ?? ''),
-                const SizedBox(height: 16.0),
-                Text(controller.firebaseAuthUser!.phoneNumber ?? ''),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () async {
-                    await controller.signOut();
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WelcomePage(),
-                        ));
-                  },
-                  child: const Text('Sign Out'),
-                ),
-              ],
+        child: PopScope(
+          canPop: false,
+          child: Scaffold(
+            body: Center(
+              child: Column(
+                children: [
+                  const Text('You are authenticated'),
+                  const SizedBox(height: 16.0),
+                  Text(controller.firebaseAuthUser!.uid),
+                  const SizedBox(height: 16.0),
+                  Text(controller.firebaseAuthUser!.refreshToken ?? ''),
+                  const SizedBox(height: 16.0),
+                  Text(controller.firebaseAuthUser!.phoneNumber ?? ''),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await controller.signOut();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WelcomePage(),
+                          ));
+                    },
+                    child: const Text('Sign Out'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
