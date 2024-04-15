@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../themes/livi_themes.dart';
+import '../../utils/timezones.dart';
 import '../components.dart';
 
 class LiviInputField extends StatelessWidget {
@@ -11,6 +12,7 @@ class LiviInputField extends StatelessWidget {
   final TextInputType? keyboardType;
   final EdgeInsets? padding;
   final TextEditingController? controller;
+  final Widget? prefix;
 
   const LiviInputField({
     super.key,
@@ -21,6 +23,7 @@ class LiviInputField extends StatelessWidget {
     this.subTitle,
     this.hint,
     this.controller,
+    this.prefix,
   });
 
   @override
@@ -53,6 +56,7 @@ class LiviInputField extends StatelessWidget {
               controller: controller,
               keyboardType: keyboardType ?? TextInputType.text,
               decoration: InputDecoration(
+                prefix: prefix,
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 10, horizontal: 14),
                 fillColor: LiviThemes.colors.baseWhite,

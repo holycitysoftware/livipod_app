@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 import '../../controllers/controllers.dart';
-import '../../models/app_user.dart';
+import '../../models/models.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
+import '../../utils/countries.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
 
@@ -23,6 +24,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   bool agreedToTOS = false;
   bool loading = false;
   late AppUser appUser;
+  Country country = getUS();
 
   void _setAgreedToTOS(bool newValue) {
     setState(() {
@@ -37,7 +39,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   Future<void> verifyPhoneNumber() async {
     await Provider.of<AuthController>(context, listen: false)
-        .verifyPhoneNumber(phoneNumberController.text);
+        .verifyPhoneNumber(country.dialCode + phoneNumberController.text);
   }
 
 //  Future<String> getTimeZone() async{
@@ -74,6 +76,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     Provider.of<AuthController>(context, listen: false)
         .clearVerificationError();
     super.dispose();
+  }
+
+  String getCountryDescription(String country) {
+    const int maxLength = 24;
+    if (country.length > maxLength) {
+      return country.substring(0, maxLength);
+    }
+    return country;
   }
 
   @override
@@ -144,6 +154,30 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     horizontal: kSpacer_16, vertical: kSpacer_8),
                 title: Strings.phoneNumber,
                 hint: Strings.steveJobsNumber,
+                prefix: SizedBox(
+                  child: DropdownMenu<Country>(
+                    inputDecorationTheme: InputDecorationTheme(
+                        fillColor: LiviThemes.colors.brand300),
+                    initialSelection: country,
+                    menuStyle: MenuStyle(),
+                    textStyle: LiviThemes.typography.interRegular_16
+                        .copyWith(overflow: TextOverflow.ellipsis),
+                    menuHeight: 220,
+                    width: 120,
+                    onSelected: (Country? value) {
+                      setState(() {
+                        country = value!;
+                      });
+                    },
+                    // trailingIcon: Icon(Icons.arrow_downward_rounded),
+                    dropdownMenuEntries: countriesList
+                        .map<DropdownMenuEntry<Country>>((Country value) {
+                      return DropdownMenuEntry<Country>(
+                          value: value,
+                          label: '${value.code} (${value.dialCode})');
+                    }).toList(),
+                  ),
+                ),
                 controller: phoneNumberController,
               ),
               Padding(
