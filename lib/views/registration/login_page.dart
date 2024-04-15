@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 import '../../controllers/controllers.dart';
-import '../../models/app_user.dart';
 import '../../models/models.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
@@ -66,14 +65,17 @@ class _LoginPageState extends State<LoginPage> {
         .verifyPhoneNumber(country.dialCode + phoneNumberController.text);
   }
 
+  void setAppUser() {
+    Provider.of<AuthController>(context, listen: false).setAppUser(
+        fullNameController: fullNameController.text,
+        phoneNumberController: phoneNumberController.text);
+  }
+
   Future<void> verifyNumber() async {
     setState(() {
       loading = true;
     });
-    appUser = AppUser(
-      firstName: fullNameController.text,
-      phoneNumber: phoneNumberController.text,
-    );
+    setAppUser();
     await verifyPhoneNumber();
     setState(() {
       loading = false;

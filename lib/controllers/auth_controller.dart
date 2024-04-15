@@ -40,7 +40,7 @@ class AuthController extends ChangeNotifier {
 
   void setAppUser(
       {required String fullNameController,
-      required String emailController,
+      String? emailController,
       required String phoneNumberController}) {
     _appUser = AppUser(
       firstName: fullNameController,
