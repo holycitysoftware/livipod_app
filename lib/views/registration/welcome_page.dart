@@ -41,6 +41,7 @@ class WelcomePage extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: LiviThemes.colors.baseWhite,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),

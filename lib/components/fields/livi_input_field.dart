@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../themes/livi_themes.dart';
 import '../../utils/timezones.dart';
 import '../components.dart';
+
+final BorderRadius _borderRadius = BorderRadius.circular(8);
 
 class LiviInputField extends StatelessWidget {
   final String title;
@@ -13,6 +16,8 @@ class LiviInputField extends StatelessWidget {
   final EdgeInsets? padding;
   final TextEditingController? controller;
   final Widget? prefix;
+  final TextCapitalization? textCapitalization;
+  final FocusNode focusNode;
 
   const LiviInputField({
     super.key,
@@ -24,6 +29,8 @@ class LiviInputField extends StatelessWidget {
     this.hint,
     this.controller,
     this.prefix,
+    required this.focusNode,
+    this.textCapitalization,
   });
 
   @override
@@ -44,33 +51,26 @@ class LiviInputField extends StatelessWidget {
             ],
           ),
           LiviThemes.spacing.heightSpacer6(),
-          Container(
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                color: LiviThemes.colors.gray900.withOpacity(0.05),
-                blurRadius: 15,
-                offset: Offset(0, 7),
-              ),
-            ]),
-            child: TextFormField(
-              controller: controller,
-              keyboardType: keyboardType ?? TextInputType.text,
-              decoration: InputDecoration(
-                prefix: prefix,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-                fillColor: LiviThemes.colors.baseWhite,
-                errorText: errorText,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: LiviThemes.colors.gray300,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
+          TextFormField(
+            textCapitalization: textCapitalization ?? TextCapitalization.none,
+            controller: controller,
+            focusNode: focusNode,
+            keyboardType: keyboardType ?? TextInputType.text,
+            decoration: InputDecoration(
+              prefixIcon: prefix,
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+              fillColor: LiviThemes.colors.baseWhite,
+              errorText: errorText,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: LiviThemes.colors.brand600,
                 ),
-                hintText: hint,
-                hintStyle: LiviThemes.typography.interRegular_16
-                    .copyWith(color: LiviThemes.colors.gray400),
+                borderRadius: _borderRadius,
               ),
+              hintText: hint,
+              hintStyle: LiviThemes.typography.interRegular_16
+                  .copyWith(color: LiviThemes.colors.gray400),
             ),
           ),
         ],

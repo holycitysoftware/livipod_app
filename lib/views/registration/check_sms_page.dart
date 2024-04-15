@@ -66,12 +66,15 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: LiviFilledButton(
-          isCloseToNotch: true,
-          showArrow: true,
-          text: Strings.continueText,
-          onTap: () => goToIdentifyPersonPage(''),
+        padding: MediaQuery.of(context).viewInsets,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: LiviFilledButton(
+            isCloseToNotch: true,
+            showArrow: true,
+            text: Strings.continueText,
+            onTap: () => goToIdentifyPersonPage(''),
+          ),
         ),
       ),
       body: Column(

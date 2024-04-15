@@ -19,12 +19,50 @@ class CreateAccountPage extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController fullNameController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
+  final FocusNode fullNameFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode phoneFocus = FocusNode();
   bool agreedToTOS = false;
   bool loading = false;
   late AppUser appUser;
   Country country = getUS();
+
+  @override
+  void initState() {
+    setFocusListeners();
+    super.initState();
+  }
+
+  void setFocusListeners() {
+    fullNameFocus.addListener(animateFieldsToCenter);
+    emailFocus.addListener(animateFieldsToCenter);
+    phoneFocus.addListener(animateFieldsToCenter);
+  }
+
+  void animateFieldsToCenter() {
+    if (fullNameFocus.hasFocus) {
+      Future.delayed(Duration(milliseconds: 350), () {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+              scrollController.position.maxScrollExtent - 120,
+              duration: Duration(milliseconds: 100),
+              curve: Curves.bounceIn);
+        }
+      });
+    } else if (emailFocus.hasFocus || phoneFocus.hasFocus) {
+      Future.delayed(Duration(milliseconds: 350), () {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+              scrollController.position.maxScrollExtent - 10,
+              duration: Duration(milliseconds: 100),
+              curve: Curves.bounceIn);
+        }
+      });
+    }
+  }
 
   void _setAgreedToTOS(bool newValue) {
     setState(() {
@@ -57,6 +95,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       phoneNumber: phoneNumberController.text,
     );
     await verifyPhoneNumber();
+    setState(() {
+      loading = false;
+    });
   }
 
   Future<void> goToCheckSmsPge() async {
@@ -73,8 +114,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   void dispose() {
-    Provider.of<AuthController>(context, listen: false)
-        .clearVerificationError();
     super.dispose();
   }
 
@@ -88,124 +127,126 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: LiviThemes.colors.baseWhite,
-      resizeToAvoidBottomInset: true,
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: LiviFilledButton(
-          showArrow: true,
-          text: Strings.continueText,
-          isLoading: loading,
-          isCloseToNotch: true,
-          onTap: verifyNumber,
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (mounted) {
+          Provider.of<AuthController>(context, listen: false)
+              .clearVerificationError();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: LiviThemes.colors.baseWhite,
+        resizeToAvoidBottomInset: true,
+        bottomNavigationBar: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: LiviFilledButton(
+              showArrow: true,
+              text: Strings.continueText,
+              isLoading: loading,
+              isCloseToNotch: true,
+              onTap: verifyNumber,
+            ),
+          ),
         ),
-      ),
-      body: Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              BackBar(),
-              Consumer<AuthController>(
-                builder: (context, authController, child) {
-                  if (authController.promptForUserCode &&
-                      authController.firebaseAuthUser == null) {
-                    if (mounted) {
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        goToCheckSmsPge();
-                      });
+        body: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                BackBar(),
+                Consumer<AuthController>(
+                  builder: (context, authController, child) {
+                    if (authController.promptForUserCode &&
+                        authController.firebaseAuthUser == null) {
+                      if (mounted) {
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((timeStamp) {
+                          goToCheckSmsPge();
+                        });
+                      }
                     }
-                  }
-                  return SizedBox();
-                },
-              ),
-              LiviThemes.icons.logo,
-              LiviThemes.spacing.heightSpacer16(),
-              Align(
-                child: LiviTextStyles.interSemiBold24(Strings.createAnAccount),
-              ),
-              LiviThemes.spacing.heightSpacer8(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
-                child: LiviTextStyles.interRegular16(
-                  Strings.afterCreatingYourAccount,
-                  textAlign: TextAlign.center,
+                    return SizedBox();
+                  },
                 ),
-              ),
-              const SizedBox(height: kSpacer_16),
-              LiviInputField(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.fullName,
-                hint: Strings.steveJobsFullName,
-                controller: fullNameController,
-              ),
-              LiviInputField(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.email,
-                subTitle: Strings.optional,
-                hint: Strings.steveJobsEmail,
-                controller: emailController,
-              ),
-              LiviInputField(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.phoneNumber,
-                hint: Strings.steveJobsNumber,
-                prefix: SizedBox(
-                  child: DropdownMenu<Country>(
-                    inputDecorationTheme: InputDecorationTheme(
-                        fillColor: LiviThemes.colors.brand300),
-                    initialSelection: country,
-                    menuStyle: MenuStyle(),
-                    textStyle: LiviThemes.typography.interRegular_16
-                        .copyWith(overflow: TextOverflow.ellipsis),
-                    menuHeight: 220,
-                    width: 120,
-                    onSelected: (Country? value) {
+                LiviThemes.icons.logo,
+                LiviThemes.spacing.heightSpacer16(),
+                Align(
+                  child:
+                      LiviTextStyles.interSemiBold24(Strings.createAnAccount),
+                ),
+                LiviThemes.spacing.heightSpacer8(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
+                  child: LiviTextStyles.interRegular16(
+                    Strings.afterCreatingYourAccount,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: kSpacer_16),
+                LiviInputField(
+                  focusNode: fullNameFocus,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: kSpacer_16, vertical: kSpacer_8),
+                  title: Strings.fullName,
+                  textCapitalization: TextCapitalization.words,
+                  hint: Strings.steveJobsFullName,
+                  controller: fullNameController,
+                ),
+                LiviInputField(
+                  focusNode: emailFocus,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: kSpacer_16, vertical: kSpacer_8),
+                  title: Strings.email,
+                  subTitle: Strings.optional,
+                  hint: Strings.steveJobsEmail,
+                  controller: emailController,
+                ),
+                LiviInputField(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: kSpacer_16, vertical: kSpacer_8),
+                  title: Strings.phoneNumber,
+                  controller: phoneNumberController,
+                  focusNode: phoneFocus,
+                  prefix: CountryDropdownButton(
+                    country: country,
+                    onChanged: (Country? value) {
                       setState(() {
                         country = value!;
                       });
                     },
-                    // trailingIcon: Icon(Icons.arrow_downward_rounded),
-                    dropdownMenuEntries: countriesList
-                        .map<DropdownMenuEntry<Country>>((Country value) {
-                      return DropdownMenuEntry<Country>(
-                          value: value,
-                          label: '${value.code} (${value.dialCode})');
-                    }).toList(),
                   ),
+                  hint: Strings.steveJobsNumber,
                 ),
-                controller: phoneNumberController,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: agreedToTOS,
-                      onChanged: (e) {
-                        setState(() {
-                          agreedToTOS = !(e ?? false);
-                        });
-                      },
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => _setAgreedToTOS(!agreedToTOS),
-                        child: LiviTextStyles.interRegular16(
-                          Strings.iHaveReadAndAgreeToThePrivacyPolicy,
-                          textAlign: TextAlign.start,
-                          maxLines: 3,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: agreedToTOS,
+                        onChanged: (e) {
+                          setState(() {
+                            agreedToTOS = !(e ?? false);
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => _setAgreedToTOS(!agreedToTOS),
+                          child: LiviTextStyles.interRegular16(
+                            Strings.iHaveReadAndAgreeToThePrivacyPolicy,
+                            textAlign: TextAlign.start,
+                            maxLines: 3,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
