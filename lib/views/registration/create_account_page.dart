@@ -191,22 +191,28 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   hint: Strings.steveJobsEmail,
                   controller: emailController,
                 ),
-                LiviInputField(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: kSpacer_16, vertical: kSpacer_8),
-                  title: Strings.phoneNumber,
-                  controller: phoneNumberController,
-                  focusNode: phoneFocus,
-                  prefix: CountryDropdownButton(
-                    country: country,
-                    onChanged: (Country? value) {
-                      setState(() {
-                        country = value!;
-                      });
-                    },
-                  ),
-                  hint: Strings.steveJobsNumber,
-                ),
+                Consumer<AuthController>(
+                    builder: (context, authController, child) {
+                  return LiviInputField(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kSpacer_16, vertical: kSpacer_8),
+                    title: Strings.phoneNumber,
+                    controller: phoneNumberController,
+                    focusNode: phoneFocus,
+                    errorText: authController.verificationError.isEmpty
+                        ? null
+                        : authController.verificationError,
+                    prefix: CountryDropdownButton(
+                      country: country,
+                      onChanged: (Country? value) {
+                        setState(() {
+                          country = value!;
+                        });
+                      },
+                    ),
+                    hint: Strings.steveJobsNumber,
+                  );
+                }),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
