@@ -53,8 +53,11 @@ class _LoginCreateUserState extends State<LoginCreateUser> {
                 ElevatedButton(
                   onPressed: () async {
                     await controller.signOut();
-                    Navigator.pop(context);
-                    Navigator.maybePop(context);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WelcomePage(),
+                        ));
                   },
                   child: const Text('Sign Out'),
                 ),

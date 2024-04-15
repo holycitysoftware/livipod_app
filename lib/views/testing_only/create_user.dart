@@ -23,7 +23,6 @@ class _TestCreateUserState extends State<TestCreateUser> {
     await Navigator.push(
         context, MaterialPageRoute(builder: (context) => WelcomePage()));
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +55,11 @@ class _TestCreateUserState extends State<TestCreateUser> {
                 ElevatedButton(
                   onPressed: () async {
                     await controller.signOut();
-                    Navigator.pop(context);
-                    Navigator.maybePop(context);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WelcomePage(),
+                        ));
                   },
                   child: const Text('Sign Out'),
                 ),

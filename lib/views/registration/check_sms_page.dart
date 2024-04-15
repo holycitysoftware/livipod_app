@@ -49,12 +49,6 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
       loading = true;
     });
     await validateSmsCode();
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TestCreateUser(),
-      ),
-    );
   }
 
   @override
