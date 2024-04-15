@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../registration/check_sms_page.dart';
+import '../registration/create_account_page.dart';
 import '../registration/welcome_page.dart';
 
 class TestCreateUser extends StatefulWidget {
@@ -54,84 +56,13 @@ class _TestCreateUserState extends State<TestCreateUser> {
 
   Widget getView(AuthController controller) {
     if (!controller.promptForUserCode && controller.firebaseAuthUser == null) {
-      return Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _phoneNumberController,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                hintText: '+15555555555',
-                labelText: 'Phone Number',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter a phone number';
-                }
-                // Add additional phone number validation if needed
-                return null;
-              },
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  // Handle form submission
-                  final String phoneNumber = _phoneNumberController.text;
-                  controller.verifyPhoneNumber(phoneNumber);
-                }
-              },
-              child: const Text('Create'),
-            ),
-            if (controller.verificationError.isNotEmpty) ...[
-              const SizedBox(height: 16.0),
-              Text(
-                controller.verificationError,
-                style: const TextStyle(color: Colors.red),
-                textAlign: TextAlign.center,
-              )
-            ]
-          ],
-        ),
-      );
-    } else if (controller.promptForUserCode &&
-        controller.firebaseAuthUser == null) {
-      return Form(
-        key: _smsFormKey,
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _smsCodeController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Enter code',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter a code';
-                }
-                // Add additional phone number validation if needed
-                return null;
-              },
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                if (_smsFormKey.currentState!.validate()) {
-                  // Handle form submission
-                  final String code = _smsCodeController.text;
-                  controller.validate(code);
-                }
-              },
-              child: const Text('Validate'),
-            ),
-          ],
-        ),
-      );
-    } else {
+      return CreateAccountPage();
+    }
+    // else if (controller.promptForUserCode &&
+    //     controller.firebaseAuthUser == null) {
+    //   return CheckSmsPage(appUser: appUser);
+    // }
+    else {
       return Center(
         child: Column(
           children: [

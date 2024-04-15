@@ -25,6 +25,7 @@ class CheckSmsPage extends StatefulWidget {
 class _CheckSmsPageState extends State<CheckSmsPage> {
   final TextEditingController pinController = TextEditingController();
   final FocusNode pinFocusNode = FocusNode();
+  bool loading = false;
   String code = '';
   @override
   void initState() {
@@ -44,6 +45,9 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   }
 
   Future<void> goToIdentifyPersonPage(String code) async {
+    setState(() {
+      loading = true;
+    });
     await validateSmsCode();
     await Navigator.push(
       context,

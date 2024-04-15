@@ -31,6 +31,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     setFocusListeners();
+    fullNameController.addListener(() {
+      setState(() {});
+    });
+    phoneNumberController.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -112,6 +118,8 @@ class _LoginPageState extends State<LoginPage> {
             child: LiviFilledButton(
               showArrow: true,
               isCloseToNotch: true,
+              enabled: fullNameController.text.isNotEmpty &&
+                  phoneNumberController.text.isNotEmpty,
               isLoading: loading,
               text: Strings.logIn,
               onTap: verifyNumber,
@@ -156,6 +164,9 @@ class _LoginPageState extends State<LoginPage> {
                 title: Strings.fullName,
                 textCapitalization: TextCapitalization.words,
                 hint: Strings.steveJobsFullName,
+                onFieldSubmitted: (value) {
+                  phoneFocus.requestFocus();
+                },
                 focusNode: fullNameFocus,
                 controller: fullNameController,
               ),
@@ -166,6 +177,9 @@ class _LoginPageState extends State<LoginPage> {
                       horizontal: kSpacer_16, vertical: kSpacer_8),
                   title: Strings.phoneNumber,
                   focusNode: phoneFocus,
+                  onFieldSubmitted: (value) {
+                    verifyNumber();
+                  },
                   errorText: authController.verificationError.isEmpty
                       ? null
                       : authController.verificationError,

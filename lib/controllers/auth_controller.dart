@@ -2,13 +2,17 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+import '../models/models.dart';
+
 class AuthController extends ChangeNotifier {
   User? _user;
   String _verificationError = '';
   bool _promptForUserCode = false;
   String _verificationId = '';
+  AppUser? _appUser;
 
   User? get firebaseAuthUser => _user;
+  AppUser? get appUser => _appUser;
   String get verificationError => _verificationError;
   bool get promptForUserCode => _promptForUserCode;
 
@@ -32,6 +36,17 @@ class AuthController extends ChangeNotifier {
 
   void clearVerificationError() {
     _verificationError = '';
+  }
+
+  void setAppUser(
+      {required String fullNameController,
+      required String emailController,
+      required String phoneNumberController}) {
+    _appUser = AppUser(
+      firstName: fullNameController,
+      email: emailController,
+      phoneNumber: phoneNumberController,
+    );
   }
 
   Future<void> verifyPhoneNumber(String phoneNumber) async {

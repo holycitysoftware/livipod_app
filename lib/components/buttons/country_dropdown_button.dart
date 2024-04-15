@@ -22,7 +22,7 @@ class CountryDropdownButton extends StatelessWidget {
       onChanged: onChanged,
       style: LiviThemes.typography.interRegular_16
           .copyWith(color: LiviThemes.colors.baseBlack),
-      menuMaxHeight: 220,
+      menuMaxHeight: 320,
       borderRadius: BorderRadius.circular(8),
       icon: LiviThemes.icons.chevronDownGray,
       items: countriesList

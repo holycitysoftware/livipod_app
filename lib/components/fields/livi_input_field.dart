@@ -18,11 +18,13 @@ class LiviInputField extends StatelessWidget {
   final Widget? prefix;
   final TextCapitalization? textCapitalization;
   final FocusNode focusNode;
+  final ValueChanged<String>? onFieldSubmitted;
 
   const LiviInputField({
     super.key,
     required this.title,
     this.keyboardType,
+    this.onFieldSubmitted,
     this.errorText,
     this.padding,
     this.subTitle,
@@ -54,6 +56,7 @@ class LiviInputField extends StatelessWidget {
           TextFormField(
             textCapitalization: textCapitalization ?? TextCapitalization.none,
             controller: controller,
+            onFieldSubmitted: onFieldSubmitted,
             focusNode: focusNode,
             keyboardType: keyboardType ?? TextInputType.text,
             decoration: InputDecoration(

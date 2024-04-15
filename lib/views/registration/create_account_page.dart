@@ -25,6 +25,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final FocusNode fullNameFocus = FocusNode();
   final FocusNode emailFocus = FocusNode();
   final FocusNode phoneFocus = FocusNode();
+  bool navigateToCheckSmsPage = false;
   bool agreedToTOS = false;
   bool loading = false;
   late AppUser appUser;
@@ -33,6 +34,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   @override
   void initState() {
     setFocusListeners();
+    fullNameController.addListener(() {
+      setState(() {});
+    });
+    phoneNumberController.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -43,22 +50,11 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   void animateFieldsToCenter() {
-    if (fullNameFocus.hasFocus) {
+    if (emailFocus.hasFocus || phoneFocus.hasFocus || fullNameFocus.hasFocus) {
       Future.delayed(Duration(milliseconds: 350), () {
         if (scrollController.hasClients) {
-          scrollController.animateTo(
-              scrollController.position.maxScrollExtent - 120,
-              duration: Duration(milliseconds: 100),
-              curve: Curves.bounceIn);
-        }
-      });
-    } else if (emailFocus.hasFocus || phoneFocus.hasFocus) {
-      Future.delayed(Duration(milliseconds: 350), () {
-        if (scrollController.hasClients) {
-          scrollController.animateTo(
-              scrollController.position.maxScrollExtent - 10,
-              duration: Duration(milliseconds: 100),
-              curve: Curves.bounceIn);
+          scrollController.animateTo(scrollController.position.maxScrollExtent,
+              duration: Duration(milliseconds: 100), curve: Curves.bounceIn);
         }
       });
     }
@@ -88,12 +84,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     setState(() {
       loading = true;
     });
-    appUser = AppUser(
-      firstName: fullNameController.text,
-      useEmail: emailController.text.isNotEmpty,
-      email: emailController.text,
-      phoneNumber: phoneNumberController.text,
-    );
     await verifyPhoneNumber();
     setState(() {
       loading = false;
@@ -102,6 +92,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   Future<void> goToCheckSmsPge() async {
     loading = false;
+    navigateToCheckSmsPage = true;
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -143,6 +134,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: LiviFilledButton(
               showArrow: true,
+              enabled: fullNameController.text.isNotEmpty &&
+                  agreedToTOS &&
+                  phoneNumberController.text.isNotEmpty,
               text: Strings.continueText,
               isLoading: loading,
               isCloseToNotch: true,
@@ -160,7 +154,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 Consumer<AuthController>(
                   builder: (context, authController, child) {
                     if (authController.promptForUserCode &&
-                        authController.firebaseAuthUser == null) {
+                        authController.firebaseAuthUser == null &&
+                        !navigateToCheckSmsPage) {
                       if (mounted) {
                         WidgetsBinding.instance
                             .addPostFrameCallback((timeStamp) {
@@ -191,7 +186,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: kSpacer_16, vertical: kSpacer_8),
                   title: Strings.fullName,
-                  textCapitalization: TextCapitalization.words,
+                  textCapitalization: TextCapitalization.characters,
                   hint: Strings.steveJobsFullName,
                   controller: fullNameController,
                 ),
@@ -225,13 +220,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   child: Row(
                     children: [
                       Checkbox(
-                        value: agreedToTOS,
-                        onChanged: (e) {
-                          setState(() {
-                            agreedToTOS = !(e ?? false);
-                          });
-                        },
-                      ),
+                          activeColor: LiviThemes.colors.brand600,
+                          value: agreedToTOS,
+                          onChanged: (e) => _setAgreedToTOS(!agreedToTOS)),
                       Expanded(
                         child: GestureDetector(
                           onTap: () => _setAgreedToTOS(!agreedToTOS),
