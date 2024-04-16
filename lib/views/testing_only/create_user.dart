@@ -38,7 +38,7 @@ class _TestCreateUserState extends State<TestCreateUser> {
         controller.firebaseAuthUser == null &&
         controller.appUser != null) {
       return CheckSmsPage(appUser: controller.appUser!);
-    } else {
+    } else if (controller.firebaseAuthUser != null) {
       return SafeArea(
         child: PopScope(
           canPop: false,
@@ -71,6 +71,8 @@ class _TestCreateUserState extends State<TestCreateUser> {
           ),
         ),
       );
+    } else {
+      return CreateAccountPage();
     }
   }
 }
