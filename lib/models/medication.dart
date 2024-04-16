@@ -9,7 +9,10 @@ part 'medication.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Medication {
   String id = '';
+  String appUserId = '';
   String name = '';
+  String manufacturer = '';
+  String packageId = '';
   String instructions = '';
   @JsonKey(name: 'schedules', defaultValue: <Schedule>[])
   List<Schedule> schedules = [];
