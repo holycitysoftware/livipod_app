@@ -64,7 +64,7 @@ class LiviInputField extends StatelessWidget {
               contentPadding:
                   EdgeInsets.symmetric(vertical: 10, horizontal: 14),
               fillColor: LiviThemes.colors.baseWhite,
-              errorMaxLines: 2,
+              errorMaxLines: 5,
               errorText: errorText,
               border: OutlineInputBorder(
                 borderSide: BorderSide(

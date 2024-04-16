@@ -2,8 +2,11 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/models.dart';
+import '../services/account_service.dart';
+import '../services/app_user_service.dart';
 import '../utils/timezones.dart';
 
 class AuthController extends ChangeNotifier {
@@ -13,6 +16,9 @@ class AuthController extends ChangeNotifier {
   String _verificationId = '';
   AppUser? _appUser;
   bool loading = false;
+
+  final _accountService = AccountService();
+  final _appUserService = AppUserService();
 
   User? get firebaseAuthUser => _user;
   AppUser? get appUser => _appUser;
@@ -56,36 +62,46 @@ class AuthController extends ChangeNotifier {
     );
   }
 
-  Future<void> verifyPhoneNumber(String phoneNumber) async {
-    clearVerificationError();
-    loading = true;
-    notifyListeners();
-    _promptForUserCode = false;
-    _verificationId = '';
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // This handler will only be called on Android devices
-        // which support automatic SMS code resolution.
-        // ANDROID ONLY!
-        // Sign the user in (or link) with the auto-generated credential
-        await _authenticate(credential);
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        _verificationError = e.message ?? e.code;
-        _promptForUserCode = false;
-        _verificationId = '';
-        loading = false;
-        notifyListeners();
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        _verificationId = verificationId;
-        _promptForUserCode = true;
-        loading = false;
-        notifyListeners();
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        /*
+  Future<void> verifyPhoneNumber(String phoneNumber,
+      {bool isAccountCreation = false}) async {
+    try {
+      clearVerificationError();
+      loading = true;
+      notifyListeners();
+      _promptForUserCode = false;
+      _verificationId = '';
+
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // This handler will only be called on Android devices
+          // which support automatic SMS code resolution.
+          // ANDROID ONLY!
+          // Sign the user in (or link) with the auto-generated credential
+          await _authenticate(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          if (e.message == 'TOO_LONG' || e.code == 'TOO_LONG') {
+            _verificationError = 'The phone number is too long.';
+          }
+          if (e.message == 'TOO_SHORT' || e.code == 'TOO_SHORT') {
+            _verificationError = 'The phone number is too short.';
+          } else {
+            _verificationError = e.message ?? e.code;
+          }
+          _promptForUserCode = false;
+          _verificationId = '';
+          loading = false;
+          notifyListeners();
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          _verificationId = verificationId;
+          _promptForUserCode = true;
+          loading = false;
+          notifyListeners();
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          /*
           On Android devices which support automatic SMS code resolution, 
           this handler will be called if the device has not automatically 
           resolved an SMS message within a certain timeframe. 
@@ -95,21 +111,41 @@ class AuthController extends ChangeNotifier {
           By default, the device waits for 30 seconds however this can be 
           customized with the timeout argument:
         */
-        _verificationError = 'Auto-resolution has timed out.';
-        loading = false;
-        notifyListeners();
-      },
-    );
+          _verificationError = 'Auto-resolution has timed out.';
+          loading = false;
+          notifyListeners();
+        },
+      );
+    } catch (e) {
+      _verificationError = e.toString();
+      loading = false;
+      _promptForUserCode = false;
+      notifyListeners();
+    }
   }
 
-  Future<void> _authenticate(PhoneAuthCredential credential) async {
+  Future<UserCredential?> _authenticate(
+    PhoneAuthCredential credential, {
+    bool isAccountCreation = false,
+  }) async {
     try {
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      if (isAccountCreation && userCredential != null) {
+        await createUser(userCredential);
+      }
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       // session-expired - use refresh token
 
       _verificationError = e.message ?? e.code;
       notifyListeners();
+      return null;
+    } on Exception catch (e) {
+      _verificationError = e.toString();
+      signOut();
+      notifyListeners();
+      return null;
     }
   }
 
@@ -118,15 +154,62 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> validate(String code) async {
-    // await setLoading(true);
+  Future<void> createUser(UserCredential userCredential) async {
+    try {
+      final accountUuid = Uuid().v4();
+
+      //Check if user already exists
+      if (userCredential != null && userCredential.user != null) {
+        final user =
+            await _appUserService.getUserById(userCredential.user!.uid);
+        if (user != null) {
+          throw Exception('User already exists.');
+        }
+      }
+      if (userCredential.user != null) {
+        _appUser!.id = userCredential.user!.uid;
+        _appUser!.accountId = accountUuid;
+
+        final account = await _accountService.createAccount(
+          Account(
+            id: accountUuid,
+            ownerId: _appUser!.id,
+          ),
+        );
+
+        if (_appUser != null) {
+          try {
+            await _appUserService.createUser(_appUser!);
+          } catch (e) {
+            _accountService.deleteAccount(account);
+            _promptForUserCode = false;
+            _verificationError = e.toString();
+            signOut();
+          }
+        }
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> validate(
+    String code, {
+    bool isAccountCreation = false,
+  }) async {
     _promptForUserCode = false;
 
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: code);
-    await _authenticate(credential);
-    // setLoading(false);
+    final UserCredential? userCredential =
+        await _authenticate(credential, isAccountCreation: isAccountCreation);
+    if (userCredential != null &&
+        userCredential.user != null &&
+        !isAccountCreation) {
+      _appUser = await _appUserService.getUserById(userCredential.user!.uid);
+      notifyListeners();
+    }
   }
 
   Future<void> signOut() async {

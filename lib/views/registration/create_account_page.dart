@@ -69,15 +69,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   Future<void> verifyPhoneNumber() async {
-    await Provider.of<AuthController>(context, listen: false)
-        .verifyPhoneNumber(country.dialCode + phoneNumberController.text);
+    await Provider.of<AuthController>(context, listen: false).verifyPhoneNumber(
+        country.dialCode + phoneNumberController.text,
+        isAccountCreation: true);
   }
 
   void setAppUser() {
     Provider.of<AuthController>(context, listen: false).setAppUser(
         fullNameController: fullNameController.text,
         emailController: emailController.text,
-        phoneNumberController: phoneNumberController.text);
+        phoneNumberController: country.dialCode + phoneNumberController.text);
   }
 
 //  Future<String> getTimeZone() async{

@@ -8,7 +8,7 @@ class Account {
   String ownerId = '';
   bool enabled = true;
 
-  Account();
+  Account({this.id = '', this.ownerId = '', this.enabled = true});
 
   factory Account.fromJson(Map<String, dynamic> json) =>
       _$AccountFromJson(json);

@@ -13,9 +13,11 @@ import '../views.dart';
 
 class CheckSmsPage extends StatefulWidget {
   final AppUser appUser;
+  final bool isAccountCreation;
   const CheckSmsPage({
     super.key,
     required this.appUser,
+    this.isAccountCreation = false,
   });
 
   @override
@@ -39,8 +41,9 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   }
 
   Future<void> validateSmsCode() async {
-    await Provider.of<AuthController>(context, listen: false)
-        .validate(pinController.text);
+    await Provider.of<AuthController>(context, listen: false).validate(
+        pinController.text,
+        isAccountCreation: widget.isAccountCreation);
   }
 
   Future<void> goToIdentifyPersonPage(String code) async {

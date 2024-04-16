@@ -37,7 +37,10 @@ class _TestCreateUserState extends State<TestCreateUser> {
     } else if (controller.promptForUserCode &&
         controller.firebaseAuthUser == null &&
         controller.appUser != null) {
-      return CheckSmsPage(appUser: controller.appUser!);
+      return CheckSmsPage(
+        appUser: controller.appUser!,
+        isAccountCreation: true,
+      );
     } else if (controller.firebaseAuthUser != null) {
       return SafeArea(
         child: PopScope(

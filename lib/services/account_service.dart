@@ -13,7 +13,7 @@ class AccountService {
   AccountService();
 
   Future<Account> createAccount(Account account) async {
-    var json = await FirebaseFirestore.instance
+    final json = await FirebaseFirestore.instance
         .collection('accounts')
         .add(account.toJson());
     account.id = json.id;

@@ -19,10 +19,15 @@ class AppUserService {
   List<AppUser> get appUsers => _appUsers;
 
   Future<AppUser> createUser(AppUser user) async {
-    final json =
-        await FirebaseFirestore.instance.collection('users').add(user.toJson());
-    user.id = json.id;
-    return Future.value(user);
+    try {
+      final json = await FirebaseFirestore.instance
+          .collection('users')
+          .add(user.toJson());
+      user.id = json.id;
+      return Future.value(user);
+    } catch (e) {
+      throw Exception('Error creating a user');
+    }
   }
 
   Future<void> updateUser(AppUser user) async {
@@ -71,11 +76,11 @@ class AppUserService {
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId)
+          .where('id', isEqualTo: userId)
           .get()
           .then((querySnapshot) {
-        if (querySnapshot.exists) {
-          user = AppUser.fromJson(querySnapshot.data()!);
+        if (querySnapshot.docs.isNotEmpty) {
+          user = AppUser.fromJson(querySnapshot.docs[0].data());
         }
       });
     } catch (e) {

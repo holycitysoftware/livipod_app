@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
   void setAppUser() {
     Provider.of<AuthController>(context, listen: false).setAppUser(
         fullNameController: fullNameController.text,
-        phoneNumberController: phoneNumberController.text);
+        phoneNumberController: country.dialCode + phoneNumberController.text);
   }
 
   Future<void> verifyNumber() async {
