@@ -25,7 +25,6 @@ class CheckSmsPage extends StatefulWidget {
 class _CheckSmsPageState extends State<CheckSmsPage> {
   final TextEditingController pinController = TextEditingController();
   final FocusNode pinFocusNode = FocusNode();
-  bool loading = false;
   String code = '';
   @override
   void initState() {
@@ -45,9 +44,6 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   }
 
   Future<void> goToIdentifyPersonPage(String code) async {
-    setState(() {
-      loading = true;
-    });
     await validateSmsCode();
   }
 
@@ -67,12 +63,18 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
         padding: MediaQuery.of(context).viewInsets,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: LiviFilledButton(
-            isCloseToNotch: true,
-            showArrow: true,
-            text: Strings.continueText,
-            onTap: () => goToIdentifyPersonPage(''),
-          ),
+          child: Builder(builder: (context) {
+            return Consumer<AuthController>(
+                builder: (context, authController, child) {
+              return LiviFilledButton(
+                isCloseToNotch: true,
+                showArrow: true,
+                isLoading: authController.loading,
+                text: Strings.continueText,
+                onTap: () => goToIdentifyPersonPage(''),
+              );
+            });
+          }),
         ),
       ),
       body: Column(

@@ -113,12 +113,20 @@ class AuthController extends ChangeNotifier {
     }
   }
 
+  Future<void> setLoading(bool value) async {
+    loading = value;
+    notifyListeners();
+  }
+
   Future<void> validate(String code) async {
+    // await setLoading(true);
     _promptForUserCode = false;
+
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: code);
     await _authenticate(credential);
+    // setLoading(false);
   }
 
   Future<void> signOut() async {
