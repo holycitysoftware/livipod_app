@@ -57,6 +57,8 @@ class _TestCreateUserState extends State<TestCreateUser> {
                   ElevatedButton(
                     onPressed: () async {
                       await controller.signOut();
+                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.maybePop(context);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
