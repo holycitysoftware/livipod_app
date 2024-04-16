@@ -19,7 +19,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
               ?.map((e) => LiviPod.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      email: json['email'] as String,
+      email: json['email'] as String?,
       authToken: json['authToken'] as String? ?? '',
       enabled: json['enabled'] as bool? ?? true,
       fcmToken: json['fcmToken'] as String? ?? '',
