@@ -72,28 +72,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> verifyNumber() async {
-    setState(() {
-      loading = true;
-    });
     setAppUser();
     await verifyPhoneNumber();
-    setState(() {
-      loading = false;
-    });
   }
 
   Future<void> goToCheckSmsPge() async {
-    if (loading) {
-      loading = false;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CheckSmsPage(
-            appUser: appUser,
-          ),
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CheckSmsPage(
+          appUser: appUser,
         ),
-      );
-    }
+      ),
+    );
   }
 
   @override
@@ -117,15 +108,18 @@ class _LoginPageState extends State<LoginPage> {
           padding: MediaQuery.of(context).viewInsets,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: LiviFilledButton(
-              showArrow: true,
-              isCloseToNotch: true,
-              enabled: fullNameController.text.isNotEmpty &&
-                  phoneNumberController.text.isNotEmpty,
-              isLoading: loading,
-              text: Strings.logIn,
-              onTap: verifyNumber,
-            ),
+            child: Consumer<AuthController>(
+                builder: (context, authController, child) {
+              return LiviFilledButton(
+                showArrow: true,
+                isCloseToNotch: true,
+                enabled: fullNameController.text.isNotEmpty &&
+                    phoneNumberController.text.isNotEmpty,
+                isLoading: authController.loading,
+                text: Strings.logIn,
+                onTap: verifyNumber,
+              );
+            }),
           ),
         ),
         body: Form(

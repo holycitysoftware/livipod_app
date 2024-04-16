@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 import '../models/models.dart';
+import '../utils/timezones.dart';
 
 class AuthController extends ChangeNotifier {
   User? _user;
@@ -10,6 +12,7 @@ class AuthController extends ChangeNotifier {
   bool _promptForUserCode = false;
   String _verificationId = '';
   AppUser? _appUser;
+  bool loading = false;
 
   User? get firebaseAuthUser => _user;
   AppUser? get appUser => _appUser;
@@ -38,19 +41,25 @@ class AuthController extends ChangeNotifier {
     _verificationError = '';
   }
 
-  void setAppUser(
+  Future<void> setAppUser(
       {required String fullNameController,
       String? emailController,
-      required String phoneNumberController}) {
+      required String phoneNumberController}) async {
+    final timezone = await FlutterTimezone.getLocalTimezone();
+    //Cache timezone?
     _appUser = AppUser(
       firstName: fullNameController,
       email: emailController,
+      useEmail: emailController != null && emailController.isNotEmpty,
       phoneNumber: phoneNumberController,
+      timezone: timezone,
     );
   }
 
   Future<void> verifyPhoneNumber(String phoneNumber) async {
     clearVerificationError();
+    loading = true;
+    notifyListeners();
     _promptForUserCode = false;
     _verificationId = '';
     await FirebaseAuth.instance.verifyPhoneNumber(
@@ -66,11 +75,13 @@ class AuthController extends ChangeNotifier {
         _verificationError = e.message ?? e.code;
         _promptForUserCode = false;
         _verificationId = '';
+        loading = false;
         notifyListeners();
       },
       codeSent: (String verificationId, int? resendToken) {
         _verificationId = verificationId;
         _promptForUserCode = true;
+        loading = false;
         notifyListeners();
       },
       codeAutoRetrievalTimeout: (String verificationId) {
@@ -85,6 +96,7 @@ class AuthController extends ChangeNotifier {
           customized with the timeout argument:
         */
         _verificationError = 'Auto-resolution has timed out.';
+        loading = false;
         notifyListeners();
       },
     );

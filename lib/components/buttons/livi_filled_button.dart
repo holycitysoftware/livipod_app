@@ -50,8 +50,13 @@ class LiviFilledButton extends StatelessWidget {
         ),
         onPressed: (enabled ?? false) ? onTap : null,
         child: (isLoading ?? false)
-            ? CircularProgressIndicator(
-                color: Colors.white,
+            ? SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 3,
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,

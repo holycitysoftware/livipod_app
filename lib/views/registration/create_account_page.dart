@@ -8,7 +8,6 @@ import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/countries.dart';
 import '../../utils/strings.dart';
-import '../views.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -27,7 +26,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final FocusNode phoneFocus = FocusNode();
   bool navigateToCheckSmsPage = false;
   bool agreedToTOS = false;
-  bool loading = false;
   Country country = getUS();
 
   @override
@@ -87,14 +85,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 //   }
 
   Future<void> verifyNumber() async {
-    setState(() {
-      loading = true;
-    });
     setAppUser();
     await verifyPhoneNumber();
-    setState(() {
-      loading = false;
-    });
   }
 
   // Future<void> goToCheckSmsPge() async {
@@ -139,16 +131,19 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           padding: MediaQuery.of(context).viewInsets,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: LiviFilledButton(
-              showArrow: true,
-              enabled: fullNameController.text.isNotEmpty &&
-                  agreedToTOS &&
-                  phoneNumberController.text.isNotEmpty,
-              text: Strings.continueText,
-              isLoading: loading,
-              isCloseToNotch: true,
-              onTap: verifyNumber,
-            ),
+            child: Consumer<AuthController>(
+                builder: (context, authController, child) {
+              return LiviFilledButton(
+                showArrow: true,
+                enabled: fullNameController.text.isNotEmpty &&
+                    agreedToTOS &&
+                    phoneNumberController.text.isNotEmpty,
+                text: Strings.continueText,
+                isLoading: authController.loading,
+                isCloseToNotch: true,
+                onTap: verifyNumber,
+              );
+            }),
           ),
         ),
         body: Form(
