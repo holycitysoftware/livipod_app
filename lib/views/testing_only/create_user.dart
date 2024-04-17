@@ -32,7 +32,7 @@ class _TestCreateUserState extends State<TestCreateUser> {
   }
 
   Widget getView(AuthController controller) {
-    if (!controller.promptForUserCode && controller.firebaseAuthUser == null) {
+    if (!controller.  promptForUserCode && controller.firebaseAuthUser == null) {
       return CreateAccountPage();
     } else if (controller.promptForUserCode &&
         controller.firebaseAuthUser == null &&

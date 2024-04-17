@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../models/models.dart';
 import '../services/account_service.dart';
 import '../services/app_user_service.dart';
+import '../utils/logger.dart';
 import '../utils/timezones.dart';
 
 class AuthController extends ChangeNotifier {
@@ -74,11 +75,19 @@ class AuthController extends ChangeNotifier {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          // This handler will only be called on Android devices
-          // which support automatic SMS code resolution.
-          // ANDROID ONLY!
-          // Sign the user in (or link) with the auto-generated credential
-          await _authenticate(credential);
+          try {
+            // This handler will only be called on Android devices
+            // which support automatic SMS code resolution.
+            // ANDROID ONLY!
+            // Sign the user in (or link) with the auto-generated credential
+            await _authenticate(credential);
+          } catch (e, s) {
+            _verificationError = e.toString();
+            signOut();
+            logger(e.toString());
+            logger(s.toString());
+            notifyListeners();
+          }
         },
         verificationFailed: (FirebaseAuthException e) {
           if (e.message == 'TOO_LONG' || e.code == 'TOO_LONG') {
@@ -116,10 +125,12 @@ class AuthController extends ChangeNotifier {
           notifyListeners();
         },
       );
-    } catch (e) {
+    } catch (e, s) {
       _verificationError = e.toString();
       loading = false;
       _promptForUserCode = false;
+      logger(e.toString());
+      logger(s.toString());
       notifyListeners();
     }
   }
@@ -131,9 +142,6 @@ class AuthController extends ChangeNotifier {
     try {
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      if (isAccountCreation && userCredential != null) {
-        await createUser(userCredential);
-      }
       return userCredential;
     } on FirebaseAuthException catch (e) {
       // session-expired - use refresh token
@@ -141,10 +149,12 @@ class AuthController extends ChangeNotifier {
       _verificationError = e.message ?? e.code;
       notifyListeners();
       return null;
-    } on Exception catch (e) {
+    } on Exception catch (e, s) {
       _verificationError = e.toString();
       signOut();
       notifyListeners();
+      logger(e.toString());
+      logger(s.toString());
       return null;
     }
   }
@@ -197,18 +207,33 @@ class AuthController extends ChangeNotifier {
     String code, {
     bool isAccountCreation = false,
   }) async {
-    _promptForUserCode = false;
+    try {
+      setLoading(true);
 
-    // Create a PhoneAuthCredential with the code
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: _verificationId, smsCode: code);
-    final UserCredential? userCredential =
-        await _authenticate(credential, isAccountCreation: isAccountCreation);
-    if (userCredential != null &&
-        userCredential.user != null &&
-        !isAccountCreation) {
-      _appUser = await _appUserService.getUserById(userCredential.user!.uid);
+      // Create a PhoneAuthCredential with the code
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId, smsCode: code);
+      final UserCredential? userCredential =
+          await _authenticate(credential, isAccountCreation: isAccountCreation);
+      if (isAccountCreation && userCredential != null) {
+        await createUser(userCredential);
+      }
+      if (userCredential != null &&
+          userCredential.user != null &&
+          !isAccountCreation) {
+        _appUser = await _appUserService.getUserById(userCredential.user!.uid);
+        notifyListeners();
+      }
+      _promptForUserCode = false;
+
+      setLoading(false);
+    } catch (e, s) {
+      _verificationError = e.toString();
+      signOut();
+      setLoading(false);
       notifyListeners();
+      logger(e.toString());
+      logger(s.toString());
     }
   }
 

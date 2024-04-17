@@ -71,7 +71,7 @@ class AppUserService {
     });
   }
 
-  Future<AppUser> getUserById(String userId) async {
+  Future<AppUser?> getUserById(String userId) async {
     AppUser? user;
     try {
       await FirebaseFirestore.instance
