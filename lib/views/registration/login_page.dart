@@ -127,19 +127,6 @@ class _LoginPageState extends State<LoginPage> {
           child: ListView(
             controller: scrollController,
             children: [
-              Consumer<AuthController>(
-                builder: (context, authController, child) {
-                  if (authController.promptForUserCode &&
-                      authController.firebaseAuthUser == null) {
-                    if (mounted) {
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        goToCheckSmsPge();
-                      });
-                    }
-                  }
-                  return SizedBox();
-                },
-              ),
               LiviThemes.spacing.heightSpacer8(),
               LiviThemes.icons.logo,
               LiviThemes.spacing.heightSpacer16(),

@@ -8,6 +8,7 @@ import '../models/models.dart';
 import '../services/account_service.dart';
 import '../services/app_user_service.dart';
 import '../utils/logger.dart';
+import '../utils/string_ext.dart';
 import '../utils/timezones.dart';
 
 class AuthController extends ChangeNotifier {
@@ -126,7 +127,7 @@ class AuthController extends ChangeNotifier {
         },
       );
     } catch (e, s) {
-      _verificationError = e.toString();
+      _verificationError = e.toString().removeExceptionString();
       loading = false;
       _promptForUserCode = false;
       logger(e.toString());
@@ -150,7 +151,7 @@ class AuthController extends ChangeNotifier {
       notifyListeners();
       return null;
     } on Exception catch (e, s) {
-      _verificationError = e.toString();
+      _verificationError = e.toString().removeExceptionString();
       signOut();
       notifyListeners();
       logger(e.toString());
@@ -193,7 +194,8 @@ class AuthController extends ChangeNotifier {
           } catch (e) {
             _accountService.deleteAccount(account);
             _promptForUserCode = false;
-            _verificationError = e.toString();
+            _verificationError = e.toString().removeExceptionString();
+            ;
             signOut();
           }
         }
@@ -228,7 +230,7 @@ class AuthController extends ChangeNotifier {
 
       setLoading(false);
     } catch (e, s) {
-      _verificationError = e.toString();
+      _verificationError = e.toString().removeExceptionString();
       signOut();
       setLoading(false);
       notifyListeners();
