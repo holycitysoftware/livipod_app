@@ -7,21 +7,22 @@ import '../../components/components.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
+import '../testing_only/login_user.dart';
 import '../views.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
   Future<void> goToLoginPage(BuildContext context) async {
-    await Navigator.push(
+    await Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
+      MaterialPageRoute(builder: (context) => LoginCreateUser()),
     );
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
     await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
+        context, MaterialPageRoute(builder: (context) => TestCreateUser()));
   }
 
   SystemUiOverlayStyle getStyle(BuildContext context) {
@@ -39,8 +40,9 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: SystemUiOverlayStyle.dark,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: LiviThemes.colors.baseWhite,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),

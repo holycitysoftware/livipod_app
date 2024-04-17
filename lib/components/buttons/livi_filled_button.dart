@@ -11,12 +11,14 @@ class LiviFilledButton extends StatelessWidget {
   final bool showArrow;
   final bool? isCloseToNotch;
   final bool? isLoading;
+  final bool? enabled;
 
   const LiviFilledButton({
     super.key,
     required this.text,
     this.margin,
     required this.onTap,
+    this.enabled = true,
     this.isLoading = false,
     this.isCloseToNotch = false,
     this.showArrow = false,
@@ -42,20 +44,32 @@ class LiviFilledButton extends StatelessWidget {
           minimumSize: MaterialStatePropertyAll(
             Size(double.infinity, 48),
           ),
-          backgroundColor: MaterialStatePropertyAll(LiviThemes.colors.brand600),
+          backgroundColor: MaterialStatePropertyAll(enabled ?? false
+              ? LiviThemes.colors.brand600
+              : LiviThemes.colors.gray200),
         ),
-        onPressed: onTap,
+        onPressed: (enabled ?? false) ? onTap : null,
         child: (isLoading ?? false)
-            ? CircularProgressIndicator(
-                color: Colors.white,
+            ? SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 3,
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   LiviTextStyles.interSemiBold18(text,
-                      color: LiviThemes.colors.baseWhite),
+                      color: (enabled ?? false)
+                          ? LiviThemes.colors.baseWhite
+                          : LiviThemes.colors.gray400),
                   LiviThemes.spacing.widthSpacer8(),
-                  if (showArrow) LiviThemes.icons.arrowNarrowright
+                  if (showArrow)
+                    (enabled ?? false)
+                        ? LiviThemes.icons.arrowNarrowright
+                        : LiviThemes.icons.arrowNarrowrightGray
                 ],
               ),
       ),

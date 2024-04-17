@@ -24,7 +24,7 @@ class Strings {
   static const String optional = '(Optional)';
   static const String steveJobsEmail = 'stevejobs@apple.com';
   static const String steveJobsFullName = 'Steven Paul Jobs';
-  static const String steveJobsNumber = '+1 (555) 000-0000';
+  static const String steveJobsNumber = '555 000-0000';
   static const String continueText = 'Continue';
   static const String howComfortableAreYou =
       'How comfortable are you with using smartphone apps and technology in general?';

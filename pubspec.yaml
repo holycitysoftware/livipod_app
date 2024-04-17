@@ -58,6 +58,7 @@ dependencies:
   iphone_has_notch: ^1.0.0
   firebase_app_check: ^0.2.2+1
   http: ^1.2.1
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:

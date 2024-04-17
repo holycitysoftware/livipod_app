@@ -13,9 +13,11 @@ import '../views.dart';
 
 class CheckSmsPage extends StatefulWidget {
   final AppUser appUser;
+  final bool isAccountCreation;
   const CheckSmsPage({
     super.key,
     required this.appUser,
+    this.isAccountCreation = false,
   });
 
   @override
@@ -39,18 +41,13 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   }
 
   Future<void> validateSmsCode() async {
-    await Provider.of<AuthController>(context, listen: false)
-        .validate(pinController.text);
+    await Provider.of<AuthController>(context, listen: false).validate(
+        pinController.text,
+        isAccountCreation: widget.isAccountCreation);
   }
 
   Future<void> goToIdentifyPersonPage(String code) async {
     await validateSmsCode();
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TestCreateUser(),
-      ),
-    );
   }
 
   @override
@@ -66,12 +63,21 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: LiviFilledButton(
-          isCloseToNotch: true,
-          showArrow: true,
-          text: Strings.continueText,
-          onTap: () => goToIdentifyPersonPage(''),
+        padding: MediaQuery.of(context).viewInsets,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Builder(builder: (context) {
+            return Consumer<AuthController>(
+                builder: (context, authController, child) {
+              return LiviFilledButton(
+                isCloseToNotch: true,
+                showArrow: true,
+                isLoading: authController.loading,
+                text: Strings.continueText,
+                onTap: () => goToIdentifyPersonPage(''),
+              );
+            });
+          }),
         ),
       ),
       body: Column(

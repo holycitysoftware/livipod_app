@@ -9,8 +9,7 @@ part of 'app_user.dart';
 AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       id: json['id'] as String? ?? '',
       accountId: json['accountId'] as String? ?? '',
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String? ?? '',
+      name: json['name'] as String,
       appUserType:
           $enumDecodeNullable(_$AppUserTypeEnumMap, json['appUserType']) ??
               AppUserType.selfGuidedUser,
@@ -19,7 +18,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
               ?.map((e) => LiviPod.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      email: json['email'] as String,
+      email: json['email'] as String?,
       authToken: json['authToken'] as String? ?? '',
       enabled: json['enabled'] as bool? ?? true,
       fcmToken: json['fcmToken'] as String? ?? '',
@@ -32,8 +31,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'id': instance.id,
       'accountId': instance.accountId,
-      'firstName': instance.firstName,
-      'lastName': instance.lastName,
+      'name': instance.name,
       'appUserType': _$AppUserTypeEnumMap[instance.appUserType]!,
       'phoneNumber': instance.phoneNumber,
       'podsList': instance.podsList.map((e) => e.toJson()).toList(),

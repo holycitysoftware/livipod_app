@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 import '../../controllers/controllers.dart';
-import '../../models/app_user.dart';
+import '../../models/models.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
+import '../../utils/countries.dart';
 import '../../utils/strings.dart';
-import '../views.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -18,11 +18,26 @@ class CreateAccountPage extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController fullNameController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
+  final FocusNode fullNameFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode phoneFocus = FocusNode();
+  bool navigateToCheckSmsPage = false;
   bool agreedToTOS = false;
-  bool loading = false;
-  late AppUser appUser;
+  Country country = getUS();
+
+  @override
+  void initState() {
+    fullNameController.addListener(() {
+      setState(() {});
+    });
+    phoneNumberController.addListener(() {
+      setState(() {});
+    });
+    super.initState();
+  }
 
   void _setAgreedToTOS(bool newValue) {
     setState(() {
@@ -36,8 +51,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   Future<void> verifyPhoneNumber() async {
-    await Provider.of<AuthController>(context, listen: false)
-        .verifyPhoneNumber(phoneNumberController.text);
+    await Provider.of<AuthController>(context, listen: false).verifyPhoneNumber(
+        country.dialCode + phoneNumberController.text,
+        isAccountCreation: true);
+  }
+
+  void setAppUser() {
+    Provider.of<AuthController>(context, listen: false).setAppUser(
+        fullNameController: fullNameController.text,
+        emailController: emailController.text,
+        phoneNumberController: country.dialCode + phoneNumberController.text);
   }
 
 //  Future<String> getTimeZone() async{
@@ -45,133 +68,153 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 //   }
 
   Future<void> verifyNumber() async {
-    setState(() {
-      loading = true;
-    });
-    appUser = AppUser(
-      firstName: fullNameController.text,
-      useEmail: emailController.text.isNotEmpty,
-      email: emailController.text,
-      phoneNumber: phoneNumberController.text,
-    );
+    setAppUser();
     await verifyPhoneNumber();
   }
 
-  Future<void> goToCheckSmsPge() async {
-    loading = false;
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CheckSmsPage(
-          appUser: appUser,
-        ),
-      ),
-    );
-  }
+  // Future<void> goToCheckSmsPge() async {
+  //   loading = false;
+  //   navigateToCheckSmsPage = true;
+  //   await Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => CheckSmsPage(
+  //         appUser: appUser,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   void dispose() {
-    Provider.of<AuthController>(context, listen: false)
-        .clearVerificationError();
     super.dispose();
+  }
+
+  String getCountryDescription(String country) {
+    const int maxLength = 24;
+    if (country.length > maxLength) {
+      return country.substring(0, maxLength);
+    }
+    return country;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: LiviThemes.colors.baseWhite,
-      resizeToAvoidBottomInset: true,
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: LiviFilledButton(
-          showArrow: true,
-          text: Strings.continueText,
-          isLoading: loading,
-          isCloseToNotch: true,
-          onTap: verifyNumber,
-        ),
-      ),
-      body: Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              BackBar(),
-              Consumer<AuthController>(
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (mounted) {
+          Provider.of<AuthController>(context, listen: false)
+              .clearVerificationError();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: LiviThemes.colors.baseWhite,
+        resizeToAvoidBottomInset: true,
+        bottomNavigationBar: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Consumer<AuthController>(
                 builder: (context, authController, child) {
-                  if (authController.promptForUserCode &&
-                      authController.firebaseAuthUser == null) {
-                    if (mounted) {
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        goToCheckSmsPge();
-                      });
-                    }
-                  }
-                  return SizedBox();
-                },
-              ),
-              LiviThemes.icons.logo,
-              LiviThemes.spacing.heightSpacer16(),
-              Align(
-                child: LiviTextStyles.interSemiBold24(Strings.createAnAccount),
-              ),
-              LiviThemes.spacing.heightSpacer8(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
-                child: LiviTextStyles.interRegular16(
-                  Strings.afterCreatingYourAccount,
-                  textAlign: TextAlign.center,
+              return LiviFilledButton(
+                showArrow: true,
+                enabled: fullNameController.text.isNotEmpty &&
+                    agreedToTOS &&
+                    phoneNumberController.text.isNotEmpty,
+                text: Strings.continueText,
+                isLoading: authController.loading,
+                isCloseToNotch: true,
+                onTap: verifyNumber,
+              );
+            }),
+          ),
+        ),
+        body: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Column(
+              children: [
+                BackBar(),
+                LiviThemes.icons.logo,
+                LiviThemes.spacing.heightSpacer16(),
+                Align(
+                  child:
+                      LiviTextStyles.interSemiBold24(Strings.createAnAccount),
                 ),
-              ),
-              const SizedBox(height: kSpacer_16),
-              LiviInputField(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.fullName,
-                hint: Strings.steveJobsFullName,
-                controller: fullNameController,
-              ),
-              LiviInputField(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.email,
-                subTitle: Strings.optional,
-                hint: Strings.steveJobsEmail,
-                controller: emailController,
-              ),
-              LiviInputField(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.phoneNumber,
-                hint: Strings.steveJobsNumber,
-                controller: phoneNumberController,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: agreedToTOS,
-                      onChanged: (e) {
+                LiviThemes.spacing.heightSpacer8(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
+                  child: LiviTextStyles.interRegular16(
+                    Strings.afterCreatingYourAccount,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: kSpacer_16),
+                LiviInputField(
+                  focusNode: fullNameFocus,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: kSpacer_16, vertical: kSpacer_8),
+                  title: Strings.fullName,
+                  textCapitalization: TextCapitalization.words,
+                  hint: Strings.steveJobsFullName,
+                  controller: fullNameController,
+                ),
+                LiviInputField(
+                  focusNode: emailFocus,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: kSpacer_16, vertical: kSpacer_8),
+                  title: Strings.email,
+                  subTitle: Strings.optional,
+                  hint: Strings.steveJobsEmail,
+                  controller: emailController,
+                ),
+                Consumer<AuthController>(
+                    builder: (context, authController, child) {
+                  return LiviInputField(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kSpacer_16, vertical: kSpacer_8),
+                    title: Strings.phoneNumber,
+                    controller: phoneNumberController,
+                    focusNode: phoneFocus,
+                    errorText: authController.verificationError.isEmpty
+                        ? null
+                        : authController.verificationError,
+                    prefix: CountryDropdownButton(
+                      country: country,
+                      onChanged: (Country? value) {
                         setState(() {
-                          agreedToTOS = !(e ?? false);
+                          country = value!;
                         });
                       },
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => _setAgreedToTOS(!agreedToTOS),
-                        child: LiviTextStyles.interRegular16(
-                          Strings.iHaveReadAndAgreeToThePrivacyPolicy,
-                          textAlign: TextAlign.start,
-                          maxLines: 3,
+                    hint: Strings.steveJobsNumber,
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                          activeColor: LiviThemes.colors.brand600,
+                          value: agreedToTOS,
+                          onChanged: (e) => _setAgreedToTOS(!agreedToTOS)),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => _setAgreedToTOS(!agreedToTOS),
+                          child: LiviTextStyles.interRegular16(
+                            Strings.iHaveReadAndAgreeToThePrivacyPolicy,
+                            textAlign: TextAlign.start,
+                            maxLines: 3,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

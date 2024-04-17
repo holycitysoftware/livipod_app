@@ -9,8 +9,7 @@ part 'app_user.g.dart';
 class AppUser {
   String id = '';
   String accountId = '';
-  String firstName = '';
-  String lastName;
+  String name = '';
   AppUserType appUserType;
   String phoneNumber = '';
   List<LiviPod> podsList;
@@ -26,8 +25,7 @@ class AppUser {
   AppUser({
     this.id = '',
     this.accountId = '',
-    required this.firstName,
-    this.lastName = '',
+    required this.name,
     this.appUserType = AppUserType.selfGuidedUser,
     required this.phoneNumber,
     this.podsList = const [],

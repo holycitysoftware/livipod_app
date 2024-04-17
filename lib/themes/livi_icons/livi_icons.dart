@@ -28,6 +28,11 @@ class LiviIcons {
         colorFilter:
             ColorFilter.mode(LiviThemes.colors.baseWhite, BlendMode.srcIn),
       );
+  Widget get arrowNarrowrightGray => SvgPicture.asset(
+        '$svgPath/arrow_narrow_right.svg',
+        colorFilter:
+            ColorFilter.mode(LiviThemes.colors.gray400, BlendMode.srcIn),
+      );
 
   Widget get checkCircle => SvgPicture.asset(
         '$svgPath/check_circle.svg',
@@ -36,6 +41,9 @@ class LiviIcons {
   Widget get chevronLeft => SvgPicture.asset(
         '$svgPath/chevron_left.svg',
       );
+  Widget get chevronDownGray => SvgPicture.asset('$svgPath/chevron_down.svg',
+      colorFilter:
+          ColorFilter.mode(LiviThemes.colors.gray400, BlendMode.srcIn));
 
   //Images
   Widget get liviPodImage => Image.asset(
