@@ -9,7 +9,6 @@ import '../services/account_service.dart';
 import '../services/app_user_service.dart';
 import '../utils/logger.dart';
 import '../utils/string_ext.dart';
-import '../utils/timezones.dart';
 
 class AuthController extends ChangeNotifier {
   User? _user;
@@ -56,7 +55,7 @@ class AuthController extends ChangeNotifier {
     final timezone = await FlutterTimezone.getLocalTimezone();
     //Cache timezone?
     _appUser = AppUser(
-      firstName: fullNameController,
+      name: fullNameController,
       email: emailController,
       useEmail: emailController != null && emailController.isNotEmpty,
       phoneNumber: phoneNumberController,

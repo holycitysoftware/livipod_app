@@ -169,7 +169,7 @@ class AppUserService {
         }
       });
 
-      users.sort((a, b) => a.lastName.compareTo(b.lastName));
+      users.sort((a, b) => a.name.compareTo(b.name));
       return users;
     } catch (e) {
       debugPrint('$e');
