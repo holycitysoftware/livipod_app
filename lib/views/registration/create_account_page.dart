@@ -133,6 +133,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           key: formKey,
           child: SingleChildScrollView(
             controller: scrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               children: [
                 BackBar(),

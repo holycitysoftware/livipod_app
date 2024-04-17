@@ -165,7 +165,7 @@ class _MyAppState extends State<MyApp> {
           useMaterial3: true,
         ),
         home:
-            const WelcomePage(), // const FdaSearchTest() // const TestCreateUser()
+            const SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),
     );
   }

@@ -126,6 +126,7 @@ class _LoginPageState extends State<LoginPage> {
           key: _formKey,
           child: ListView(
             controller: scrollController,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             children: [
               LiviThemes.spacing.heightSpacer8(),
               LiviThemes.icons.logo,
