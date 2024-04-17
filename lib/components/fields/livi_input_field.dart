@@ -54,6 +54,7 @@ class LiviInputField extends StatelessWidget {
           ),
           LiviThemes.spacing.heightSpacer6(),
           TextFormField(
+            scrollPadding: EdgeInsets.only(bottom: double.maxFinite),
             textCapitalization: TextCapitalization.words,
             controller: controller,
             onFieldSubmitted: onFieldSubmitted,

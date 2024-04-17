@@ -30,7 +30,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   void initState() {
-    setFocusListeners();
     fullNameController.addListener(() {
       setState(() {});
     });
@@ -38,23 +37,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       setState(() {});
     });
     super.initState();
-  }
-
-  void setFocusListeners() {
-    fullNameFocus.addListener(animateFieldsToCenter);
-    emailFocus.addListener(animateFieldsToCenter);
-    phoneFocus.addListener(animateFieldsToCenter);
-  }
-
-  void animateFieldsToCenter() {
-    if (emailFocus.hasFocus || phoneFocus.hasFocus || fullNameFocus.hasFocus) {
-      Future.delayed(Duration(milliseconds: 350), () {
-        if (scrollController.hasClients) {
-          scrollController.animateTo(scrollController.position.maxScrollExtent,
-              duration: Duration(milliseconds: 100), curve: Curves.bounceIn);
-        }
-      });
-    }
   }
 
   void _setAgreedToTOS(bool newValue) {
