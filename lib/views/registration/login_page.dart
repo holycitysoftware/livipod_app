@@ -143,11 +143,11 @@ class _LoginPageState extends State<LoginPage> {
               LiviThemes.spacing.heightSpacer8(),
               const SizedBox(height: kSpacer_16),
               LiviInputField(
+                key: Key('full-name-field'),
                 padding: const EdgeInsets.symmetric(
                     horizontal: kSpacer_16, vertical: kSpacer_8),
                 title: Strings.fullName,
                 textCapitalization: TextCapitalization.words,
-                keyboardType: TextInputType.text,
                 hint: Strings.steveJobsFullName,
                 onFieldSubmitted: (value) {
                   phoneFocus.requestFocus();
@@ -158,6 +158,7 @@ class _LoginPageState extends State<LoginPage> {
               Consumer<AuthController>(
                   builder: (context, authController, child) {
                 return LiviInputField(
+                  key: Key('phone-number-field'),
                   padding: const EdgeInsets.symmetric(
                       horizontal: kSpacer_16, vertical: kSpacer_8),
                   title: Strings.phoneNumber,

@@ -104,10 +104,7 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
                     onCodeSubmitted: goToIdentifyPersonPage,
                     onCodeChanged: (code) {
                       if (code!.length == 6) {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                        setState(() {
-                          this.code = code;
-                        });
+                        goToIdentifyPersonPage(code);
                       }
                     },
                     focusNode: pinFocusNode,
