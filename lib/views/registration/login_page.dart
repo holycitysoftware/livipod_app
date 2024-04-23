@@ -7,6 +7,7 @@ import '../../models/models.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/countries.dart';
+import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
 
@@ -19,7 +20,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final ScrollController scrollController = ScrollController();
-  final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final FocusNode fullNameFocus = FocusNode();
   final FocusNode phoneFocus = FocusNode();
@@ -30,9 +30,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     setFocusListeners();
-    fullNameController.addListener(() {
-      setState(() {});
-    });
     phoneNumberController.addListener(() {
       setState(() {});
     });
@@ -67,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void setAppUser() {
     Provider.of<AuthController>(context, listen: false).setAppUser(
-        fullNameController: fullNameController.text,
+        fullNameController: '',
         phoneNumberController: country.dialCode + phoneNumberController.text);
   }
 
@@ -113,8 +110,7 @@ class _LoginPageState extends State<LoginPage> {
               return LiviFilledButton(
                 showArrow: true,
                 isCloseToNotch: true,
-                enabled: fullNameController.text.isNotEmpty &&
-                    phoneNumberController.text.isNotEmpty,
+                enabled: phoneNumberController.text.isNotEmpty,
                 isLoading: authController.loading,
                 text: Strings.logIn,
                 onTap: verifyNumber,
@@ -142,26 +138,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
               LiviThemes.spacing.heightSpacer8(),
               const SizedBox(height: kSpacer_16),
-              LiviInputField(
-                key: Key('full-name-field'),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.fullName,
-                textCapitalization: TextCapitalization.words,
-                hint: Strings.steveJobsFullName,
-                onFieldSubmitted: (value) {
-                  phoneFocus.requestFocus();
-                },
-                focusNode: fullNameFocus,
-                controller: fullNameController,
-              ),
               Consumer<AuthController>(
                   builder: (context, authController, child) {
                 return LiviInputField(
                   key: Key('phone-number-field'),
                   padding: const EdgeInsets.symmetric(
                       horizontal: kSpacer_16, vertical: kSpacer_8),
-                  title: Strings.phoneNumber,
+                  title: Strings.phoneNumber.requiredSymbol(),
                   focusNode: phoneFocus,
                   onFieldSubmitted: (value) {
                     verifyNumber();

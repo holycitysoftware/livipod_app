@@ -7,6 +7,7 @@ import '../../models/models.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/countries.dart';
+import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
 
 class CreateAccountPage extends StatefulWidget {
@@ -156,7 +157,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   focusNode: fullNameFocus,
                   padding: const EdgeInsets.symmetric(
                       horizontal: kSpacer_16, vertical: kSpacer_8),
-                  title: Strings.fullName,
+                  title: Strings.fullName.requiredSymbol(),
                   textCapitalization: TextCapitalization.words,
                   hint: Strings.steveJobsFullName,
                   controller: fullNameController,
@@ -175,7 +176,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   return LiviInputField(
                     padding: const EdgeInsets.symmetric(
                         horizontal: kSpacer_16, vertical: kSpacer_8),
-                    title: Strings.phoneNumber,
+                    title: Strings.phoneNumber.requiredSymbol(),
                     controller: phoneNumberController,
                     focusNode: phoneFocus,
                     errorText: authController.verificationError.isEmpty

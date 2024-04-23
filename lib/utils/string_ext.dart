@@ -35,6 +35,10 @@ extension StringExt on String {
     return replaceAll('', '\u{200B}');
   }
 
+  String requiredSymbol() {
+    return '$this*';
+  }
+
   String removeExceptionString() {
     return replaceAll('Exception: ', '');
   }

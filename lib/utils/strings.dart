@@ -16,8 +16,8 @@ class Strings {
   static const String createAnAccount = 'Create an account';
   static const String afterCreatingYourAccount =
       'After creating your account, you will be ready to start managing your medications in a simple and effective way.';
-  static const String fullName = 'Full Name*';
-  static const String phoneNumber = 'Phone number*';
+  static const String fullName = 'Full Name';
+  static const String phoneNumber = 'Phone number';
   static const String email = 'Email';
   static const String pleaseEnterYourPhoneNumber =
       'Please enter your phone number';
@@ -94,4 +94,58 @@ class Strings {
   static const String selectPersona = 'Select Persona';
   static const String iHaveReadAndAgreeToThePrivacyPolicy =
       'I have read and agree to the Privacy Policy and Terms of Use';
+
+  static const String yourMedications = 'Your Medications';
+  static const String addNew = 'Add New';
+  static const String noMedicationsAddedYet = 'No medications added yet.';
+
+  static const String typeTheNameOfTheMedicine =
+      'Type the name of the medicine in the search bar below to add your first medication.';
+  static const String searchByName = 'Search by name';
+  static const String home = 'Home';
+  static const String medications = 'Medications';
+  static const String history = 'History';
+  static const String settings = 'Settings';
+  static const String addMedication = 'Add Medication';
+  static const String noResults = 'No results';
+  static const String continueWith = 'Continue with ';
+  static const String selectDosageForm = 'Select Dosage Form';
+  static const String capsule = 'Capsule';
+  static const String tablet = 'Tablet';
+  static const String drops = 'Drops';
+  static const String injection = 'Injection';
+  static const String ointment = 'Ointment';
+  static const String liquid = 'Liquid';
+  static const String patch = 'Patch';
+  static const String other = 'Other';
+  static const String selectMedicationStrength = 'Select Medication Strength';
+  static const String asNeeded = 'As needed';
+  static const String daily = 'Daily';
+  static const String weekly = 'Weekly';
+  static const String monthly = 'Monthly';
+  static const String save = 'Save';
+  static const String quantityNeeded = 'Quantity Needed';
+  static const String intervalBetweenDoses = 'Interval Between Doses';
+  static const String maximumDailyQuantity = 'Maximum Daily Quantity';
+  static const String startDate = 'Start Date';
+  static const String endDate = 'End Date';
+  static const String atWhatTimes = 'At what time';
+  static const String remindMe = 'Remind me';
+  static const String addAnotherSchedule = 'Add Another Schedule';
+  static const String select = 'Select';
+  static const String S = 'S';
+  static const String M = 'M';
+  static const String T = 'T';
+  static const String W = 'W';
+  static const String F = 'F';
+  static const String AM = 'AM';
+  static const String PM = 'PM';
+  static const String apply = 'Apply';
+  static const String noEndDate = 'No End Date';
+  static const String deleteMedication = 'Delete Medication';
+  static const String cancel = 'Cancel';
+  static const String areYouSureYouWantToDeleteThisMedication =
+      'Are you sure you want to delete this medication? This action cannot be undone.';
+  static const String yoursMedication = 'Yours Medications';
+  static const String editMedication = 'Edit Medication';
 }

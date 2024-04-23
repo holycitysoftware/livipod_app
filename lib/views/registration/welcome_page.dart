@@ -7,7 +7,6 @@ import '../../components/components.dart';
 import '../../themes/livi_spacing/livi_spacing.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
-import '../testing_only/login_user.dart';
 import '../views.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -16,13 +15,13 @@ class WelcomePage extends StatelessWidget {
   Future<void> goToLoginPage(BuildContext context) async {
     await Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => LoginCreateUser()),
+      MaterialPageRoute(builder: (context) => SmsFlowPage()),
     );
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
     await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TestCreateUser()));
+        context, MaterialPageRoute(builder: (context) => SmsFlowPage()));
   }
 
   SystemUiOverlayStyle getStyle(BuildContext context) {

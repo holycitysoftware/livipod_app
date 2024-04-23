@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../controllers/auth_controller.dart';
-import '../registration/check_sms_page.dart';
-import '../registration/create_account_page.dart';
-import '../registration/welcome_page.dart';
+import '../controllers/auth_controller.dart';
+import 'views.dart';
 
-class TestCreateUser extends StatefulWidget {
-  const TestCreateUser({super.key});
+class SmsFlowPage extends StatefulWidget {
+  final bool isLoginPage;
+  const SmsFlowPage({
+    super.key,
+    this.isLoginPage = false,
+  });
 
   @override
-  State<TestCreateUser> createState() => _TestCreateUserState();
+  State<SmsFlowPage> createState() => _SmsFlowPageState();
 }
 
-class _TestCreateUserState extends State<TestCreateUser> {
+class _SmsFlowPageState extends State<SmsFlowPage> {
   @override
   void dispose() {
     super.dispose();
@@ -33,12 +35,14 @@ class _TestCreateUserState extends State<TestCreateUser> {
 
   Widget getView(AuthController controller) {
     if (!controller.promptForUserCode && controller.firebaseAuthUser == null) {
+      if (widget.isLoginPage) {
+        return LoginPage();
+      }
       return CreateAccountPage();
-    } else if (controller.promptForUserCode && controller.appUser != null) {
-      return CheckSmsPage(
-        appUser: controller.appUser!,
-        isAccountCreation: true,
-      );
+    } else if (controller.promptForUserCode &&
+        controller.firebaseAuthUser == null &&
+        controller.appUser != null) {
+      return CheckSmsPage(appUser: controller.appUser!);
     } else if (controller.firebaseAuthUser != null) {
       return SafeArea(
         child: PopScope(
@@ -58,8 +62,6 @@ class _TestCreateUserState extends State<TestCreateUser> {
                   ElevatedButton(
                     onPressed: () async {
                       await controller.signOut();
-                      Navigator.popUntil(context, (route) => route.isFirst);
-                      Navigator.maybePop(context);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -75,7 +77,7 @@ class _TestCreateUserState extends State<TestCreateUser> {
         ),
       );
     } else {
-      return CreateAccountPage();
+      return LoginPage();
     }
   }
 }
