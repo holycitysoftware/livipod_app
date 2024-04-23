@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,8 @@ import '../../themes/livi_themes.dart';
 import '../../utils/countries.dart';
 import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
+import 'privacy_policy_page.dart';
+import 'terms_of_service_page.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -85,6 +88,24 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   //     ),
   //   );
   // }
+
+  Future<void> goToPrivacyPolicyPage() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PrivacyPolicyPage(),
+      ),
+    );
+  }
+
+  Future<void> goToTermsOfServicePage() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TermsOfServicePage(),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -202,14 +223,33 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           value: agreedToTOS,
                           onChanged: (e) => _setAgreedToTOS(!agreedToTOS)),
                       Expanded(
-                        child: GestureDetector(
-                          onTap: () => _setAgreedToTOS(!agreedToTOS),
-                          child: LiviTextStyles.interRegular16(
-                            Strings.iHaveReadAndAgreeToThePrivacyPolicy,
-                            textAlign: TextAlign.start,
-                            maxLines: 3,
+                        child: RichText(
+                            text: TextSpan(children: [
+                          TextSpan(
+                            text: '${Strings.iHaveReadAndAgreeToThe} ',
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.baseBlack),
                           ),
-                        ),
+                          TextSpan(
+                            text: Strings.termsOfService,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = goToTermsOfServicePage,
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.brand600),
+                          ),
+                          TextSpan(
+                            text: ' ${Strings.and} ',
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.baseBlack),
+                          ),
+                          TextSpan(
+                            text: Strings.privacyPolicy,
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.brand600),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = goToPrivacyPolicyPage,
+                          ),
+                        ])),
                       ),
                     ],
                   ),

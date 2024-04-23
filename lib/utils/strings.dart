@@ -92,8 +92,10 @@ class Strings {
   static const String checkYourSms = 'Check your SMS';
   static const String verifyCode = 'Verify Code';
   static const String selectPersona = 'Select Persona';
-  static const String iHaveReadAndAgreeToThePrivacyPolicy =
-      'I have read and agree to the Privacy Policy and Terms of Use';
+  static const String iHaveReadAndAgreeToThe = 'I have read and agree to the';
+  static const String privacyPolicy = 'Privacy Policy';
+  static const String termsOfService = 'Terms of Service';
+  static const String and = 'and';
 
   static const String yourMedications = 'Your Medications';
   static const String addNew = 'Add New';
@@ -148,4 +150,8 @@ class Strings {
       'Are you sure you want to delete this medication? This action cannot be undone.';
   static const String yoursMedication = 'Yours Medications';
   static const String editMedication = 'Edit Medication';
+  static const String pharmRightCorporation =
+      'PharmRight Corporation Privacy Policy';
+  static const String liviTermsOfServiceAgreement =
+      'Livi Terms of Service Agreement';
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iphone_has_notch/iphone_has_notch.dart';
+import 'package:livipod_app/utils/strings.dart';
 
 import '../../themes/livi_themes.dart';
+import '../components.dart';
 import '../text/livi_text_styles.dart';
 
 class LiviTextButton extends StatelessWidget {
@@ -38,8 +40,13 @@ class LiviTextButton extends StatelessWidget {
             Size(double.infinity, 52),
           ),
         ),
-        child: LiviTextStyles.interSemiBold18(text,
-            color: LiviThemes.colors.brand600),
+        child: LiviTextInkWell(
+          text: text,
+          onTap: () {},
+          style: LiviThemes.typography.interSemiBold_16.copyWith(
+            color: LiviThemes.colors.brand600,
+          ),
+        ),
       ),
     );
   }

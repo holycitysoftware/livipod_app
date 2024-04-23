@@ -30,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
     Timer(const Duration(milliseconds: 4000), () async {
       //TODO. validate userauth
       // Provider.of<AuthController>(context,listen: false);
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => WelcomePage()));
     });
   }
