@@ -2,7 +2,16 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'dosing.g.dart';
 
-enum DosingOutcome { dispensed, skipped, missed }
+enum DosingOutcome {
+  @JsonValue('missed')
+  missed,
+  @JsonValue('skipped')
+  skipped,
+  @JsonValue('taken')
+  taken,
+  @JsonValue('jam')
+  jam
+}
 
 @JsonSerializable(explicitToJson: true)
 class Dosing {

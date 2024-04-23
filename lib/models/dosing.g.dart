@@ -34,7 +34,8 @@ Map<String, dynamic> _$DosingToJson(Dosing instance) => <String, dynamic>{
     };
 
 const _$DosingOutcomeEnumMap = {
-  DosingOutcome.dispensed: 'dispensed',
-  DosingOutcome.skipped: 'skipped',
   DosingOutcome.missed: 'missed',
+  DosingOutcome.skipped: 'skipped',
+  DosingOutcome.taken: 'taken',
+  DosingOutcome.jam: 'jam',
 };
