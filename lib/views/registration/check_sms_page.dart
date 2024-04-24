@@ -50,6 +50,14 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
     await validateSmsCode();
   }
 
+  Future<void> verifyPhoneNumber() async {
+    final appUser = Provider.of<AuthController>(context, listen: false).appUser;
+    if (appUser != null) {
+      await Provider.of<AuthController>(context, listen: false)
+          .verifyPhoneNumber(appUser.phoneNumber, isAccountCreation: true);
+    }
+  }
+
   @override
   void dispose() {
     if (Platform.isAndroid) {
@@ -133,10 +141,24 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              LiviTextStyles.interRegular16(Strings.didntReceiveTheSMS),
-              LiviThemes.spacing.widthSpacer8(),
-              LiviTextStyles.interSemiBold16(Strings.clickToResend,
-                  color: LiviThemes.colors.brand600),
+              GestureDetector(
+                onTap: verifyPhoneNumber,
+                child: LiviTextStyles.interRegular16(
+                  Strings.didntReceiveTheSMS,
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                ),
+              ),
+              LiviThemes.spacing.widthSpacer4(),
+              GestureDetector(
+                onTap: verifyPhoneNumber,
+                child: LiviTextStyles.interSemiBold16(
+                  Strings.clickToResend,
+                  color: LiviThemes.colors.brand600,
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                ),
+              ),
             ],
           ),
         ],

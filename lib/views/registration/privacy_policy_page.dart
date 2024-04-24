@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import '../../components/components.dart';
 import '../../themes/livi_themes.dart';
-import '../../utils/strings.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
@@ -13,17 +12,21 @@ class PrivacyPolicyPage extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          automaticallyImplyLeading: false,
+          title: BackBar(
+            title: 'Privacy Policy',
+          ),
+        ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                children: [
-                  BackBar(),
-                  LiviTextStyles.interSemiBold16(Strings.privacyPolicy),
-                ],
-              ),
               buildTitle('PharmRight Corporation Privacy Policy'),
               Padding(
                 padding: const EdgeInsets.all(16),

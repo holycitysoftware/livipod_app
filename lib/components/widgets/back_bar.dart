@@ -6,11 +6,9 @@ import '../components.dart';
 
 class BackBar extends StatelessWidget {
   final String? title;
+  final EdgeInsets? padding;
 
-  const BackBar({
-    super.key,
-    this.title,
-  });
+  const BackBar({super.key, this.title, this.padding});
 
   void pop(BuildContext context) {
     Navigator.pop(context);
@@ -19,7 +17,8 @@ class BackBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+      padding: padding ??
+          EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
       child: Row(
         children: [
           _backBar(context),

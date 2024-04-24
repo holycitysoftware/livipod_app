@@ -17,6 +17,7 @@ class AuthController extends ChangeNotifier {
   String _verificationId = '';
   AppUser? _appUser;
   bool loading = false;
+  int? resendToken;
 
   final _accountService = AccountService();
   final _appUserService = AppUserService();
@@ -74,6 +75,7 @@ class AuthController extends ChangeNotifier {
 
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
+        forceResendingToken: resendToken,
         verificationCompleted: (PhoneAuthCredential credential) async {
           try {
             // This handler will only be called on Android devices
@@ -107,6 +109,7 @@ class AuthController extends ChangeNotifier {
           _verificationId = verificationId;
           _promptForUserCode = true;
           loading = false;
+          resendToken = resendToken;
           notifyListeners();
         },
         codeAutoRetrievalTimeout: (String verificationId) {
