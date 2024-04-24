@@ -1,5 +1,6 @@
 export 'device_view.dart';
 export 'devices_view.dart';
+export 'home/home_page.dart';
 export 'home_tab_view.dart';
 export 'profile_view.dart';
 export 'registration/check_sms_page.dart';

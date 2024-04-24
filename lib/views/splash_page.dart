@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,9 @@ import '../components/components.dart';
 import '../controllers/controllers.dart';
 import '../themes/livi_themes.dart';
 import '../utils/strings.dart';
+import 'registration/check_sms_page.dart';
 import 'registration/welcome_page.dart';
+import 'sms_flow_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({
@@ -28,10 +31,14 @@ class _SplashPageState extends State<SplashPage> {
 
   void _handleAuth() {
     Timer(const Duration(milliseconds: 4000), () async {
-      //TODO. validate userauth
-      // Provider.of<AuthController>(context,listen: false);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => WelcomePage()));
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SmsFlowPage()));
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => WelcomePage()));
+      }
     });
   }
 

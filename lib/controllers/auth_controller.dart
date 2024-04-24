@@ -197,7 +197,6 @@ class AuthController extends ChangeNotifier {
             _accountService.deleteAccount(account);
             _promptForUserCode = false;
             _verificationError = e.toString().removeExceptionString();
-            ;
             signOut();
           }
         }

@@ -123,6 +123,7 @@ class LiviTypography {
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',
       );
+
   TextStyle get interSemiBold_16 => TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w600,
