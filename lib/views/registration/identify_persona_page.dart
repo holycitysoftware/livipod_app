@@ -58,7 +58,7 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
   void goToNextPage() {
     if (widget.personaPageInfo.index == 8) {
       Provider.of<AuthController>(context, listen: false).setPersona();
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => FinishRegistrationPage(),

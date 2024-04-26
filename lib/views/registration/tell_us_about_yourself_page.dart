@@ -48,7 +48,7 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
     Provider.of<AuthController>(context, listen: false)
         .setPersona(personaType: personaType);
 
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => FinishRegistrationPage(),
