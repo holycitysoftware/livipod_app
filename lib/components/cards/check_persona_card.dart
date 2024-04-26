@@ -14,18 +14,33 @@ class CheckPersonaCard extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
-//TODO:add borders here
   @override
   Widget build(BuildContext context) {
-    return BoundingCard(
+    return InkWell(
       onTap: onTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: LiviTextStyles.interSemiBold16(option)),
-          LiviThemes.spacing.widthSpacer32(),
-          if (isSelected) LiviThemes.icons.checkIcon(),
-        ],
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        margin: EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+            color: LiviThemes.colors.baseWhite,
+            border: Border.all(color: LiviThemes.colors.gray200),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: LiviThemes.colors.brand600.withOpacity(0.24),
+                spreadRadius: 3.0,
+                blurRadius: 2,
+              ),
+            ]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: LiviTextStyles.interSemiBold16(option)),
+            LiviThemes.spacing.widthSpacer32(),
+            if (isSelected) LiviThemes.icons.checkIcon(),
+          ],
+        ),
       ),
     );
   }

@@ -111,7 +111,9 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
             ),
             LiviThemes.spacing.heightSpacer32(),
             Expanded(
+              flex: 3,
               child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
                   itemCount: widget.personaPageInfo.options.length,
                   itemBuilder: (context, index) {
                     final item = widget.personaPageInfo.options[index];
