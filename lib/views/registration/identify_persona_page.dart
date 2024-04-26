@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
+import '../../controllers/controllers.dart';
+import '../../models/models.dart';
 import '../../models/persona_page.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/persona_page_info_list.dart';
@@ -19,6 +22,14 @@ class IdentifyPersonaPage extends StatefulWidget {
 }
 
 class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
+  late PersonaOption selectedOption = widget.personaPageInfo.options[0];
+
+  @override
+  void initState() {
+    selectedOption = widget.personaPageInfo.options[0];
+    super.initState();
+  }
+
   Widget stepsBar(int index) {
     return Row(
       children: [
@@ -46,6 +57,7 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
 
   void goToNextPage() {
     if (widget.personaPageInfo.index == 8) {
+      Provider.of<AuthController>(context, listen: false).setPersona();
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -53,6 +65,13 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
         ),
       );
     } else {
+      Provider.of<AuthController>(context, listen: false)
+          .personaOptions
+          .removeWhere(
+              (element) => element.index == widget.personaPageInfo.index);
+      Provider.of<AuthController>(context, listen: false)
+          .personaOptions
+          .add(selectedOption);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -73,7 +92,6 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: LiviAppBar(
-
           //TODO:Back button
           title: Strings.identifyMyPersona),
       body: Padding(
@@ -101,8 +119,12 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
                         padding: const EdgeInsets.only(bottom: 16),
                         child: CheckPersonaCard(
                           option: item.option,
-                          onTap: () {},
-                          isSelected: true,
+                          onTap: () {
+                            setState(() {
+                              selectedOption = item;
+                            });
+                          },
+                          isSelected: selectedOption.option == item.option,
                         ));
                   }),
             ),

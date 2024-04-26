@@ -49,7 +49,7 @@ class WelcomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Spacer(flex: 3),
-              LiviThemes.icons.blueBackgroundLogo(),
+              LiviThemes.icons.logo,
               Spacer(),
               LiviTextStyles.interSemiBold24(Strings.welcomeToLiviPod),
               Spacer(flex: 2),

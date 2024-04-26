@@ -37,7 +37,7 @@ class FinishRegistrationPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Spacer(),
-                LiviThemes.icons.whiteBackgroundLogo(),
+                LiviThemes.icons.logoWhite,
                 LiviThemes.spacing.heightSpacer16(),
                 LiviTextStyles.interMedium24(Strings.welcomeToLiviPod,
                     color: LiviThemes.colors.baseWhite),

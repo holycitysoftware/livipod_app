@@ -11,6 +11,11 @@ class LiviIcons {
         '$svgPath/livipod.svg',
       );
 
+//TODO:Remove this
+  Widget get logo => SvgPicture.asset(
+        '$svgPath/logo.svg',
+      );
+
   String get _blueBackGroundLogoPath => '$svgPath/blue_background_logo.svg';
 
   String get _checkIconPath => '$svgPath/check.svg';

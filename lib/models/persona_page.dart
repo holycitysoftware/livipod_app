@@ -23,4 +23,13 @@ class PersonaOption {
     required this.appUserType,
     required this.option,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    return other is PersonaOption && other.index == index;
+  }
 }

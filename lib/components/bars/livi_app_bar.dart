@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../components/components.dart';
+import '../../themes/livi_themes.dart';
 
 class LiviAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -25,6 +26,15 @@ class _LiviAppBarState extends State<LiviAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       // leading: BackBar(),
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: LiviThemes.colors.brand600,
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       title: LiviTextStyles.interSemiBold16(widget.title),
       actions: widget.onPressed != null
           ? [LiviTextIcon(onPressed: widget.onPressed!)]

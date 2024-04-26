@@ -18,7 +18,7 @@ class AuthController extends ChangeNotifier {
   AppUser? _appUser;
   bool loading = false;
   int? resendToken;
-  List<PersonaOption> personaOptions = [];
+  Set<PersonaOption> personaOptions = {};
 
   final _accountService = AccountService();
   final _appUserService = AppUserService();
@@ -63,6 +63,22 @@ class AuthController extends ChangeNotifier {
       phoneNumber: phoneNumberController,
       timezone: timezone,
     );
+  }
+
+  Future<void> setPersona({
+    AppUserType? personaType,
+  }) async {
+    if (personaType != null) {
+      personaType = calculatePersona();
+    }
+    if (_appUser != null) {
+      _appUser!.appUserType = personaType!;
+      _appUserService.updateUser(_appUser!);
+    }
+  }
+
+  AppUserType calculatePersona() {
+    return AppUserType.assistedUser;
   }
 
   Future<void> verifyPhoneNumber(String phoneNumber,
