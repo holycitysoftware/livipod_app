@@ -159,7 +159,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             child: Column(
               children: [
                 BackBar(),
-                LiviThemes.icons.logo,
+                LiviThemes.icons.blueBackgroundLogo(),
                 LiviThemes.spacing.heightSpacer16(),
                 Align(
                   child:

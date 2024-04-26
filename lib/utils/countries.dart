@@ -8,7 +8,7 @@ List<Country> countriesList = const [
   Country(name: 'Aland Islands', dialCode: '+358', code: 'AX'),
   Country(name: 'Albania', dialCode: '+355', code: 'AL'),
   Country(name: 'Algeria', dialCode: '+213', code: 'DZ'),
-  Country(name: 'AmericanSamoa', dialCode: '+1684', code: 'AS'),
+  Country(name: 'AmericanSamoa', dialCode: '+16a84', code: 'AS'),
   Country(name: 'Andorra', dialCode: '+376', code: 'AD'),
   Country(name: 'Angola', dialCode: '+244', code: 'AO'),
   Country(name: 'Anguilla', dialCode: '+1264', code: 'AI'),

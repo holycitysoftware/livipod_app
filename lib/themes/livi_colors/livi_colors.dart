@@ -164,4 +164,5 @@ class LiviColors {
   Color get yellow950 => const Color(0xFF542C0D);
 
   Color get randomGray => const Color(0xFF9198A3);
+  Color get randomGray2 => const Color(0xffDCDCDC);
 }

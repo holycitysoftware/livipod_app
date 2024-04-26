@@ -18,6 +18,7 @@ class Strings {
       'After creating your account, you will be ready to start managing your medications in a simple and effective way.';
   static const String fullName = 'Full Name';
   static const String phoneNumber = 'Phone number';
+  static const String skip = 'Skip';
   static const String email = 'Email';
   static const String pleaseEnterYourPhoneNumber =
       'Please enter your phone number';

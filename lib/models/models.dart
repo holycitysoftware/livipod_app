@@ -6,6 +6,7 @@ export 'country.dart';
 export 'dosing.dart';
 export 'livi_pod.dart';
 export 'medication.dart';
+export 'persona_page.dart';
 export 'prn_dose.dart';
 export 'schedule.dart';
 export 'scheduled_dose.dart';

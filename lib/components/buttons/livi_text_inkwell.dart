@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../themes/livi_themes.dart';
-import '../components.dart';
 
 class LiviTextInkWell extends StatelessWidget {
   final String text;

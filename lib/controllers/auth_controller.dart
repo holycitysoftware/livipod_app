@@ -18,6 +18,7 @@ class AuthController extends ChangeNotifier {
   AppUser? _appUser;
   bool loading = false;
   int? resendToken;
+  List<PersonaOption> personaOptions = [];
 
   final _accountService = AccountService();
   final _appUserService = AppUserService();

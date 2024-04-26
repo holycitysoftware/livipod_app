@@ -9,8 +9,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
 import 'firebase_options.dart';
+import 'models/app_user.dart';
 import 'themes/livi_themes.dart';
-import 'views/splash_page.dart';
+import 'views/registration/tell_us_about_yourself_page.dart';
+import 'views/views.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -168,6 +170,7 @@ class _MyAppState extends State<MyApp> {
               ColorScheme.fromSeed(seedColor: LiviThemes.colors.brand600),
           useMaterial3: true,
         ),
+        //TODO:obv change this
         home:
             const SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),

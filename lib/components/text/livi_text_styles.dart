@@ -121,6 +121,29 @@ class LiviTextStyles {
         textAlign: textAlign,
       );
 
+  static LiviTextComponent interRegular18(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interRegular_18.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+
   static LiviTextComponent interRegular16(
     String data, {
     Color? color,
@@ -161,6 +184,28 @@ class LiviTextStyles {
         margin: margin,
         overflow: overflow,
         textStyle: LiviThemes.typography.interRegular_14.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+  static LiviTextComponent interMedium14(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interMedium_14.copyWith(
           height: height,
           decoration: lineThrough ?? TextDecoration.none,
         ),

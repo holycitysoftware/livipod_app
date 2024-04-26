@@ -125,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             children: [
               LiviThemes.spacing.heightSpacer8(),
-              LiviThemes.icons.logo,
+              LiviThemes.icons.blueBackgroundLogo(),
               LiviThemes.spacing.heightSpacer16(),
               Align(
                 child:

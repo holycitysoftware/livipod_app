@@ -11,9 +11,50 @@ class LiviIcons {
         '$svgPath/livipod.svg',
       );
 
-  Widget get logo => SvgPicture.asset(
-        '$svgPath/logo.svg',
-      );
+  String get _blueBackGroundLogoPath => '$svgPath/blue_background_logo.svg';
+
+  String get _checkIconPath => '$svgPath/check.svg';
+
+  Widget checkIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _checkIconPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  Widget blueBackgroundLogo({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _blueBackGroundLogoPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _whiteBackGroundLogoPath => '$svgPath/white_background_logo.svg';
+
+  Widget whiteBackgroundLogo({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _whiteBackGroundLogoPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
 
   Widget get logoWhite => SvgPicture.asset(
         '$svgPath/logo_white.svg',

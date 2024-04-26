@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../components/components.dart';
+import '../../components/widgets/bounding_card.dart';
+import '../../components/widgets/icon_bounding_card.dart';
 import '../../models/app_user.dart';
 import '../../models/app_user_type.dart';
 import '../../themes/livi_themes.dart';
+import '../../utils/persona_page_info_list.dart';
 import '../../utils/strings.dart';
+import '../views.dart';
 
-class TellUsAboutYourselfPage extends StatelessWidget {
+class TellUsAboutYourselfPage extends StatefulWidget {
   final AppUser appUser;
 
   const TellUsAboutYourselfPage({
@@ -14,37 +18,115 @@ class TellUsAboutYourselfPage extends StatelessWidget {
     required this.appUser,
   });
 
+  @override
+  State<TellUsAboutYourselfPage> createState() =>
+      _TellUsAboutYourselfPageState();
+}
+
+class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
   void createUser() {
-    final AppUser newUser = appUser;
+    final AppUser newUser = widget.appUser;
     newUser.appUserType = AppUserType.caredForUser;
+  }
+
+  void goToIdentifyPersonPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => IdentifyPersonaPage(
+          key: Key('identify-persona-page${personaPageInfoList.first.index}'),
+          personaPageInfo: personaPageInfoList.first,
+        ),
+      ),
+    );
+  }
+
+  void goToFinishRegistrationPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FinishRegistrationPage(),
+      ),
+    );
+  }
+
+  Widget buildUserTypeCard({
+    required String title,
+    required String description,
+  }) {
+    return BoundingCard(
+      onTap: goToFinishRegistrationPage,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interSemiBold16(title),
+          LiviTextStyles.interRegular16(description),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: LiviThemes.colors.gray200),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: LiviThemes.icons.messageChatCircleIcon()),
-          LiviTextStyles.interSemiBold24(Strings.tellUsAboutYourself),
-          LiviTextStyles.interRegular16(
-              Strings.yourVerificationCodeIsConfirmed),
-          LiviTextStyles.interSemiBold16(Strings.selfGuidedUsers),
-          LiviTextStyles.interRegular16(Strings.iAmFullyIndependentAndCapable),
-          LiviTextStyles.interRegular16(Strings.selectPersona),
-          LiviTextStyles.interSemiBold16(Strings.assistedUsers),
-          LiviTextStyles.interRegular16(Strings.iMayRequireSomeLevelOf),
-          LiviTextStyles.interRegular16(Strings.selectPersona),
-          LiviTextStyles.interSemiBold16(Strings.caredForUsers),
-          LiviTextStyles.interRegular16(Strings.iRelyHeavily),
-          LiviTextStyles.interRegular16(Strings.selectPersona),
-          LiviTextStyles.interRegular16(Strings.notSure),
-          LiviTextStyles.interRegular16(Strings.letUsHelpYouFindOut),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).viewPadding.top,
+            ),
+            LiviThemes.spacing.heightSpacer16(),
+            IconBoundingCard(
+              child: LiviThemes.icons.messageChatCircleIcon(),
+            ),
+            LiviThemes.spacing.heightSpacer24(),
+            LiviTextStyles.interSemiBold24(Strings.tellUsAboutYourself),
+            LiviThemes.spacing.heightSpacer8(),
+            LiviTextStyles.interRegular14(
+                Strings.yourVerificationCodeIsConfirmed),
+            Spacer(),
+            buildUserTypeCard(
+              title: Strings.selfGuidedUsers,
+              description: Strings.iAmFullyIndependentAndCapable,
+            ),
+            LiviThemes.spacing.heightSpacer12(),
+            buildUserTypeCard(
+              title: Strings.assistedUsers,
+              description: Strings.iMayRequireSomeLevelOf,
+            ),
+            LiviThemes.spacing.heightSpacer12(),
+            buildUserTypeCard(
+              title: Strings.caredForUsers,
+              description: Strings.iRelyHeavily,
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: goToIdentifyPersonPage,
+                  child: LiviTextStyles.interRegular16(
+                    Strings.notSure,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                  ),
+                ),
+                LiviThemes.spacing.widthSpacer4(),
+                GestureDetector(
+                  onTap: goToIdentifyPersonPage,
+                  child: LiviTextStyles.interSemiBold16(
+                    Strings.letUsHelpYouFindOut,
+                    color: LiviThemes.colors.brand600,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                  ),
+                ),
+              ],
+            ),
+            Spacer(),
+          ],
+        ),
       ),
     );
   }

@@ -24,6 +24,7 @@ class _LiviAppBarState extends State<LiviAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      // leading: BackBar(),
       title: LiviTextStyles.interSemiBold16(widget.title),
       actions: widget.onPressed != null
           ? [LiviTextIcon(onPressed: widget.onPressed!)]
