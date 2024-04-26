@@ -48,22 +48,14 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
 
   Future<void> goToIdentifyPersonPage(String code) async {
     await validateSmsCode();
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TellUsAboutYourselfPage(
-          appUser: widget.appUser,
-        ),
-      ),
-    );
   }
 
   Future<void> verifyPhoneNumber() async {
     final appUser = Provider.of<AuthController>(context, listen: false).appUser;
     if (appUser != null) {
       await Provider.of<AuthController>(context, listen: false)
-          .verifyPhoneNumber(appUser.phoneNumber, isAccountCreation: true);
+          .verifyPhoneNumber(appUser.phoneNumber.trim(),
+              isAccountCreation: true);
     }
   }
 

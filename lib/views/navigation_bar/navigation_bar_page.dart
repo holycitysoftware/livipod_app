@@ -4,7 +4,11 @@ import '../../utils/strings.dart';
 import '../views.dart';
 
 class NavigationBarPage extends StatefulWidget {
-  const NavigationBarPage({super.key});
+  final bool showIdentifyPersonaPage;
+  const NavigationBarPage({
+    super.key,
+    this.showIdentifyPersonaPage = false,
+  });
 
   @override
   State<NavigationBarPage> createState() => _NavigationBarPageState();
@@ -21,6 +25,23 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     HistoryPage(),
     SettingsPage(),
   ];
+
+  @override
+  void initState() {
+    if (widget.showIdentifyPersonaPage) {
+      goToTellUsAboutYourselfPage();
+    }
+    super.initState();
+  }
+
+  Future<void> goToTellUsAboutYourselfPage() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TellUsAboutYourselfPage(),
+      ),
+    );
+  }
 
   List<BottomNavigationBarItem> navigationBarItems = <BottomNavigationBarItem>[
     BottomNavigationBarItem(

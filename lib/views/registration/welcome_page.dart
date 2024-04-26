@@ -21,7 +21,13 @@ class WelcomePage extends StatelessWidget {
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
     await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SmsFlowPage()));
+      context,
+      MaterialPageRoute(
+        builder: (context) => SmsFlowPage(
+          showIdentifyPersonaPage: true,
+        ),
+      ),
+    );
   }
 
   SystemUiOverlayStyle getStyle(BuildContext context) {

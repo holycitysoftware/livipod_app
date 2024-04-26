@@ -6,19 +6,15 @@ import '../../components/components.dart';
 import '../../components/widgets/bounding_card.dart';
 import '../../components/widgets/icon_bounding_card.dart';
 import '../../controllers/controllers.dart';
-import '../../models/app_user.dart';
-import '../../models/app_user_type.dart';
+import '../../models/models.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/persona_page_info_list.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
 
 class TellUsAboutYourselfPage extends StatefulWidget {
-  final AppUser appUser;
-
   const TellUsAboutYourselfPage({
     super.key,
-    required this.appUser,
   });
 
   @override
@@ -27,33 +23,30 @@ class TellUsAboutYourselfPage extends StatefulWidget {
 }
 
 class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
-  void createUser() {
-    final AppUser newUser = widget.appUser;
-    newUser.appUserType = AppUserType.caredForUser;
-  }
-
   void goToIdentifyPersonPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => IdentifyPersonaPage(
-          key: Key('identify-persona-page${personaPageInfoList.first.index}'),
-          personaPageInfo: personaPageInfoList.first,
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => IdentifyPersonaPage(
+            personaPageInfo: personaPageInfoList.first,
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   void goToFinishRegistrationPage(AppUserType personaType) {
     Provider.of<AuthController>(context, listen: false)
         .setPersona(personaType: personaType);
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FinishRegistrationPage(),
-      ),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FinishRegistrationPage(),
+        ),
+      );
+    });
   }
 
   Widget buildUserTypeCard({
@@ -62,6 +55,7 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
     required AppUserType personaType,
   }) {
     return BoundingCard(
+      key: Key(title),
       onTap: () => goToFinishRegistrationPage(personaType),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

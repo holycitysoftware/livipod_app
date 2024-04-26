@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/buttons/livi_filled_button_white.dart';
 import '../../components/components.dart';
+import '../../controllers/controllers.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
@@ -48,6 +50,14 @@ class FinishRegistrationPage extends StatelessWidget {
                       Strings.yourAccountHasBeenCreatedStart,
                       textAlign: TextAlign.center,
                       color: LiviThemes.colors.baseWhite),
+                  LiviThemes.spacing.heightSpacer4(),
+                  //TODO:change this
+                  Consumer<AuthController>(builder: (context, value, child) {
+                    return LiviTextStyles.interRegular18(
+                        'Your persona is ${value.personaType}',
+                        textAlign: TextAlign.center,
+                        color: LiviThemes.colors.baseWhite);
+                  }),
                   Spacer(),
                   LiviFilledButtonWhite(
                       text: Strings.addMedication,

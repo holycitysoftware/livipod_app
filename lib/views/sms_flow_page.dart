@@ -6,9 +6,11 @@ import 'views.dart';
 
 class SmsFlowPage extends StatefulWidget {
   final bool isLoginPage;
+  final bool showIdentifyPersonaPage;
   const SmsFlowPage({
     super.key,
     this.isLoginPage = false,
+    this.showIdentifyPersonaPage = false,
   });
 
   @override
@@ -16,6 +18,11 @@ class SmsFlowPage extends StatefulWidget {
 }
 
 class _SmsFlowPageState extends State<SmsFlowPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -42,9 +49,14 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
     } else if (controller.promptForUserCode &&
         controller.firebaseAuthUser == null &&
         controller.appUser != null) {
-      return CheckSmsPage(appUser: controller.appUser!);
+      return CheckSmsPage(
+        appUser: controller.appUser!,
+        isAccountCreation: !widget.isLoginPage,
+      );
     } else if (controller.firebaseAuthUser != null) {
-      return NavigationBarPage();
+      return NavigationBarPage(
+        showIdentifyPersonaPage: widget.showIdentifyPersonaPage,
+      );
     } else {
       return LoginPage();
     }

@@ -19,6 +19,7 @@ class AuthController extends ChangeNotifier {
   bool loading = false;
   int? resendToken;
   Set<PersonaOption> personaOptions = {};
+  AppUserType? personaType;
 
   final _accountService = AccountService();
   final _appUserService = AppUserService();
@@ -70,6 +71,7 @@ class AuthController extends ChangeNotifier {
   }) async {
     if (personaType != null) {
       personaType = calculatePersona();
+      this.personaType = personaType;
     }
     if (_appUser != null) {
       _appUser!.appUserType = personaType!;
@@ -78,7 +80,41 @@ class AuthController extends ChangeNotifier {
   }
 
   AppUserType calculatePersona() {
-    return AppUserType.assistedUser;
+    if (personaOptions.isNotEmpty) {
+      if (personaOptions.first.appUserType == AppUserType.caredForUser ||
+          personaOptions.first.appUserType == AppUserType.assistedUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(2).appUserType == AppUserType.caredForUser ||
+          personaOptions.elementAt(2).appUserType == AppUserType.assistedUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(3).appUserType == AppUserType.caredForUser ||
+          personaOptions.elementAt(3).appUserType == AppUserType.assistedUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(4).appUserType == AppUserType.caredForUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(5).appUserType == AppUserType.caredForUser ||
+          personaOptions.elementAt(5).appUserType == AppUserType.assistedUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(6).appUserType == AppUserType.caredForUser ||
+          personaOptions.elementAt(6).appUserType == AppUserType.assistedUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(7).appUserType == AppUserType.caredForUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(8).appUserType == AppUserType.assistedUser) {
+        return AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(8).appUserType == AppUserType.caredForUser) {
+        return AppUserType.caredForUser;
+      }
+    }
+    return AppUserType.selfGuidedUser;
   }
 
   Future<void> verifyPhoneNumber(String phoneNumber,
