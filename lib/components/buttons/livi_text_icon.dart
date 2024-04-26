@@ -5,16 +5,26 @@ import '../../utils/strings.dart';
 import '../components.dart';
 
 class LiviTextIcon extends StatelessWidget {
-  const LiviTextIcon({super.key});
+  final Function() onPressed;
+  const LiviTextIcon({
+    super.key,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        LiviTextStyles.interRegular16(Strings.addNew,
-            color: LiviThemes.colors.brand600),
-        LiviThemes.icons.plus
-      ],
+    return InkWell(
+      onTap: onPressed,
+      child: Row(
+        children: [
+          LiviTextStyles.interMedium16(Strings.addNew,
+              color: LiviThemes.colors.brand600),
+          Padding(
+            padding: const EdgeInsets.only(left: 2, right: 8),
+            child: LiviThemes.icons.plusIcon(),
+          )
+        ],
+      ),
     );
   }
 }

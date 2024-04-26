@@ -44,7 +44,7 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
         controller.appUser != null) {
       return CheckSmsPage(appUser: controller.appUser!);
     } else if (controller.firebaseAuthUser != null) {
-      return HomePage();
+      return NavigationBarPage();
     } else {
       return LoginPage();
     }

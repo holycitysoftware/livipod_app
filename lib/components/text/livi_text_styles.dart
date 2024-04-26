@@ -98,6 +98,29 @@ class LiviTextStyles {
         textAlign: textAlign,
       );
 
+  static LiviTextComponent interSemiBold36(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interSemiBold_24.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+
   static LiviTextComponent interRegular16(
     String data, {
     Color? color,

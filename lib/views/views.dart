@@ -1,7 +1,12 @@
 export 'device_view.dart';
 export 'devices_view.dart';
-export 'home/home_page.dart';
 export 'home_tab_view.dart';
+export 'navigation_bar/history_page.dart';
+export 'navigation_bar/home_page.dart';
+export 'navigation_bar/medications/add_medication_page.dart';
+export 'navigation_bar/medications_page.dart';
+export 'navigation_bar/navigation_bar_page.dart';
+export 'navigation_bar/settings_page.dart';
 export 'profile_view.dart';
 export 'registration/check_sms_page.dart';
 export 'registration/create_account_page.dart';

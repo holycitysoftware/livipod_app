@@ -23,10 +23,6 @@ class LiviIcons {
         '$svgPath/livipod_text.svg',
       );
 
-  Widget get alarmAdd => SvgPicture.asset(
-        '$svgPath/alarm_add.svg',
-      );
-
   Widget get capsule => SvgPicture.asset(
         '$svgPath/capsule.svg',
       );
@@ -36,14 +32,9 @@ class LiviIcons {
   Widget get drops => SvgPicture.asset(
         '$svgPath/drops.svg',
       );
-  Widget get home => SvgPicture.asset(
-        '$svgPath/home.svg',
-      );
+
   Widget get injection => SvgPicture.asset(
         '$svgPath/injection.svg',
-      );
-  Widget get leaderboard => SvgPicture.asset(
-        '$svgPath/leaderboard.svg',
       );
 
   Widget get liquid => SvgPicture.asset(
@@ -54,9 +45,35 @@ class LiviIcons {
         '$svgPath/patch.svg',
       );
 
-  Widget get plus => SvgPicture.asset(
-        '$svgPath/plus.svg',
-      );
+  final String _messageChatCirclePath = '$svgPath/message_chat_circle.svg';
+
+  Widget messageChatCircleIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _messageChatCirclePath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  final String _plusPath = '$svgPath/plus.svg';
+
+  Widget plusIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _plusPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
 
   Widget get searchLg => SvgPicture.asset(
         '$svgPath/search_lg.svg',
@@ -66,9 +83,65 @@ class LiviIcons {
         '$svgPath/search_md.svg',
       );
 
-  Widget get settings => SvgPicture.asset(
-        '$svgPath/settings.svg',
-      );
+  String get _settingsPath => '$svgPath/settings.svg';
+
+  Widget settingsIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _settingsPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _leaderboardPath => '$svgPath/leaderboard.svg';
+
+  Widget leaderboardIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _leaderboardPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _alarmAddPath => '$svgPath/alarm_add.svg';
+
+  Widget alarmAddIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _alarmAddPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _homePath => '$svgPath/home.svg';
+
+  Widget homeIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _homePath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
 
   Widget get tablet => SvgPicture.asset(
         '$svgPath/tablet.svg',

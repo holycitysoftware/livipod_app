@@ -29,7 +29,7 @@ class TellUsAboutYourselfPage extends StatelessWidget {
                 border: Border.all(color: LiviThemes.colors.gray200),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: LiviThemes.icons.checkCircle),
+              child: LiviThemes.icons.messageChatCircleIcon()),
           LiviTextStyles.interSemiBold24(Strings.tellUsAboutYourself),
           LiviTextStyles.interRegular16(
               Strings.yourVerificationCodeIsConfirmed),
