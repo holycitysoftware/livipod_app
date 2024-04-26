@@ -81,9 +81,7 @@ class _LiviInputFieldState extends State<LiviInputField> {
         widget.errorText != null &&
         widget.errorText!.isNotEmpty) {
       return [];
-    } else if (widget.focusNode.hasFocus &&
-        widget.errorText != null &&
-        widget.errorText!.isEmpty) {
+    } else if (widget.focusNode.hasFocus && widget.errorText == null) {
       return [
         BoxShadow(
           color: LiviThemes.colors.brand600.withOpacity(0.24),

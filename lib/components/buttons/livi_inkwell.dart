@@ -35,7 +35,7 @@ class LiviInkWell extends StatelessWidget {
 
     return InkWell(
       borderRadius: BorderRadius.circular(64),
-      onTap: handleTap,
+      onTap: onTap,
       child: Padding(
         padding: padding ?? EdgeInsets.zero,
         child: child,

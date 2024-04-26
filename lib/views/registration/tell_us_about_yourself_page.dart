@@ -24,29 +24,25 @@ class TellUsAboutYourselfPage extends StatefulWidget {
 
 class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
   void goToIdentifyPersonPage() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => IdentifyPersonaPage(
-            personaPageInfo: personaPageInfoList.first,
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => IdentifyPersonaPage(
+          personaPageInfo: personaPageInfoList.first,
         ),
-      );
-    });
+      ),
+    );
   }
 
-  void goToFinishRegistrationPage(AppUserType personaType) {
-    Provider.of<AuthController>(context, listen: false)
+  Future<void> goToFinishRegistrationPage(AppUserType personaType) async {
+    await Provider.of<AuthController>(context, listen: false)
         .setPersona(personaType: personaType);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FinishRegistrationPage(),
-        ),
-      );
-    });
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FinishRegistrationPage(),
+      ),
+    );
   }
 
   Widget buildUserTypeCard({

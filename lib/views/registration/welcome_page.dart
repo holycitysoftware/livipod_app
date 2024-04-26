@@ -15,7 +15,11 @@ class WelcomePage extends StatelessWidget {
   Future<void> goToLoginPage(BuildContext context) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SmsFlowPage(isLoginPage: true)),
+      MaterialPageRoute(
+          builder: (context) => SmsFlowPage(
+                isLoginPage: true,
+              ),
+          settings: RouteSettings(name: 'SmsFlowPage')),
     );
   }
 
@@ -23,10 +27,10 @@ class WelcomePage extends StatelessWidget {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SmsFlowPage(
-          showIdentifyPersonaPage: true,
-        ),
-      ),
+          builder: (context) => SmsFlowPage(
+                showIdentifyPersonaPage: true,
+              ),
+          settings: RouteSettings(name: 'SmsFlowPage')),
     );
   }
 

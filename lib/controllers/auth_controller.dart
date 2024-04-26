@@ -71,8 +71,8 @@ class AuthController extends ChangeNotifier {
   }) async {
     if (personaType != null) {
       personaType = calculatePersona();
-      this.personaType = personaType;
     }
+    this.personaType = personaType;
     if (_appUser != null) {
       _appUser!.appUserType = personaType!;
       _appUserService.updateUser(_appUser!);
@@ -80,41 +80,42 @@ class AuthController extends ChangeNotifier {
   }
 
   AppUserType calculatePersona() {
+    AppUserType personaType = AppUserType.selfGuidedUser;
     if (personaOptions.isNotEmpty) {
       if (personaOptions.first.appUserType == AppUserType.caredForUser ||
           personaOptions.first.appUserType == AppUserType.assistedUser) {
-        return AppUserType.assistedUser;
+        personaType = AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(1).appUserType == AppUserType.caredForUser ||
+          personaOptions.elementAt(1).appUserType == AppUserType.assistedUser) {
+        personaType = AppUserType.assistedUser;
       }
       if (personaOptions.elementAt(2).appUserType == AppUserType.caredForUser ||
           personaOptions.elementAt(2).appUserType == AppUserType.assistedUser) {
-        return AppUserType.assistedUser;
+        personaType = AppUserType.assistedUser;
       }
-      if (personaOptions.elementAt(3).appUserType == AppUserType.caredForUser ||
-          personaOptions.elementAt(3).appUserType == AppUserType.assistedUser) {
-        return AppUserType.assistedUser;
+      if (personaOptions.elementAt(3).appUserType == AppUserType.caredForUser) {
+        personaType = AppUserType.assistedUser;
       }
-      if (personaOptions.elementAt(4).appUserType == AppUserType.caredForUser) {
-        return AppUserType.assistedUser;
+      if (personaOptions.elementAt(4).appUserType == AppUserType.caredForUser ||
+          personaOptions.elementAt(4).appUserType == AppUserType.assistedUser) {
+        personaType = AppUserType.assistedUser;
       }
       if (personaOptions.elementAt(5).appUserType == AppUserType.caredForUser ||
           personaOptions.elementAt(5).appUserType == AppUserType.assistedUser) {
-        return AppUserType.assistedUser;
+        personaType = AppUserType.assistedUser;
       }
-      if (personaOptions.elementAt(6).appUserType == AppUserType.caredForUser ||
-          personaOptions.elementAt(6).appUserType == AppUserType.assistedUser) {
-        return AppUserType.assistedUser;
+      if (personaOptions.elementAt(6).appUserType == AppUserType.caredForUser) {
+        personaType = AppUserType.assistedUser;
+      }
+      if (personaOptions.elementAt(7).appUserType == AppUserType.assistedUser) {
+        personaType = AppUserType.assistedUser;
       }
       if (personaOptions.elementAt(7).appUserType == AppUserType.caredForUser) {
-        return AppUserType.assistedUser;
-      }
-      if (personaOptions.elementAt(8).appUserType == AppUserType.assistedUser) {
-        return AppUserType.assistedUser;
-      }
-      if (personaOptions.elementAt(8).appUserType == AppUserType.caredForUser) {
-        return AppUserType.caredForUser;
+        personaType = AppUserType.caredForUser;
       }
     }
-    return AppUserType.selfGuidedUser;
+    return personaType;
   }
 
   Future<void> verifyPhoneNumber(String phoneNumber,

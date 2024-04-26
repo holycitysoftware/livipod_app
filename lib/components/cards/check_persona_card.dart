@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../themes/livi_themes.dart';
 import '../components.dart';
@@ -38,7 +39,9 @@ class CheckPersonaCard extends StatelessWidget {
           children: [
             Expanded(child: LiviTextStyles.interSemiBold16(option)),
             LiviThemes.spacing.widthSpacer32(),
-            if (isSelected) LiviThemes.icons.checkIcon(),
+            Opacity(
+                opacity: isSelected ? 1 : 0,
+                child: LiviThemes.icons.checkIcon()),
           ],
         ),
       ),

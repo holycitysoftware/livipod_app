@@ -165,11 +165,6 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: LiviThemes.colors.brand600),
-          useMaterial3: true,
-        ),
 
         home: SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),

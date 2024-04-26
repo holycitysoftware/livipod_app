@@ -55,9 +55,9 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
     );
   }
 
-  void goToNextPage() {
+  Future<void> goToNextPage() async {
     if (widget.personaPageInfo.index == 8) {
-      Provider.of<AuthController>(context, listen: false).setPersona();
+      await Provider.of<AuthController>(context, listen: false).setPersona();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

@@ -34,7 +34,7 @@ class LiviGestureDetector extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: handleTap,
+      onTap: onTap,
       child: Padding(
         padding: padding ?? EdgeInsets.zero,
         child: child,

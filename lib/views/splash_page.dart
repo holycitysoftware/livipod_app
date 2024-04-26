@@ -34,10 +34,16 @@ class _SplashPageState extends State<SplashPage> {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SmsFlowPage()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => SmsFlowPage(),
+                settings: RouteSettings(name: 'SmsFlowPage')));
       } else {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => WelcomePage()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => WelcomePage(),
+                settings: RouteSettings(name: 'SmsFlowPage')));
       }
     });
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
@@ -91,107 +92,110 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvoked: (didPop) {
-        if (mounted) {
-          Provider.of<AuthController>(context, listen: false)
-              .clearVerificationError();
-        }
-      },
-      child: Scaffold(
-        backgroundColor: LiviThemes.colors.baseWhite,
-        resizeToAvoidBottomInset: true,
-        bottomNavigationBar: Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Consumer<AuthController>(
-                builder: (context, authController, child) {
-              return LiviFilledButton(
-                showArrow: true,
-                isCloseToNotch: true,
-                enabled: phoneNumberController.text.isNotEmpty,
-                isLoading: authController.loading,
-                text: Strings.logIn,
-                onTap: verifyNumber,
-              );
-            }),
-          ),
-        ),
-        body: Form(
-          key: _formKey,
-          child: ListView(
-            controller: scrollController,
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            children: [
-              LiviThemes.spacing.heightSpacer8(),
-              LiviThemes.icons.logo,
-              LiviThemes.spacing.heightSpacer16(),
-              Align(
-                child:
-                    LiviTextStyles.interSemiBold24(Strings.loginToYourAccount),
-              ),
-              LiviThemes.spacing.heightSpacer4(),
-              Align(
-                child: LiviTextStyles.interRegular16(
-                    Strings.welcomeBackPleaseEnterDetails),
-              ),
-              LiviThemes.spacing.heightSpacer8(),
-              const SizedBox(height: kSpacer_16),
-              Consumer<AuthController>(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: PopScope(
+        onPopInvoked: (didPop) {
+          if (mounted) {
+            Provider.of<AuthController>(context, listen: false)
+                .clearVerificationError();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: LiviThemes.colors.baseWhite,
+          resizeToAvoidBottomInset: true,
+          bottomNavigationBar: Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Consumer<AuthController>(
                   builder: (context, authController, child) {
-                return LiviInputField(
-                  key: Key('phone-number-field'),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: kSpacer_16, vertical: kSpacer_8),
-                  title: Strings.phoneNumber.requiredSymbol(),
-                  focusNode: phoneFocus,
-                  onFieldSubmitted: (value) {
-                    verifyNumber();
-                  },
-                  errorText: authController.verificationError.isEmpty
-                      ? null
-                      : authController.verificationError,
-                  hint: Strings.steveJobsNumber,
-                  prefix: CountryDropdownButton(
-                    country: country,
-                    onChanged: (Country? value) {
-                      setState(() {
-                        country = value!;
-                      });
-                    },
-                  ),
-                  controller: phoneNumberController,
+                return LiviFilledButton(
+                  showArrow: true,
+                  isCloseToNotch: true,
+                  enabled: phoneNumberController.text.isNotEmpty,
+                  isLoading: authController.loading,
+                  text: Strings.logIn,
+                  onTap: verifyNumber,
                 );
               }),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () => goToCreateAccountPage(context),
-                      child: LiviTextStyles.interRegular16(
-                        Strings.dontHaveAnAccount,
-                        textAlign: TextAlign.start,
-                        maxLines: 3,
-                      ),
-                    ),
-                    LiviThemes.spacing.widthSpacer4(),
-                    GestureDetector(
-                      onTap: () => goToCreateAccountPage(context),
-                      child: LiviTextStyles.interSemiBold16(
-                        Strings.signUp,
-                        color: LiviThemes.colors.brand600,
-                        textAlign: TextAlign.start,
-                        maxLines: 3,
-                      ),
-                    ),
-                  ],
+            ),
+          ),
+          body: Form(
+            key: _formKey,
+            child: ListView(
+              controller: scrollController,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              children: [
+                LiviThemes.spacing.heightSpacer8(),
+                LiviThemes.icons.logo,
+                LiviThemes.spacing.heightSpacer16(),
+                Align(
+                  child: LiviTextStyles.interSemiBold24(
+                      Strings.loginToYourAccount),
                 ),
-              ),
-            ],
+                LiviThemes.spacing.heightSpacer4(),
+                Align(
+                  child: LiviTextStyles.interRegular16(
+                      Strings.welcomeBackPleaseEnterDetails),
+                ),
+                LiviThemes.spacing.heightSpacer8(),
+                const SizedBox(height: kSpacer_16),
+                Consumer<AuthController>(
+                    builder: (context, authController, child) {
+                  return LiviInputField(
+                    key: Key('phone-number-field'),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kSpacer_16, vertical: kSpacer_8),
+                    title: Strings.phoneNumber.requiredSymbol(),
+                    focusNode: phoneFocus,
+                    onFieldSubmitted: (value) {
+                      verifyNumber();
+                    },
+                    errorText: authController.verificationError.isEmpty
+                        ? null
+                        : authController.verificationError,
+                    hint: Strings.steveJobsNumber,
+                    prefix: CountryDropdownButton(
+                      country: country,
+                      onChanged: (Country? value) {
+                        setState(() {
+                          country = value!;
+                        });
+                      },
+                    ),
+                    controller: phoneNumberController,
+                  );
+                }),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => goToCreateAccountPage(context),
+                        child: LiviTextStyles.interRegular16(
+                          Strings.dontHaveAnAccount,
+                          textAlign: TextAlign.start,
+                          maxLines: 3,
+                        ),
+                      ),
+                      LiviThemes.spacing.widthSpacer4(),
+                      GestureDetector(
+                        onTap: () => goToCreateAccountPage(context),
+                        child: LiviTextStyles.interSemiBold16(
+                          Strings.signUp,
+                          color: LiviThemes.colors.brand600,
+                          textAlign: TextAlign.start,
+                          maxLines: 3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

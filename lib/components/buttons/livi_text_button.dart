@@ -42,12 +42,9 @@ class LiviTextButton extends StatelessWidget {
             Size(double.infinity, 52),
           ),
         ),
-        child: LiviTextInkWell(
-          text: text,
-          onTap: () {},
-          style: LiviThemes.typography.interSemiBold_16.copyWith(
-            color: color ?? LiviThemes.colors.brand600,
-          ),
+        child: LiviTextStyles.interSemiBold16(
+          text,
+          color: LiviThemes.colors.brand600,
         ),
       ),
     );

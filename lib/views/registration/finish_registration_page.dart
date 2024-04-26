@@ -5,18 +5,31 @@ import 'package:provider/provider.dart';
 import '../../components/buttons/livi_filled_button_white.dart';
 import '../../components/components.dart';
 import '../../controllers/controllers.dart';
+import '../../models/models.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
-import '../views.dart';
 
 class FinishRegistrationPage extends StatelessWidget {
   const FinishRegistrationPage({super.key});
 
   Future<void> goToLoginPage(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SmsFlowPage(isLoginPage: true)),
-    );
+    Navigator.popUntil(context, (route) {
+      ///change it to / pattern
+      return route.settings.name == 'SmsFlowPage';
+    });
+  }
+
+  String getUserType(AppUserType userType) {
+    switch (userType) {
+      case AppUserType.assistedUser:
+        return 'Assisted User';
+      case AppUserType.caredForUser:
+        return 'Cared-for User';
+      case AppUserType.selfGuidedUser:
+        return 'Self-Guided User';
+      default:
+        return 'SelfGuided User';
+    }
   }
 
   @override
@@ -50,11 +63,11 @@ class FinishRegistrationPage extends StatelessWidget {
                       Strings.yourAccountHasBeenCreatedStart,
                       textAlign: TextAlign.center,
                       color: LiviThemes.colors.baseWhite),
-                  LiviThemes.spacing.heightSpacer4(),
+                  LiviThemes.spacing.heightSpacer16(),
                   //TODO:change this
                   Consumer<AuthController>(builder: (context, value, child) {
                     return LiviTextStyles.interRegular18(
-                        'Your persona is ${value.personaType}',
+                        'Your persona is ${getUserType(value.personaType ?? AppUserType.selfGuidedUser)}',
                         textAlign: TextAlign.center,
                         color: LiviThemes.colors.baseWhite);
                   }),

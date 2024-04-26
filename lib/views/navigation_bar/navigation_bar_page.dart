@@ -29,7 +29,9 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   @override
   void initState() {
     if (widget.showIdentifyPersonaPage) {
-      goToTellUsAboutYourselfPage();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        goToTellUsAboutYourselfPage();
+      });
     }
     super.initState();
   }
