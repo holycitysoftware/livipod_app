@@ -55,8 +55,19 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
     );
   }
 
+  Future<void> addNewOption() async {
+    Provider.of<AuthController>(context, listen: false)
+        .personaOptions
+        .removeWhere(
+            (element) => element.index == widget.personaPageInfo.index);
+    Provider.of<AuthController>(context, listen: false)
+        .personaOptions
+        .add(selectedOption);
+  }
+
   Future<void> goToNextPage() async {
     if (widget.personaPageInfo.index == 8) {
+      await addNewOption();
       await Provider.of<AuthController>(context, listen: false).setPersona();
       Navigator.pushReplacement(
         context,
@@ -65,13 +76,7 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
         ),
       );
     } else {
-      Provider.of<AuthController>(context, listen: false)
-          .personaOptions
-          .removeWhere(
-              (element) => element.index == widget.personaPageInfo.index);
-      Provider.of<AuthController>(context, listen: false)
-          .personaOptions
-          .add(selectedOption);
+      addNewOption();
       Navigator.push(
         context,
         MaterialPageRoute(

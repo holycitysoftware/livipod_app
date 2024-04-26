@@ -44,7 +44,7 @@ class LiviTextButton extends StatelessWidget {
         ),
         child: LiviTextStyles.interSemiBold16(
           text,
-          color: LiviThemes.colors.brand600,
+          color: color ?? LiviThemes.colors.brand600,
         ),
       ),
     );
