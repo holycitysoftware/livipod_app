@@ -68,66 +68,70 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewPadding.bottom + 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: goToIdentifyPersonPage,
+                child: LiviTextStyles.interRegular16(
+                  Strings.notSure,
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                ),
+              ),
+              LiviThemes.spacing.widthSpacer4(),
+              GestureDetector(
+                onTap: goToIdentifyPersonPage,
+                child: LiviTextStyles.interSemiBold16(
+                  Strings.letUsHelpYouFindOut,
+                  color: LiviThemes.colors.brand600,
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                ),
+              ),
+            ],
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).viewPadding.top,
-              ),
-              LiviThemes.spacing.heightSpacer16(),
-              IconBoundingCard(
-                child: LiviThemes.icons.messageChatCircleIcon(),
-              ),
-              LiviThemes.spacing.heightSpacer24(),
-              LiviTextStyles.interSemiBold24(Strings.tellUsAboutYourself),
-              LiviThemes.spacing.heightSpacer8(),
-              LiviTextStyles.interRegular14(
-                  Strings.yourVerificationCodeIsConfirmed),
-              Spacer(),
-              buildUserTypeCard(
-                personaType: AppUserType.selfGuidedUser,
-                title: Strings.selfGuidedUsers,
-                description: Strings.iAmFullyIndependentAndCapable,
-              ),
-              LiviThemes.spacing.heightSpacer12(),
-              buildUserTypeCard(
-                personaType: AppUserType.assistedUser,
-                title: Strings.assistedUsers,
-                description: Strings.iMayRequireSomeLevelOf,
-              ),
-              LiviThemes.spacing.heightSpacer12(),
-              buildUserTypeCard(
-                personaType: AppUserType.caredForUser,
-                title: Strings.caredForUsers,
-                description: Strings.iRelyHeavily,
-              ),
-              Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: goToIdentifyPersonPage,
-                    child: LiviTextStyles.interRegular16(
-                      Strings.notSure,
-                      textAlign: TextAlign.start,
-                      maxLines: 3,
-                    ),
-                  ),
-                  LiviThemes.spacing.widthSpacer4(),
-                  GestureDetector(
-                    onTap: goToIdentifyPersonPage,
-                    child: LiviTextStyles.interSemiBold16(
-                      Strings.letUsHelpYouFindOut,
-                      color: LiviThemes.colors.brand600,
-                      textAlign: TextAlign.start,
-                      maxLines: 3,
-                    ),
-                  ),
-                ],
-              ),
-              Spacer(),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).viewPadding.top,
+                ),
+                LiviThemes.spacing.heightSpacer16(),
+                IconBoundingCard(
+                  child: LiviThemes.icons.messageChatCircleIcon(),
+                ),
+                LiviThemes.spacing.heightSpacer24(),
+                LiviTextStyles.interSemiBold24(Strings.tellUsAboutYourself),
+                LiviThemes.spacing.heightSpacer8(),
+                LiviTextStyles.interRegular14(
+                    Strings.yourVerificationCodeIsConfirmed),
+                LiviThemes.spacing.heightSpacer16(),
+                buildUserTypeCard(
+                  personaType: AppUserType.selfGuidedUser,
+                  title: Strings.selfGuidedUsers,
+                  description: Strings.iAmFullyIndependentAndCapable,
+                ),
+                LiviThemes.spacing.heightSpacer12(),
+                buildUserTypeCard(
+                  personaType: AppUserType.assistedUser,
+                  title: Strings.assistedUsers,
+                  description: Strings.iMayRequireSomeLevelOf,
+                ),
+                LiviThemes.spacing.heightSpacer12(),
+                buildUserTypeCard(
+                  personaType: AppUserType.caredForUser,
+                  title: Strings.caredForUsers,
+                  description: Strings.iRelyHeavily,
+                ),
+              ],
+            ),
           ),
         ),
       ),
