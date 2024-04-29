@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/auth_controller.dart';
+import '../../themes/livi_themes.dart';
 import '../views.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,6 +13,7 @@ class HomePage extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: LiviThemes.colors.baseWhite,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text('Home'),

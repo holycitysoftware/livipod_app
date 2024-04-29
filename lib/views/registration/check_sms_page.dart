@@ -9,7 +9,6 @@ import '../../controllers/controllers.dart';
 import '../../models/app_user.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
-import '../views.dart';
 
 class CheckSmsPage extends StatefulWidget {
   final AppUser appUser;
@@ -70,6 +69,7 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: LiviThemes.colors.baseWhite,
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: Padding(
         padding: MediaQuery.of(context).viewInsets,

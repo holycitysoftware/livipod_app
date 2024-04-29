@@ -68,6 +68,7 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
+        backgroundColor: LiviThemes.colors.baseWhite,
         bottomNavigationBar: Padding(
           padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewPadding.bottom + 16),

@@ -18,14 +18,14 @@ class BackBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: padding ??
-          EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+          EdgeInsets.only(
+            top: MediaQuery.of(context).viewPadding.top,
+          ),
       child: Row(
         children: [
           _backBar(context),
           if (title != null) Spacer(),
           if (title != null) LiviTextStyles.interSemiBold16(title!),
-          if (title != null) Spacer(),
-          _backBar(context, isHidden: true),
         ],
       ),
     );

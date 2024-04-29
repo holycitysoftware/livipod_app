@@ -12,6 +12,7 @@ class TermsOfServicePage extends StatelessWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
+        backgroundColor: LiviThemes.colors.baseWhite,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,

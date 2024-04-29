@@ -121,13 +121,35 @@ class LiviIcons {
     );
   }
 
-  Widget get searchLg => SvgPicture.asset(
-        '$svgPath/search_lg.svg',
-      );
+  String get _searchLgPath => '$svgPath/search_lg.svg';
 
-  Widget get searchMd => SvgPicture.asset(
-        '$svgPath/search_md.svg',
-      );
+  Widget searchLgIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _searchLgPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _searchMdPath => '$svgPath/search_md.svg';
+
+  Widget searchMdIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _searchMdPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
 
   String get _settingsPath => '$svgPath/settings.svg';
 

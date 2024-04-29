@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../themes/livi_themes.dart';
 import 'devices_view.dart';
 import 'profile_view.dart';
 
@@ -16,6 +17,7 @@ class _HomeTabViewState extends State<HomeTabView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: LiviThemes.colors.baseWhite,
       appBar: AppBar(title: const Text('LiviPod')),
       body: _getPage(),
       bottomNavigationBar: BottomNavigationBar(

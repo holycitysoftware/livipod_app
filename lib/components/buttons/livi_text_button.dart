@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iphone_has_notch/iphone_has_notch.dart';
-import 'package:livipod_app/utils/strings.dart';
 
 import '../../themes/livi_themes.dart';
 import '../components.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../components/bars/livi_app_bar.dart';
 import '../../components/components.dart';
+import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
 
@@ -13,11 +13,13 @@ class MedicationsPage extends StatefulWidget {
 }
 
 class _MedicationsPageState extends State<MedicationsPage> {
-  void goToAddMedication() {
+  final FocusNode focusNode = FocusNode();
+
+  void goToSearchMedications({String? medication}) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddMedicationPage(),
+        builder: (context) => SearchMedicationPage(),
       ),
     );
   }
@@ -25,12 +27,37 @@ class _MedicationsPageState extends State<MedicationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
         title: Strings.yourMedications,
-        onPressed: goToAddMedication,
+        onPressed: goToSearchMedications,
       ),
       body: Center(
-        child: LiviTextStyles.interSemiBold36(Strings.noMedicationsAddedYet),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: LiviTextStyles.interSemiBold36(
+                  Strings.noMedicationsAddedYet,
+                  textAlign: TextAlign.center),
+            ),
+            LiviThemes.spacing.heightSpacer16(),
+            LiviTextStyles.interRegular16(Strings.typeTheNameOfTheMedicine,
+                textAlign: TextAlign.center),
+            LiviThemes.spacing.heightSpacer16(),
+            LiviSearchBar(
+              onFieldSubmitted: (e) {
+                goToSearchMedications(medication: e);
+              },
+              focusNode: focusNode,
+            ),
+            Spacer(
+              flex: 2,
+            ),
+          ]),
+        ),
       ),
     );
   }

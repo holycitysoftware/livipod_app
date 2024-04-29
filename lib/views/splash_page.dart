@@ -3,13 +3,10 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 import '../components/components.dart';
-import '../controllers/controllers.dart';
 import '../themes/livi_themes.dart';
 import '../utils/strings.dart';
-import 'registration/check_sms_page.dart';
 import 'registration/welcome_page.dart';
 import 'sms_flow_page.dart';
 

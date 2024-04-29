@@ -96,6 +96,7 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
           //TODO:Back button
           title: Strings.identifyMyPersona),

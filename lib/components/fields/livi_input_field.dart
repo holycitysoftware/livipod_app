@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../themes/livi_themes.dart';
 import '../components.dart';
@@ -9,7 +6,7 @@ import '../components.dart';
 final BorderRadius _borderRadius = BorderRadius.circular(8);
 
 class LiviInputField extends StatefulWidget {
-  final String title;
+  final String? title;
   final String? subTitle;
   final String? hint;
   final String? errorText;
@@ -23,7 +20,7 @@ class LiviInputField extends StatefulWidget {
 
   const LiviInputField({
     super.key,
-    required this.title,
+    this.title,
     this.keyboardType = TextInputType.text,
     this.onFieldSubmitted,
     this.errorText,
@@ -102,8 +99,9 @@ class _LiviInputFieldState extends State<LiviInputField> {
         children: [
           Row(
             children: [
-              LiviTextStyles.interMedium16(widget.title,
-                  color: LiviThemes.colors.gray500),
+              if (widget.title != null)
+                LiviTextStyles.interMedium16(widget.title!,
+                    color: LiviThemes.colors.gray500),
               LiviThemes.spacing.widthSpacer4(),
               if (widget.subTitle != null && widget.subTitle!.isNotEmpty)
                 LiviTextStyles.interMedium16(widget.subTitle!,

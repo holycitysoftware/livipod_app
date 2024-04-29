@@ -82,6 +82,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: LiviThemes.colors.baseWhite,
         bottomNavigationBar: BottomNavigationBar(
           items: navigationBarItems,
           backgroundColor: LiviThemes.colors.baseWhite94,

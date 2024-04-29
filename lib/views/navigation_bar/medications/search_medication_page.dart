@@ -3,18 +3,34 @@ import 'package:flutter/material.dart';
 
 import '../../../components/components.dart';
 import '../../../services/fda_service.dart';
+import '../../../themes/livi_themes.dart';
+import '../../../utils/strings.dart';
 
-class AddMedicationPage extends StatefulWidget {
-  const AddMedicationPage({super.key});
+class SearchMedicationPage extends StatefulWidget {
+  final String? medication;
+  const SearchMedicationPage({
+    super.key,
+    this.medication,
+  });
 
   @override
-  State<AddMedicationPage> createState() => _AddMedicationPageState();
+  State<SearchMedicationPage> createState() => _SearchMedicationPageState();
 }
 
-class _AddMedicationPageState extends State<AddMedicationPage> {
+class _SearchMedicationPageState extends State<SearchMedicationPage> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   final FdaService _service = FdaService();
   String results = '';
+
+  @override
+  void initState() {
+    if (widget.medication != null) {
+      _controller.text = widget.medication!;
+      searchDrugs();
+    }
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -34,23 +50,20 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
-        title: 'Add Medication',
+        title: Strings.addMedication,
       ),
       body: Center(
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                onSubmitted: (e) {
+              padding: const EdgeInsets.all(16),
+              child: LiviSearchBar(
+                focusNode: _focusNode,
+                onFieldSubmitted: (e) {
                   searchDrugs();
                 },
-                decoration: InputDecoration(
-                  hintText: 'Add Medication',
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.search),
-                ),
               ),
             ),
             Expanded(child: Text(results)),
