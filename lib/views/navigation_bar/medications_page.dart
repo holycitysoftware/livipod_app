@@ -16,12 +16,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
   final FocusNode focusNode = FocusNode();
 
   void goToSearchMedications({String? medication}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchMedicationPage(),
-      ),
-    );
+    Navigator.pushNamed(context, SearchMedicationPage.routeName);
   }
 
   @override

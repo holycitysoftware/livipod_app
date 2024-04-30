@@ -14,6 +14,7 @@ import 'privacy_policy_page.dart';
 import 'terms_of_service_page.dart';
 
 class CreateAccountPage extends StatefulWidget {
+  static const String routeName = '/create-account-page';
   const CreateAccountPage({super.key});
   @override
   _CreateAccountPageState createState() => _CreateAccountPageState();
@@ -50,8 +51,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
-    await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
+    await Navigator.pushNamed(context, CreateAccountPage.routeName);
   }
 
   Future<void> verifyPhoneNumber() async {
@@ -90,20 +90,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   // }
 
   Future<void> goToPrivacyPolicyPage() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PrivacyPolicyPage(),
-      ),
-    );
+    await Navigator.pushNamed(context, PrivacyPolicyPage.routeName);
   }
 
   Future<void> goToTermsOfServicePage() async {
-    await Navigator.push(
+    await Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => TermsOfServicePage(),
-      ),
+      TermsOfServicePage.routeName,
     );
   }
 

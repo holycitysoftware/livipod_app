@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SelectDosageFormPage extends StatefulWidget {
+  static const String routeName = '/select-dosage-form-page';
   const SelectDosageFormPage({super.key});
 
   @override

@@ -5,7 +5,9 @@ import '../../controllers/auth_controller.dart';
 import '../../themes/livi_themes.dart';
 import '../views.dart';
 
+///Route: home-page
 class HomePage extends StatelessWidget {
+  static const String routeName = '/home-page';
   const HomePage({super.key});
 
   @override

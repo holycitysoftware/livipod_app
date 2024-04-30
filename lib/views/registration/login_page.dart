@@ -13,6 +13,7 @@ import '../../utils/strings.dart';
 import '../views.dart';
 
 class LoginPage extends StatefulWidget {
+  static const String routeName = '/login-page';
   const LoginPage({super.key});
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -54,8 +55,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
-    await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
+    await Navigator.pushNamed(
+      context,
+      CreateAccountPage.routeName,
+    );
   }
 
   Future<void> verifyPhoneNumber() async {
@@ -75,12 +78,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> goToCheckSmsPge() async {
-    await Navigator.push(
+    await Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-        builder: (context) => CheckSmsPage(
-          appUser: appUser,
-        ),
+      CheckSmsPage.routeName,
+      arguments: CheckSmsPageArguments(
+        appUser: appUser,
+        isAccountCreation: true,
       ),
     );
   }

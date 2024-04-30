@@ -5,6 +5,7 @@ import '../../components/components.dart';
 import '../../themes/livi_themes.dart';
 
 class TermsOfServicePage extends StatelessWidget {
+  static const String routeName = '/terms-of-service-page';
   const TermsOfServicePage({super.key});
 
   @override

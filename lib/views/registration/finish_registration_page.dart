@@ -14,8 +14,7 @@ class FinishRegistrationPage extends StatelessWidget {
 
   Future<void> goToLoginPage(BuildContext context) async {
     Navigator.popUntil(context, (route) {
-      ///change it to / pattern
-      return route.settings.name == 'SmsFlowPage';
+      return route.settings.name == '/sms-flow-page';
     });
   }
 

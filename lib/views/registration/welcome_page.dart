@@ -10,27 +10,20 @@ import '../../utils/strings.dart';
 import '../views.dart';
 
 class WelcomePage extends StatelessWidget {
+  static const String routeName = '/welcome-page';
   const WelcomePage({super.key});
 
   Future<void> goToLoginPage(BuildContext context) async {
-    await Navigator.push(
+    await Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-          builder: (context) => SmsFlowPage(
-                isLoginPage: true,
-              ),
-          settings: RouteSettings(name: 'SmsFlowPage')),
+      SmsFlowPage.routeName,
     );
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
-    await Navigator.push(
+    await Navigator.pushNamed(
       context,
-      MaterialPageRoute(
-          builder: (context) => SmsFlowPage(
-                showIdentifyPersonaPage: true,
-              ),
-          settings: RouteSettings(name: 'SmsFlowPage')),
+      SmsFlowPage.routeName,
     );
   }
 

@@ -10,12 +10,25 @@ import '../../models/app_user.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 
-class CheckSmsPage extends StatefulWidget {
+// In this example, create a class that contains both
+// a customizable title and message.
+class CheckSmsPageArguments {
   final AppUser appUser;
+  final bool isAccountCreation;
+
+  CheckSmsPageArguments({
+    required this.appUser,
+    this.isAccountCreation = false,
+  });
+}
+
+class CheckSmsPage extends StatefulWidget {
+  static const String routeName = '/check-sms-page';
+  final AppUser? appUser;
   final bool isAccountCreation;
   const CheckSmsPage({
     super.key,
-    required this.appUser,
+    this.appUser,
     this.isAccountCreation = false,
   });
 
@@ -98,8 +111,10 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
           Align(
               child: LiviTextStyles.interRegular16(
                   Strings.weSentAVerificationCodeTo)),
-          Align(
-              child: LiviTextStyles.interRegular16(widget.appUser.phoneNumber)),
+          if (widget.appUser != null)
+            Align(
+                child:
+                    LiviTextStyles.interRegular16(widget.appUser!.phoneNumber)),
           LiviThemes.spacing.heightSpacer24(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -5,6 +5,7 @@ import '../../components/components.dart';
 import '../../themes/livi_themes.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
+  static const String routeName = '/privacy-policy-page';
   const PrivacyPolicyPage({super.key});
 
   @override
@@ -13,7 +14,6 @@ class PrivacyPolicyPage extends StatelessWidget {
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: LiviThemes.colors.baseWhite,
-
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SelectMedicationStrength extends StatelessWidget {
+  static const String routeName = '/select-medication-strength-page';
   const SelectMedicationStrength({super.key});
 
   @override

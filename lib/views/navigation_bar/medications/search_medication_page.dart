@@ -6,7 +6,13 @@ import '../../../services/fda_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
 
+class SearchMedicationPageArguments {
+  final String? medication;
+  SearchMedicationPageArguments({this.medication});
+}
+
 class SearchMedicationPage extends StatefulWidget {
+  static const String routeName = '/search-medication-page';
   final String? medication;
   const SearchMedicationPage({
     super.key,

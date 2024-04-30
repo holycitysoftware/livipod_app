@@ -5,6 +5,7 @@ import '../controllers/auth_controller.dart';
 import 'views.dart';
 
 class SmsFlowPage extends StatefulWidget {
+  static const String routeName = '/sms-flow-page';
   final bool isLoginPage;
   final bool showIdentifyPersonaPage;
   const SmsFlowPage({
@@ -29,8 +30,7 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
   }
 
   Future<void> goToWelcomePage() async {
-    await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => WelcomePage()));
+    await Navigator.pushNamed(context, WelcomePage.routeName);
   }
 
   @override
@@ -50,7 +50,7 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
         controller.firebaseAuthUser == null &&
         controller.appUser != null) {
       return CheckSmsPage(
-        appUser: controller.appUser!,
+        appUser: controller.appUser,
         isAccountCreation: !widget.isLoginPage,
       );
     } else if (controller.firebaseAuthUser != null) {
