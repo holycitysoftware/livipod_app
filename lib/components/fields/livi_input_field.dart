@@ -17,6 +17,7 @@ class LiviInputField extends StatefulWidget {
   final TextCapitalization? textCapitalization;
   final FocusNode focusNode;
   final ValueChanged<String>? onFieldSubmitted;
+  final Color? color;
 
   const LiviInputField({
     super.key,
@@ -31,6 +32,7 @@ class LiviInputField extends StatefulWidget {
     this.prefix,
     required this.focusNode,
     this.textCapitalization,
+    this.color,
   });
 
   @override
@@ -41,7 +43,9 @@ class _LiviInputFieldState extends State<LiviInputField> {
   @override
   void initState() {
     widget.focusNode.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
     super.initState();
   }
@@ -111,7 +115,7 @@ class _LiviInputFieldState extends State<LiviInputField> {
           LiviThemes.spacing.heightSpacer6(),
           DecoratedBox(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: widget.color ?? Colors.white,
               borderRadius: _borderRadius,
               boxShadow: boxShadow(),
             ),

@@ -20,7 +20,9 @@ class Medication {
   Dosing? nextDosing;
   Dosing? lastDosing;
 
-  Medication();
+  Medication({
+    required this.name,
+  });
 
   String getLastDosing() {
     if (lastDosing == null || lastDosing!.lastDosingTime == null) {

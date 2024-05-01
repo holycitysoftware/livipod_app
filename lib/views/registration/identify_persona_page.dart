@@ -21,10 +21,10 @@ class IdentifyPersonaPageArguments {
 
 class IdentifyPersonaPage extends StatefulWidget {
   static const String routeName = '/identify-persona-page';
-  final PersonaPageInfo? personaPageInfo;
+  final PersonaPageInfo personaPageInfo;
   const IdentifyPersonaPage({
     super.key,
-    this.personaPageInfo,
+    required this.personaPageInfo,
   });
 
   @override

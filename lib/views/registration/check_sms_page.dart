@@ -10,8 +10,6 @@ import '../../models/app_user.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 
-// In this example, create a class that contains both
-// a customizable title and message.
 class CheckSmsPageArguments {
   final AppUser appUser;
   final bool isAccountCreation;
@@ -24,11 +22,11 @@ class CheckSmsPageArguments {
 
 class CheckSmsPage extends StatefulWidget {
   static const String routeName = '/check-sms-page';
-  final AppUser? appUser;
+  final AppUser appUser;
   final bool isAccountCreation;
   const CheckSmsPage({
     super.key,
-    this.appUser,
+    required this.appUser,
     this.isAccountCreation = false,
   });
 

@@ -27,6 +27,10 @@ class _LiviAppBarState extends State<LiviAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      foregroundColor: LiviThemes.colors.baseWhite,
+      backgroundColor: LiviThemes.colors.baseWhite,
+      shadowColor: LiviThemes.colors.baseWhite, elevation: 0,
+      surfaceTintColor: LiviThemes.colors.baseWhite,
       leading: widget.backButton ||
               (ModalRoute.of(context)?.impliesAppBarDismissal ?? false)
           ? BackBar()

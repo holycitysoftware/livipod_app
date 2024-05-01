@@ -164,10 +164,8 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        routes: Pages.pages,
+        onGenerateRoute: Pages.onGenerateRoute,
         initialRoute: SplashPage.routeName,
-        onGenerateRoute:Pages.onGenerateRoute,
-        
         // home: SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),
     );

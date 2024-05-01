@@ -17,6 +17,7 @@ export 'registration/identify_persona_page.dart';
 export 'registration/login_page.dart';
 export 'registration/privacy_policy_page.dart';
 export 'registration/tell_us_about_yourself_page.dart';
+export 'registration/terms_of_service_page.dart';
 export 'registration/welcome_page.dart';
 export 'schedule_view.dart';
 export 'sms_flow_page.dart';
