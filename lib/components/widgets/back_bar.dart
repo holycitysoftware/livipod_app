@@ -7,8 +7,9 @@ import '../components.dart';
 class BackBar extends StatelessWidget {
   final String? title;
   final EdgeInsets? padding;
+  final bool? hasTrailing;
 
-  const BackBar({super.key, this.title, this.padding});
+  const BackBar({super.key, this.title, this.padding, this.hasTrailing = true});
 
   void pop(BuildContext context) {
     Navigator.pop(context);
@@ -26,8 +27,12 @@ class BackBar extends StatelessWidget {
           _backBar(context),
           if (title != null) Spacer(),
           if (title != null) LiviTextStyles.interSemiBold16(title!),
-          if (title != null) Spacer(),
-          _backBar(context, isHidden: true),
+          if (hasTrailing ?? false)
+            SizedBox()
+          else ...[
+            if (title != null) Spacer(),
+            _backBar(context, isHidden: true),
+          ]
         ],
       ),
     );

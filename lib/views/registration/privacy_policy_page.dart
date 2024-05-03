@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/components.dart';
 import '../../themes/livi_themes.dart';
+import '../../utils/strings.dart';
 
 final Uri _networkAdvertisingUrl =
     Uri.parse('http://www.networkadvertising.org/choices/');
@@ -34,15 +35,9 @@ class PrivacyPolicyPage extends StatelessWidget {
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: LiviThemes.colors.baseWhite,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.white,
-          surfaceTintColor: Colors.white,
-          automaticallyImplyLeading: false,
-          title: BackBar(
-            title: 'Privacy Policy',
-          ),
+        appBar: LiviAppBar(
+          title: Strings.privacyPolicy,
+          backButton: true,
         ),
         body: SingleChildScrollView(
           padding: EdgeInsets.all(16),

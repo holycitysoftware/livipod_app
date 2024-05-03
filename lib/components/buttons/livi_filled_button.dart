@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:iphone_has_notch/iphone_has_notch.dart';
 
 import '../../themes/livi_themes.dart';
 import '../components.dart';
@@ -24,13 +25,12 @@ class LiviFilledButton extends StatelessWidget {
     this.showArrow = false,
   });
 
-  bool get isButtonCloseToNotch =>
-      IphoneHasNotch.hasNotch && (isCloseToNotch ?? false);
+  bool get isButtonCloseToNotch => Platform.isIOS && (isCloseToNotch ?? false);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: isButtonCloseToNotch ? 16 : 0),
+      padding: EdgeInsets.only(bottom: isButtonCloseToNotch ? 32 : 0),
       child: ElevatedButton(
         style: ButtonStyle(
           shape: MaterialStatePropertyAll(

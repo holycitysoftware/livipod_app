@@ -210,11 +210,10 @@ class LiviIcons {
     Color? color,
     double? height,
   }) {
-    // color ??= LiviThemes.colors.randomGray;
-
     return SvgPicture.asset(
       _capsulePath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       height: height,
     );
   }
@@ -229,7 +228,8 @@ class LiviIcons {
 
     return SvgPicture.asset(
       _tabletPath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       height: height,
     );
   }
@@ -244,7 +244,8 @@ class LiviIcons {
 
     return SvgPicture.asset(
       _dropsPath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       height: height,
     );
   }
@@ -259,7 +260,8 @@ class LiviIcons {
 
     return SvgPicture.asset(
       _liquidPath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       height: height,
     );
   }
@@ -274,7 +276,8 @@ class LiviIcons {
 
     return SvgPicture.asset(
       _patchPath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       height: height,
     );
   }
@@ -289,7 +292,8 @@ class LiviIcons {
 
     return SvgPicture.asset(
       _otherDotsHorizontalPath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       height: height,
     );
   }
@@ -304,7 +308,8 @@ class LiviIcons {
 
     return SvgPicture.asset(
       _ointmentPath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
       height: height,
     );
   }

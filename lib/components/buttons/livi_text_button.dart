@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:iphone_has_notch/iphone_has_notch.dart';
 
 import '../../themes/livi_themes.dart';
 import '../components.dart';
@@ -21,7 +22,7 @@ class LiviTextButton extends StatelessWidget {
   });
 
   bool isButtonCloseToNotch() {
-    return IphoneHasNotch.hasNotch && (isCloseToNotch ?? false);
+    return Platform.isIOS && (isCloseToNotch ?? false);
   }
 
   @override
