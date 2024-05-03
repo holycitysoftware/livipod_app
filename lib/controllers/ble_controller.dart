@@ -6,10 +6,10 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../models/livi_pod.dart';
 import 'ble_device_controller.dart';
-import 'livi_pod_controller.dart';
+import '../services/livi_pod_service.dart';
 
 class BleController extends ChangeNotifier {
-  final LiviPodController liviPodController;
+  final LiviPodService liviPodController;
   List<ScanResult> _scanResults = [];
   BluetoothAdapterState _adapterState = BluetoothAdapterState.off;
   final List<BleDeviceController> _connectedDevices = [];

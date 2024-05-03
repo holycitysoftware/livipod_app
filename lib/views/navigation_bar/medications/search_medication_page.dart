@@ -42,12 +42,12 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
   }
 
   Future searchDrugs() async {
-    if (_controller.text.isNotEmpty) {
-      results = await _service.searchDrugs(_controller.text);
-      if (kDebugMode) {
-        print(results);
-      }
-    }
+    // if (_controller.text.isNotEmpty) {
+    //   results = await _service.searchDrugs(_controller.text);
+    //   if (kDebugMode) {
+    //     print(results);
+    //   }
+    // }
   }
 
   Future<void> goToSelectDosageForm() async {

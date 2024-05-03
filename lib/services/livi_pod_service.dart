@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../models/livi_pod.dart';
 
-class LiviPodController extends ChangeNotifier {
+class LiviPodService {
   final StreamController<List<LiviPod>> _liviPodStreamController =
       StreamController<List<LiviPod>>.broadcast();
 
