@@ -5,7 +5,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/ble_controller.dart';
-import '../controllers/livi_pod_controller.dart';
+import '../controllers/controllers.dart';
+import '../services/livi_pod_service.dart';
 import '../models/livi_pod.dart';
 import 'schedule_view.dart';
 
@@ -19,7 +20,8 @@ class DeviceView extends StatefulWidget {
 }
 
 class _DeviceViewState extends State<DeviceView> {
-  late final LiviPodController _liviPodController;
+  late final AuthController _authController;
+  late final LiviPodService _liviPodController;
   late final BleController _bleController;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -30,7 +32,8 @@ class _DeviceViewState extends State<DeviceView> {
 
   @override
   void initState() {
-    _liviPodController = Provider.of<LiviPodController>(context, listen: false);
+    _authController = Provider.of<AuthController>(context, listen: false);
+    _liviPodController = Provider.of<LiviPodService>(context, listen: false);
     _bleController = Provider.of<BleController>(context, listen: false);
     connect(widget.liviPod, widget.claim);
     liviPod = widget.liviPod;
@@ -77,9 +80,7 @@ class _DeviceViewState extends State<DeviceView> {
     if (!_connected) {
       await showAlert();
     } else {
-      // save to database
-      liviPod.medicationName = _nameController.text;
-
+      liviPod.userId = _authController.appUser!.id;
       if (!await _liviPodController.liviPodExists(liviPod)) {
         liviPod = await _liviPodController.addLiviPod(liviPod);
 
@@ -214,12 +215,12 @@ class _DeviceViewState extends State<DeviceView> {
         });
   }
 
-  Future updateSchedule() async {
-    await _liviPodController.updateLiviPod(liviPod);
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  // Future updateSchedule() async {
+  //   await _liviPodController.updateLiviPod(liviPod);
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  // }
 
   Future<void> reset() async {
     if (!_connected) {
@@ -280,23 +281,23 @@ class _DeviceViewState extends State<DeviceView> {
                 if (!_claimed || _editName) ...[
                   Column(
                     children: [
-                      Form(
-                        key: _formKey,
-                        child: TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                              label: Text('Medication Name')),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a medication';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      // Form(
+                      //   key: _formKey,
+                      //   child: TextFormField(
+                      //     controller: _nameController,
+                      //     decoration: const InputDecoration(
+                      //         label: Text('Medication Name')),
+                      //     validator: (value) {
+                      //       if (value == null || value.isEmpty) {
+                      //         return 'Please enter a medication';
+                      //       }
+                      //       return null;
+                      //     },
+                      //   ),
+                      // ),
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
                       ElevatedButton(
                         onPressed: () async {
                           // Validate returns true if the form is valid, or false otherwise.
@@ -304,13 +305,13 @@ class _DeviceViewState extends State<DeviceView> {
                             // If the form is valid, display a snackbar. In the real world,
                             // you'd often call a server or save the information in a database.
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')),
+                              const SnackBar(content: Text('Claiming pod')),
                             );
 
                             await save();
                           }
                         },
-                        child: const Text('Save'),
+                        child: const Text('Claim'),
                       ),
                     ],
                   ),
@@ -319,107 +320,107 @@ class _DeviceViewState extends State<DeviceView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      liviPod.medicationName,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          _nameController.text =
-                                              liviPod.medicationName;
-                                          if (mounted) {
-                                            setState(() {
-                                              _editName = true;
-                                            });
-                                          }
-                                        },
-                                        icon: const Icon(Icons.edit))
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                if (liviPod.schedule == null) ...[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                              builder: (context) {
-                                                return ScheduleView(
-                                                  onAdd: (schedule) async {
-                                                    liviPod.schedule = schedule;
-                                                    await updateSchedule();
-                                                  },
-                                                  onUpdate: () async {
-                                                    await updateSchedule();
-                                                  },
-                                                );
-                                              },
-                                            ));
-                                          },
-                                          child: const Text('Add a schedule'))
-                                    ],
-                                  ),
-                                ] else ...[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          liviPod.schedule!
-                                              .getScheduleDescription(),
-                                          textAlign: TextAlign.center,
-                                          softWrap: true,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                              builder: (context) {
-                                                return ScheduleView(
-                                                  schedule: liviPod.schedule,
-                                                  onAdd: (schedule) async {
-                                                    liviPod.schedule = schedule;
-                                                    await updateSchedule();
-                                                  },
-                                                  onUpdate: () async {
-                                                    await updateSchedule();
-                                                  },
-                                                );
-                                              },
-                                            ));
-                                          },
-                                          icon: const Icon(Icons.edit)),
-                                      IconButton(
-                                          onPressed: () async {
-                                            liviPod.schedule = null;
-                                            await updateSchedule();
-                                          },
-                                          icon: const Icon(Icons.delete))
-                                    ],
-                                  )
-                                ]
-                              ],
-                            ),
-                          ),
-                        ),
+                        // Card(
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.all(8.0),
+                        //     child: Column(
+                        //       children: [
+                        //         Row(
+                        //           mainAxisAlignment: MainAxisAlignment.center,
+                        //           children: [
+                        //             Text(
+                        //               liviPod.macAddress,
+                        //               textAlign: TextAlign.center,
+                        //             ),
+                        //             // IconButton(
+                        //             //     onPressed: () {
+                        //             //       _nameController.text =
+                        //             //           liviPod.medicationName;
+                        //             //       if (mounted) {
+                        //             //         setState(() {
+                        //             //           _editName = true;
+                        //             //         });
+                        //             //       }
+                        //             //     },
+                        //             //     icon: const Icon(Icons.edit))
+                        //           ],
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 20,
+                        //         ),
+                        //         if (liviPod.schedule == null) ...[
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               ElevatedButton(
+                        //                   onPressed: () {
+                        //                     Navigator.push(context,
+                        //                         MaterialPageRoute(
+                        //                       builder: (context) {
+                        //                         return ScheduleView(
+                        //                           onAdd: (schedule) async {
+                        //                             liviPod.schedule = schedule;
+                        //                             await updateSchedule();
+                        //                           },
+                        //                           onUpdate: () async {
+                        //                             await updateSchedule();
+                        //                           },
+                        //                         );
+                        //                       },
+                        //                     ));
+                        //                   },
+                        //                   child: const Text('Add a schedule'))
+                        //             ],
+                        //           ),
+                        //         ] else ...[
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               Flexible(
+                        //                 child: Text(
+                        //                   liviPod.schedule!
+                        //                       .getScheduleDescription(),
+                        //                   textAlign: TextAlign.center,
+                        //                   softWrap: true,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //           Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               IconButton(
+                        //                   onPressed: () {
+                        //                     Navigator.push(context,
+                        //                         MaterialPageRoute(
+                        //                       builder: (context) {
+                        //                         return ScheduleView(
+                        //                           schedule: liviPod.schedule,
+                        //                           onAdd: (schedule) async {
+                        //                             liviPod.schedule = schedule;
+                        //                             await updateSchedule();
+                        //                           },
+                        //                           onUpdate: () async {
+                        //                             await updateSchedule();
+                        //                           },
+                        //                         );
+                        //                       },
+                        //                     ));
+                        //                   },
+                        //                   icon: const Icon(Icons.edit)),
+                        //               IconButton(
+                        //                   onPressed: () async {
+                        //                     liviPod.schedule = null;
+                        //                     await updateSchedule();
+                        //                   },
+                        //                   icon: const Icon(Icons.delete))
+                        //             ],
+                        //           )
+                        //         ]
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                         Column(
                           children: [
                             ElevatedButton(

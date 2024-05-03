@@ -9,19 +9,22 @@ part 'livi_pod.g.dart';
 @JsonSerializable(explicitToJson: true)
 class LiviPod {
   String id = '';
+  String userId = '';
   final String remoteId;
   @JsonKey(defaultValue: '')
   String macAddress = '';
   @JsonKey(defaultValue: '')
   String ipAddress = '';
-  String medicationName;
-  Schedule? schedule;
-  Dosing? nextDosing;
-  Dosing? lastDosing;
+  String medicationId = '';
+
+  //String medicationName;
+  //Schedule? schedule;
+  //Dosing? nextDosing;
+  //Dosing? lastDosing;
   @JsonKey(includeFromJson: false, includeToJson: false)
   BleDeviceController? bleDeviceController;
 
-  LiviPod({required this.remoteId, required this.medicationName});
+  LiviPod({required this.remoteId});
 
   factory LiviPod.fromJson(Map<String, dynamic> json) =>
       _$LiviPodFromJson(json);

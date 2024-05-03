@@ -97,7 +97,7 @@ class _DevicesViewState extends State<DevicesView> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0, vertical: 20),
-                                child: Text(liviPod.medicationName),
+                                child: Text(liviPod.macAddress),
                               ),
                             ),
                           );
@@ -131,9 +131,9 @@ class _DevicesViewState extends State<DevicesView> {
                             return GestureDetector(
                               onTap: () {
                                 final liviPod = LiviPod(
-                                    remoteId:
-                                        scanResult.device.remoteId.toString(),
-                                    medicationName: '');
+                                  remoteId:
+                                      scanResult.device.remoteId.toString(),
+                                );
                                 deviceTapped(liviPod, true);
                               },
                               child: Card(

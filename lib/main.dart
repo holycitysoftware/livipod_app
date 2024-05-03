@@ -77,7 +77,7 @@ Future<void> setupFlutterNotifications() async {
   /// heads up notifications.
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
-  badge: true,
+    badge: true,
     sound: true,
   );
   isFlutterLocalNotificationsInitialized = true;
@@ -115,15 +115,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final BleController _devicesController;
-  late final ScheduleController _scheduleController;
-  final LiviPodController _liviPodController = LiviPodController();
+  //late final ScheduleController _scheduleController;
+  final LiviPodService _liviPodController = LiviPodService();
   final AuthController _authController = AuthController();
 
   @override
   void initState() {
     _devicesController = BleController(liviPodController: _liviPodController);
-    _scheduleController =
-        ScheduleController(liviPodController: _liviPodController);
+    // _scheduleController =
+    //     ScheduleController(liviPodController: _liviPodController);
     super.initState();
   }
 
@@ -134,14 +134,11 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (context) => _authController,
         ),
-        ChangeNotifierProvider(
-          create: (context) => _scheduleController,
-        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => _scheduleController,
+        // ),
         ChangeNotifierProvider(
           create: (context) => _devicesController,
-        ),
-        ChangeNotifierProvider(
-          create: (context) => _liviPodController,
         ),
         // ChangeNotifierProvider(
         //   create: (context) => _webSocketController,
