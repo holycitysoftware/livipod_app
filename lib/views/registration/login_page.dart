@@ -55,10 +55,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
-    await Navigator.pushNamed(
-      context,
-      CreateAccountPage.routeName,
-    );
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
   }
 
   Future<void> verifyPhoneNumber() async {
@@ -78,12 +76,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> goToCheckSmsPge() async {
-    await Navigator.pushNamed(
+    await Navigator.push(
       context,
-      CheckSmsPage.routeName,
-      arguments: CheckSmsPageArguments(
-        appUser: appUser,
-        isAccountCreation: true,
+      MaterialPageRoute(
+        builder: (context) => CheckSmsPage(
+          appUser: appUser,
+        ),
       ),
     );
   }

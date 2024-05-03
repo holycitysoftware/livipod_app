@@ -12,6 +12,7 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
       ..id = json['id'] as String
       ..appUserId = json['appUserId'] as String
       ..manufacturer = json['manufacturer'] as String
+      ..dosageForm = $enumDecode(_$DosageFormEnumMap, json['dosageForm'])
       ..packageId = json['packageId'] as String
       ..instructions = json['instructions'] as String
       ..schedules = (json['schedules'] as List<dynamic>?)
@@ -32,6 +33,7 @@ Map<String, dynamic> _$MedicationToJson(Medication instance) =>
       'appUserId': instance.appUserId,
       'name': instance.name,
       'manufacturer': instance.manufacturer,
+      'dosageForm': _$DosageFormEnumMap[instance.dosageForm]!,
       'packageId': instance.packageId,
       'instructions': instance.instructions,
       'schedules': instance.schedules.map((e) => e.toJson()).toList(),
@@ -39,3 +41,15 @@ Map<String, dynamic> _$MedicationToJson(Medication instance) =>
       'nextDosing': instance.nextDosing?.toJson(),
       'lastDosing': instance.lastDosing?.toJson(),
     };
+
+const _$DosageFormEnumMap = {
+  DosageForm.none: 'none',
+  DosageForm.capsule: 'capsule',
+  DosageForm.tablet: 'tablet',
+  DosageForm.drops: 'drops',
+  DosageForm.injection: 'injection',
+  DosageForm.ointment: 'ointment',
+  DosageForm.liquid: 'liquid',
+  DosageForm.patch: 'patch',
+  DosageForm.other: 'other',
+};

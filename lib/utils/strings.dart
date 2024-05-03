@@ -5,6 +5,7 @@ class Strings {
       'Your account has been created!';
   static const String loginToYourAccount = 'Log in to your account';
   static const String dontHaveAnAccount = "Don’t have an account?";
+  static const String none = 'None';
   static const String welcomeBackPleaseEnterDetails =
       'Welcome back! Please enter your details.';
   static const String yourAccountHasBeenCreatedStart =

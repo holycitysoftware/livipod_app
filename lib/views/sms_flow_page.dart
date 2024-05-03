@@ -4,15 +4,6 @@ import 'package:provider/provider.dart';
 import '../controllers/auth_controller.dart';
 import 'views.dart';
 
-class SmsFlowPageArguments {
-  final bool isLoginPage;
-  final bool showIdentifyPersonaPage;
-  SmsFlowPageArguments({
-    this.isLoginPage = false,
-    this.showIdentifyPersonaPage = false,
-  });
-}
-
 class SmsFlowPage extends StatefulWidget {
   static const String routeName = '/sms-flow-page';
   final bool isLoginPage;
@@ -39,7 +30,8 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
   }
 
   Future<void> goToWelcomePage() async {
-    await Navigator.pushNamed(context, WelcomePage.routeName);
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => WelcomePage()));
   }
 
   @override

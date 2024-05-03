@@ -30,7 +30,7 @@ class LiviFilledButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: isButtonCloseToNotch ? 32 : 0),
+      padding: EdgeInsets.only(bottom: isButtonCloseToNotch ? 16 : 0),
       child: ElevatedButton(
         style: ButtonStyle(
           shape: MaterialStatePropertyAll(

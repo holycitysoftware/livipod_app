@@ -69,28 +69,6 @@ class LiviIcons {
         '$svgPath/livipod_text.svg',
       );
 
-  Widget get capsule => SvgPicture.asset(
-        '$svgPath/capsule.svg',
-      );
-  Widget get dotsHorizontal => SvgPicture.asset(
-        '$svgPath/dots_horizontal.svg',
-      );
-  Widget get drops => SvgPicture.asset(
-        '$svgPath/drops.svg',
-      );
-
-  Widget get injection => SvgPicture.asset(
-        '$svgPath/injection.svg',
-      );
-
-  Widget get liquid => SvgPicture.asset(
-        '$svgPath/liquid.svg',
-      );
-
-  Widget get patch => SvgPicture.asset(
-        '$svgPath/patch.svg',
-      );
-
   final String _messageChatCirclePath = '$svgPath/message_chat_circle.svg';
 
   Widget messageChatCircleIcon({
@@ -211,9 +189,125 @@ class LiviIcons {
     );
   }
 
-  Widget get tablet => SvgPicture.asset(
-        '$svgPath/tablet.svg',
-      );
+  String get _injectionPath => '$svgPath/injection.svg';
+
+  Widget injectionIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _injectionPath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _capsulePath => '$svgPath/capsule.svg';
+
+  Widget capsuleIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _capsulePath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _tabletPath => '$svgPath/tablet.svg';
+
+  Widget tabletIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _tabletPath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _dropsPath => '$svgPath/drops.svg';
+
+  Widget dropsIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _dropsPath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _liquidPath => '$svgPath/liquid.svg';
+
+  Widget liquidIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _liquidPath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _patchPath => '$svgPath/patch.svg';
+
+  Widget patchIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _patchPath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _otherDotsHorizontalPath => '$svgPath/dots_horizontal.svg';
+
+  Widget otherDotsHorizontalIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _otherDotsHorizontalPath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _ointmentPath => '$svgPath/ointment.svg';
+
+  Widget ointmentIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _ointmentPath,
+      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
 
   Widget get trash1 => SvgPicture.asset(
         '$svgPath/trash_01.svg',

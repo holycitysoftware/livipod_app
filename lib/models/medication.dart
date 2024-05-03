@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'dosing.dart';
+import 'enums.dart';
 import 'schedule.dart';
 import 'schedule_type.dart';
 import '../utils/utils.dart' as utils;
@@ -12,6 +13,7 @@ class Medication {
   String appUserId = '';
   String name = '';
   String manufacturer = '';
+  DosageForm dosageForm = DosageForm.none;
   String packageId = '';
   String instructions = '';
   @JsonKey(name: 'schedules', defaultValue: <Schedule>[])

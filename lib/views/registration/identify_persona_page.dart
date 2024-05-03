@@ -10,15 +10,6 @@ import '../../utils/persona_page_info_list.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
 
-class IdentifyPersonaPageArguments {
-  final Key? key;
-  final PersonaPageInfo personaPageInfo;
-  const IdentifyPersonaPageArguments({
-    this.key,
-    required this.personaPageInfo,
-  });
-}
-
 class IdentifyPersonaPage extends StatefulWidget {
   static const String routeName = '/identify-persona-page';
   final PersonaPageInfo personaPageInfo;
@@ -32,11 +23,11 @@ class IdentifyPersonaPage extends StatefulWidget {
 }
 
 class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
-  late PersonaOption selectedOption = widget.personaPageInfo!.options[0];
+  late PersonaOption selectedOption = widget.personaPageInfo.options[0];
 
   @override
   void initState() {
-    selectedOption = widget.personaPageInfo!.options[0];
+    selectedOption = widget.personaPageInfo.options[0];
     super.initState();
   }
 
@@ -69,14 +60,14 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
     Provider.of<AuthController>(context, listen: false)
         .personaOptions
         .removeWhere(
-            (element) => element.index == widget.personaPageInfo!.index);
+            (element) => element.index == widget.personaPageInfo.index);
     Provider.of<AuthController>(context, listen: false)
         .personaOptions
         .add(selectedOption);
   }
 
   Future<void> goToNextPage() async {
-    if (widget.personaPageInfo!.index == 8) {
+    if (widget.personaPageInfo.index == 8) {
       await addNewOption();
       await Provider.of<AuthController>(context, listen: false).setPersona();
       Navigator.pushReplacement(
@@ -87,19 +78,20 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
       );
     } else {
       addNewOption();
-      Navigator.pushNamed(
+      Navigator.push(
         context,
-        IdentifyPersonaPage.routeName,
-        arguments: IdentifyPersonaPageArguments(
-          key: Key('identify-persona-page${widget.personaPageInfo!.index}'),
-          personaPageInfo: personaPageInfoList[widget.personaPageInfo!.index],
+        MaterialPageRoute(
+          builder: (context) => IdentifyPersonaPage(
+            key: Key('identify-persona-page${widget.personaPageInfo.index}'),
+            personaPageInfo: personaPageInfoList[widget.personaPageInfo.index],
+          ),
         ),
       );
     }
   }
 
   String questionString() {
-    return '${Strings.question} ${widget.personaPageInfo!.index} of 8';
+    return '${Strings.question} ${widget.personaPageInfo.index} of 8';
   }
 
   @override
@@ -114,9 +106,9 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            stepsBar(widget.personaPageInfo!.index),
+            stepsBar(widget.personaPageInfo.index),
             LiviThemes.spacing.heightSpacer16(),
-            LiviTextStyles.interSemiBold24(widget.personaPageInfo!.question),
+            LiviTextStyles.interSemiBold24(widget.personaPageInfo.question),
             LiviThemes.spacing.heightSpacer16(),
             Align(
               alignment: Alignment.centerLeft,
@@ -129,9 +121,9 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
               flex: 3,
               child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: widget.personaPageInfo!.options.length,
+                  itemCount: widget.personaPageInfo.options.length,
                   itemBuilder: (context, index) {
-                    final item = widget.personaPageInfo!.options[index];
+                    final item = widget.personaPageInfo.options[index];
                     return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: CheckPersonaCard(

@@ -11,7 +11,6 @@ import '../../themes/livi_themes.dart';
 import '../../utils/persona_page_info_list.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
-import 'identify_persona_page.dart';
 
 class TellUsAboutYourselfPage extends StatefulWidget {
   static const String routeName = '/tell-us-about-yourself-page';
@@ -26,12 +25,12 @@ class TellUsAboutYourselfPage extends StatefulWidget {
 
 class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
   void goToIdentifyPersonPage() {
-    Navigator.pushNamed(
+    Navigator.push(
       context,
-      IdentifyPersonaPage.routeName,
-      arguments: IdentifyPersonaPageArguments(
-        personaPageInfo: personaPageInfoList.first,
-        key: Key('identify-persona-page'),
+      MaterialPageRoute(
+        builder: (context) => IdentifyPersonaPage(
+          personaPageInfo: personaPageInfoList.first,
+        ),
       ),
     );
   }

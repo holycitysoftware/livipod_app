@@ -3,15 +3,9 @@ import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
 
-class NavigationBarPageArguments {
-  final bool showIdentifyPersonaPage;
-  const NavigationBarPageArguments({
-    this.showIdentifyPersonaPage = false,
-  });
-}
-
 class NavigationBarPage extends StatefulWidget {
   static const String routeName = '/navigation-bar-page';
+
   final bool showIdentifyPersonaPage;
   const NavigationBarPage({
     super.key,
@@ -45,9 +39,11 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   }
 
   Future<void> goToTellUsAboutYourselfPage() async {
-    await Navigator.pushNamed(
+    await Navigator.push(
       context,
-      TellUsAboutYourselfPage.routeName,
+      MaterialPageRoute(
+        builder: (context) => TellUsAboutYourselfPage(),
+      ),
     );
   }
 

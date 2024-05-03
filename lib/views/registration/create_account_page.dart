@@ -51,7 +51,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
-    await Navigator.pushNamed(context, CreateAccountPage.routeName);
+    await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
   }
 
   Future<void> verifyPhoneNumber() async {
@@ -90,13 +91,20 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   // }
 
   Future<void> goToPrivacyPolicyPage() async {
-    await Navigator.pushNamed(context, PrivacyPolicyPage.routeName);
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PrivacyPolicyPage(),
+      ),
+    );
   }
 
   Future<void> goToTermsOfServicePage() async {
-    await Navigator.pushNamed(
+    await Navigator.push(
       context,
-      TermsOfServicePage.routeName,
+      MaterialPageRoute(
+        builder: (context) => TermsOfServicePage(),
+      ),
     );
   }
 

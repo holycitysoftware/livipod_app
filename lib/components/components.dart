@@ -1,4 +1,5 @@
 export 'bars/livi_app_bar.dart';
+export 'bars/livi_divider.dart';
 export 'bars/livi_search_bar.dart';
 export 'buttons/country_dropdown_button.dart';
 export 'buttons/livi_filled_button.dart';

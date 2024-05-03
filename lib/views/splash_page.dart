@@ -12,7 +12,6 @@ import 'sms_flow_page.dart';
 
 class SplashPage extends StatefulWidget {
   static const String routeName = '/';
-
   const SplashPage({
     super.key,
   });
@@ -32,15 +31,17 @@ class _SplashPageState extends State<SplashPage> {
     Timer(const Duration(milliseconds: 4000), () async {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        Navigator.pushReplacementNamed(
-          context,
-          SmsFlowPage.routeName,
-        );
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SmsFlowPage(),
+                settings: RouteSettings(name: 'SmsFlowPage')));
       } else {
-        Navigator.pushReplacementNamed(
-          context,
-          WelcomePage.routeName,
-        );
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WelcomePage(),
+                settings: RouteSettings(name: 'SmsFlowPage')));
       }
     });
   }

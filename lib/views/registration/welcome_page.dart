@@ -14,16 +14,24 @@ class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
   Future<void> goToLoginPage(BuildContext context) async {
-    await Navigator.pushNamed(
+    await Navigator.push(
       context,
-      SmsFlowPage.routeName,
+      MaterialPageRoute(
+          builder: (context) => SmsFlowPage(
+                isLoginPage: true,
+              ),
+          settings: RouteSettings(name: 'SmsFlowPage')),
     );
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
-    await Navigator.pushNamed(
+    await Navigator.push(
       context,
-      SmsFlowPage.routeName,
+      MaterialPageRoute(
+          builder: (context) => SmsFlowPage(
+                showIdentifyPersonaPage: true,
+              ),
+          settings: RouteSettings(name: 'SmsFlowPage')),
     );
   }
 
