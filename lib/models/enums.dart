@@ -88,3 +88,46 @@ enum DayOfWeek implements Comparable<DayOfWeek> {
   @override
   int compareTo(DayOfWeek other) => description.compareTo(other.description);
 }
+
+enum TimeReminder implements Comparable<DayOfWeek> {
+  oneMinute(
+    description: Strings.oneMinute,
+    duration: Duration(minutes: 1),
+  ),
+  twoMinute(
+    description: Strings.twoMinutes,
+    duration: Duration(minutes: 2),
+  ),
+  fiveMinutes(
+    description: Strings.fiveMinutes,
+    duration: Duration(minutes: 5),
+  ),
+  tenMinutes(
+    description: Strings.tenMinutes,
+    duration: Duration(minutes: 10),
+  ),
+  thirthyMinutes(
+    description: Strings.thirthyMinutes,
+    duration: Duration(minutes: 30),
+  ),
+  oneHour(
+    description: Strings.oneHour,
+    duration: Duration(hours: 1),
+  );
+
+  const TimeReminder({
+    required this.description,
+    required this.duration,
+  });
+
+  final String description;
+  final Duration duration;
+
+  bool get isWeekend => this == DayOfWeek.saturday || this == DayOfWeek.sunday;
+
+  @override
+  String toString() => description;
+
+  @override
+  int compareTo(DayOfWeek other) => description.compareTo(other.description);
+}

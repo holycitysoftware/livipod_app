@@ -34,6 +34,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   List<int> hoursList = List.generate(13, (index) => index++);
   List<int> minutesList = List.generate(60, (index) => index++);
   List<int> quantityList = List.generate(13, (index) => index++);
+
+  TimeReminder timeReminderBefore = TimeReminder.fiveMinutes;
+  TimeReminder timeReminderLater = TimeReminder.fiveMinutes;
   DayTime? dayTime = DayTime.am;
   int quantityNeeded = 1;
   final dateFormat = DateFormat.yMMMMd('en_US');
@@ -232,6 +235,78 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             ),
           ),
           atWhatTimesWidget(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LiviTextStyles.interMedium16(Strings.remindMe,
+                    color: LiviThemes.colors.gray500),
+                LiviThemes.spacing.heightSpacer8(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: LiviDropdownButton<TimeReminder>(
+                        isExpanded: true,
+                        value: TimeReminder.values.singleWhere(
+                            (element) => element == timeReminderBefore,
+                            orElse: () => timeReminderBefore),
+                        onChanged: (TimeReminder? value) {
+                          setState(() {
+                            timeReminderBefore = value!;
+                          });
+                        },
+                        items: TimeReminder.values
+                            .map<DropdownMenuItem<TimeReminder>>(
+                                (TimeReminder value) {
+                          return DropdownMenuItem<TimeReminder>(
+                            value: value,
+                            child: Text(value.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LiviTextStyles.interMedium16(Strings.remindMe,
+                    color: LiviThemes.colors.gray500),
+                LiviThemes.spacing.heightSpacer8(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: LiviDropdownButton<TimeReminder>(
+                        isExpanded: true,
+                        value: TimeReminder.values.singleWhere(
+                            (element) => element == timeReminderLater,
+                            orElse: () => timeReminderLater),
+                        onChanged: (TimeReminder? value) {
+                          setState(() {
+                            timeReminderLater = value!;
+                          });
+                        },
+                        items: TimeReminder.values
+                            .map<DropdownMenuItem<TimeReminder>>(
+                                (TimeReminder value) {
+                          return DropdownMenuItem<TimeReminder>(
+                            value: value,
+                            child: Text(value.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
           daysWidget(),
           SizedBox(
             child: LiviTextButton(

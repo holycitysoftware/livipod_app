@@ -168,6 +168,12 @@ class Strings {
   static const String thursday = 'Thursday';
   static const String friday = 'Friday';
   static const String saturday = 'Saturday';
+  static const String oneMinute = 'One Minute';
+  static const String twoMinutes = 'Two Minutes';
+  static const String fiveMinutes = 'Five Minutes';
+  static const String tenMinutes = 'Ten Minutes';
+  static const String thirthyMinutes = 'Thirthy Minutes';
+  static const String oneHour = 'One Hour';
 }
       
   // static const String logIn = 'Iniciar sesión';
