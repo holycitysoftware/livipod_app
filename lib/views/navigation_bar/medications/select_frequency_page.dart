@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 import '../../../components/components.dart';
 import '../../../models/enums.dart';
@@ -30,12 +31,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   Frequency selectedFrequency = Frequency.asNeeded;
   List<DayOfWeek> selectedDaysOfWeek = [];
   DateTime now = DateTime.now();
-  DateTime dateTime = DateTime.now();
+  DateTime atWhatTimeDate = DateTime.now();
   DateTime startDateTime = DateTime.now();
   DateTime endDateTime = DateTime(_foreverYear);
   List<int> hoursList = List.generate(13, (index) => index++);
   List<int> minutesList = List.generate(60, (index) => index++);
   DayTime? dayTime = DayTime.am;
+  final dateFormat = DateFormat.yMMMMd('en_US');
 
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
@@ -44,10 +46,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   final FocusNode _quantityNeededFoucs = FocusNode();
   @override
   void initState() {
-    dayTime = dateTime.hour > 12 ? DayTime.pm : DayTime.am;
-
+    dayTime = now.hour > 12 ? DayTime.pm : DayTime.am;
+    atWhatTimeDate = now;
     startDateTime = now;
-    dateTime = now;
+    endDateTime = DateTime(_foreverYear);
+    setDate();
+    // dateTime = now;
     super.initState();
   }
 
@@ -56,6 +60,19 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       return hour - 12;
     }
     return hour;
+  }
+
+  void setDate() {
+    if (startDateTime.isSameDayMonthYear(now)) {
+      _startDateController.text = Strings.now;
+    } else {
+      _startDateController.text = dateFormat.format(startDateTime);
+    }
+    if (endDateTime.year == _foreverYear) {
+      _endDateController.text = Strings.forever;
+    } else {
+      _endDateController.text = dateFormat.format(endDateTime);
+    }
   }
 
   // bool get showInventoryQuantityField =>
@@ -202,6 +219,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       color: LiviThemes.colors.gray300,
     );
   }
+
 //TODO block end date bvy intial date
   Future<void> showMaterialDatePicker({
     required BuildContext context,
@@ -210,25 +228,27 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     required DateTime lastDate,
     required bool isStartDate,
   }) async {
-    dateTime = await showDatePicker(
-            context: context,
-            // controller: controller,
-            // date: dateTime,_
+    final dateTime = await showDatePicker(
+          context: context,
+          // controller: controller,
+          // date: dateTime,_
 
-            //  LiviThemes.colors.brand600,
+          //  LiviThemes.colors.brand600,
 
-            cancelText: isStartDate ? Strings.now : Strings.forever,
-            confirmText: Strings.apply,
-            initialDate: dateTime,
-            firstDate:
-                now, //DateTime.now() - not to allow to choose before today.
-            lastDate: endDateTime) ??
-        dateTime;
+          cancelText: isStartDate ? Strings.now : Strings.forever,
+          confirmText: Strings.apply,
+          initialDate: now,
+          firstDate:
+              now, //DateTime.now() - not to allow to choose before today.
+          lastDate: endDateTime,
+        ) ??
+        now;
     if (isStartDate) {
-      _startDateController.text = dateTime.toString();
+      startDateTime = dateTime;
     } else {
-      _endDateController.text = dateTime.toString();
+      endDateTime = dateTime;
     }
+    setDate();
   }
 
   Widget frequencyWidget(Frequency frequency, {int flex = 3}) {
@@ -333,13 +353,17 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 flex: 7,
                 child: LiviDropdownButton<int>(
                   value: hoursList.singleWhere((element) {
-                    return element == convertTimeFormat(dateTime.hour);
+                    return element == convertTimeFormat(atWhatTimeDate.hour);
                   }, orElse: () => hoursList.first),
                   onChanged: (int? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      dateTime = DateTime(dateTime.year, dateTime.month,
-                          dateTime.day, value!, dateTime.minute);
+                      atWhatTimeDate = DateTime(
+                          atWhatTimeDate.year,
+                          atWhatTimeDate.month,
+                          atWhatTimeDate.day,
+                          value!,
+                          atWhatTimeDate.minute);
                     });
                   },
                   items: hoursList.map<DropdownMenuItem<int>>((int value) {
@@ -357,13 +381,17 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 flex: 7,
                 child: LiviDropdownButton<int>(
                   value: minutesList.singleWhere(
-                      (element) => element == dateTime.minute,
+                      (element) => element == atWhatTimeDate.minute,
                       orElse: () => minutesList.first),
                   onChanged: (int? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      dateTime = DateTime(dateTime.year, dateTime.month,
-                          dateTime.day, dateTime.hour, value!);
+                      atWhatTimeDate = DateTime(
+                          atWhatTimeDate.year,
+                          atWhatTimeDate.month,
+                          atWhatTimeDate.day,
+                          atWhatTimeDate.hour,
+                          value!);
                     });
                   },
                   items: minutesList.map<DropdownMenuItem<int>>((int value) {

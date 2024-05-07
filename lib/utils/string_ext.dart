@@ -30,6 +30,12 @@ class Formatter {
   }
 }
 
+extension DateTimeExt on DateTime {
+  bool isSameDayMonthYear(DateTime now) {
+    return now.year == year && now.month == month && now.day == day;
+  }
+}
+
 extension StringExt on String {
   String extendText() {
     return replaceAll('', '\u{200B}');
