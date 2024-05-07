@@ -10,6 +10,8 @@ class LiviInputField extends StatefulWidget {
   final String? subTitle;
   final String? hint;
   final String? errorText;
+  final bool readOnly;
+  final Function()? onTap;
   final TextInputType? keyboardType;
   final EdgeInsets? padding;
   final TextEditingController? controller;
@@ -25,6 +27,8 @@ class LiviInputField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.onFieldSubmitted,
     this.errorText,
+    this.onTap,
+    this.readOnly = false,
     this.padding,
     this.subTitle,
     this.hint,
@@ -120,12 +124,14 @@ class _LiviInputFieldState extends State<LiviInputField> {
               boxShadow: boxShadow(),
             ),
             child: TextFormField(
+              onTap: widget.onTap,
+              readOnly: widget.readOnly,
               scrollPadding: EdgeInsets.only(bottom: double.maxFinite),
               textCapitalization: TextCapitalization.words,
               controller: widget.controller,
               onFieldSubmitted: widget.onFieldSubmitted,
               focusNode: widget.focusNode,
-              keyboardType: TextInputType.text,
+              keyboardType: widget.keyboardType ?? TextInputType.text,
               decoration: InputDecoration(
                 prefixIcon: widget.prefix,
                 contentPadding:

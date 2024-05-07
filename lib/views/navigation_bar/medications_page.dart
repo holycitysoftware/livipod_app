@@ -32,6 +32,13 @@ class _MedicationsPageState extends State<MedicationsPage> {
         title: Strings.yourMedications,
         onPressed: goToSearchMedications,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: goToSearchMedications,
+        backgroundColor: LiviThemes.colors.brand600,
+        child: LiviThemes.icons.plusIcon(
+          color: LiviThemes.colors.baseWhite,
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -20,7 +20,7 @@ class WelcomePage extends StatelessWidget {
           builder: (context) => SmsFlowPage(
                 isLoginPage: true,
               ),
-          settings: RouteSettings(name: 'SmsFlowPage')),
+          settings: RouteSettings(name: SmsFlowPage.routeName)),
     );
   }
 
@@ -31,7 +31,7 @@ class WelcomePage extends StatelessWidget {
           builder: (context) => SmsFlowPage(
                 showIdentifyPersonaPage: true,
               ),
-          settings: RouteSettings(name: 'SmsFlowPage')),
+          settings: RouteSettings(name: SmsFlowPage.routeName)),
     );
   }
 

@@ -12,6 +12,7 @@ class LiviTextButton extends StatelessWidget {
   final EdgeInsets? margin;
   final bool? isCloseToNotch;
   final Color? color;
+  final Widget? icon;
   const LiviTextButton({
     super.key,
     this.margin,
@@ -19,6 +20,7 @@ class LiviTextButton extends StatelessWidget {
     required this.text,
     required this.onTap,
     this.color,
+    this.icon,
   });
 
   bool isButtonCloseToNotch() {
@@ -42,10 +44,13 @@ class LiviTextButton extends StatelessWidget {
             Size(double.infinity, 52),
           ),
         ),
-        child: LiviTextStyles.interSemiBold16(
-          text,
-          color: color ?? LiviThemes.colors.brand600,
-        ),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          if (icon != null) icon!,
+          LiviTextStyles.interSemiBold16(
+            text,
+            color: color ?? LiviThemes.colors.brand600,
+          ),
+        ]),
       ),
     );
   }

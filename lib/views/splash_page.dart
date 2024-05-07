@@ -35,13 +35,13 @@ class _SplashPageState extends State<SplashPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => SmsFlowPage(),
-                settings: RouteSettings(name: 'SmsFlowPage')));
+                settings: RouteSettings(name: SmsFlowPage.routeName)));
       } else {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => WelcomePage(),
-                settings: RouteSettings(name: 'SmsFlowPage')));
+                settings: RouteSettings(name: SmsFlowPage.routeName)));
       }
     });
   }

@@ -24,8 +24,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
   Medication? medication;
   DosageForm dosageForm = DosageForm.none;
 
-  bool get isSelected =>
-      dosageForm != DosageForm.none && dosageForm == medication!.dosageForm;
+  bool get isSelected => dosageForm == medication!.dosageForm;
 
   @override
   void initState() {
@@ -37,7 +36,8 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => SelectDosageFormPage(medication: medication!)),
+          builder: (context) =>
+              SelectMedicationStrength(medication: medication!)),
     );
   }
 
@@ -110,7 +110,10 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
   }
 
   Widget getIcon(DosageForm dosageForm, {bool isSelected = false}) {
-    final color = isSelected ? null : LiviThemes.colors.gray300;
+    final color =
+        dosageForm == this.dosageForm || this.dosageForm == DosageForm.none
+            ? null
+            : LiviThemes.colors.gray300;
     switch (dosageForm) {
       case DosageForm.none:
         return SizedBox();
@@ -137,14 +140,15 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: LiviThemes.colors.brand600.withOpacity(0.24),
-                  spreadRadius: 2,
-                ),
-              ]
-            : null,
+        boxShadow:
+            dosageForm == this.dosageForm && this.dosageForm != DosageForm.none
+                ? [
+                    BoxShadow(
+                      color: LiviThemes.colors.brand600.withOpacity(0.24),
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : null,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -152,6 +156,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
           if (medication != null) {
             setState(() {
               medication!.dosageForm = dosageForm;
+              this.dosageForm = medication!.dosageForm;
             });
           }
         },
@@ -173,7 +178,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
                   isSelected: isSelected,
                 ),
                 LiviTextStyles.interRegular16(dosageForm.description,
-                    color: isSelected
+                    color: this.dosageForm == dosageForm
                         ? LiviThemes.colors.brand600
                         : LiviThemes.colors.gray400),
               ],

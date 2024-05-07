@@ -6,12 +6,15 @@ class Strings {
   static const String loginToYourAccount = 'Log in to your account';
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
+  static const String now = 'Now';
+  static const String forever = 'Forever';
   static const String welcomeBackPleaseEnterDetails =
       'Welcome back! Please enter your details.';
   static const String yourAccountHasBeenCreatedStart =
       'Your account has been created, start by registering your first medication.';
   static const String welcomeToLiviPod = 'Welcome to LiviPod®';
   static const String back = 'Back';
+  static const String days = 'Days';
   static const String didntReceiveTheSMS = "Didn't receive the SMS?";
   static const String clickToResend = 'Click to resend';
   static const String createAnAccount = 'Create an account';
@@ -129,6 +132,7 @@ class Strings {
   static const String monthly = 'Monthly';
   static const String save = 'Save';
   static const String quantityNeeded = 'Quantity Needed';
+  static const String quantity = 'Quantity';
   static const String intervalBetweenDoses = 'Interval Between Doses';
   static const String maximumDailyQuantity = 'Maximum Daily Quantity';
   static const String startDate = 'Start Date';
@@ -152,10 +156,18 @@ class Strings {
       'Are you sure you want to delete this medication? This action cannot be undone.';
   static const String yoursMedication = 'Yours Medications';
   static const String editMedication = 'Edit Medication';
+  static const String inventoryQuantity = 'Inventory Quantity';
   static const String pharmRightCorporation =
       'PharmRight Corporation Privacy Policy';
   static const String liviTermsOfServiceAgreement =
       'Livi Terms of Service Agreement';
+  static const String sunday = 'Sunday';
+  static const String monday = 'Monday';
+  static const String tuesday = 'Tuesday';
+  static const String wednesday = 'Wednesday';
+  static const String thursday = 'Thursday';
+  static const String friday = 'Friday';
+  static const String saturday = 'Saturday';
 }
       
   // static const String logIn = 'Iniciar sesión';

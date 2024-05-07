@@ -195,10 +195,25 @@ class LiviIcons {
     Color? color,
     double? height,
   }) {
-    // color ??= LiviThemes.colors.randomGray;
+    color ??= LiviThemes.colors.randomGray;
 
     return SvgPicture.asset(
       _injectionPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _calendarPath => '$svgPath/calendar.svg';
+
+  Widget calendarIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _calendarPath,
       // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       height: height,
     );

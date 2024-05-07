@@ -6,9 +6,15 @@ import '../components.dart';
 
 class LiviTextIcon extends StatelessWidget {
   final Function() onPressed;
+  final String text;
+  final Widget icon;
+  final bool enabled;
   const LiviTextIcon({
     super.key,
     required this.onPressed,
+    required this.text,
+    required this.icon,
+    this.enabled = true,
   });
 
   @override
@@ -18,11 +24,13 @@ class LiviTextIcon extends StatelessWidget {
       onTap: onPressed,
       child: Row(
         children: [
-          LiviTextStyles.interMedium16(Strings.addNew,
-              color: LiviThemes.colors.brand600),
+          LiviTextStyles.interMedium16(text,
+              color: enabled
+                  ? LiviThemes.colors.brand600
+                  : LiviThemes.colors.gray400),
           Padding(
             padding: const EdgeInsets.only(left: 2, right: 8),
-            child: LiviThemes.icons.plusIcon(),
+            child: icon,
           )
         ],
       ),

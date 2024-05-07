@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 
 import '../../components/components.dart';
 import '../../themes/livi_themes.dart';
+import '../../utils/strings.dart';
 
 class LiviAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final Function()? onPressed;
   final bool backButton;
+  final List<Widget>? tail;
   const LiviAppBar({
     super.key,
     required this.title,
     this.onPressed,
     this.backButton = false,
+    this.tail,
   });
 
   @override
@@ -47,7 +50,14 @@ class _LiviAppBarState extends State<LiviAppBar> {
       // ),
       title: LiviTextStyles.interSemiBold16(widget.title),
       actions: widget.onPressed != null
-          ? [LiviTextIcon(onPressed: widget.onPressed!)]
+          ? widget.tail ??
+              [
+                LiviTextIcon(
+                  onPressed: widget.onPressed!,
+                  icon: LiviThemes.icons.plusIcon(),
+                  text: Strings.addNew,
+                ),
+              ]
           : null,
     );
   }

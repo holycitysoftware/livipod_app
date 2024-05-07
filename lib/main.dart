@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
 import 'firebase_options.dart';
+import 'themes/livi_themes.dart';
 import 'views/views.dart';
 
 void main() async {
@@ -146,7 +147,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-
+        theme: LiviThemes.theme.getAppTheme(),
         home: SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),
     );

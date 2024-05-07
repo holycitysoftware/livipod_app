@@ -39,6 +39,10 @@ extension StringExt on String {
     return '$this*';
   }
 
+  String getFirstLetter() {
+    return this[0];
+  }
+
   String removeExceptionString() {
     return replaceAll('Exception: ', '');
   }
