@@ -17,6 +17,16 @@ class FdaService {
       final totalCount = response['meta']['results']['total'] as int;
       final count = totalCount < limitCount ? totalCount : limitCount;
       return _genericNames(genericName, count, response['results']);
+    } else if (!isSearchTerm && dosageForm == null) {
+      final limitCount = response['meta']['results']['limit'] as int;
+      final totalCount = response['meta']['results']['total'] as int;
+      final count = totalCount < limitCount ? totalCount : limitCount;
+      return _dosageForms(count, response['results']);
+    } else if (!isSearchTerm && dosageForm != null && strength == null) {
+      final limitCount = response['meta']['results']['limit'] as int;
+      final totalCount = response['meta']['results']['total'] as int;
+      final count = totalCount < limitCount ? totalCount : limitCount;
+      return _strengths(count, response['results']);
     }
     return [];
   }
@@ -36,5 +46,40 @@ class FdaService {
     }
     genericNameList.sort();
     return genericNameList;
+  }
+
+  List<String> _dosageForms(int count, dynamic data) {
+    final List<String> dosageFormList = [];
+    for (var i = 0; i < count; i++) {
+      final result = data[i];
+      final products = result['products'];
+      products.forEach((product) {
+        final df = product['dosage_form'] as String;
+        if (!dosageFormList.any((e) => e == df)) {
+          dosageFormList.add(df);
+        }
+      });
+    }
+    dosageFormList.sort();
+    return dosageFormList;
+  }
+
+  List<String> _strengths(int count, dynamic data) {
+    final List<String> strengthList = [];
+    for (var i = 0; i < count; i++) {
+      final result = data[i];
+      final products = result['products'];
+      products.forEach((product) {
+        final activeIngredients = product['active_ingredients'];
+        activeIngredients.forEach((ingredient) {
+          final s = ingredient['strength'] as String;
+          if (!strengthList.any((e) => e == s)) {
+            strengthList.add(s);
+          }
+        });
+      });
+    }
+    strengthList.sort();
+    return strengthList;
   }
 }
