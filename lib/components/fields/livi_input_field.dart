@@ -129,6 +129,7 @@ class _LiviInputFieldState extends State<LiviInputField> {
               scrollPadding: EdgeInsets.only(bottom: double.maxFinite),
               textCapitalization: TextCapitalization.words,
               controller: widget.controller,
+              style: LiviThemes.typography.interRegular_16,
               onFieldSubmitted: widget.onFieldSubmitted,
               focusNode: widget.focusNode,
               keyboardType: widget.keyboardType ?? TextInputType.text,

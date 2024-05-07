@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../components/buttons/livi_dropdown_button.dart';
 import '../../../components/components.dart';
 import '../../../models/enums.dart';
 import '../../../models/models.dart';
@@ -32,7 +33,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   DateTime endDateTime = DateTime(_foreverYear);
   List<int> hoursList = List.generate(13, (index) => index++);
   List<int> minutesList = List.generate(60, (index) => index++);
+  List<int> quantityList = List.generate(13, (index) => index++);
   DayTime? dayTime = DayTime.am;
+  int quantityNeeded = 1;
   final dateFormat = DateFormat.yMMMMd('en_US');
 
   final TextEditingController _startDateController = TextEditingController();
@@ -158,6 +161,43 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             controller: _quantityNeededController,
             keyboardType: TextInputType.number,
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LiviTextStyles.interMedium16(
+                    Strings.quantityNeeded.requiredSymbol(),
+                    color: LiviThemes.colors.gray500),
+                LiviThemes.spacing.heightSpacer8(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: LiviDropdownButton<int>(
+                        isExpanded: true,
+                        value: quantityList.singleWhere(
+                            (element) => element == quantityNeeded,
+                            orElse: () => quantityNeeded),
+                        onChanged: (int? value) {
+                          setState(() {
+                            quantityNeeded = value!;
+                          });
+                        },
+                        items: quantityList
+                            .map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: Text(value.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // LiviDropdownButton(),
           LiviInputField(
             title: Strings.startDate.requiredSymbol(),
             focusNode: FocusNode(),

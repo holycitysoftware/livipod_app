@@ -6,11 +6,13 @@ class LiviDropdownButton<T> extends StatelessWidget {
   final ValueChanged<T?>? onChanged;
   final List<DropdownMenuItem<T>>? items;
   final T? value;
+  final bool isExpanded;
   const LiviDropdownButton({
     super.key,
     required this.onChanged,
     required this.items,
     this.value,
+    this.isExpanded = false,
   });
 
   @override
@@ -32,6 +34,7 @@ class LiviDropdownButton<T> extends StatelessWidget {
         value: value,
         elevation: 16,
         onChanged: onChanged,
+        isExpanded: isExpanded,
         items: items,
       ),
     );
