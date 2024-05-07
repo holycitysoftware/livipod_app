@@ -35,8 +35,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   List<int> minutesList = List.generate(60, (index) => index++);
   List<int> quantityList = List.generate(13, (index) => index++);
 
-  TimeReminder timeReminderBefore = TimeReminder.fiveMinutes;
-  TimeReminder timeReminderLater = TimeReminder.fiveMinutes;
+  TimeReminderBefore timeReminderBefore = TimeReminderBefore.fiveMinutes;
+  TimeReminderLater timeReminderLater = TimeReminderLater.fiveMinutes;
   DayTime? dayTime = DayTime.am;
   int quantityNeeded = 1;
   final dateFormat = DateFormat.yMMMMd('en_US');
@@ -246,20 +246,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: LiviDropdownButton<TimeReminder>(
+                      child: LiviDropdownButton<TimeReminderBefore>(
                         isExpanded: true,
-                        value: TimeReminder.values.singleWhere(
+                        value: TimeReminderBefore.values.singleWhere(
                             (element) => element == timeReminderBefore,
                             orElse: () => timeReminderBefore),
-                        onChanged: (TimeReminder? value) {
+                        onChanged: (TimeReminderBefore? value) {
                           setState(() {
                             timeReminderBefore = value!;
                           });
                         },
-                        items: TimeReminder.values
-                            .map<DropdownMenuItem<TimeReminder>>(
-                                (TimeReminder value) {
-                          return DropdownMenuItem<TimeReminder>(
+                        items: TimeReminderBefore.values
+                            .map<DropdownMenuItem<TimeReminderBefore>>(
+                                (TimeReminderBefore value) {
+                          return DropdownMenuItem<TimeReminderBefore>(
                             value: value,
                             child: Text(value.toString()),
                           );
@@ -282,20 +282,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: LiviDropdownButton<TimeReminder>(
+                      child: LiviDropdownButton<TimeReminderLater>(
                         isExpanded: true,
-                        value: TimeReminder.values.singleWhere(
+                        value: TimeReminderLater.values.singleWhere(
                             (element) => element == timeReminderLater,
                             orElse: () => timeReminderLater),
-                        onChanged: (TimeReminder? value) {
+                        onChanged: (TimeReminderLater? value) {
                           setState(() {
                             timeReminderLater = value!;
                           });
                         },
-                        items: TimeReminder.values
-                            .map<DropdownMenuItem<TimeReminder>>(
-                                (TimeReminder value) {
-                          return DropdownMenuItem<TimeReminder>(
+                        items: TimeReminderLater.values
+                            .map<DropdownMenuItem<TimeReminderLater>>(
+                                (TimeReminderLater value) {
+                          return DropdownMenuItem<TimeReminderLater>(
                             value: value,
                             child: Text(value.toString()),
                           );

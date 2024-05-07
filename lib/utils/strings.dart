@@ -168,12 +168,20 @@ class Strings {
   static const String thursday = 'Thursday';
   static const String friday = 'Friday';
   static const String saturday = 'Saturday';
-  static const String oneMinute = 'One Minute';
-  static const String twoMinutes = 'Two Minutes';
-  static const String fiveMinutes = 'Five Minutes';
-  static const String tenMinutes = 'Ten Minutes';
-  static const String thirthyMinutes = 'Thirthy Minutes';
-  static const String oneHour = 'One Hour';
+  static const String oneMinuteBefore = '1 Minute Before';
+  static const String twoMinutesBefore = '2 Minutes Before';
+  static const String fiveMinutesBefore = '5 Minutes Before';
+  static const String tenMinutesBefore = '10 Minutes Before';
+  static const String thirthyMinutesBefore = '30 Minutes Before';
+  static const String oneHourBefore = '1 Hour Before';
+  static const String oneMinuteLater = '1 Minute Later';
+  static const String twoMinutesLater = '2 Minutes Later';
+  static const String fiveMinutesLater = '5 Minutes Later';
+  static const String tenMinutesLater = '10 Minutes Later';
+  static const String thirthyMinutesLater = '30 Minutes Later';
+  static const String oneHourLater = '1 Hour Later';
+  static const String later = ' Later';
+  static const String before = ' Before';
 }
       
   // static const String logIn = 'Iniciar sesión';

@@ -89,33 +89,76 @@ enum DayOfWeek implements Comparable<DayOfWeek> {
   int compareTo(DayOfWeek other) => description.compareTo(other.description);
 }
 
-enum TimeReminder implements Comparable<DayOfWeek> {
+enum TimeReminderBefore implements Comparable<DayOfWeek> {
   oneMinute(
-    description: Strings.oneMinute,
+    description: Strings.oneMinuteBefore,
     duration: Duration(minutes: 1),
   ),
   twoMinute(
-    description: Strings.twoMinutes,
+    description: Strings.twoMinutesBefore,
     duration: Duration(minutes: 2),
   ),
   fiveMinutes(
-    description: Strings.fiveMinutes,
+    description: Strings.fiveMinutesBefore,
     duration: Duration(minutes: 5),
   ),
   tenMinutes(
-    description: Strings.tenMinutes,
+    description: Strings.tenMinutesBefore,
     duration: Duration(minutes: 10),
   ),
   thirthyMinutes(
-    description: Strings.thirthyMinutes,
+    description: Strings.thirthyMinutesBefore,
     duration: Duration(minutes: 30),
   ),
   oneHour(
-    description: Strings.oneHour,
+    description: Strings.oneHourBefore,
     duration: Duration(hours: 1),
   );
 
-  const TimeReminder({
+  const TimeReminderBefore({
+    required this.description,
+    required this.duration,
+  });
+
+  final String description;
+  final Duration duration;
+
+  bool get isWeekend => this == DayOfWeek.saturday || this == DayOfWeek.sunday;
+
+  @override
+  String toString() => description;
+
+  @override
+  int compareTo(DayOfWeek other) => description.compareTo(other.description);
+}
+
+enum TimeReminderLater implements Comparable<DayOfWeek> {
+  oneMinute(
+    description: Strings.oneMinuteLater,
+    duration: Duration(minutes: 1),
+  ),
+  twoMinute(
+    description: Strings.twoMinutesLater,
+    duration: Duration(minutes: 2),
+  ),
+  fiveMinutes(
+    description: Strings.fiveMinutesLater,
+    duration: Duration(minutes: 5),
+  ),
+  tenMinutes(
+    description: Strings.tenMinutesLater,
+    duration: Duration(minutes: 10),
+  ),
+  thirthyMinutes(
+    description: Strings.thirthyMinutesLater,
+    duration: Duration(minutes: 30),
+  ),
+  oneHour(
+    description: Strings.oneHourLater,
+    duration: Duration(hours: 1),
+  );
+
+  const TimeReminderLater({
     required this.description,
     required this.duration,
   });
