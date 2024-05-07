@@ -77,13 +77,33 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     setState(() {});
   }
 
-  // bool get showInventoryQuantityField =>
-  //     (widget.medication.dosageForm == DosageForm.tablet ||
-  //         widget.medication.dosageForm == DosageForm.capsule) &&
-  //     (selectedFrequency.isDaily() ||
-  //         selectedFrequency.isWeekly() ||
-  //         selectedFrequency.isMonthly() ||
-  //         selectedFrequency.isAsNeeded());
+  bool get getShowInventoryQuantityField =>
+      selectedFrequency.isAsNeeded() ||
+      selectedFrequency.isDaily() ||
+      selectedFrequency.isWeekly() ||
+      selectedFrequency.isMonthly();
+
+  bool get getShowQuantityNeededField =>
+      selectedFrequency.isDaily() || selectedFrequency.isAsNeeded();
+
+  bool get getShowDaysWidget => selectedFrequency.isWeekly();
+
+  bool get getAtWhatTimesWidget =>
+      selectedFrequency.isWeekly() ||
+      selectedFrequency.isMonthly() ||
+      selectedFrequency.isDaily();
+
+  bool get getRemindMeBefore =>
+      selectedFrequency.isWeekly() ||
+      selectedFrequency.isMonthly() ||
+      selectedFrequency.isDaily();
+
+  bool get getRemindMeLater =>
+      selectedFrequency.isWeekly() ||
+      selectedFrequency.isMonthly() ||
+      selectedFrequency.isDaily();
+
+  bool get getIntervalBetweenDoses => selectedFrequency.isAsNeeded();
 
   // bool get showQuantityNeededField => selectedFrequency.isAsNeeded();
   // bool get showQuantityField => selectedFrequency.isDaily();
@@ -134,7 +154,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       ),
       body: ListView(
         children: [
-          LiviThemes.spacing.heightSpacer32(),
+          LiviThemes.spacing.heightSpacer8(),
           Container(
             height: 40,
             margin: EdgeInsets.all(16),
@@ -158,167 +178,105 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
               ],
             ),
           ),
-          LiviInputField(
-            title: Strings.inventoryQuantity.requiredSymbol(),
-            focusNode: _quantityNeededFoucs,
-            controller: _quantityNeededController,
-            keyboardType: TextInputType.number,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LiviTextStyles.interMedium16(
-                    Strings.quantityNeeded.requiredSymbol(),
-                    color: LiviThemes.colors.gray500),
-                LiviThemes.spacing.heightSpacer8(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: LiviDropdownButton<int>(
-                        isExpanded: true,
-                        value: quantityList.singleWhere(
-                            (element) => element == quantityNeeded,
-                            orElse: () => quantityNeeded),
-                        onChanged: (int? value) {
-                          setState(() {
-                            quantityNeeded = value!;
-                          });
-                        },
-                        items: quantityList
-                            .map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
+          if (getShowInventoryQuantityField) inventoryQuantityWidget(),
+          if (getShowDaysWidget) daysWidget(),
+
+          if (getShowQuantityNeededField) quantityNeededWidget(),
+          if (getIntervalBetweenDoses) intervalBetweenDoses(),
+          startDateWidget(),
+          endDateWidget(),
+          if (getAtWhatTimesWidget) atWhatTimesWidget(),
+          // awThatTimesList(),
+          if (getRemindMeBefore) remindMeBefore(),
+          if (getRemindMeLater) remindMeLater(),
+
+          addAnotherScheduleWidget(),
+        ],
+      ),
+    );
+  }
+
+  Widget inventoryQuantityWidget() {
+    return LiviInputField(
+      title: Strings.inventoryQuantity.requiredSymbol(),
+      focusNode: _quantityNeededFoucs,
+      controller: _quantityNeededController,
+      keyboardType: TextInputType.number,
+    );
+  }
+
+  Widget quantityNeededWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interMedium16(Strings.quantityNeeded.requiredSymbol(),
+              color: LiviThemes.colors.gray500),
+          LiviThemes.spacing.heightSpacer8(),
+          Row(
+            children: [
+              Expanded(
+                child: LiviDropdownButton<int>(
+                  isExpanded: true,
+                  value: quantityList.singleWhere(
+                      (element) => element == quantityNeeded,
+                      orElse: () => quantityNeeded),
+                  onChanged: (int? value) {
+                    setState(() {
+                      quantityNeeded = value!;
+                    });
+                  },
+                  items: quantityList.map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
+                      value: value,
+                      child: Text(value.toString()),
+                    );
+                  }).toList(),
                 ),
-              ],
-            ),
-          ),
-          // LiviDropdownButton(),
-          LiviInputField(
-            title: Strings.startDate.requiredSymbol(),
-            focusNode: FocusNode(),
-            onTap: () => showMaterialDatePicker(
-                context: context,
-                initialDate: now,
-                firstDate: now,
-                lastDate: endDateTime,
-                isStartDate: true),
-            readOnly: true,
-            controller: _startDateController,
-            prefix: Padding(
-              padding: const EdgeInsets.all(16),
-              child: LiviThemes.icons.calendarIcon(),
-            ),
-          ),
-          LiviInputField(
-            title: Strings.endDate.requiredSymbol(),
-            focusNode: FocusNode(),
-            readOnly: true,
-            onTap: () => showMaterialDatePicker(
-              context: context,
-              isStartDate: false,
-              initialDate: now,
-              firstDate: now,
-              lastDate: endDateTime,
-            ),
-            controller: _endDateController,
-            prefix: Padding(
-              padding: const EdgeInsets.all(16),
-              child: LiviThemes.icons.calendarIcon(),
-            ),
-          ),
-          atWhatTimesWidget(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LiviTextStyles.interMedium16(Strings.remindMe,
-                    color: LiviThemes.colors.gray500),
-                LiviThemes.spacing.heightSpacer8(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: LiviDropdownButton<TimeReminderBefore>(
-                        isExpanded: true,
-                        value: TimeReminderBefore.values.singleWhere(
-                            (element) => element == timeReminderBefore,
-                            orElse: () => timeReminderBefore),
-                        onChanged: (TimeReminderBefore? value) {
-                          setState(() {
-                            timeReminderBefore = value!;
-                          });
-                        },
-                        items: TimeReminderBefore.values
-                            .map<DropdownMenuItem<TimeReminderBefore>>(
-                                (TimeReminderBefore value) {
-                          return DropdownMenuItem<TimeReminderBefore>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LiviTextStyles.interMedium16(Strings.remindMe,
-                    color: LiviThemes.colors.gray500),
-                LiviThemes.spacing.heightSpacer8(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: LiviDropdownButton<TimeReminderLater>(
-                        isExpanded: true,
-                        value: TimeReminderLater.values.singleWhere(
-                            (element) => element == timeReminderLater,
-                            orElse: () => timeReminderLater),
-                        onChanged: (TimeReminderLater? value) {
-                          setState(() {
-                            timeReminderLater = value!;
-                          });
-                        },
-                        items: TimeReminderLater.values
-                            .map<DropdownMenuItem<TimeReminderLater>>(
-                                (TimeReminderLater value) {
-                          return DropdownMenuItem<TimeReminderLater>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          daysWidget(),
-          SizedBox(
-            child: LiviTextButton(
-              margin: EdgeInsets.symmetric(horizontal: 64),
-              text: Strings.addAnotherSchedule,
-              onTap: () {},
-              icon: Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: LiviThemes.icons.plusIcon(),
               ),
-            ),
-          )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget intervalBetweenDoses() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interMedium16(
+              Strings.intervalBetweenDoses.requiredSymbol(),
+              color: LiviThemes.colors.gray500),
+          LiviThemes.spacing.heightSpacer8(),
+          Row(
+            children: [
+              Expanded(
+                child: LiviDropdownButton<TimeReminderBefore>(
+                  isExpanded: true,
+                  value: TimeReminderBefore.values.singleWhere(
+                      (element) => element == timeReminderBefore,
+                      orElse: () => timeReminderBefore),
+                  onChanged: (TimeReminderBefore? value) {
+                    setState(() {
+                      timeReminderBefore = value!;
+                    });
+                  },
+                  items: TimeReminderBefore.values
+                      .map<DropdownMenuItem<TimeReminderBefore>>(
+                          (TimeReminderBefore value) {
+                    return DropdownMenuItem<TimeReminderBefore>(
+                      value: value,
+                      child: Text(value.toString()),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -328,6 +286,123 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     return Container(
       width: 1,
       color: LiviThemes.colors.gray300,
+    );
+  }
+
+  Widget startDateWidget() {
+    return LiviInputField(
+      title: Strings.startDate.requiredSymbol(),
+      focusNode: FocusNode(),
+      onTap: () => showMaterialDatePicker(
+          context: context,
+          initialDate: now,
+          firstDate: now,
+          lastDate: endDateTime,
+          isStartDate: true),
+      readOnly: true,
+      controller: _startDateController,
+      prefix: Padding(
+        padding: const EdgeInsets.all(16),
+        child: LiviThemes.icons.calendarIcon(),
+      ),
+    );
+  }
+
+  Widget endDateWidget() {
+    return LiviInputField(
+      title: Strings.endDate.requiredSymbol(),
+      focusNode: FocusNode(),
+      readOnly: true,
+      onTap: () => showMaterialDatePicker(
+        context: context,
+        isStartDate: false,
+        initialDate: now,
+        firstDate: now,
+        lastDate: endDateTime,
+      ),
+      controller: _endDateController,
+      prefix: Padding(
+        padding: const EdgeInsets.all(16),
+        child: LiviThemes.icons.calendarIcon(),
+      ),
+    );
+  }
+
+  Widget remindMeBefore() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interMedium16(Strings.remindMe,
+              color: LiviThemes.colors.gray500),
+          LiviThemes.spacing.heightSpacer8(),
+          Row(
+            children: [
+              Expanded(
+                child: LiviDropdownButton<TimeReminderBefore>(
+                  isExpanded: true,
+                  value: TimeReminderBefore.values.singleWhere(
+                      (element) => element == timeReminderBefore,
+                      orElse: () => timeReminderBefore),
+                  onChanged: (TimeReminderBefore? value) {
+                    setState(() {
+                      timeReminderBefore = value!;
+                    });
+                  },
+                  items: TimeReminderBefore.values
+                      .map<DropdownMenuItem<TimeReminderBefore>>(
+                          (TimeReminderBefore value) {
+                    return DropdownMenuItem<TimeReminderBefore>(
+                      value: value,
+                      child: Text(value.toString()),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget remindMeLater() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interMedium16(Strings.remindMe,
+              color: LiviThemes.colors.gray500),
+          LiviThemes.spacing.heightSpacer8(),
+          Row(
+            children: [
+              Expanded(
+                child: LiviDropdownButton<TimeReminderLater>(
+                  isExpanded: true,
+                  value: TimeReminderLater.values.singleWhere(
+                      (element) => element == timeReminderLater,
+                      orElse: () => timeReminderLater),
+                  onChanged: (TimeReminderLater? value) {
+                    setState(() {
+                      timeReminderLater = value!;
+                    });
+                  },
+                  items: TimeReminderLater.values
+                      .map<DropdownMenuItem<TimeReminderLater>>(
+                          (TimeReminderLater value) {
+                    return DropdownMenuItem<TimeReminderLater>(
+                      value: value,
+                      child: Text(value.toString()),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -413,6 +488,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget addAnotherScheduleWidget() {
+    return SizedBox(
+      child: LiviTextButton(
+        margin: EdgeInsets.symmetric(horizontal: 64),
+        text: Strings.addAnotherSchedule,
+        onTap: () {},
+        icon: Padding(
+          padding: const EdgeInsets.only(right: 4),
+          child: LiviThemes.icons.plusIcon(),
+        ),
       ),
     );
   }
