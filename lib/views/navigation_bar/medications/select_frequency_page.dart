@@ -1,8 +1,4 @@
-import 'dart:ffi';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../components/components.dart';
@@ -51,7 +47,6 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     startDateTime = now;
     endDateTime = DateTime(_foreverYear);
     setDate();
-    // dateTime = now;
     super.initState();
   }
 
@@ -73,6 +68,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     } else {
       _endDateController.text = dateFormat.format(endDateTime);
     }
+    setState(() {});
   }
 
   // bool get showInventoryQuantityField =>
@@ -229,24 +225,28 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     required bool isStartDate,
   }) async {
     final dateTime = await showDatePicker(
-          context: context,
-          // controller: controller,
-          // date: dateTime,_
+      context: context,
 
-          //  LiviThemes.colors.brand600,
-
-          cancelText: isStartDate ? Strings.now : Strings.forever,
-          confirmText: Strings.apply,
-          initialDate: now,
-          firstDate:
-              now, //DateTime.now() - not to allow to choose before today.
-          lastDate: endDateTime,
-        ) ??
-        now;
-    if (isStartDate) {
-      startDateTime = dateTime;
+      cancelText: isStartDate ? Strings.now : Strings.forever,
+      confirmText: Strings.apply,
+      initialDate: isStartDate ? now : startDateTime,
+      firstDate: isStartDate
+          ? now
+          : startDateTime, //DateTime.now() - not to allow to choose before today.
+      lastDate: DateTime(_foreverYear),
+    );
+    if (dateTime == null) {
+      if (isStartDate) {
+        startDateTime = now;
+      } else {
+        endDateTime = DateTime(_foreverYear);
+      }
     } else {
-      endDateTime = dateTime;
+      if (isStartDate) {
+        startDateTime = dateTime;
+      } else {
+        endDateTime = dateTime;
+      }
     }
     setDate();
   }
@@ -429,6 +429,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
               Expanded(
                 flex: 9,
                 child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
                   onTap: () {
                     setState(() {});
                   },
