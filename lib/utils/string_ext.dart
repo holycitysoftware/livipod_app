@@ -38,6 +38,12 @@ extension DateTimeExt on DateTime {
   }
 }
 
+extension IntExt on int {
+  bool isWeekend() {
+    return this == DateTime.saturday || this == DateTime.sunday;
+  }
+}
+
 extension StringExt on String {
   String extendText() {
     return replaceAll('', '\u{200B}');

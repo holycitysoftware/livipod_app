@@ -11,6 +11,28 @@ String getFormattedDate(DateTime? date) {
   return 'Never';
 }
 
+String getStringFromDateTimeInteger(int day) {
+  switch (day) {
+    case 1:
+      return 'Sunday';
+    case 2:
+      return 'Monday';
+
+    case 3:
+      return 'Tuesday';
+    case 4:
+      return 'Wednesday';
+    case 5:
+      return 'Thursday';
+    case 6:
+      return 'Friday';
+    case 7:
+      return 'Saturday';
+    default:
+      return '';
+  }
+}
+
 String getFormattedTime(DateTime? date) {
   if (date != null) {
     return DateFormat('h:mm a').format(date);

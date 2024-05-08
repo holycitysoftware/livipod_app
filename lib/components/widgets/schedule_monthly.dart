@@ -72,13 +72,15 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
         height: 40,
         child: ElevatedButton(
             onPressed: () {
-              setState(() {
-                if (widget.schedule.monthPattern[i] == 0) {
-                  widget.schedule.monthPattern[i] = 1;
-                } else {
-                  widget.schedule.monthPattern[i] = 0;
-                }
-              });
+              if (widget.schedule.monthPattern != null) {
+                setState(() {
+                  if (widget.schedule.monthPattern![i] == 0) {
+                    widget.schedule.monthPattern![i] = 1;
+                  } else {
+                    widget.schedule.monthPattern![i] = 0;
+                  }
+                });
+              }
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: getBackgroundColor(i)),
@@ -94,7 +96,7 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
   }
 
   Color getBackgroundColor(int index) {
-    if (widget.schedule.monthPattern[index] == 1) {
+    if (widget.schedule.monthPattern![index] == 1) {
       return Colors.amber;
     }
     return const Color.fromRGBO(255, 255, 193, 0.3);

@@ -67,13 +67,15 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
         width: 90,
         child: ElevatedButton(
             onPressed: () {
-              setState(() {
-                if (widget.schedule.dayPattern[i] == 0) {
-                  widget.schedule.dayPattern[i] = 1;
-                } else {
-                  widget.schedule.dayPattern[i] = 0;
-                }
-              });
+              if (widget.schedule.dayPattern != null) {
+                setState(() {
+                  if (widget.schedule.dayPattern![i] == 0) {
+                    widget.schedule.dayPattern![i] = 1;
+                  } else {
+                    widget.schedule.dayPattern![i] = 0;
+                  }
+                });
+              }
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: getBackgroundColor(i)),
@@ -118,7 +120,7 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
   }
 
   Color getBackgroundColor(int index) {
-    if (widget.schedule.dayPattern[index] == 1) {
+    if (widget.schedule.dayPattern?[index] == 1) {
       return Colors.amber;
     }
     return const Color.fromRGBO(255, 255, 193, 0.3);
