@@ -20,6 +20,7 @@ class LiviInputField extends StatefulWidget {
   final FocusNode focusNode;
   final ValueChanged<String>? onFieldSubmitted;
   final Color? color;
+  final ValueChanged<String>? onChanged;
 
   const LiviInputField({
     super.key,
@@ -35,6 +36,7 @@ class LiviInputField extends StatefulWidget {
     this.controller,
     this.prefix,
     required this.focusNode,
+    this.onChanged,
     this.textCapitalization,
     this.color,
   });
@@ -126,6 +128,7 @@ class _LiviInputFieldState extends State<LiviInputField> {
             child: TextFormField(
               onTap: widget.onTap,
               readOnly: widget.readOnly,
+              onChanged: widget.onChanged,
               scrollPadding: EdgeInsets.only(bottom: double.maxFinite),
               textCapitalization: TextCapitalization.words,
               controller: widget.controller,

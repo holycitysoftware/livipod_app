@@ -1,4 +1,10 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../models/enums.dart';
+import '../themes/livi_themes.dart';
 
 int daysBetween(DateTime end, DateTime start) {
   return (end.difference(start).inHours / 24).round();
@@ -9,6 +15,29 @@ String getFormattedDate(DateTime? date) {
     return DateFormat('MM/dd/yy').format(date);
   }
   return 'Never';
+}
+
+Widget dosageFormIcon({required DosageForm dosageForm, Color? color}) {
+  switch (dosageForm) {
+    case DosageForm.none:
+      return LiviThemes.icons.tabletIcon(color: color);
+    case DosageForm.capsule:
+      return LiviThemes.icons.capsuleIcon(color: color);
+    case DosageForm.tablet:
+      return LiviThemes.icons.tabletIcon(color: color);
+    case DosageForm.drops:
+      return LiviThemes.icons.dropsIcon(color: color);
+    case DosageForm.injection:
+      return LiviThemes.icons.injectionIcon(color: color);
+    case DosageForm.ointment:
+      return LiviThemes.icons.ointmentIcon(color: color);
+    case DosageForm.liquid:
+      return LiviThemes.icons.liquidIcon(color: color);
+    case DosageForm.patch:
+      return LiviThemes.icons.patchIcon(color: color);
+    case DosageForm.other:
+      return LiviThemes.icons.otherDotsHorizontalIcon(color: color);
+  }
 }
 
 String getStringFromDateTimeInteger(int day) {

@@ -42,10 +42,9 @@ class _MedicationsPageState extends State<MedicationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LiviThemes.colors.baseWhite,
+      backgroundColor: LiviThemes.colors.gray100,
       appBar: LiviAppBar(
         title: Strings.yourMedications,
-        onPressed: goToSearchMedications,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: goToSearchMedications,
@@ -54,56 +53,61 @@ class _MedicationsPageState extends State<MedicationsPage> {
           color: LiviThemes.colors.baseWhite,
         ),
       ),
-      body: Consumer<AuthController>(builder: (context, value, child) {
-        return StreamBuilder<List<Medication>>(
-            stream:
-                MedicationService().listenToMedicationsRealTime(value.appUser!),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final medications = snapshot.data!;
-                return ListView.builder(
-                  itemCount: medications.length,
-                  itemBuilder: (context, index) {
-                    final medication = medications[index];
-                    return MedicationCard(
-                      medication: medication,
-                      onTap: () => goToEditMedication(medication),
-                    );
-                  },
-                );
-              }
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 48),
-                          child: LiviTextStyles.interSemiBold36(
-                              Strings.noMedicationsAddedYet,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Consumer<AuthController>(builder: (context, value, child) {
+          return StreamBuilder<List<Medication>>(
+              stream: MedicationService()
+                  .listenToMedicationsRealTime(value.appUser!),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final medications = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: medications.length,
+                    itemBuilder: (context, index) {
+                      final medication = medications[index];
+                      return MedicationCard(
+                        dosageForm: medication.dosageForm,
+                        medication: medication,
+                        onTap: () => goToEditMedication(medication),
+                      );
+                    },
+                  );
+                }
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 48),
+                            child: LiviTextStyles.interSemiBold36(
+                                Strings.noMedicationsAddedYet,
+                                textAlign: TextAlign.center),
+                          ),
+                          LiviThemes.spacing.heightSpacer16(),
+                          LiviTextStyles.interRegular16(
+                              Strings.typeTheNameOfTheMedicine,
                               textAlign: TextAlign.center),
-                        ),
-                        LiviThemes.spacing.heightSpacer16(),
-                        LiviTextStyles.interRegular16(
-                            Strings.typeTheNameOfTheMedicine,
-                            textAlign: TextAlign.center),
-                        LiviThemes.spacing.heightSpacer16(),
-                        LiviSearchBar(
-                          onFieldSubmitted: (e) {
-                            goToSearchMedications(medication: e);
-                          },
-                          focusNode: focusNode,
-                        ),
-                        Spacer(
-                          flex: 2,
-                        ),
-                      ]),
-                ),
-              );
-            });
-      }),
+                          LiviThemes.spacing.heightSpacer16(),
+                          LiviSearchBar(
+                            controller: TextEditingController(),
+                            onFieldSubmitted: (e) {
+                              goToSearchMedications(medication: e);
+                            },
+                            focusNode: focusNode,
+                          ),
+                          Spacer(
+                            flex: 2,
+                          ),
+                        ]),
+                  ),
+                );
+              });
+        }),
+      ),
     );
   }
 }

@@ -14,6 +14,7 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
       ..manufacturer = json['manufacturer'] as String
       ..dosageForm = $enumDecode(_$DosageFormEnumMap, json['dosageForm'])
       ..packageId = json['packageId'] as String
+      ..strength = json['strength'] as String
       ..instructions = json['instructions'] as String
       ..schedules = (json['schedules'] as List<dynamic>?)
               ?.map((e) => Schedule.fromJson(e as Map<String, dynamic>))
@@ -25,7 +26,9 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
           : Dosing.fromJson(json['nextDosing'] as Map<String, dynamic>)
       ..lastDosing = json['lastDosing'] == null
           ? null
-          : Dosing.fromJson(json['lastDosing'] as Map<String, dynamic>);
+          : Dosing.fromJson(json['lastDosing'] as Map<String, dynamic>)
+      ..inventoryQuantity = json['inventoryQuantity'] as int
+      ..type = $enumDecode(_$ScheduleTypeEnumMap, json['type']);
 
 Map<String, dynamic> _$MedicationToJson(Medication instance) =>
     <String, dynamic>{
@@ -35,11 +38,14 @@ Map<String, dynamic> _$MedicationToJson(Medication instance) =>
       'manufacturer': instance.manufacturer,
       'dosageForm': _$DosageFormEnumMap[instance.dosageForm]!,
       'packageId': instance.packageId,
+      'strength': instance.strength,
       'instructions': instance.instructions,
       'schedules': instance.schedules.map((e) => e.toJson()).toList(),
       'hasChanged': instance.hasChanged,
       'nextDosing': instance.nextDosing?.toJson(),
       'lastDosing': instance.lastDosing?.toJson(),
+      'inventoryQuantity': instance.inventoryQuantity,
+      'type': _$ScheduleTypeEnumMap[instance.type]!,
     };
 
 const _$DosageFormEnumMap = {
@@ -52,4 +58,11 @@ const _$DosageFormEnumMap = {
   DosageForm.liquid: 'liquid',
   DosageForm.patch: 'patch',
   DosageForm.other: 'other',
+};
+
+const _$ScheduleTypeEnumMap = {
+  ScheduleType.asNeeded: 'asNeeded',
+  ScheduleType.daily: 'daily',
+  ScheduleType.weekly: 'weekly',
+  ScheduleType.monthly: 'monthly',
 };

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../components/components.dart';
 import '../../../models/enums.dart';
 import '../../../models/models.dart';
+import '../../../services/services.dart';
 import '../../../themes/livi_themes.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/strings.dart';
+import '../../../utils/utils.dart';
 import '../../views.dart';
 
 class SelectDosageFormPage extends StatefulWidget {
@@ -21,23 +24,51 @@ class SelectDosageFormPage extends StatefulWidget {
 }
 
 class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
-  Medication? medication;
   DosageForm dosageForm = DosageForm.none;
-
-  bool get isSelected => dosageForm == medication!.dosageForm;
+  final FdaService _service = FdaService();
+  List<String> dosageForms = [];
+  bool isLoading = false;
+  bool get isSelected => dosageForm == widget.medication.dosageForm;
 
   @override
   void initState() {
-    medication = widget.medication;
+    searchDosageForms();
     super.initState();
   }
 
+  Future searchDosageForms() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      dosageForms =
+          await _service.searchDrugs(widget.medication.name, false, null, null);
+    } catch (e, s) {
+      logger(e.toString());
+      logger(s.toString());
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  List<DosageForm> get dosageFormList {
+    if (dosageForms.isEmpty) {
+      return DosageForm.values.sublist(1);
+    }
+    return DosageForm.values
+        .where((element) =>
+            dosageForms.contains(element.description.toUpperCase()))
+        .toList();
+  }
+
   Future<void> goToSelectMedicationStrength() async {
+    widget.medication.dosageForm = dosageForm;
     await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
-              SelectMedicationStrength(medication: medication!)),
+              SelectMedicationStrength(medication: widget.medication)),
     );
   }
 
@@ -65,45 +96,31 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
             textAlign: TextAlign.center,
           ),
           LiviThemes.spacing.heightSpacer32(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GridView(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
+          if (isLoading)
+            Expanded(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          else
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GridView(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 1,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  children: dosageFormList
+                      .map((dosageForm) => _buildDosageFormCard(
+                            dosageForm: dosageForm,
+                          ))
+                      .toList(),
                 ),
-                children: [
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.capsule,
-                  ),
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.tablet,
-                  ),
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.drops,
-                  ),
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.injection,
-                  ),
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.ointment,
-                  ),
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.liquid,
-                  ),
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.patch,
-                  ),
-                  _buildDosageFormCard(
-                    dosageForm: DosageForm.other,
-                  )
-                ],
               ),
             ),
-          ),
         ],
       ),
     );
@@ -114,26 +131,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
         dosageForm == this.dosageForm || this.dosageForm == DosageForm.none
             ? null
             : LiviThemes.colors.gray300;
-    switch (dosageForm) {
-      case DosageForm.none:
-        return SizedBox();
-      case DosageForm.capsule:
-        return LiviThemes.icons.capsuleIcon(color: color);
-      case DosageForm.tablet:
-        return LiviThemes.icons.tabletIcon(color: color);
-      case DosageForm.drops:
-        return LiviThemes.icons.dropsIcon(color: color);
-      case DosageForm.injection:
-        return LiviThemes.icons.injectionIcon(color: color);
-      case DosageForm.ointment:
-        return LiviThemes.icons.ointmentIcon(color: color);
-      case DosageForm.liquid:
-        return LiviThemes.icons.liquidIcon(color: color);
-      case DosageForm.patch:
-        return LiviThemes.icons.patchIcon(color: color);
-      case DosageForm.other:
-        return LiviThemes.icons.otherDotsHorizontalIcon(color: color);
-    }
+    return dosageFormIcon(dosageForm: dosageForm, color: color);
   }
 
   Widget _buildDosageFormCard({required DosageForm dosageForm}) {
@@ -153,10 +151,10 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: () {
-          if (medication != null) {
+          if (widget.medication != null) {
             setState(() {
-              medication!.dosageForm = dosageForm;
-              this.dosageForm = medication!.dosageForm;
+              widget.medication.dosageForm = dosageForm;
+              this.dosageForm = widget.medication.dosageForm;
             });
           }
         },

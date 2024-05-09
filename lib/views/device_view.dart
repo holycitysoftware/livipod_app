@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 
-import '../controllers/ble_controller.dart';
 import '../controllers/controllers.dart';
-import '../services/livi_pod_service.dart';
 import '../models/livi_pod.dart';
-import 'schedule_view.dart';
 
 class DeviceView extends StatefulWidget {
   final LiviPod liviPod;

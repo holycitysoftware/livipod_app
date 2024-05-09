@@ -7,11 +7,13 @@ class LiviInkWell extends StatelessWidget {
   final Widget child;
   final EdgeInsets? padding;
   final Duration debounceDuration;
+  final double borderRadius;
   const LiviInkWell({
     super.key,
     required this.onTap,
     this.padding,
     required this.child,
+    this.borderRadius = 64,
     this.debounceDuration = const Duration(milliseconds: 2000),
   });
 
@@ -34,7 +36,7 @@ class LiviInkWell extends StatelessWidget {
     }
 
     return InkWell(
-      borderRadius: BorderRadius.circular(64),
+      borderRadius: BorderRadius.circular(borderRadius),
       onTap: onTap,
       child: Padding(
         padding: padding ?? EdgeInsets.zero,

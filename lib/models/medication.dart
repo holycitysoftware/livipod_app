@@ -15,12 +15,15 @@ class Medication {
   String manufacturer = '';
   DosageForm dosageForm = DosageForm.none;
   String packageId = '';
+  String strength = '';
   String instructions = '';
   @JsonKey(name: 'schedules', defaultValue: <Schedule>[])
   List<Schedule> schedules = [];
   bool hasChanged = true;
   Dosing? nextDosing;
   Dosing? lastDosing;
+  int inventoryQuantity = 0;
+  ScheduleType type = ScheduleType.monthly;
 
   Medication({
     required this.name,
@@ -38,20 +41,20 @@ class Medication {
     if (nextDosing == null) {
       return '-';
     }
-    if (schedules.isNotEmpty && schedules[0].type == ScheduleType.asNeeded) {
+    if (schedules.isNotEmpty && type == ScheduleType.asNeeded) {
       return 'as needed';
     }
     var offsetDosingTime = nextDosing!.scheduledDosingTime!.toLocal();
     return utils.getFormattedDateAndTime(offsetDosingTime);
   }
 
-  List<String> getScheduleDescriptions() {
-    var list = <String>[];
-    for (var schedule in schedules) {
-      list.add(schedule.getScheduleDescription());
-    }
-    return list;
-  }
+  // List<String> getScheduleDescriptions() {
+  //   var list = <String>[];
+  //   for (var schedule in schedules) {
+  //     list.add(schedule.getScheduleDescription());
+  //   }
+  //   return list;
+  // }
 
   factory Medication.fromJson(Map<String, dynamic> json) =>
       _$MedicationFromJson(json);

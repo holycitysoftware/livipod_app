@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../themes/livi_themes.dart';
 import '../components.dart';
-import '../widgets/bounding_card.dart';
 
 class CheckPersonaCard extends StatelessWidget {
   final String option;

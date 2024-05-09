@@ -21,18 +21,24 @@ class LiviTextIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
+      overlayColor: MaterialStatePropertyAll(
+        LiviThemes.colors.brand600.withOpacity(0.1),
+      ),
       onTap: onPressed,
-      child: Row(
-        children: [
-          LiviTextStyles.interMedium16(text,
-              color: enabled
-                  ? LiviThemes.colors.brand600
-                  : LiviThemes.colors.gray400),
-          Padding(
-            padding: const EdgeInsets.only(left: 2, right: 8),
-            child: icon,
-          )
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            LiviTextStyles.interMedium16(text,
+                color: enabled
+                    ? LiviThemes.colors.brand600
+                    : LiviThemes.colors.gray400),
+            Padding(
+              padding: const EdgeInsets.only(left: 2, right: 8),
+              child: icon,
+            )
+          ],
+        ),
       ),
     );
   }

@@ -10,8 +10,6 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
       endDate: json['endDate'] == null
           ? null
           : DateTime.parse(json['endDate'] as String),
-      type: $enumDecodeNullable(_$ScheduleTypeEnumMap, json['type']) ??
-          ScheduleType.daily,
       timeReminderBefore: $enumDecodeNullable(
               _$TimeReminderBeforeEnumMap, json['timeReminderBefore']) ??
           TimeReminderBefore.fiveMinutes,
@@ -39,7 +37,6 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
 Map<String, dynamic> _$ScheduleToJson(Schedule instance) => <String, dynamic>{
       'startDate': instance.startDate.toIso8601String(),
       'endDate': instance.endDate?.toIso8601String(),
-      'type': _$ScheduleTypeEnumMap[instance.type]!,
       'intervalBetweenDoses':
           _$IntervalBetweenDosesEnumMap[instance.intervalBetweenDoses]!,
       'frequency': instance.frequency,
@@ -54,13 +51,6 @@ Map<String, dynamic> _$ScheduleToJson(Schedule instance) => <String, dynamic>{
           _$TimeReminderLaterEnumMap[instance.timeReminderLater]!,
       'instructions': instance.instructions,
     };
-
-const _$ScheduleTypeEnumMap = {
-  ScheduleType.asNeeded: 'asNeeded',
-  ScheduleType.daily: 'daily',
-  ScheduleType.weekly: 'weekly',
-  ScheduleType.monthly: 'monthly',
-};
 
 const _$TimeReminderBeforeEnumMap = {
   TimeReminderBefore.oneMinute: 'oneMinute',

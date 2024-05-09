@@ -5,12 +5,16 @@ import '../../utils/strings.dart';
 import '../components.dart';
 
 class LiviSearchBar extends StatefulWidget {
-  final Function(String) onFieldSubmitted;
+  final Function(String)? onFieldSubmitted;
+  final TextEditingController controller;
   final FocusNode focusNode;
+  final ValueChanged<String>? onChanged;
   const LiviSearchBar({
     super.key,
-    required this.onFieldSubmitted,
+    this.onFieldSubmitted,
     required this.focusNode,
+    required this.controller,
+    this.onChanged,
   });
 
   @override
@@ -31,7 +35,9 @@ class _LiviSearchBarState extends State<LiviSearchBar> {
   @override
   Widget build(BuildContext context) {
     return LiviInputField(
+      onChanged: widget.onChanged,
       focusNode: widget.focusNode,
+      controller: widget.controller,
       color: widget.focusNode.hasFocus
           ? LiviThemes.colors.baseWhite
           : LiviThemes.colors.gray200,

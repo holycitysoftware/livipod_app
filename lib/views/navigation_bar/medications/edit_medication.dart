@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
-import '../../../models/enums.dart';
 import '../../../models/models.dart';
-import '../../../models/schedule_type.dart';
-import '../../../services/medication_history.dart';
 import '../../../services/medication_service.dart';
 import '../../../themes/livi_themes.dart';
-import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
-import '../../../utils/utils.dart';
-import '../../views.dart';
 
 const int _foreverYear = 2200;
 
@@ -55,7 +48,7 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
         appBar: LiviAppBar(
           ///TODO: we need to see all the required fields
           ///and check if all THE REQUIREDS fields are filled :)
-          title: widget.medication.name,
+          title: Strings.editMedication,
           onPressed: () {},
           tail: [
             LiviTextIcon(

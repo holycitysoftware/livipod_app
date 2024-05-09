@@ -10,10 +10,12 @@ class LiviAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Function()? onPressed;
   final bool backButton;
   final List<Widget>? tail;
+  final double? elevation;
   const LiviAppBar({
     super.key,
     required this.title,
     this.onPressed,
+    this.elevation,
     this.backButton = false,
     this.tail,
   });
@@ -32,7 +34,8 @@ class _LiviAppBarState extends State<LiviAppBar> {
     return AppBar(
       foregroundColor: LiviThemes.colors.baseWhite,
       backgroundColor: LiviThemes.colors.baseWhite,
-      shadowColor: LiviThemes.colors.baseWhite, elevation: 0,
+      shadowColor: LiviThemes.colors.baseWhite,
+      elevation: widget.elevation ?? 0,
       surfaceTintColor: LiviThemes.colors.baseWhite,
       leading: widget.backButton ||
               (ModalRoute.of(context)?.impliesAppBarDismissal ?? false)

@@ -16,7 +16,7 @@ class LiviTheme {
         ),
         cardTheme: CardTheme(color: LiviThemes.colors.baseWhite),
         primaryColor: LiviThemes.colors.brand600,
-        highlightColor: LiviThemes.colors.brand600,
+        highlightColor: LiviThemes.colors.brand600.withOpacity(.1),
         scaffoldBackgroundColor: LiviThemes.colors.baseWhite,
         colorScheme: ColorScheme.light(
           primary: LiviThemes.colors.brand600,
