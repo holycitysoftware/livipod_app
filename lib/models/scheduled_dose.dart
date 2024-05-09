@@ -9,7 +9,10 @@ class ScheduledDose {
   @DayOfTimeConverter()
   TimeOfDay timeOfDay = const TimeOfDay(hour: 8, minute: 0);
 
-  ScheduledDose();
+  ScheduledDose({
+    this.qty = 1,
+    required this.timeOfDay,
+  });
 
   factory ScheduledDose.fromJson(Map<String, dynamic> json) =>
       _$ScheduledDoseFromJson(json);

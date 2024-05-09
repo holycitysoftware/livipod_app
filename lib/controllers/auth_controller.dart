@@ -33,6 +33,7 @@ class AuthController extends ChangeNotifier {
     FirebaseAuth.instance.authStateChanges().listen(
         (user) {
           _user = user;
+          getAppUser();
           notifyListeners();
         },
         cancelOnError: true,
@@ -49,6 +50,17 @@ class AuthController extends ChangeNotifier {
 
   void clearVerificationError() {
     _verificationError = '';
+  }
+
+  Future<void> getAppUser() async {
+    if (_user != null) {
+      final account =
+          await _accountService.getAccount(Account(ownerId: _user!.uid));
+      if (account != null) {
+        _appUser = await _accountService.getOwner(account);
+      }
+      notifyListeners();
+    }
   }
 
   Future<void> setAppUser(

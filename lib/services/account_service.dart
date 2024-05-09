@@ -34,6 +34,19 @@ class AccountService {
     return Future.value(user);
   }
 
+  Future<Account?> getAccount(Account account) async {
+    await FirebaseFirestore.instance
+        .collection('accounts')
+        .where('ownerId', isEqualTo: account.ownerId)
+        .get()
+        .then((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        account = Account.fromJson(snapshot.docs[0].data());
+      }
+    });
+    return Future.value(account);
+  }
+
   Future deleteAccount(Account account) async {
     await FirebaseFirestore.instance
         .collection('accounts')

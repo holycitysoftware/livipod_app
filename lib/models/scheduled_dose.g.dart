@@ -7,10 +7,11 @@ part of 'scheduled_dose.dart';
 // **************************************************************************
 
 ScheduledDose _$ScheduledDoseFromJson(Map<String, dynamic> json) =>
-    ScheduledDose()
-      ..qty = (json['qty'] as num).toDouble()
-      ..timeOfDay =
-          const DayOfTimeConverter().fromJson(json['timeOfDay'] as String?);
+    ScheduledDose(
+      qty: (json['qty'] as num?)?.toDouble() ?? 1,
+      timeOfDay:
+          const DayOfTimeConverter().fromJson(json['timeOfDay'] as String?),
+    );
 
 Map<String, dynamic> _$ScheduledDoseToJson(ScheduledDose instance) =>
     <String, dynamic>{

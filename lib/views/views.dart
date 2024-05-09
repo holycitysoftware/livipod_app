@@ -3,6 +3,7 @@ export 'devices_view.dart';
 export 'home_tab_view.dart';
 export 'navigation_bar/history_page.dart';
 export 'navigation_bar/home_page.dart';
+export 'navigation_bar/medications/edit_medication.dart';
 export 'navigation_bar/medications/search_medication_page.dart';
 export 'navigation_bar/medications/select_dosage_form_page.dart';
 export 'navigation_bar/medications/select_medication_strength_page.dart';

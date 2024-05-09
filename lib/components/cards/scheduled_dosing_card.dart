@@ -43,7 +43,6 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
@@ -100,7 +99,8 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
                         if (!widget.scheduledDosings.any((element) =>
                             element.timeOfDay.hour == hour &&
                             element.timeOfDay.minute == minute)) {
-                          var scheduledDose = ScheduledDose();
+                          var scheduledDose =
+                              ScheduledDose(timeOfDay: TimeOfDay.now());
                           scheduledDose.qty = qty;
                           scheduledDose.timeOfDay =
                               TimeOfDay(hour: hour, minute: minute);

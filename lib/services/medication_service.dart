@@ -30,7 +30,7 @@ class MedicationService {
       AppUser authenticatedUser) {
     FirebaseFirestore.instance
         .collection('medications')
-        .where('userId', isEqualTo: authenticatedUser.id)
+        .where('appUserId', isEqualTo: authenticatedUser.id)
         .snapshots()
         .listen(
             (medicationsSnapshot) {

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
+import '../../../controllers/controllers.dart';
 import '../../../models/enums.dart';
 import '../../../models/models.dart';
 import '../../../models/schedule_type.dart';
+import '../../../services/medication_history.dart';
+import '../../../services/medication_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
@@ -26,20 +30,15 @@ class SelectFrequencyPage extends StatefulWidget {
 }
 
 class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
-  List<Schedule> schedules = [
-    Schedule(scheduledDosings: [], dayPattern: []),
-  ];
   DateTime now = DateTime.now();
-  DateTime atWhatTimeDate = DateTime.now();
   List<int> hoursList = List.generate(13, (index) => index++);
 
   List<int> minutesList = List.generate(60, (index) => index++);
-  List<int> quantityList = List.generate(13, (index) => index++);
+  List<double> quantityList = List.generate(13, (index) => index + 1);
 
   IntervalBetweenDoses intervalBetweenDoses = IntervalBetweenDoses.eightHours;
   DayTime? dayTime = DayTime.am;
   // DateTime monthlyOnTheDay = DateTime.now();
-  int quantityNeeded = 1;
   final dateFormat = DateFormat.yMMMMd('en_US');
 
   final TextEditingController _startDateController = TextEditingController();
@@ -47,10 +46,17 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   final TextEditingController _quantityNeededController =
       TextEditingController();
   final FocusNode _quantityNeededFoucs = FocusNode();
+
+  List<Schedule> get schedules => widget.medication.schedules;
   @override
   void initState() {
     dayTime = now.hour > 12 ? DayTime.pm : DayTime.am;
-    atWhatTimeDate = now;
+    widget.medication.schedules = [
+      Schedule(
+        scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
+        dayPattern: [],
+      ),
+    ];
     setDate(0);
     super.initState();
   }
@@ -137,6 +143,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     ];
   }
 
+  Future<void> saveMedication() async {
+    widget.medication.appUserId =
+        Provider.of<AuthController>(context, listen: false).appUser!.id;
+    await MedicationService().createMedication(widget.medication);
+    goToHomePage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,7 +170,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         onPressed: () {},
         tail: [
           LiviTextIcon(
-            onPressed: isEnabled ? goToHomePage : () {},
+            onPressed: isEnabled ? saveMedication : () {},
             enabled: isEnabled,
             text: Strings.save,
             icon: Padding(
@@ -228,20 +241,26 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           Row(
             children: [
               Expanded(
-                child: LiviDropdownButton<int>(
+                child: LiviDropdownButton<double>(
                   isExpanded: true,
                   value: quantityList.singleWhere(
-                      (element) => element == quantityNeeded,
-                      orElse: () => quantityNeeded),
-                  onChanged: (int? value) {
+                      (element) =>
+                          element ==
+                          widget.medication.schedules[index].scheduledDosings
+                              .first.qty,
+                      orElse: () => widget.medication.schedules[index]
+                          .scheduledDosings.first.qty),
+                  onChanged: (double? value) {
                     setState(() {
-                      quantityNeeded = value!;
+                      widget.medication.schedules[index].scheduledDosings.first
+                          .qty = value!;
                     });
                   },
-                  items: quantityList.map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
+                  items: quantityList
+                      .map<DropdownMenuItem<double>>((double value) {
+                    return DropdownMenuItem<double>(
                       value: value,
-                      child: Text(value.toString()),
+                      child: Text(value.toInt().toString()),
                     );
                   }).toList(),
                 ),
@@ -517,7 +536,15 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         text: Strings.addAnotherSchedule,
         onTap: () {
           //TODO: add schedule dose here
-          schedules.add(Schedule(scheduledDosings: [ScheduledDose()]));
+          schedules.add(
+            Schedule(
+              scheduledDosings: [
+                ScheduledDose(
+                  timeOfDay: TimeOfDay.now(),
+                )
+              ],
+            ),
+          );
           setState(() {});
         },
         icon: Padding(
@@ -584,17 +611,19 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 child: LiviDropdownButton<int>(
                   isExpanded: true,
                   value: hoursList.singleWhere((element) {
-                    return element == convertTimeFormat(atWhatTimeDate.hour);
+                    return element ==
+                        convertTimeFormat(widget.medication.schedules[index]
+                            .scheduledDosings.first.timeOfDay.hour);
                   }, orElse: () => hoursList.first),
                   onChanged: (int? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      atWhatTimeDate = DateTime(
-                          atWhatTimeDate.year,
-                          atWhatTimeDate.month,
-                          atWhatTimeDate.day,
-                          value!,
-                          atWhatTimeDate.minute);
+                      widget.medication.schedules[index].scheduledDosings.first
+                              .timeOfDay =
+                          TimeOfDay(
+                              hour: value!,
+                              minute: widget.medication.schedules[index]
+                                  .scheduledDosings.first.timeOfDay.minute);
                     });
                   },
                   items: hoursList.map<DropdownMenuItem<int>>((int value) {
@@ -613,17 +642,22 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 child: LiviDropdownButton<int>(
                   isExpanded: true,
                   value: minutesList.singleWhere(
-                      (element) => element == atWhatTimeDate.minute,
+                      (element) =>
+                          element ==
+                          widget.medication.schedules[index].scheduledDosings
+                              .first.timeOfDay.minute,
                       orElse: () => minutesList.first),
                   onChanged: (int? value) {
                     // This is called when the user selects an item.
                     setState(() {
-                      atWhatTimeDate = DateTime(
-                          atWhatTimeDate.year,
-                          atWhatTimeDate.month,
-                          atWhatTimeDate.day,
-                          atWhatTimeDate.hour,
-                          value!);
+                      setState(() {
+                        widget.medication.schedules[index].scheduledDosings
+                                .first.timeOfDay =
+                            TimeOfDay(
+                                hour: widget.medication.schedules[index]
+                                    .scheduledDosings.first.timeOfDay.hour,
+                                minute: value!);
+                      });
                     });
                   },
                   items: minutesList.map<DropdownMenuItem<int>>((int value) {

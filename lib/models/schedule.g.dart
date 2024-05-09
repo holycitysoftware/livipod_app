@@ -23,18 +23,14 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
           IntervalBetweenDoses.eightHours,
       instructions: json['instructions'] as String? ?? '',
       frequency: json['frequency'] as int? ?? 1,
-      dayPattern: (json['dayPattern'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
+      dayPattern:
+          (json['dayPattern'] as List<dynamic>?)?.map((e) => e as int).toList(),
       monthPattern: (json['monthPattern'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
-      scheduledDosings: (json['scheduledDosings'] as List<dynamic>?)
-              ?.map((e) => ScheduledDose.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+          ?.map((e) => e as int)
+          .toList(),
+      scheduledDosings: (json['scheduledDosings'] as List<dynamic>)
+          .map((e) => ScheduledDose.fromJson(e as Map<String, dynamic>))
+          .toList(),
       prnDosing: json['prnDosing'] == null
           ? null
           : PrnDose.fromJson(json['prnDosing'] as Map<String, dynamic>),
@@ -52,10 +48,10 @@ Map<String, dynamic> _$ScheduleToJson(Schedule instance) => <String, dynamic>{
       'scheduledDosings':
           instance.scheduledDosings.map((e) => e.toJson()).toList(),
       'prnDosing': instance.prnDosing?.toJson(),
-      'timeReminderLater':
-          _$TimeReminderLaterEnumMap[instance.timeReminderLater]!,
       'timeReminderBefore':
           _$TimeReminderBeforeEnumMap[instance.timeReminderBefore]!,
+      'timeReminderLater':
+          _$TimeReminderLaterEnumMap[instance.timeReminderLater]!,
       'instructions': instance.instructions,
     };
 
