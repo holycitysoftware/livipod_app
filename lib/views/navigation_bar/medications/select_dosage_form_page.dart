@@ -28,7 +28,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
   final FdaService _service = FdaService();
   List<String> dosageForms = [];
   bool isLoading = false;
-  bool get isSelected => dosageForm == widget.medication.dosageForm;
+  bool get isSelected => dosageForm != DosageForm.none;
 
   @override
   void initState() {
@@ -79,6 +79,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: LiviFilledButton(
+          enabled: isSelected,
           isCloseToNotch: true,
           showArrow: true,
           text: Strings.continueText,
@@ -86,7 +87,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
         ),
       ),
       appBar: LiviAppBar(
-        title: widget.medication.name,
+        title: widget.medication.getNameStrengthDosageForm(),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

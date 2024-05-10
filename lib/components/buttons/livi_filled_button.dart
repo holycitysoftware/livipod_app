@@ -61,7 +61,7 @@ class LiviFilledButton extends StatelessWidget {
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LiviTextStyles.interSemiBold18(text,
+                  LiviTextStyles.interSemiBold16(text,
                       color: (enabled ?? false)
                           ? LiviThemes.colors.baseWhite
                           : LiviThemes.colors.gray400),

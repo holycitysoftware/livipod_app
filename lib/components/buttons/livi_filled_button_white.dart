@@ -7,11 +7,13 @@ class LiviFilledButtonWhite extends StatelessWidget {
   final String text;
   final Function() onTap;
   final EdgeInsets? margin;
+  final Color? textColor;
   const LiviFilledButtonWhite({
     super.key,
     required this.text,
     this.margin,
     required this.onTap,
+    this.textColor,
   });
 
   @override
@@ -20,8 +22,13 @@ class LiviFilledButtonWhite extends StatelessWidget {
       padding: margin ?? EdgeInsets.zero,
       child: ElevatedButton(
         style: ButtonStyle(
+          elevation: MaterialStatePropertyAll(0),
           shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
+              side: BorderSide(
+                color: LiviThemes.colors.gray300,
+                width: 1,
+              ),
               borderRadius: BorderRadius.circular(8),
             ),
           ),
@@ -35,8 +42,8 @@ class LiviFilledButtonWhite extends StatelessWidget {
               MaterialStatePropertyAll(LiviThemes.colors.baseWhite),
         ),
         onPressed: onTap,
-        child: LiviTextStyles.interSemiBold18(text,
-            color: LiviThemes.colors.brand600),
+        child: LiviTextStyles.interSemiBold16(text,
+            color: textColor ?? LiviThemes.colors.brand600),
       ),
     );
   }

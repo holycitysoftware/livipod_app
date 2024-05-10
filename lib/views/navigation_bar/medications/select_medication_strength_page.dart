@@ -34,6 +34,7 @@ class _SelectMedicationStrengthState extends State<SelectMedicationStrength> {
   }
 
   void goToFrequencyPage() {
+    widget.medication.strength = selectedStrength;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -69,13 +70,14 @@ class _SelectMedicationStrengthState extends State<SelectMedicationStrength> {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: LiviFilledButton(
           isCloseToNotch: true,
+          enabled: selectedStrength.isNotEmpty,
           showArrow: true,
           text: Strings.continueText,
           onTap: goToFrequencyPage,
         ),
       ),
       appBar: LiviAppBar(
-        title: widget.medication.name,
+        title: widget.medication.getNameStrengthDosageForm(),
       ),
       body: Column(
         children: [

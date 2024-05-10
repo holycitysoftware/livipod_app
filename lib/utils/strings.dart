@@ -8,6 +8,7 @@ class Strings {
   static const String none = 'None';
   static const String now = 'Now';
   static const String forever = 'Forever';
+  static const String frequency = 'Frequency';
   static const String welcomeBackPleaseEnterDetails =
       'Welcome back! Please enter your details.';
   static const String yourAccountHasBeenCreatedStart =

@@ -13,7 +13,11 @@ class PrnDose {
   double nteQty = 1;
   int hourInterval = 4;
 
-  PrnDose();
+  PrnDose(
+      {this.minQty = 1,
+      this.maxQty = 1,
+      this.nteQty = 1,
+      this.hourInterval = 4});
 
   factory PrnDose.fromJson(Map<String, dynamic> json) =>
       _$PrnDoseFromJson(json);

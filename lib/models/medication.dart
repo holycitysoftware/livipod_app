@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import '../utils/string_ext.dart';
 import 'dosing.dart';
 import 'enums.dart';
 import 'schedule.dart';
@@ -22,7 +23,7 @@ class Medication {
   bool hasChanged = true;
   Dosing? nextDosing;
   Dosing? lastDosing;
-  int inventoryQuantity = 0;
+  int inventoryQuantity = 30;
   ScheduleType type = ScheduleType.monthly;
 
   Medication({
@@ -37,6 +38,17 @@ class Medication {
     return utils.getFormattedDateAndTime(offsetDosingTime);
   }
 
+  String getNameStrengthDosageForm() {
+    var name = this.name.capitalizeFirstLetter();
+    if (strength.isNotEmpty) {
+      name = '$name $strength';
+    }
+    if (dosageForm != DosageForm.none) {
+      name = '$name ${dosageForm.description.capitalizeFirstLetter()}';
+    }
+    return name;
+  }
+
   String getNextDosing() {
     if (nextDosing == null) {
       return '-';
@@ -48,13 +60,13 @@ class Medication {
     return utils.getFormattedDateAndTime(offsetDosingTime);
   }
 
-  // List<String> getScheduleDescriptions() {
-  //   var list = <String>[];
-  //   for (var schedule in schedules) {
-  //     list.add(schedule.getScheduleDescription());
-  //   }
-  //   return list;
-  // }
+  List<String> getScheduleDescriptions() {
+    var list = <String>[];
+    for (var schedule in schedules) {
+      list.add(schedule.getScheduleDescription(type));
+    }
+    return list;
+  }
 
   factory Medication.fromJson(Map<String, dynamic> json) =>
       _$MedicationFromJson(json);

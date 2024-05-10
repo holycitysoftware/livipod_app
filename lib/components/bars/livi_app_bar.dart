@@ -51,7 +51,11 @@ class _LiviAppBarState extends State<LiviAppBar> {
       //     Navigator.pop(context);
       //   },
       // ),
-      title: LiviTextStyles.interSemiBold16(widget.title),
+      title: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.45,
+        child: LiviTextStyles.interSemiBold16(widget.title,
+            textAlign: TextAlign.center),
+      ),
       actions: widget.onPressed != null
           ? widget.tail ??
               [
