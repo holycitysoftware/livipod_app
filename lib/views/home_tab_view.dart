@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../themes/livi_themes.dart';
-import 'devices_view.dart';
+import 'testing_only/devices_view.dart';
 import 'profile_view.dart';
 
 class HomeTabView extends StatefulWidget {

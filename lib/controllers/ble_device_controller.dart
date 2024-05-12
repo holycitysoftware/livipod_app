@@ -6,6 +6,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 class BleDeviceController {
   final StreamController<BleDeviceInfo> deviceInfoStreamController =
       StreamController<BleDeviceInfo>.broadcast();
+  final StreamController<DispenseRequest> dispenseResponseStreamController =
+      StreamController<DispenseRequest>.broadcast();
   final StreamController<Map<String, BluetoothConnectionState>>
       connectionStateStreamController =
       StreamController<Map<String, BluetoothConnectionState>>.broadcast();
@@ -20,6 +22,7 @@ class BleDeviceController {
   final List<BluetoothCharacteristic> _blinkCharacteristics = [];
   final List<BluetoothCharacteristic> _wifiCredentialsCharacteristics = [];
   final List<BluetoothCharacteristic> _resetCharacteristics = [];
+  final List<BluetoothCharacteristic> _dispenseCharacteristics = [];
 
   bool get readyForCommands => _readyForCommands;
 
@@ -113,8 +116,42 @@ class BleDeviceController {
             .toString()
             .startsWith('de0f7bcc-cdc7-4beb-b006-d182ad7ca6cb')) {
           _resetCharacteristics.add(characteristic);
+        } else if (characteristic.uuid
+            .toString()
+            .startsWith('a4a1b894-db82-4c34-9cd2-681acd27b5f0')) {
+          _dispenseCharacteristics.add(characteristic);
+        } else if (characteristic.uuid
+            .toString()
+            .startsWith('f8d4cd48-6f60-49df-82f8-9e6316025aeb')) {
+          _setupDispenseResponseListener(characteristic);
         }
       }
+    }
+  }
+
+  Future<void> _setupDispenseResponseListener(
+      BluetoothCharacteristic characteristic) async {
+    if (bluetoothDevice.isConnected) {
+      await characteristic.setNotifyValue(true);
+      characteristic.onValueReceived.listen(
+        (e) {
+          // parse // event,requested,dispensed,status
+          final temp = String.fromCharCodes(e);
+          final list = temp.split(',');
+          final event = list[0];
+          final requested = int.parse(list[1]);
+          final dispensed = int.parse(list[2]);
+          final status = list[3];
+
+          final dr = DispenseRequest(
+              bleDeviceController: this,
+              event: event,
+              requested: requested,
+              dispensed: dispensed,
+              status: status);
+          dispenseResponseStreamController.sink.add(dr);
+        },
+      );
     }
   }
 
@@ -220,6 +257,14 @@ class BleDeviceController {
       await _resetCharacteristics[index].write([0x01]);
     }
   }
+
+  Future<void> dispense(DispenseRequest dr) async {
+    final index = _dispenseCharacteristics.indexWhere(
+        (element) => element.device.remoteId == bluetoothDevice.remoteId);
+    if (index != -1 && _dispenseCharacteristics[index].device.isConnected) {
+      await _dispenseCharacteristics[index].write([dr.requested]);
+    }
+  }
 }
 
 class BleDeviceInfo {
@@ -231,4 +276,19 @@ class BleDeviceInfo {
       {required this.bleDeviceController,
       required this.macAddress,
       required this.ipAddress});
+}
+
+class DispenseRequest {
+  final BleDeviceController bleDeviceController;
+  final String event;
+  final int requested;
+  final int dispensed;
+  final String status;
+
+  DispenseRequest(
+      {required this.bleDeviceController,
+      required this.event,
+      required this.requested,
+      required this.dispensed,
+      required this.status});
 }

@@ -3,8 +3,8 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../controllers/ble_controller.dart';
-import '../models/livi_pod.dart';
+import '../../controllers/ble_controller.dart';
+import '../../models/livi_pod.dart';
 import 'device_view.dart';
 
 class DevicesView extends StatefulWidget {
@@ -97,7 +97,8 @@ class _DevicesViewState extends State<DevicesView> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0, vertical: 20),
-                                child: Text(liviPod.macAddress),
+                                child: Text(liviPod.bleDeviceController!
+                                    .bluetoothDevice.remoteId.str),
                               ),
                             ),
                           );

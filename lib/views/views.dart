@@ -1,5 +1,5 @@
-export 'device_view.dart';
-export 'devices_view.dart';
+export 'testing_only/device_view.dart';
+export 'testing_only/devices_view.dart';
 export 'home_tab_view.dart';
 export 'navigation_bar/history_page.dart';
 export 'navigation_bar/home_page.dart';

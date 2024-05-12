@@ -9,7 +9,7 @@ import 'ble_device_controller.dart';
 import '../services/livi_pod_service.dart';
 
 class BleController extends ChangeNotifier {
-  final LiviPodService liviPodController;
+  final LiviPodService liviPodService;
   List<ScanResult> _scanResults = [];
   BluetoothAdapterState _adapterState = BluetoothAdapterState.off;
   final List<BleDeviceController> _connectedDevices = [];
@@ -18,6 +18,8 @@ class BleController extends ChangeNotifier {
       StreamGroup<Map<String, BluetoothConnectionState>>();
   final StreamGroup<BleDeviceInfo> _deviceInfoStreamGroup =
       StreamGroup<BleDeviceInfo>();
+  final StreamGroup<DispenseRequest> _dispenseResponseStreamGroup =
+      StreamGroup<DispenseRequest>();
   bool _isScanning = false;
   List<LiviPod> _liviPodDevices = [];
 
@@ -28,7 +30,7 @@ class BleController extends ChangeNotifier {
   List<BleDeviceController> get connectedDevices => _connectedDevices;
   List<LiviPod> get liviPodDevices => _liviPodDevices;
 
-  BleController({required this.liviPodController}) {
+  BleController({required this.liviPodService}) {
     FlutterBluePlus.setLogLevel(LogLevel.verbose, color: true);
 
     FlutterBluePlus.adapterState.listen((event) {
@@ -54,12 +56,20 @@ class BleController extends ChangeNotifier {
       liviPod.ipAddress = event.ipAddress;
 
       // update database
-      liviPodController.updateLiviPod(liviPod);
+      liviPodService.updateLiviPod(liviPod);
 
       notifyListeners();
     });
 
-    liviPodController.listenToLiviPodsRealTime().listen(_handleLiviPods);
+    _dispenseResponseStreamGroup.stream.listen((event) {
+      // get the livipod
+      final liviPod = _liviPodDevices.firstWhere((element) =>
+          element.bleDeviceController == event.bleDeviceController);
+      liviPod.dispenseRequest = event;
+      notifyListeners();
+    });
+
+    liviPodService.listenToLiviPodsRealTime().listen(_handleLiviPods);
 
     FlutterBluePlus.scanResults.listen((results) {
       _scanResults = results;

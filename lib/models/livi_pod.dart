@@ -1,8 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../controllers/controllers.dart';
-import 'dosing.dart';
-import 'schedule.dart';
 
 part 'livi_pod.g.dart';
 
@@ -17,12 +15,11 @@ class LiviPod {
   String ipAddress = '';
   String medicationId = '';
 
-  //String medicationName;
-  //Schedule? schedule;
-  //Dosing? nextDosing;
-  //Dosing? lastDosing;
   @JsonKey(includeFromJson: false, includeToJson: false)
   BleDeviceController? bleDeviceController;
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  DispenseRequest? dispenseRequest;
 
   LiviPod({required this.remoteId});
 
@@ -57,5 +54,10 @@ class LiviPod {
 
   Future<void> reset() async {
     await bleDeviceController?.reset();
+  }
+
+  Future<void> dispense(DispenseRequest dr) async {
+    dispenseRequest = dr;
+    await bleDeviceController?.dispense(dr);
   }
 }

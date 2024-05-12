@@ -80,8 +80,8 @@ class LiviPodService {
     FirebaseFirestore.instance.collection('livipods').snapshots().listen(
         (liviPodsSnapshot) {
           if (liviPodsSnapshot.docs.isNotEmpty) {
-            var liviPods = liviPodsSnapshot.docs.map((snapshot) {
-              var liviPod = LiviPod.fromJson(snapshot.data());
+            final liviPods = liviPodsSnapshot.docs.map((snapshot) {
+              final liviPod = LiviPod.fromJson(snapshot.data());
               liviPod.id = snapshot.id;
               return liviPod;
             }).toList();

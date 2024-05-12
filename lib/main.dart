@@ -117,12 +117,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late final BleController _devicesController;
   //late final ScheduleController _scheduleController;
-  final LiviPodService _liviPodController = LiviPodService();
+  final LiviPodService _liviPodService = LiviPodService();
   final AuthController _authController = AuthController();
 
   @override
   void initState() {
-    _devicesController = BleController(liviPodController: _liviPodController);
+    _devicesController = BleController(liviPodService: _liviPodService);
     // _scheduleController =
     //     ScheduleController(liviPodController: _liviPodController);
     super.initState();
@@ -148,7 +148,8 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: LiviThemes.theme.getAppTheme(),
-        home: SplashPage(), // const FdaSearchTest() // const TestCreateUser()
+        home:
+            HomeTabView(), // SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),
     );
   }
