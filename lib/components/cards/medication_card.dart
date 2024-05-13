@@ -59,7 +59,7 @@ class MedicationCard extends StatelessWidget {
                               children: medication
                                   .getScheduleDescriptions()
                                   .map((e) => LiviTextStyles.interRegular14(e,
-                                      maxLines: 2))
+                                      maxLines: 20))
                                   .toList(),
                             ),
                           )
@@ -77,7 +77,7 @@ class MedicationCard extends StatelessWidget {
                           LiviThemes.spacing.widthSpacer4(),
                           if (medication.inventoryQuantity != null)
                             LiviTextStyles.interRegular14(
-                                '${medication.inventoryQuantity.toString()} left',
+                                '${medication.inventoryQuantity} left',
                                 color: LiviThemes.colors.brand600),
                         ],
                       ),

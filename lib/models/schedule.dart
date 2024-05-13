@@ -17,7 +17,7 @@ class Schedule {
   // List.generate(7, (index) => index + 1, growable: false);
   List<int>? dayPattern;
   // List.generate(31, (index) => index + 1, growable: false);
-  List<int>? monthPattern;
+  List<int> monthPattern;
   List<ScheduledDose> scheduledDosings = [];
   PrnDose? prnDosing;
   TimeReminderBefore timeReminderBefore;

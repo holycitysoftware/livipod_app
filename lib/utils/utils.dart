@@ -110,7 +110,7 @@ String getDay(int index) {
   }
 }
 
-formartDay(int day) {
+String formartDay(int day) {
   switch (day) {
     case 1:
       return '1st';
@@ -121,4 +121,16 @@ formartDay(int day) {
     default:
       return '${day}th';
   }
+}
+
+String formartTimeOfDay(TimeOfDay timeOfDat) {
+  //ap pm hour
+  String ap = timeOfDat.period == DayPeriod.am ? 'AM' : 'PM';
+  String hour = timeOfDat.hourOfPeriod.toString();
+  String minute = timeOfDat.minute.toString();
+  hour = hour;
+  if (timeOfDat.minute < 10) {
+    minute = '0$minute';
+  }
+  return '$hour:$minute $ap';
 }
