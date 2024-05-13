@@ -28,7 +28,8 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
           ? null
           : Dosing.fromJson(json['lastDosing'] as Map<String, dynamic>)
       ..inventoryQuantity = json['inventoryQuantity'] as int
-      ..type = $enumDecode(_$ScheduleTypeEnumMap, json['type']);
+      ..type = $enumDecode(_$ScheduleTypeEnumMap, json['type'])
+      ..enabled = json['enabled'] as bool;
 
 Map<String, dynamic> _$MedicationToJson(Medication instance) =>
     <String, dynamic>{
@@ -46,6 +47,7 @@ Map<String, dynamic> _$MedicationToJson(Medication instance) =>
       'lastDosing': instance.lastDosing?.toJson(),
       'inventoryQuantity': instance.inventoryQuantity,
       'type': _$ScheduleTypeEnumMap[instance.type]!,
+      'enabled': instance.enabled,
     };
 
 const _$DosageFormEnumMap = {

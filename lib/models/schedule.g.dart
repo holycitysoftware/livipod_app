@@ -27,7 +27,7 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
       monthPattern: (json['monthPattern'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
-          const [0],
+          const [10],
       scheduledDosings: (json['scheduledDosings'] as List<dynamic>)
           .map((e) => ScheduledDose.fromJson(e as Map<String, dynamic>))
           .toList(),

@@ -9,7 +9,7 @@ part of 'prn_dose.dart';
 PrnDose _$PrnDoseFromJson(Map<String, dynamic> json) => PrnDose(
       minQty: (json['minQty'] as num?)?.toDouble() ?? 1,
       maxQty: (json['maxQty'] as num?)?.toDouble() ?? 1,
-      nteQty: (json['nteQty'] as num?)?.toDouble() ?? 1,
+      nteQty: (json['nteQty'] as num?)?.toDouble() ?? 4,
       hourInterval: json['hourInterval'] as int? ?? 4,
     );
 
