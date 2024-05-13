@@ -6,6 +6,7 @@ part 'livi_pod.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class LiviPod {
+  @JsonKey(defaultValue: '')
   String id = '';
   String userId = '';
   final String remoteId;
@@ -59,5 +60,9 @@ class LiviPod {
   Future<void> dispense(DispenseRequest dr) async {
     dispenseRequest = dr;
     await bleDeviceController?.dispense(dr);
+  }
+
+  Future<void> sendDispenseConfirmation() async {
+    await bleDeviceController?.sendDispenseConfirmation();
   }
 }

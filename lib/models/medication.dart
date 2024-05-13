@@ -10,6 +10,7 @@ part 'medication.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Medication {
+  @JsonKey(defaultValue: '')
   String id = '';
   String appUserId = '';
   String name = '';

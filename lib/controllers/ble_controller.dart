@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../models/livi_pod.dart';
-import 'ble_device_controller.dart';
 import '../services/livi_pod_service.dart';
+import 'ble_device_controller.dart';
 
 class BleController extends ChangeNotifier {
   final LiviPodService liviPodService;
@@ -140,6 +140,8 @@ class BleController extends ChangeNotifier {
     _connectionStateStreamGroup
         .add(bleDevice.connectionStateStreamController.stream);
     _deviceInfoStreamGroup.add(bleDevice.deviceInfoStreamController.stream);
+    _dispenseResponseStreamGroup
+        .add(bleDevice.dispenseResponseStreamController.stream);
     _connectedDevices.add(bleDevice);
     return bleDevice;
   }

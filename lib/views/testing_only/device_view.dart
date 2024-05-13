@@ -244,6 +244,7 @@ class _DeviceViewState extends State<DeviceView> {
     if (!_connected) {
       await showAlert();
     } else {
+      await liviPod.stopBlink();
       final dr = DispenseRequest(
           bleDeviceController: liviPod.bleDeviceController!,
           event: 'dispensing',
@@ -257,6 +258,14 @@ class _DeviceViewState extends State<DeviceView> {
     }
   }
 
+  Future sendDispenseConfirmation() async {
+    await liviPod.sendDispenseConfirmation();
+  }
+
+  Future startBlink() async {
+    await liviPod.startBlink();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BleController>(builder: (context, controller, child) {
@@ -267,11 +276,16 @@ class _DeviceViewState extends State<DeviceView> {
                 element.bluetoothDevice.remoteId.toString() ==
                 liviPod.remoteId);
         _connected = bleDeviceController.bluetoothDevice.isConnected;
-        if (bleDeviceController.readyForCommands) {
-          liviPod.startBlink();
+
+        if (!_dispensing && bleDeviceController.readyForCommands) {
+          startBlink();
         }
       } else {
         _connected = false;
+      }
+
+      if (_dispensing && liviPod.dispenseRequest?.status == 'confirmed') {
+        _dispensing = false;
       }
 
       return Scaffold(
@@ -346,8 +360,34 @@ class _DeviceViewState extends State<DeviceView> {
                       ],
                     ),
                   ),
-                ] else if (_dispensing)
-                  ...[]
+                ] else if (_dispensing) ...[
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                                'Dispensed ${liviPod.dispenseRequest?.dispensed} of ${liviPod.dispenseRequest?.requested}'),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          onPressed: liviPod.dispenseRequest!.dispensed >=
+                                  liviPod.dispenseRequest!.requested
+                              ? () async {
+                                  sendDispenseConfirmation();
+                                }
+                              : null,
+                          child: const Text(
+                            'Confirm',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]
               ]),
             ),
           ));

@@ -7,6 +7,7 @@ part 'app_user.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class AppUser {
+  @JsonKey(defaultValue: '')
   String id = '';
   String accountId = '';
   String name = '';
