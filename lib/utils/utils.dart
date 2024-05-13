@@ -109,3 +109,16 @@ String getDay(int index) {
       return 'Unknown';
   }
 }
+
+formartDay(int day) {
+  switch (day) {
+    case 1:
+      return '1st';
+    case 2:
+      return '2nd';
+    case 3:
+      return '3rd';
+    default:
+      return '${day}th';
+  }
+}

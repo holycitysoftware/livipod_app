@@ -189,6 +189,21 @@ class LiviIcons {
     );
   }
 
+  String get _minusPath => '$svgPath/minus.svg';
+
+  Widget minusWidget({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.baseWhite;
+
+    return SvgPicture.asset(
+      _minusPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
   String get _pencilPath => '$svgPath/pencil.svg';
 
   Widget pencilWidget({

@@ -7,6 +7,11 @@ class Strings {
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
   static const String now = 'Now';
+  static const String timeOfDay = 'Time of Day';
+  static const String monthlyOnTheDay = 'Monthly on the Day';
+  static const String addTime = 'Add Time';
+  static const String addDay = 'Add day';
+  static const String newSchedule = 'New Schedule';
   static const String forever = 'Forever';
   static const String frequency = 'Frequency';
   static const String deleteSchedule = 'Delete Schedule';

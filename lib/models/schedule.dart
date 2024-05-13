@@ -33,7 +33,7 @@ class Schedule {
     required this.startDate,
     this.frequency = 1,
     this.dayPattern,
-    this.monthPattern = const [0],
+    this.monthPattern = const [10],
     required this.scheduledDosings,
     this.prnDosing,
   });

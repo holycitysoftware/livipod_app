@@ -1,15 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../components/buttons/livi_inkwell.dart';
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
 import '../../../models/enums.dart';
-import '../../../models/frequency.dart';
 import '../../../models/models.dart';
 import '../../../models/schedule_type.dart';
-import '../../../services/medication_history.dart';
 import '../../../services/medication_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/string_ext.dart';
@@ -77,6 +77,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   @override
   void initState() {
     dayTime = now.hour > 12 ? DayTime.pm : DayTime.am;
+
     widget.medication.schedules = [
       Schedule(
         startDate: now,
@@ -86,6 +87,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     ];
     setDate(currentIndex);
     for (final element in _inventoryQuantityController) {
+      element.text = widget.medication.inventoryQuantity.toString();
       element.addListener(() {
         setState(() {});
       });
@@ -151,6 +153,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       widget.medication.type.isMonthly() ||
       widget.medication.type.isDaily();
 
+  bool get getMonthlyOnTheDay => widget.medication.type.isMonthly();
+
   bool get getRemindMeBefore =>
       widget.medication.type.isWeekly() ||
       widget.medication.type.isMonthly() ||
@@ -161,10 +165,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       widget.medication.type.isMonthly() ||
       widget.medication.type.isDaily();
 
-  bool get getNotToExceed =>
-      widget.medication.type.isAsNeeded() ||
-      widget.medication.type.isMonthly() ||
-      widget.medication.type.isDaily();
+  bool get getNotToExceed => widget.medication.type.isDaily();
 
   bool get getIntervalBetweenDoses => widget.medication.type.isAsNeeded();
 
@@ -196,13 +197,14 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       endDateWidget(),
       if (currentIndex == 0) selectFrequencyWidget(),
       if (getIntervalBetweenDoses) intervalBetweenDosesWidget(),
-      if (getNotToExceed) notToExceedWidget(),
       if (getShowDaysWidget) daysWidget(),
-      if (getAtWhatTimesWidget) atWhatTimesWidget(),
+      if (getAtWhatTimesWidget) monthlyOnTheDayWidget(),
+      if (getAtWhatTimesWidget) timeOfDayWidget(),
 
       // awThatTimesList(),
       if (getRemindMeBefore) remindMeBefore(),
       if (getRemindMeLater) remindMeLater(),
+      if (getNotToExceed) notToExceedWidget(),
       if (getShowInventoryQuantityField && currentIndex == 0)
         inventoryQuantityWidget(),
       if (getShowInstructions) instructionsWidget(),
@@ -740,9 +742,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
 
   Widget addAnotherScheduleWidget(int index) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
       child: LiviFilledButtonWhite(
-        text: Strings.addAnotherSchedule,
+        text: Strings.newSchedule,
         textColor: LiviThemes.colors.baseBlack,
         onTap: () {
           //TODO: add schedule dose here
@@ -822,110 +824,173 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget atWhatTimesWidget() {
+  Widget monthlyOnTheDayWidget() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LiviTextStyles.interMedium16(Strings.atWhatTimes,
+          LiviTextStyles.interMedium16(Strings.monthlyOnTheDay,
               color: LiviThemes.colors.gray500),
           LiviThemes.spacing.heightSpacer8(),
-          Row(
-            children: [
-              Expanded(
-                flex: 7,
-                child: LiviDropdownButton<int>(
-                  isExpanded: true,
-                  value: hoursList.singleWhere((element) {
-                    return element ==
-                        convert24TimeFormatToAmPm(widget
-                            .medication
-                            .schedules[currentIndex]
-                            .scheduledDosings
-                            .first
-                            .timeOfDay
-                            .hour);
-                  }, orElse: () => hoursList.first),
-                  onChanged: (int? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      widget.medication.schedules[currentIndex].scheduledDosings
-                              .first.timeOfDay =
-                          TimeOfDay(
-                              hour: convertAmPmTimeFormatTo24(value!),
-                              minute: widget.medication.schedules[currentIndex]
-                                  .scheduledDosings.first.timeOfDay.minute);
-                    });
-                  },
-                  items: hoursList.map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: LiviThemes.colors.gray300,
+              ),
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: schedules[currentIndex].monthPattern!.length,
+                itemBuilder: (context, index) {
+                  final item = schedules[currentIndex].monthPattern![index];
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            LiviTextStyles.interRegular16(
+                                'Every ${formartDay(item)}'),
+                            IconCircleBox(
+                              onTap: () {
+                                schedules[currentIndex].monthPattern!.removeAt(
+                                      index,
+                                    );
+                                setState(() {});
+                              },
+                              padding: EdgeInsets.zero,
+                              color: LiviThemes.colors.error500,
+                              child: LiviThemes.icons.minusWidget(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      LiviDivider(),
+                    ],
+                  );
+                },
+              ),
+              LiviDivider(),
+              LiviInkWell(
+                splashFactory: NoSplash.splashFactory,
+                onTap: () {
+                  schedules[currentIndex]
+                      .monthPattern!
+                      .add(Random().nextInt(31));
+                  setState(() {});
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Row(
+                    children: [
+                      IconCircleBox(
+                          child: LiviThemes.icons.plusIcon(
+                              color: LiviThemes.colors.baseWhite, height: 16)),
+                      LiviThemes.spacing.widthSpacer8(),
+                      LiviTextStyles.interMedium16(Strings.addDay,
+                          color: LiviThemes.colors.brand600),
+                    ],
+                  ),
                 ),
               ),
-              Spacer(),
-              LiviTextStyles.interMedium16(':'),
-              Spacer(),
-              Expanded(
-                flex: 7,
-                child: LiviDropdownButton<int>(
-                  isExpanded: true,
-                  value: minutesList.singleWhere(
-                      (element) =>
-                          element ==
-                          widget.medication.schedules[currentIndex]
-                              .scheduledDosings.first.timeOfDay.minute,
-                      orElse: () => minutesList.first),
-                  onChanged: (int? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      setState(() {
-                        widget.medication.schedules[currentIndex]
-                                .scheduledDosings.first.timeOfDay =
-                            TimeOfDay(
-                                hour: widget.medication.schedules[currentIndex]
-                                    .scheduledDosings.first.timeOfDay.hour,
-                                minute: value!);
-                      });
-                    });
-                  },
-                  items: minutesList.map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
-                ),
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget timeOfDayWidget() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interMedium16(Strings.timeOfDay,
+              color: LiviThemes.colors.gray500),
+          LiviThemes.spacing.heightSpacer8(),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: LiviThemes.colors.gray300,
               ),
-              Spacer(),
-              LiviTextStyles.interMedium16(':'),
-              Spacer(),
-              Expanded(
-                flex: 7,
-                child: LiviDropdownButton<DayTime>(
-                  isExpanded: true,
-                  value: dayTime,
-                  onChanged: (DayTime? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      dayTime = value;
-                      // dateTime.
-                    });
-                  },
-                  items: DayTime.values
-                      .map<DropdownMenuItem<DayTime>>((DayTime value) {
-                    return DropdownMenuItem<DayTime>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
-                ),
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: schedules[currentIndex].scheduledDosings.length,
+                itemBuilder: (context, index) {
+                  final item = schedules[currentIndex].scheduledDosings[index];
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            LiviTextStyles.interRegular16(
+                                'Take ${item.qty.toInt()} at ${item.timeOfDay.hour}:${item.timeOfDay.minute}'),
+                            IconCircleBox(
+                              onTap: () {
+                                schedules[currentIndex]
+                                    .scheduledDosings
+                                    .removeAt(index);
+                                setState(() {});
+                              },
+                              padding: EdgeInsets.zero,
+                              color: LiviThemes.colors.error500,
+                              child: LiviThemes.icons.minusWidget(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      LiviDivider(),
+                    ],
+                  );
+                },
               ),
-              Spacer(),
-            ],
+              LiviDivider(),
+              Row(
+                children: [
+                  LiviInkWell(
+                    splashFactory: NoSplash.splashFactory,
+                    onTap: () {
+                      schedules[currentIndex].scheduledDosings.add(
+                            ScheduledDose(
+                              timeOfDay: TimeOfDay.now(),
+                            ),
+                          );
+                      setState(() {});
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      child: Row(
+                        children: [
+                          IconCircleBox(
+                              child: LiviThemes.icons.plusIcon(
+                                  color: LiviThemes.colors.baseWhite,
+                                  height: 16)),
+                          LiviThemes.spacing.widthSpacer8(),
+                          LiviTextStyles.interMedium16(Strings.addTime,
+                              color: LiviThemes.colors.brand600),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ]),
           ),
         ],
       ),
