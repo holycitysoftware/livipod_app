@@ -55,14 +55,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         context, MaterialPageRoute(builder: (context) => CreateAccountPage()));
   }
 
-  Future<void> verifyPhoneNumber() async {
-    await Provider.of<AuthController>(context, listen: false).verifyPhoneNumber(
+  Future<void> verifyPhoneNumber(AuthController controller) async {
+    await controller.verifyPhoneNumber(
         country.dialCode + phoneNumberController.text,
         isAccountCreation: true);
   }
 
-  void setAppUser() {
-    Provider.of<AuthController>(context, listen: false).setAppUser(
+  Future<void> setAppUser(AuthController controller) async {
+    await controller.setAppUser(
         fullNameController: fullNameController.text,
         emailController: emailController.text,
         phoneNumberController: country.dialCode + phoneNumberController.text);
@@ -72,9 +72,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 // return await FlutterNativeTimezone.getLocal();
 //   }
 
-  Future<void> verifyNumber() async {
-    setAppUser();
-    await verifyPhoneNumber();
+  Future<void> verifyNumber(AuthController controller) async {
+    await setAppUser(controller);
+    await verifyPhoneNumber(controller);
   }
 
   // Future<void> goToCheckSmsPge() async {
@@ -147,7 +147,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 text: Strings.continueText,
                 isLoading: authController.loading,
                 isCloseToNotch: true,
-                onTap: verifyNumber,
+                onTap: () {
+                  verifyNumber(authController);
+                },
               );
             }),
           ),

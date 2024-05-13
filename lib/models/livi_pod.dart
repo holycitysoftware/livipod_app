@@ -8,6 +8,7 @@ part 'livi_pod.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class LiviPod {
+  @JsonKey(includeToJson: false)
   String id = '';
   String userId = '';
   final String remoteId;
