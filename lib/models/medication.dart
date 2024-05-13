@@ -25,6 +25,7 @@ class Medication {
   Dosing? lastDosing;
   int inventoryQuantity = 30;
   ScheduleType type = ScheduleType.monthly;
+  bool enabled = true;
 
   Medication({
     required this.name,
