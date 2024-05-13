@@ -7,7 +7,6 @@ part of 'app_user.dart';
 // **************************************************************************
 
 AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
-      id: json['id'] as String? ?? '',
       accountId: json['accountId'] as String? ?? '',
       name: json['name'] as String,
       appUserType:
@@ -29,7 +28,6 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
-      'id': instance.id,
       'accountId': instance.accountId,
       'name': instance.name,
       'appUserType': _$AppUserTypeEnumMap[instance.appUserType]!,
