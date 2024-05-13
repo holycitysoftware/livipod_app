@@ -13,7 +13,6 @@ Account _$AccountFromJson(Map<String, dynamic> json) => Account(
     );
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
-      'id': instance.id,
       'ownerId': instance.ownerId,
       'enabled': instance.enabled,
     };

@@ -33,7 +33,6 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
 
 Map<String, dynamic> _$MedicationToJson(Medication instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'appUserId': instance.appUserId,
       'name': instance.name,
       'manufacturer': instance.manufacturer,
