@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 import '../models/models.dart';
 import 'medication_history.dart';
 
@@ -10,6 +11,7 @@ class MedicationService {
       StreamController<List<Medication>>.broadcast();
 
   Future<Medication> createMedication(Medication medication) async {
+    medication.id = Uuid().v4();
     final json = await FirebaseFirestore.instance
         .collection('medications')
         .add(medication.toJson());
