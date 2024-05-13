@@ -12,6 +12,7 @@ class LiviFilledButton extends StatelessWidget {
   final bool showArrow;
   final bool? isCloseToNotch;
   final bool? isLoading;
+  final Color? color;
   final bool? enabled;
 
   const LiviFilledButton({
@@ -19,6 +20,7 @@ class LiviFilledButton extends StatelessWidget {
     required this.text,
     this.margin,
     required this.onTap,
+    this.color,
     this.enabled = true,
     this.isLoading = false,
     this.isCloseToNotch = false,
@@ -44,9 +46,11 @@ class LiviFilledButton extends StatelessWidget {
           minimumSize: MaterialStatePropertyAll(
             Size(double.infinity, 48),
           ),
-          backgroundColor: MaterialStatePropertyAll(enabled ?? false
-              ? LiviThemes.colors.brand600
-              : LiviThemes.colors.gray200),
+          backgroundColor: color != null
+              ? MaterialStatePropertyAll(color)
+              : MaterialStatePropertyAll(enabled ?? false
+                  ? LiviThemes.colors.brand600
+                  : LiviThemes.colors.gray200),
         ),
         onPressed: (enabled ?? false) ? onTap : null,
         child: (isLoading ?? false)

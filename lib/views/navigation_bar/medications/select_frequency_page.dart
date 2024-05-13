@@ -215,8 +215,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       if (getShowInstructions) instructionsWidget(),
 
       if (widget.isEdit) deleteScheduleWidget(),
-
-      addAnotherScheduleWidget(schedules.length),
+      if (widget.isEdit) deleteMedicationWidget(),
+      if (!widget.isEdit) addAnotherScheduleWidget(schedules.length),
       if (!widget.isEdit) saveWidget(),
     ];
   }
@@ -688,6 +688,21 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       child: LiviFilledButtonWhite(
         text: Strings.deleteSchedule,
         textColor: LiviThemes.colors.baseBlack,
+        onTap: () {
+          widget.medication.schedules.removeAt(currentIndex);
+          currentIndex--;
+          setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget deleteMedicationWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: LiviFilledButton(
+        color: LiviThemes.colors.error600,
+        text: Strings.deleteMedication,
         onTap: deleteMedication,
       ),
     );
