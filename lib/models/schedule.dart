@@ -10,7 +10,7 @@ part 'schedule.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Schedule {
-  DateTime startDate = DateTime.now();
+  DateTime startDate;
   DateTime? endDate;
   IntervalBetweenDoses intervalBetweenDoses;
   int frequency;
@@ -30,6 +30,7 @@ class Schedule {
     this.timeReminderLater = TimeReminderLater.fiveMinutes,
     this.intervalBetweenDoses = IntervalBetweenDoses.eightHours,
     this.instructions = '',
+    required this.startDate,
     this.frequency = 1,
     this.dayPattern,
     this.monthPattern = const [0],

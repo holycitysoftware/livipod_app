@@ -20,19 +20,21 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
               _$IntervalBetweenDosesEnumMap, json['intervalBetweenDoses']) ??
           IntervalBetweenDoses.eightHours,
       instructions: json['instructions'] as String? ?? '',
+      startDate: DateTime.parse(json['startDate'] as String),
       frequency: json['frequency'] as int? ?? 1,
       dayPattern:
           (json['dayPattern'] as List<dynamic>?)?.map((e) => e as int).toList(),
       monthPattern: (json['monthPattern'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
+              ?.map((e) => e as int)
+              .toList() ??
+          const [0],
       scheduledDosings: (json['scheduledDosings'] as List<dynamic>)
           .map((e) => ScheduledDose.fromJson(e as Map<String, dynamic>))
           .toList(),
       prnDosing: json['prnDosing'] == null
           ? null
           : PrnDose.fromJson(json['prnDosing'] as Map<String, dynamic>),
-    )..startDate = DateTime.parse(json['startDate'] as String);
+    );
 
 Map<String, dynamic> _$ScheduleToJson(Schedule instance) => <String, dynamic>{
       'startDate': instance.startDate.toIso8601String(),

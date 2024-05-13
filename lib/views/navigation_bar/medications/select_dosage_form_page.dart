@@ -52,14 +52,21 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
     });
   }
 
-  List<DosageForm> get dosageFormList {
+  Iterable<DosageForm> get dosageFormList {
     if (dosageForms.isEmpty) {
       return DosageForm.values.sublist(1);
     }
-    return DosageForm.values
-        .where((element) =>
-            dosageForms.contains(element.description.toUpperCase()))
-        .toList();
+    var list = <DosageForm>{};
+    for (final dosageForm in dosageForms) {
+      for (final value in DosageForm.values) {
+        final add =
+            dosageForm.toUpperCase().contains(value.description.toUpperCase());
+        if (add) {
+          list.add(value);
+        }
+      }
+    }
+    return list;
   }
 
   Future<void> goToSelectMedicationStrength() async {

@@ -9,6 +9,7 @@ class Strings {
   static const String now = 'Now';
   static const String forever = 'Forever';
   static const String frequency = 'Frequency';
+  static const String deleteSchedule = 'Delete Schedule';
   static const String welcomeBackPleaseEnterDetails =
       'Welcome back! Please enter your details.';
   static const String yourAccountHasBeenCreatedStart =
@@ -140,8 +141,10 @@ class Strings {
   static const String endDate = 'End Date';
   static const String atWhatTimes = 'At what time';
   static const String remindMe = 'Remind me';
+  static const String notToExceed = 'Not to exceed';
   static const String addAnotherSchedule = 'Add Another Schedule';
   static const String select = 'Select';
+  static const String instructions = 'Instructions';
   static const String S = 'S';
   static const String M = 'M';
   static const String T = 'T';

@@ -174,6 +174,36 @@ class LiviIcons {
     );
   }
 
+  String get _edit1Path => '$svgPath/edit_1.svg';
+
+  Widget edit1Widget({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _edit1Path,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _pencilPath => '$svgPath/pencil.svg';
+
+  Widget pencilWidget({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _pencilPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
   String get _leaderboardPath => '$svgPath/leaderboard.svg';
 
   Widget leaderboardIcon({

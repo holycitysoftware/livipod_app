@@ -21,6 +21,7 @@ class LiviInputField extends StatefulWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final Color? color;
   final ValueChanged<String>? onChanged;
+  final int maxLines;
 
   const LiviInputField({
     super.key,
@@ -32,6 +33,7 @@ class LiviInputField extends StatefulWidget {
     this.readOnly = false,
     this.padding,
     this.subTitle,
+    this.maxLines = 1,
     this.hint,
     this.controller,
     this.prefix,
@@ -126,6 +128,7 @@ class _LiviInputFieldState extends State<LiviInputField> {
               boxShadow: boxShadow(),
             ),
             child: TextFormField(
+              maxLines: widget.maxLines,
               onTap: widget.onTap,
               readOnly: widget.readOnly,
               onChanged: widget.onChanged,

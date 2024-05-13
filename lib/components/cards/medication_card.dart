@@ -87,9 +87,16 @@ class MedicationCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                InkWell(
-                  onTap: onTap,
-                  child: LiviThemes.icons.chevronRight(),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(64),
+                    onTap: onTap,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: LiviThemes.icons.edit1Widget(height: 20),
+                    ),
+                  ),
                 ),
               ],
             ),
