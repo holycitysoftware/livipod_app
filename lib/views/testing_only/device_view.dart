@@ -26,6 +26,7 @@ class _DeviceViewState extends State<DeviceView> {
   bool _connected = false;
   bool _editName = false;
   late LiviPod liviPod;
+  bool _dispensing = false;
 
   @override
   void initState() {
@@ -239,6 +240,23 @@ class _DeviceViewState extends State<DeviceView> {
     }
   }
 
+  Future dispense(int qty) async {
+    if (!_connected) {
+      await showAlert();
+    } else {
+      final dr = DispenseRequest(
+          bleDeviceController: liviPod.bleDeviceController!,
+          event: 'dispensing',
+          requested: qty,
+          dispensed: 0,
+          status: '');
+      await liviPod.dispense(dr);
+      setState(() {
+        _dispensing = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BleController>(builder: (context, controller, child) {
@@ -275,7 +293,7 @@ class _DeviceViewState extends State<DeviceView> {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(children: [
-                if (!_claimed || _editName) ...[
+                if (!_dispensing && (!_claimed || _editName)) ...[
                   Column(
                     children: [
                       ElevatedButton(
@@ -291,10 +309,21 @@ class _DeviceViewState extends State<DeviceView> {
                       ),
                     ],
                   ),
-                ] else ...[
+                ] else if (!_dispensing) ...[
                   Expanded(
                     child: Column(
                       children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            dispense(5);
+                          },
+                          child: const Text(
+                            'Test Dispense',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         ElevatedButton(
                           onPressed: () async {
                             await showUnclaimAlert();
@@ -317,7 +346,8 @@ class _DeviceViewState extends State<DeviceView> {
                       ],
                     ),
                   ),
-                ]
+                ] else if (_dispensing)
+                  ...[]
               ]),
             ),
           ));
