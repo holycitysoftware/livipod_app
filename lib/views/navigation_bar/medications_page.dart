@@ -8,6 +8,7 @@ import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
+import 'medications/select_frequency_page.dart';
 
 class MedicationsPage extends StatefulWidget {
   const MedicationsPage({super.key});
@@ -32,8 +33,9 @@ class _MedicationsPageState extends State<MedicationsPage> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditMedicationPage(
+        builder: (context) => SelectFrequencyPage(
           medication: medication,
+          isEdit: true,
         ),
       ),
     );

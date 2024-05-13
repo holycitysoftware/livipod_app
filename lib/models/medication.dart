@@ -10,7 +10,7 @@ part 'medication.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Medication {
-  @JsonKey(defaultValue: '')
+  @JsonKey(includeToJson: false)
   String id = '';
   String appUserId = '';
   String name = '';
@@ -26,6 +26,7 @@ class Medication {
   Dosing? lastDosing;
   int inventoryQuantity = 30;
   ScheduleType type = ScheduleType.monthly;
+  bool enabled = true;
 
   Medication({
     required this.name,

@@ -8,9 +8,11 @@ class LiviInkWell extends StatelessWidget {
   final EdgeInsets? padding;
   final Duration debounceDuration;
   final double borderRadius;
+  final InteractiveInkFeatureFactory? splashFactory;
   const LiviInkWell({
     super.key,
     required this.onTap,
+    this.splashFactory,
     this.padding,
     required this.child,
     this.borderRadius = 64,
@@ -36,6 +38,7 @@ class LiviInkWell extends StatelessWidget {
     }
 
     return InkWell(
+      splashFactory: splashFactory,
       borderRadius: BorderRadius.circular(borderRadius),
       onTap: onTap,
       child: Padding(

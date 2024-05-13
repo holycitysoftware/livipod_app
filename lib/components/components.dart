@@ -11,6 +11,8 @@ export 'buttons/livi_text_button.dart';
 export 'buttons/livi_text_icon.dart';
 export 'buttons/livi_text_inkwell.dart';
 export 'cards/check_persona_card.dart';
+export 'cards/icon_bounding_box.dart';
+export 'cards/icon_circle_box.dart';
 export 'cards/medication_card.dart';
 export 'cards/prn_dosing_card.dart';
 export 'cards/scheduled_dosing_card.dart';

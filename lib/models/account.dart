@@ -4,7 +4,7 @@ part 'account.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Account {
-  @JsonKey(defaultValue: '')
+  @JsonKey(includeToJson: false)
   String id = '';
   String ownerId = '';
   bool enabled = true;

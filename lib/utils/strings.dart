@@ -7,8 +7,14 @@ class Strings {
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
   static const String now = 'Now';
+  static const String timeOfDay = 'Time of Day';
+  static const String monthlyOnTheDay = 'Monthly on the Day';
+  static const String addTime = 'Add Time';
+  static const String addDay = 'Add day';
+  static const String newSchedule = 'New Schedule';
   static const String forever = 'Forever';
   static const String frequency = 'Frequency';
+  static const String deleteSchedule = 'Delete Schedule';
   static const String welcomeBackPleaseEnterDetails =
       'Welcome back! Please enter your details.';
   static const String yourAccountHasBeenCreatedStart =
@@ -140,8 +146,10 @@ class Strings {
   static const String endDate = 'End Date';
   static const String atWhatTimes = 'At what time';
   static const String remindMe = 'Remind me';
+  static const String notToExceed = 'Not to exceed';
   static const String addAnotherSchedule = 'Add Another Schedule';
   static const String select = 'Select';
+  static const String instructions = 'Instructions';
   static const String S = 'S';
   static const String M = 'M';
   static const String T = 'T';

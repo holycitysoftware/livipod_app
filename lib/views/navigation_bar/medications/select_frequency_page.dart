@@ -1,13 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../components/buttons/livi_inkwell.dart';
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
 import '../../../models/enums.dart';
 import '../../../models/models.dart';
 import '../../../models/schedule_type.dart';
-import '../../../services/medication_history.dart';
 import '../../../services/medication_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/string_ext.dart';
@@ -18,11 +20,13 @@ import '../../views.dart';
 const int _foreverYear = 2200;
 
 class SelectFrequencyPage extends StatefulWidget {
+  final bool isEdit;
   static const String routeName = '/select-frequency-page';
   final Medication medication;
   const SelectFrequencyPage({
     super.key,
     required this.medication,
+    this.isEdit = false,
   });
 
   @override
@@ -31,15 +35,25 @@ class SelectFrequencyPage extends StatefulWidget {
 
 class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   DateTime now = DateTime.now();
-  List<int> hoursList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-  List<int> minutesList = List.generate(60, (index) => index++);
-  List<double> quantityList = List.generate(13, (index) => index + 1);
+  ///1h-12h
+  List<int> hoursList = List<int>.generate(12, (e) => e + 1);
+
+  ///1-12
+  List<int> notToExceedList = List<int>.generate(12, (e) => e + 1);
+
+  ///1-30
+  List<int> intervalBetweenDosesList = List<int>.generate(30, (e) => e + 1);
+
+  List<int> minutesList = List.generate(60, (e) => e++);
+  List<double> quantityList = List.generate(13, (e) => e + 1);
 
   IntervalBetweenDoses intervalBetweenDoses = IntervalBetweenDoses.eightHours;
   DayTime? dayTime = DayTime.am;
   // DateTime monthlyOnTheDay = DateTime.now();
   final dateFormat = DateFormat.yMMMMd('en_US');
+  int currentIndex = 0;
+  bool dropdownIsSelected = false;
 
   final List<TextEditingController> _startDateController = [
     TextEditingController()
@@ -49,26 +63,46 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   ];
   final TextEditingController _inventoryQuantityController =
       TextEditingController(text: '30');
+
+  final List<TextEditingController> _instructionsController = [
+    TextEditingController()
+  ];
+
   final FocusNode _inventoryQuantityFocus = FocusNode();
+
+  final FocusNode _instructionsFocus = FocusNode();
 
   List<Schedule> get schedules => widget.medication.schedules;
   @override
   void initState() {
     dayTime = now.hour > 12 ? DayTime.pm : DayTime.am;
-    widget.medication.schedules = [
-      Schedule(
-        scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
-        dayPattern: [],
-      ),
-    ];
-    setDate(0);
+
+    if (widget.isEdit) {
+      _inventoryQuantityController.text =
+          widget.medication.inventoryQuantity.toString();
+      for (var i = 0; i < schedules.length; i++) {
+        _startDateController.add(TextEditingController());
+        _endDateController.add(TextEditingController());
+        _instructionsController.add(TextEditingController());
+        setDate(i);
+      }
+    } else {
+      widget.medication.schedules = [
+        Schedule(
+          startDate: now,
+          scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
+          dayPattern: [],
+        ),
+      ];
+      setDate(currentIndex);
+    }
     _inventoryQuantityController.addListener(() {
       setState(() {});
     });
     super.initState();
   }
 
-  void setPrn(int index) {}
+  void setPrn() {}
 
   int convert24TimeFormatToAmPm(int hour) {
     if (hour > 12) {
@@ -112,12 +146,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       widget.medication.type.isWeekly() ||
       widget.medication.type.isMonthly();
 
+  bool get getShowInstructions =>
+      widget.medication.type.isAsNeeded() ||
+      widget.medication.type.isDaily() ||
+      widget.medication.type.isWeekly() ||
+      widget.medication.type.isMonthly();
+
   bool get getShowDaysWidget => widget.medication.type.isWeekly();
 
   bool get getAtWhatTimesWidget =>
       widget.medication.type.isWeekly() ||
       widget.medication.type.isMonthly() ||
       widget.medication.type.isDaily();
+
+  bool get getMonthlyOnTheDay => widget.medication.type.isMonthly();
 
   bool get getRemindMeBefore =>
       widget.medication.type.isWeekly() ||
@@ -129,10 +171,14 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       widget.medication.type.isMonthly() ||
       widget.medication.type.isDaily();
 
+  bool get getNotToExceed => widget.medication.type.isDaily();
+
   bool get getIntervalBetweenDoses => widget.medication.type.isAsNeeded();
 
   // bool get showQuantityNeededField => selectedFrequency.isAsNeeded();
   // bool get showQuantityField => selectedFrequency.isDaily();
+
+  //detect if any of the textcontrollers are empty
   bool get isEnabled => _inventoryQuantityController.text.isNotEmpty;
 
   void goToHomePage() {
@@ -142,25 +188,36 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  List<Widget> listBuilder(int index) {
+  PrnDose prnDose() {
+    if (widget.medication.schedules[currentIndex].prnDosing == null) {
+      return widget.medication.schedules[currentIndex].prnDosing = PrnDose();
+    } else {
+      return widget.medication.schedules[currentIndex].prnDosing!;
+    }
+  }
+
+  List<Widget> listBuilder() {
     return [
-      if (getShowQuantityNeededField) quantityNeededWidget(index),
-      startDateWidget(index),
-      endDateWidget(index),
-      if (index == 0) selectFrequencyWidget(index),
-      if (getIntervalBetweenDoses) intervalBetweenDosesWidget(index),
-      if (getShowDaysWidget) daysWidget(index),
-      if (getAtWhatTimesWidget) atWhatTimesWidget(index),
+      startDateWidget(),
+      endDateWidget(),
+      if (currentIndex == 0) selectFrequencyWidget(),
+      if (getIntervalBetweenDoses) intervalBetweenDosesWidget(),
+      if (getShowDaysWidget) daysWidget(),
+      if (getMonthlyOnTheDay) monthlyOnTheDayWidget(),
+      if (getAtWhatTimesWidget) timeOfDayWidget(),
 
       // awThatTimesList(),
-      if (getRemindMeBefore) remindMeBefore(index),
-      if (getRemindMeLater) remindMeLater(index),
+      if (getRemindMeBefore) remindMeBefore(),
+      if (getRemindMeLater) remindMeLater(),
+      if (getNotToExceed) notToExceedWidget(),
+      if (getShowInventoryQuantityField && currentIndex == 0)
+        inventoryQuantityWidget(),
+      if (getShowInstructions) instructionsWidget(),
 
-      if (getShowInventoryQuantityField && index == 0)
-        inventoryQuantityWidget(index),
-      if (index == schedules.length - 1) addAnotherScheduleWidget(),
-      if (index == schedules.length - 1) saveWidget(),
-      if (index != schedules.length - 1) LiviDivider(height: 10),
+      if (widget.isEdit) deleteScheduleWidget(),
+      if (widget.isEdit) deleteMedicationWidget(),
+      if (!widget.isEdit) addAnotherScheduleWidget(schedules.length),
+      if (!widget.isEdit) saveWidget(),
     ];
   }
 
@@ -171,8 +228,43 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             : _inventoryQuantityController.text);
     widget.medication.appUserId =
         Provider.of<AuthController>(context, listen: false).appUser!.id;
+    widget.medication.instructions = _instructionsController[currentIndex].text;
     goToHomePage();
+    if (widget.isEdit) {
+      await MedicationService().updateMedication(widget.medication);
+      return;
+    }
     await MedicationService().createMedication(widget.medication);
+  }
+
+  void selectFrequency(ScheduleType frequency) {
+//TODO: everytime we change the type schedule we have to reset all the fields...
+// if it was daily and we change to weekly we have fill the new fields and reset the old ones? ask bill
+    widget.medication.type = frequency;
+    setState(() {});
+  }
+
+  void deleteMedication() {
+    // showModalBottomSheet(
+    //   context: context,
+    //   builder: (context) => BottomSheet(
+    //     onClosing: () {},
+    //     builder: (context) => Column(
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [
+    //         ListTile(
+    //           title: Text('Delete Medication'),
+    //           onTap: () {
+    //             Navigator.pop(context);
+    //             deleteMedication();
+    //           },
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
+    MedicationService().deleteMedication(widget.medication);
+    Navigator.pop(context);
   }
 
   @override
@@ -180,21 +272,108 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     return Scaffold(
       backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
-        ///TODO: we need to see all the required fields
-        ///and check if all THE REQUIREDS fields are filled :)
+        mainWidget: widget.medication.schedules.length > 1
+            ? DropdownButtonHideUnderline(
+                child: DropdownButton<int>(
+                  onTap: () {
+                    dropdownIsSelected = true;
+                  },
+                  value: currentIndex,
+                  onChanged: (int? value) {
+                    currentIndex = value!;
+                    dropdownIsSelected = false;
+                    setState(() {});
+                  },
+                  items: widget.medication.schedules.asMap().entries.map(
+                    (entry) {
+                      return DropdownMenuItem<int>(
+                        value: entry.key,
+                        child: SizedBox(
+                          width: widget.isEdit
+                              ? MediaQuery.of(context).size.width * 0.3
+                              : MediaQuery.of(context).size.width * 0.45,
+                          child: LiviTextStyles.interSemiBold16(
+                              'Schedule ${entry.key + 1}',
+                              textAlign: TextAlign.center),
+                        ),
+                      );
+                    },
+                  ).toList(),
+                ),
+              )
+            : SizedBox(
+                width: MediaQuery.of(context).size.width * 0.45,
+                child: LiviTextStyles.interSemiBold16(widget.medication.name,
+                    textAlign: TextAlign.center),
+              ),
         title: widget.medication.getNameStrengthDosageForm(),
+        onPressed: widget.isEdit ? () {} : null,
+        tail: widget.isEdit
+            ? [
+                LiviTextIcon(
+                  onPressed: isEnabled ? saveMedication : () {},
+                  enabled: isEnabled,
+                  text: Strings.save,
+                  icon: Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: LiviThemes.icons.checkIcon(
+                      color: isEnabled
+                          ? LiviThemes.colors.brand600
+                          : LiviThemes.colors.gray400,
+                    ),
+                  ),
+                )
+              ]
+            : null,
       ),
       body: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
           LiviThemes.spacing.heightSpacer8(),
-          for (int i = 0; i < schedules.length; i++) ...listBuilder(i)
+          ...listBuilder(),
         ],
       ),
     );
   }
 
-  Widget selectFrequencyWidget(int index) {
+  Widget notToExceedWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interMedium16(Strings.notToExceed,
+              color: LiviThemes.colors.gray500),
+          LiviThemes.spacing.heightSpacer8(),
+          Row(
+            children: [
+              Expanded(
+                child: LiviDropdownButton<int>(
+                  isExpanded: true,
+                  value: notToExceedList.singleWhere(
+                      (element) => element == (prnDose().nteQty),
+                      orElse: () => prnDose().nteQty.toInt()),
+                  onChanged: (int? value) {
+                    prnDose().nteQty = value!.toDouble();
+                    setState(() {});
+                  },
+                  items:
+                      notToExceedList.map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
+                      value: value,
+                      child: Text(value.toString()),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget selectFrequencyWidget() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -214,13 +393,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                frequencyWidget(ScheduleType.asNeeded, index, flex: 4),
+                frequencyWidget(ScheduleType.asNeeded, flex: 4),
                 divider(),
-                frequencyWidget(ScheduleType.daily, index),
+                frequencyWidget(ScheduleType.daily),
                 divider(),
-                frequencyWidget(ScheduleType.weekly, index),
+                frequencyWidget(ScheduleType.weekly),
                 divider(),
-                frequencyWidget(ScheduleType.monthly, index),
+                frequencyWidget(ScheduleType.monthly),
               ],
             ),
           ),
@@ -229,7 +408,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget inventoryQuantityWidget(int index) {
+  Widget inventoryQuantityWidget() {
     return LiviInputField(
       title: Strings.inventoryQuantity,
       focusNode: _inventoryQuantityFocus,
@@ -238,53 +417,24 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget quantityNeededWidget(int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LiviTextStyles.interMedium16(Strings.quantityNeeded,
-              color: LiviThemes.colors.gray500),
-          LiviThemes.spacing.heightSpacer8(),
-          Row(
-            children: [
-              Expanded(
-                child: LiviDropdownButton<double>(
-                  isExpanded: true,
-                  value: quantityList.singleWhere(
-                      (element) =>
-                          element ==
-                          widget.medication.schedules[index].scheduledDosings
-                              .first.qty,
-                      orElse: () => widget.medication.schedules[index]
-                          .scheduledDosings.first.qty),
-                  onChanged: (double? value) {
-                    if (widget.medication.type.isAsNeeded()) {
-                      setPrn(index);
-                    } else {
-                      widget.medication.schedules[index].scheduledDosings.first
-                          .qty = value!;
-                    }
-                    setState(() {});
-                  },
-                  items: quantityList
-                      .map<DropdownMenuItem<double>>((double value) {
-                    return DropdownMenuItem<double>(
-                      value: value,
-                      child: Text(value.toInt().toString()),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+  Widget instructionsWidget() {
+    if (Provider.of<AuthController>(context).appUser!.appUserType !=
+        AppUserType.selfGuidedUser) {
+      return LiviInputField(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        title: Strings.instructions,
+        focusNode: _instructionsFocus,
+        maxLines: 2,
+        hint: "e.g. Don't drink alcohol when taking this medicine.",
+        controller: _instructionsController[currentIndex],
+        keyboardType: TextInputType.text,
+      );
+    } else {
+      return SizedBox();
+    }
   }
 
-  Widget intervalBetweenDosesWidget(int index) {
+  Widget intervalBetweenDosesWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -296,22 +446,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           Row(
             children: [
               Expanded(
-                child: LiviDropdownButton<IntervalBetweenDoses>(
+                child: LiviDropdownButton<int>(
                   isExpanded: true,
-                  value: IntervalBetweenDoses.values.singleWhere(
-                      (element) => element == intervalBetweenDoses,
-                      orElse: () => intervalBetweenDoses),
-                  onChanged: (IntervalBetweenDoses? value) {
-                    setState(() {
-                      intervalBetweenDoses = value!;
-                    });
+                  value: intervalBetweenDosesList.singleWhere(
+                      (element) => element == (prnDose().hourInterval),
+                      orElse: () => prnDose().nteQty.toInt()),
+                  onChanged: (int? value) {
+                    prnDose().hourInterval = value!;
+                    setState(() {});
                   },
-                  items: IntervalBetweenDoses.values
-                      .map<DropdownMenuItem<IntervalBetweenDoses>>(
-                          (IntervalBetweenDoses value) {
-                    return DropdownMenuItem<IntervalBetweenDoses>(
+                  items: intervalBetweenDosesList
+                      .map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
                       value: value,
-                      child: Text(value.toString()),
+                      child: Text('$value hours'),
                     );
                   }).toList(),
                 ),
@@ -330,7 +478,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget startDateWidget(int index) {
+  Widget startDateWidget() {
     return LiviInputField(
       title: Strings.startDate,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -339,11 +487,10 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           context: context,
           initialDate: now,
           firstDate: now,
-          index: index,
           lastDate: DateTime(_foreverYear),
           isStartDate: true),
       readOnly: true,
-      controller: _startDateController[index],
+      controller: _startDateController[currentIndex],
       prefix: Padding(
         padding: const EdgeInsets.all(16),
         child: LiviThemes.icons.calendarIcon(),
@@ -351,7 +498,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget endDateWidget(int index) {
+  Widget endDateWidget() {
     return LiviInputField(
       title: Strings.endDate,
       focusNode: FocusNode(),
@@ -359,13 +506,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       readOnly: true,
       onTap: () => showMaterialDatePicker(
         context: context,
-        index: index,
         isStartDate: false,
         initialDate: now,
         firstDate: now,
         lastDate: DateTime(_foreverYear),
       ),
-      controller: _endDateController[index],
+      controller: _endDateController[currentIndex],
       prefix: Padding(
         padding: const EdgeInsets.all(16),
         child: LiviThemes.icons.calendarIcon(),
@@ -373,7 +519,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget remindMeBefore(int index) {
+  Widget remindMeBefore() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -389,11 +535,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   isExpanded: true,
                   value: TimeReminderBefore.values.singleWhere(
                       (element) =>
-                          element == schedules[index].timeReminderBefore,
-                      orElse: () => schedules[index].timeReminderBefore),
+                          element == schedules[currentIndex].timeReminderBefore,
+                      orElse: () => schedules[currentIndex].timeReminderBefore),
                   onChanged: (TimeReminderBefore? value) {
                     setState(() {
-                      schedules[index].timeReminderBefore = value!;
+                      schedules[currentIndex].timeReminderBefore = value!;
                     });
                   },
                   items: TimeReminderBefore.values
@@ -413,7 +559,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget remindMeLater(int index) {
+  Widget remindMeLater() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -429,11 +575,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   isExpanded: true,
                   value: TimeReminderLater.values.singleWhere(
                       (element) =>
-                          element == schedules[index].timeReminderLater,
-                      orElse: () => schedules[index].timeReminderLater),
+                          element == schedules[currentIndex].timeReminderLater,
+                      orElse: () => schedules[currentIndex].timeReminderLater),
                   onChanged: (TimeReminderLater? value) {
                     setState(() {
-                      schedules[index].timeReminderLater = value!;
+                      schedules[currentIndex].timeReminderLater = value!;
                     });
                   },
                   items: TimeReminderLater.values
@@ -460,43 +606,40 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     required DateTime firstDate,
     required DateTime lastDate,
     required bool isStartDate,
-    required int index,
+    required,
   }) async {
     final dateTime = await showDatePicker(
       context: context,
       cancelText: isStartDate ? Strings.now : Strings.forever,
       confirmText: Strings.apply,
-      initialDate: isStartDate ? now : schedules[index].startDate,
+      initialDate: isStartDate ? now : schedules[currentIndex].startDate,
       firstDate: isStartDate
           ? now
-          : schedules[index]
+          : schedules[currentIndex]
               .startDate, //DateTime.now() - not to allow to choose before today.
       lastDate: DateTime(_foreverYear),
     );
     if (dateTime == null) {
       if (isStartDate) {
-        schedules[index].startDate = now;
+        schedules[currentIndex].startDate = now;
       } else {
-        schedules[index].endDate = dateTime;
+        schedules[currentIndex].endDate = dateTime;
       }
     } else {
       if (isStartDate) {
-        schedules[index].startDate = dateTime;
+        schedules[currentIndex].startDate = dateTime;
       } else {
-        schedules[index].endDate = dateTime;
+        schedules[currentIndex].endDate = dateTime;
       }
     }
-    setDate(index);
+    setDate(currentIndex);
   }
 
-  Widget frequencyWidget(ScheduleType frequency, int index, {int flex = 3}) {
+  Widget frequencyWidget(ScheduleType frequency, {int flex = 3}) {
     return Expanded(
       flex: flex,
       child: InkWell(
-        onTap: () {
-          widget.medication.type = frequency;
-          setState(() {});
-        },
+        onTap: () => selectFrequency(frequency),
         child: Ink(
           height: double.maxFinite,
           decoration: BoxDecoration(
@@ -514,7 +657,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget daysWidget(int index) {
+  Widget daysWidget() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -525,13 +668,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              dayWidget(DateTime.sunday, index),
-              dayWidget(DateTime.monday, index),
-              dayWidget(DateTime.tuesday, index),
-              dayWidget(DateTime.wednesday, index),
-              dayWidget(DateTime.thursday, index),
-              dayWidget(DateTime.friday, index),
-              dayWidget(DateTime.saturday, index),
+              dayWidget(DateTime.sunday),
+              dayWidget(DateTime.monday),
+              dayWidget(DateTime.tuesday),
+              dayWidget(DateTime.wednesday),
+              dayWidget(DateTime.thursday),
+              dayWidget(DateTime.friday),
+              dayWidget(DateTime.saturday),
             ],
           ),
         ],
@@ -539,16 +682,43 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget addAnotherScheduleWidget() {
+  Widget deleteScheduleWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: LiviFilledButtonWhite(
-        text: Strings.addAnotherSchedule,
+        text: Strings.deleteSchedule,
+        textColor: LiviThemes.colors.baseBlack,
+        onTap: () {
+          widget.medication.schedules.removeAt(currentIndex);
+          currentIndex--;
+          setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget deleteMedicationWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: LiviFilledButton(
+        color: LiviThemes.colors.error600,
+        text: Strings.deleteMedication,
+        onTap: deleteMedication,
+      ),
+    );
+  }
+
+  Widget addAnotherScheduleWidget(int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: LiviFilledButtonWhite(
+        text: Strings.newSchedule,
         textColor: LiviThemes.colors.baseBlack,
         onTap: () {
           //TODO: add schedule dose here
           schedules.add(
             Schedule(
+              startDate: now,
               scheduledDosings: [
                 ScheduledDose(
                   timeOfDay: TimeOfDay.now(),
@@ -558,7 +728,10 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           );
           _startDateController.add(TextEditingController());
           _endDateController.add(TextEditingController());
-          setDate(widget.medication.schedules.length - 1);
+          _instructionsController.add(TextEditingController());
+
+          setDate(index);
+          currentIndex = schedules.length - 1;
           setState(() {});
         },
       ),
@@ -572,20 +745,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         child: LiviFilledButton(
           margin: EdgeInsets.symmetric(horizontal: 64),
           text: Strings.save,
-          onTap: saveMedication,
+          onTap: () => saveMedication(),
         ),
       ),
     );
   }
 
-  Widget dayWidget(int dayOfWeek, int index, {int flex = 1}) {
+  Widget dayWidget(int dayOfWeek, {int flex = 1}) {
     return InkWell(
       onTap: () {
-        if (schedules[index].dayPattern != null) {
-          if (schedules[index].dayPattern!.contains(dayOfWeek)) {
-            schedules[index].dayPattern!.remove(dayOfWeek);
+        if (schedules[currentIndex].dayPattern != null) {
+          if (schedules[currentIndex].dayPattern!.contains(dayOfWeek)) {
+            schedules[currentIndex].dayPattern!.remove(dayOfWeek);
           } else {
-            schedules[index].dayPattern!.add(dayOfWeek);
+            schedules[currentIndex].dayPattern!.add(dayOfWeek);
           }
           setState(() {});
         }
@@ -595,8 +768,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         width: (MediaQuery.of(context).size.width - 92) / 7,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: schedules[index].dayPattern != null &&
-                    schedules[index].dayPattern!.contains(dayOfWeek)
+            color: schedules[currentIndex].dayPattern != null &&
+                    schedules[currentIndex].dayPattern!.contains(dayOfWeek)
                 ? LiviThemes.colors.brand600
                 : dayOfWeek.isWeekend()
                     ? LiviThemes.colors.brand50
@@ -607,8 +780,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         child: Align(
           child: LiviTextStyles.interRegular16(
               getStringFromDateTimeInteger(dayOfWeek).getFirstLetter(),
-              color: schedules[index].dayPattern != null &&
-                      schedules[index].dayPattern!.contains(dayOfWeek)
+              color: schedules[currentIndex].dayPattern != null &&
+                      schedules[currentIndex].dayPattern!.contains(dayOfWeek)
                   ? LiviThemes.colors.baseWhite
                   : dayOfWeek.isWeekend()
                       ? LiviThemes.colors.brand600
@@ -618,110 +791,187 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  Widget atWhatTimesWidget(int index) {
+  Widget monthlyOnTheDayWidget() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LiviTextStyles.interMedium16(Strings.atWhatTimes,
+          LiviTextStyles.interMedium16(Strings.monthlyOnTheDay,
               color: LiviThemes.colors.gray500),
           LiviThemes.spacing.heightSpacer8(),
-          Row(
-            children: [
-              Expanded(
-                flex: 7,
-                child: LiviDropdownButton<int>(
-                  isExpanded: true,
-                  value: hoursList.singleWhere((element) {
-                    return element ==
-                        convert24TimeFormatToAmPm(widget
-                            .medication
-                            .schedules[index]
-                            .scheduledDosings
-                            .first
-                            .timeOfDay
-                            .hour);
-                  }, orElse: () => hoursList.first),
-                  onChanged: (int? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      widget.medication.schedules[index].scheduledDosings.first
-                              .timeOfDay =
-                          TimeOfDay(
-                              hour: convertAmPmTimeFormatTo24(value!),
-                              minute: widget.medication.schedules[index]
-                                  .scheduledDosings.first.timeOfDay.minute);
-                    });
-                  },
-                  items: hoursList.map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: LiviThemes.colors.gray300,
+              ),
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: schedules[currentIndex].monthPattern.length,
+                itemBuilder: (context, index) {
+                  final item = schedules[currentIndex].monthPattern[index];
+                  return Column(
+                    children: [
+                      LiviInkWell(
+                        splashFactory: NoSplash.splashFactory,
+                        onTap: () {
+                          final list = <int>[];
+                          list.addAll(schedules[currentIndex].monthPattern);
+                          list.removeAt(index);
+                          schedules[currentIndex].monthPattern = list;
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LiviTextStyles.interRegular16(
+                                  'Every ${formartDay(item)}'),
+                              IconCircleBox(
+                                onTap: () {
+                                  final list = <int>[];
+                                  list.addAll(
+                                      schedules[currentIndex].monthPattern);
+                                  list.removeAt(index);
+                                  schedules[currentIndex].monthPattern = list;
+                                  setState(() {});
+                                },
+                                padding: EdgeInsets.zero,
+                                color: LiviThemes.colors.error500,
+                                child: LiviThemes.icons.minusWidget(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      LiviDivider(),
+                    ],
+                  );
+                },
+              ),
+              LiviDivider(),
+              LiviInkWell(
+                splashFactory: NoSplash.splashFactory,
+                onTap: () {
+                  final list = <int>[];
+                  list.addAll(schedules[currentIndex].monthPattern);
+                  list.add(Random().nextInt(31));
+                  schedules[currentIndex].monthPattern = list;
+
+                  setState(() {});
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Row(
+                    children: [
+                      IconCircleBox(
+                          child: LiviThemes.icons.plusIcon(
+                              color: LiviThemes.colors.baseWhite, height: 16)),
+                      LiviThemes.spacing.widthSpacer8(),
+                      LiviTextStyles.interMedium16(Strings.addDay,
+                          color: LiviThemes.colors.brand600),
+                    ],
+                  ),
                 ),
               ),
-              Spacer(),
-              LiviTextStyles.interMedium16(':'),
-              Spacer(),
-              Expanded(
-                flex: 7,
-                child: LiviDropdownButton<int>(
-                  isExpanded: true,
-                  value: minutesList.singleWhere(
-                      (element) =>
-                          element ==
-                          widget.medication.schedules[index].scheduledDosings
-                              .first.timeOfDay.minute,
-                      orElse: () => minutesList.first),
-                  onChanged: (int? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      setState(() {
-                        widget.medication.schedules[index].scheduledDosings
-                                .first.timeOfDay =
-                            TimeOfDay(
-                                hour: widget.medication.schedules[index]
-                                    .scheduledDosings.first.timeOfDay.hour,
-                                minute: value!);
-                      });
-                    });
-                  },
-                  items: minutesList.map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
-                ),
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget timeOfDayWidget() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LiviTextStyles.interMedium16(Strings.timeOfDay,
+              color: LiviThemes.colors.gray500),
+          LiviThemes.spacing.heightSpacer8(),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: LiviThemes.colors.gray300,
               ),
-              Spacer(),
-              LiviTextStyles.interMedium16(':'),
-              Spacer(),
-              Expanded(
-                flex: 7,
-                child: LiviDropdownButton<DayTime>(
-                  isExpanded: true,
-                  value: dayTime,
-                  onChanged: (DayTime? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      dayTime = value;
-                      // dateTime.
-                    });
-                  },
-                  items: DayTime.values
-                      .map<DropdownMenuItem<DayTime>>((DayTime value) {
-                    return DropdownMenuItem<DayTime>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
-                ),
+            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: schedules[currentIndex].scheduledDosings.length,
+                itemBuilder: (context, index) {
+                  final item = schedules[currentIndex].scheduledDosings[index];
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            LiviTextStyles.interRegular16(
+                                'Take ${item.qty.toInt()} at ${formartTimeOfDay(item.timeOfDay)}'),
+                            IconCircleBox(
+                              onTap: () {
+                                schedules[currentIndex]
+                                    .scheduledDosings
+                                    .removeAt(index);
+                                setState(() {});
+                              },
+                              padding: EdgeInsets.zero,
+                              color: LiviThemes.colors.error500,
+                              child: LiviThemes.icons.minusWidget(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      LiviDivider(),
+                    ],
+                  );
+                },
               ),
-              Spacer(),
-            ],
+              LiviDivider(),
+              Row(
+                children: [
+                  LiviInkWell(
+                    splashFactory: NoSplash.splashFactory,
+                    onTap: () {
+                      schedules[currentIndex].scheduledDosings.add(
+                            ScheduledDose(
+                              timeOfDay: TimeOfDay.now(),
+                            ),
+                          );
+                      setState(() {});
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      child: Row(
+                        children: [
+                          IconCircleBox(
+                              child: LiviThemes.icons.plusIcon(
+                                  color: LiviThemes.colors.baseWhite,
+                                  height: 16)),
+                          LiviThemes.spacing.widthSpacer8(),
+                          LiviTextStyles.interMedium16(Strings.addTime,
+                              color: LiviThemes.colors.brand600),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ]),
           ),
         ],
       ),

@@ -10,14 +10,14 @@ part 'schedule.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Schedule {
-  DateTime startDate = DateTime.now();
+  DateTime startDate;
   DateTime? endDate;
   IntervalBetweenDoses intervalBetweenDoses;
   int frequency;
   // List.generate(7, (index) => index + 1, growable: false);
   List<int>? dayPattern;
   // List.generate(31, (index) => index + 1, growable: false);
-  List<int>? monthPattern;
+  List<int> monthPattern;
   List<ScheduledDose> scheduledDosings = [];
   PrnDose? prnDosing;
   TimeReminderBefore timeReminderBefore;
@@ -30,9 +30,10 @@ class Schedule {
     this.timeReminderLater = TimeReminderLater.fiveMinutes,
     this.intervalBetweenDoses = IntervalBetweenDoses.eightHours,
     this.instructions = '',
+    required this.startDate,
     this.frequency = 1,
     this.dayPattern,
-    this.monthPattern = const [0],
+    this.monthPattern = const [10],
     required this.scheduledDosings,
     this.prnDosing,
   });

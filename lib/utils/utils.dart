@@ -109,3 +109,28 @@ String getDay(int index) {
       return 'Unknown';
   }
 }
+
+String formartDay(int day) {
+  switch (day) {
+    case 1:
+      return '1st';
+    case 2:
+      return '2nd';
+    case 3:
+      return '3rd';
+    default:
+      return '${day}th';
+  }
+}
+
+String formartTimeOfDay(TimeOfDay timeOfDat) {
+  //ap pm hour
+  String ap = timeOfDat.period == DayPeriod.am ? 'AM' : 'PM';
+  String hour = timeOfDat.hourOfPeriod.toString();
+  String minute = timeOfDat.minute.toString();
+  hour = hour;
+  if (timeOfDat.minute < 10) {
+    minute = '0$minute';
+  }
+  return '$hour:$minute $ap';
+}
