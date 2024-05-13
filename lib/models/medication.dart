@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:uuid/uuid.dart';
 import '../utils/string_ext.dart';
 import 'dosing.dart';
 import 'enums.dart';
@@ -10,7 +11,7 @@ part 'medication.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Medication {
-  String id = '';
+  String id = Uuid().v4();
   String appUserId = '';
   String name = '';
   String manufacturer = '';

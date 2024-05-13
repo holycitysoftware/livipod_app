@@ -88,20 +88,15 @@ class Schedule {
           freqStr = 'every three months';
         }
 
-        if (monthPattern != null &&
-            !monthPattern!.any((element) => element == 0)) {
-          str = '$str $freqStr each day.';
-        } else {
-          var dayStr = '$freqStr on day';
-          for (var day = 0; day < monthPattern!.length; day++) {
-            if (monthPattern![day] == 1) {
-              var d = (day + 1).toString();
-              dayStr = '$dayStr $d,';
-            }
+        var dayStr = '$freqStr on day';
+        for (var day = 0; day < monthPattern!.length; day++) {
+          if (monthPattern![day] > 0) {
+            var d = (day + 1).toString();
+            dayStr = '$dayStr $d';
           }
-
-          str = '$str $dayStr';
         }
+
+        str = '$str $dayStr';
       }
       return str;
     }
