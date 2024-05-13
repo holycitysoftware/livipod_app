@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../controllers/controllers.dart';
 import '../../models/livi_pod.dart';
+import '../../services/livi_pod_service.dart';
 
 class DeviceView extends StatefulWidget {
   final LiviPod liviPod;
