@@ -12,6 +12,7 @@ import '../../../models/models.dart';
 import '../../../models/schedule_type.dart';
 import '../../../services/medication_service.dart';
 import '../../../themes/livi_themes.dart';
+import '../../../themes/livi_themes.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
 import '../../../utils/utils.dart';
@@ -22,8 +23,8 @@ const int _foreverYear = 2200;
 class SelectFrequencyPage extends StatefulWidget {
   final bool isEdit;
   static const String routeName = '/select-frequency-page';
-  final Medication medication;
-  const SelectFrequencyPage({
+  Medication medication;
+  SelectFrequencyPage({
     super.key,
     required this.medication,
     this.isEdit = false,
@@ -91,7 +92,6 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         Schedule(
           startDate: now,
           scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
-          dayPattern: [],
         ),
       ];
       setDate(currentIndex);
@@ -135,45 +135,48 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   bool get getShowInventoryQuantityField =>
-      widget.medication.type.isAsNeeded() ||
-      widget.medication.type.isDaily() ||
-      widget.medication.type.isWeekly() ||
-      widget.medication.type.isMonthly();
+      widget.medication.schedules.first.type.isAsNeeded() ||
+      widget.medication.schedules.first.type.isDaily() ||
+      widget.medication.schedules.first.type.isWeekly() ||
+      widget.medication.schedules.first.type.isMonthly();
 
   bool get getShowQuantityNeededField =>
-      widget.medication.type.isAsNeeded() ||
-      widget.medication.type.isDaily() ||
-      widget.medication.type.isWeekly() ||
-      widget.medication.type.isMonthly();
+      widget.medication.schedules.first.type.isAsNeeded() ||
+      widget.medication.schedules.first.type.isDaily() ||
+      widget.medication.schedules.first.type.isWeekly() ||
+      widget.medication.schedules.first.type.isMonthly();
 
   bool get getShowInstructions =>
-      widget.medication.type.isAsNeeded() ||
-      widget.medication.type.isDaily() ||
-      widget.medication.type.isWeekly() ||
-      widget.medication.type.isMonthly();
+      widget.medication.schedules.first.type.isAsNeeded() ||
+      widget.medication.schedules.first.type.isDaily() ||
+      widget.medication.schedules.first.type.isWeekly() ||
+      widget.medication.schedules.first.type.isMonthly();
 
-  bool get getShowDaysWidget => widget.medication.type.isWeekly();
+  bool get getShowDaysWidget =>
+      widget.medication.schedules.first.type.isWeekly();
 
   bool get getAtWhatTimesWidget =>
-      widget.medication.type.isWeekly() ||
-      widget.medication.type.isMonthly() ||
-      widget.medication.type.isDaily();
+      widget.medication.schedules.first.type.isWeekly() ||
+      widget.medication.schedules.first.type.isMonthly() ||
+      widget.medication.schedules.first.type.isDaily();
 
-  bool get getMonthlyOnTheDay => widget.medication.type.isMonthly();
+  bool get getMonthlyOnTheDay =>
+      widget.medication.schedules.first.type.isMonthly();
 
   bool get getRemindMeBefore =>
-      widget.medication.type.isWeekly() ||
-      widget.medication.type.isMonthly() ||
-      widget.medication.type.isDaily();
+      widget.medication.schedules.first.type.isWeekly() ||
+      widget.medication.schedules.first.type.isMonthly() ||
+      widget.medication.schedules.first.type.isDaily();
 
   bool get getRemindMeLater =>
-      widget.medication.type.isWeekly() ||
-      widget.medication.type.isMonthly() ||
-      widget.medication.type.isDaily();
+      widget.medication.schedules.first.type.isWeekly() ||
+      widget.medication.schedules.first.type.isMonthly() ||
+      widget.medication.schedules.first.type.isDaily();
 
-  bool get getNotToExceed => widget.medication.type.isDaily();
+  bool get getNotToExceed => widget.medication.schedules.first.type.isDaily();
 
-  bool get getIntervalBetweenDoses => widget.medication.type.isAsNeeded();
+  bool get getIntervalBetweenDoses =>
+      widget.medication.schedules.first.type.isAsNeeded();
 
   // bool get showQuantityNeededField => selectedFrequency.isAsNeeded();
   // bool get showQuantityField => selectedFrequency.isDaily();
@@ -237,10 +240,21 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     await MedicationService().createMedication(widget.medication);
   }
 
-  void selectFrequency(ScheduleType frequency) {
+  void selectFrequency(ScheduleType scheduleType) {
 //TODO: everytime we change the type schedule we have to reset all the fields...
 // if it was daily and we change to weekly we have fill the new fields and reset the old ones? ask bill
-    widget.medication.type = frequency;
+    final backup = widget.medication;
+    widget.medication = Medication(name: backup.name);
+    widget.medication.schedules = [
+      Schedule(
+        startDate: now,
+        scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
+      ),
+    ];
+    for (final element in widget.medication.schedules) {
+      element.type = scheduleType;
+    }
+
     setState(() {});
   }
 
@@ -535,11 +549,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   isExpanded: true,
                   value: TimeReminderBefore.values.singleWhere(
                       (element) =>
-                          element == schedules[currentIndex].timeReminderBefore,
-                      orElse: () => schedules[currentIndex].timeReminderBefore),
+                          element.duration.inMinutes ==
+                          schedules[currentIndex].startWarningMinutes,
+                      orElse: () => TimeReminderBefore.oneMinute),
                   onChanged: (TimeReminderBefore? value) {
                     setState(() {
-                      schedules[currentIndex].timeReminderBefore = value!;
+                      schedules[currentIndex].startWarningMinutes =
+                          value!.duration.inMinutes;
                     });
                   },
                   items: TimeReminderBefore.values
@@ -575,11 +591,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   isExpanded: true,
                   value: TimeReminderLater.values.singleWhere(
                       (element) =>
-                          element == schedules[currentIndex].timeReminderLater,
-                      orElse: () => schedules[currentIndex].timeReminderLater),
+                          element.duration.inMinutes ==
+                          schedules[currentIndex].startWarningMinutes,
+                      orElse: () => TimeReminderLater.oneMinute),
                   onChanged: (TimeReminderLater? value) {
                     setState(() {
-                      schedules[currentIndex].timeReminderLater = value!;
+                      schedules[currentIndex].stopWarningMinutes =
+                          value!.duration.inMinutes;
                     });
                   },
                   items: TimeReminderLater.values
@@ -635,20 +653,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     setDate(currentIndex);
   }
 
-  Widget frequencyWidget(ScheduleType frequency, {int flex = 3}) {
+  Widget frequencyWidget(ScheduleType scheduleType, {int flex = 3}) {
     return Expanded(
       flex: flex,
       child: InkWell(
-        onTap: () => selectFrequency(frequency),
+        onTap: () => selectFrequency(scheduleType),
         child: Ink(
           height: double.maxFinite,
           decoration: BoxDecoration(
-              color: widget.medication.type == frequency
+              color: widget.medication.schedules.first.type == scheduleType
                   ? LiviThemes.colors.brand50
                   : LiviThemes.colors.baseWhite),
           child: Align(
-            child: LiviTextStyles.interBold14(frequency.description,
-                color: widget.medication.type == frequency
+            child: LiviTextStyles.interBold14(scheduleType.description,
+                color: widget.medication.schedules.first.type == scheduleType
                     ? LiviThemes.colors.brand600
                     : LiviThemes.colors.gray500),
           ),
@@ -791,6 +809,76 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
+  Widget buildDaysOfMonthSelector(StateSetter setStates) {
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisSpacing: 2,
+      mainAxisSpacing: 2,
+      shrinkWrap: true,
+      crossAxisCount: 6,
+      children:
+          // widget.medication.schedules.first.monthPattern
+          //     .map((e) => Text(e.toString()))
+          //     .toList(),
+          getDaysOfMonth(setStates),
+    );
+  }
+
+  Color getBackgroundColor(int index) {
+    if (widget.medication.schedules[currentIndex].monthPattern[index] == 1) {
+      return LiviThemes.colors.brand600;
+    }
+    return LiviThemes.colors.transparent;
+  }
+
+  Color getTextColor(int index) {
+    if (widget.medication.schedules[currentIndex].monthPattern[index] == 1) {
+      return LiviThemes.colors.baseWhite;
+    }
+    return LiviThemes.colors.baseBlack;
+  }
+
+  List<Widget> getDaysOfMonth(StateSetter setStates) {
+    final list = <Widget>[];
+
+    for (var i = 0; i < 31; i++) {
+      final btn = SizedBox(
+        width: 50,
+        height: 50,
+        child: InkWell(
+            borderRadius: BorderRadius.circular(64),
+            onTap: () {
+              if (widget.medication.schedules[currentIndex].monthPattern !=
+                  null) {
+                if (widget.medication.schedules[currentIndex].monthPattern[i] ==
+                    0) {
+                  widget.medication.schedules[currentIndex].monthPattern[i] = 1;
+                } else {
+                  widget.medication.schedules[currentIndex].monthPattern[i] = 0;
+                }
+                setStates(() {});
+              }
+            },
+            child: IconCircleBox(
+              color: getBackgroundColor(i),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  (i + 1).toString(),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: LiviThemes.typography.interRegular_16
+                      .copyWith(color: getTextColor(i)),
+                ),
+              ),
+            )),
+      );
+      list.add(btn);
+    }
+
+    return list;
+  }
+
   Widget monthlyOnTheDayWidget() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -815,54 +903,97 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 itemCount: schedules[currentIndex].monthPattern.length,
                 itemBuilder: (context, index) {
                   final item = schedules[currentIndex].monthPattern[index];
-                  return Column(
-                    children: [
-                      LiviInkWell(
-                        splashFactory: NoSplash.splashFactory,
-                        onTap: () {
-                          final list = <int>[];
-                          list.addAll(schedules[currentIndex].monthPattern);
-                          list.removeAt(index);
-                          schedules[currentIndex].monthPattern = list;
-                          setState(() {});
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              LiviTextStyles.interRegular16(
-                                  'Every ${formartDay(item)}'),
-                              IconCircleBox(
-                                onTap: () {
-                                  final list = <int>[];
-                                  list.addAll(
-                                      schedules[currentIndex].monthPattern);
-                                  list.removeAt(index);
-                                  schedules[currentIndex].monthPattern = list;
-                                  setState(() {});
-                                },
-                                padding: EdgeInsets.zero,
-                                color: LiviThemes.colors.error500,
-                                child: LiviThemes.icons.minusWidget(),
-                              ),
-                            ],
+                  if (item == 1) {
+                    return Column(
+                      children: [
+                        LiviInkWell(
+                          splashFactory: NoSplash.splashFactory,
+                          onTap: () {
+                            final list = <int>[];
+                            list.addAll(schedules[currentIndex].monthPattern);
+                            list.removeAt(index);
+                            schedules[currentIndex].monthPattern = list;
+                            setState(() {});
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                LiviTextStyles.interRegular16(
+                                    'Every ${formartDay(index + 1)}'),
+                                IconCircleBox(
+                                  onTap: () {
+                                    final list = <int>[];
+                                    list.addAll(
+                                        schedules[currentIndex].monthPattern);
+                                    list.removeAt(index);
+                                    schedules[currentIndex].monthPattern = list;
+                                    setState(() {});
+                                  },
+                                  padding: EdgeInsets.zero,
+                                  color: LiviThemes.colors.error500,
+                                  child: LiviThemes.icons.minusWidget(),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      LiviDivider(),
-                    ],
-                  );
+                        LiviDivider(),
+                      ],
+                    );
+                  } else {
+                    return SizedBox();
+                  }
                 },
               ),
               LiviDivider(),
               LiviInkWell(
                 splashFactory: NoSplash.splashFactory,
-                onTap: () {
+                onTap: () async {
                   final list = <int>[];
                   list.addAll(schedules[currentIndex].monthPattern);
-                  list.add(Random().nextInt(31));
-                  schedules[currentIndex].monthPattern = list;
+                  final cancel = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => StatefulBuilder(
+                            builder: (context, setState) => AlertDialog(
+                              insetPadding:
+                                  EdgeInsets.symmetric(horizontal: 20),
+                              title: const Text(Strings.selectDates),
+                              content: Container(
+                                  height: 300,
+                                  width: 400,
+                                  child: buildDaysOfMonthSelector(setState)),
+                              actions: <Widget>[
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    textStyle:
+                                        Theme.of(context).textTheme.labelLarge,
+                                  ),
+                                  child: const Text(Strings.cancel),
+                                  onPressed: () {
+                                    const cancel = true;
+                                    Navigator.of(context).pop(cancel);
+                                  },
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    textStyle:
+                                        Theme.of(context).textTheme.labelLarge,
+                                  ),
+                                  child: const Text(Strings.ok),
+                                  onPressed: () {
+                                    const cancel = false;
+                                    Navigator.of(context).pop(cancel);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ));
+                  if (cancel == true) {
+                    widget.medication.schedules[currentIndex].monthPattern =
+                        list;
+                  }
 
                   setState(() {});
                 },

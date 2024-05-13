@@ -13,6 +13,7 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
       ..appUserId = json['appUserId'] as String
       ..manufacturer = json['manufacturer'] as String
       ..dosageForm = $enumDecode(_$DosageFormEnumMap, json['dosageForm'])
+      ..inventoryQuantity = json['inventoryQuantity'] as int
       ..packageId = json['packageId'] as String
       ..strength = json['strength'] as String
       ..instructions = json['instructions'] as String
@@ -26,10 +27,7 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
           : Dosing.fromJson(json['nextDosing'] as Map<String, dynamic>)
       ..lastDosing = json['lastDosing'] == null
           ? null
-          : Dosing.fromJson(json['lastDosing'] as Map<String, dynamic>)
-      ..inventoryQuantity = json['inventoryQuantity'] as int
-      ..type = $enumDecode(_$ScheduleTypeEnumMap, json['type'])
-      ..enabled = json['enabled'] as bool;
+          : Dosing.fromJson(json['lastDosing'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$MedicationToJson(Medication instance) =>
     <String, dynamic>{
@@ -38,6 +36,7 @@ Map<String, dynamic> _$MedicationToJson(Medication instance) =>
       'name': instance.name,
       'manufacturer': instance.manufacturer,
       'dosageForm': _$DosageFormEnumMap[instance.dosageForm]!,
+      'inventoryQuantity': instance.inventoryQuantity,
       'packageId': instance.packageId,
       'strength': instance.strength,
       'instructions': instance.instructions,
@@ -45,9 +44,6 @@ Map<String, dynamic> _$MedicationToJson(Medication instance) =>
       'hasChanged': instance.hasChanged,
       'nextDosing': instance.nextDosing?.toJson(),
       'lastDosing': instance.lastDosing?.toJson(),
-      'inventoryQuantity': instance.inventoryQuantity,
-      'type': _$ScheduleTypeEnumMap[instance.type]!,
-      'enabled': instance.enabled,
     };
 
 const _$DosageFormEnumMap = {
@@ -60,11 +56,4 @@ const _$DosageFormEnumMap = {
   DosageForm.liquid: 'liquid',
   DosageForm.patch: 'patch',
   DosageForm.other: 'other',
-};
-
-const _$ScheduleTypeEnumMap = {
-  ScheduleType.asNeeded: 'asNeeded',
-  ScheduleType.daily: 'daily',
-  ScheduleType.weekly: 'weekly',
-  ScheduleType.monthly: 'monthly',
 };

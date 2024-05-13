@@ -93,8 +93,8 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
   Widget buildFrequency() {
     return Row(
       children: [
-        DropdownButton(
-          value: widget.schedule.frequency,
+        DropdownButton<int>(
+          value: widget.schedule.frequency.first,
           items: const [
             DropdownMenuItem(
               value: 1,
@@ -111,7 +111,7 @@ class _ScheduleWeeklyState extends State<ScheduleWeekly> {
           ],
           onChanged: (value) {
             setState(() {
-              widget.schedule.frequency = value!;
+              widget.schedule.frequency.first = value!;
             });
           },
         ),

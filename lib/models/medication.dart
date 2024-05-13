@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
 import '../utils/string_ext.dart';
 import 'dosing.dart';
 import 'enums.dart';
@@ -11,11 +10,12 @@ part 'medication.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Medication {
-  String id = Uuid().v4();
+  String id = '';
   String appUserId = '';
   String name = '';
   String manufacturer = '';
   DosageForm dosageForm = DosageForm.none;
+  int inventoryQuantity = 30;
   String packageId = '';
   String strength = '';
   String instructions = '';
@@ -24,9 +24,6 @@ class Medication {
   bool hasChanged = true;
   Dosing? nextDosing;
   Dosing? lastDosing;
-  int inventoryQuantity = 30;
-  ScheduleType type = ScheduleType.monthly;
-  bool enabled = true;
 
   Medication({
     required this.name,
@@ -55,7 +52,7 @@ class Medication {
     if (nextDosing == null) {
       return '-';
     }
-    if (schedules.isNotEmpty && type == ScheduleType.asNeeded) {
+    if (schedules.isNotEmpty && schedules[0].type == ScheduleType.asNeeded) {
       return 'as needed';
     }
     var offsetDosingTime = nextDosing!.scheduledDosingTime!.toLocal();
@@ -65,7 +62,7 @@ class Medication {
   List<String> getScheduleDescriptions() {
     var list = <String>[];
     for (var schedule in schedules) {
-      list.add(schedule.getScheduleDescription(type));
+      list.add(schedule.getScheduleDescription());
     }
     return list;
   }

@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/utils.dart' as utils;
-import 'enums.dart';
 import 'prn_dose.dart';
 import 'schedule_type.dart';
 import 'scheduled_dose.dart';
@@ -10,41 +9,65 @@ part 'schedule.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Schedule {
-  DateTime startDate;
+  DateTime startDate = DateTime.now();
   DateTime? endDate;
-  IntervalBetweenDoses intervalBetweenDoses;
-  int frequency;
-  // List.generate(7, (index) => index + 1, growable: false);
-  List<int>? dayPattern;
-  // List.generate(31, (index) => index + 1, growable: false);
-  List<int> monthPattern;
+  ScheduleType type = ScheduleType.daily;
+  List<int> frequency = [1];
+  List<int> dayPattern = [1, 1, 1, 1, 1, 1, 1];
+  List<int> monthPattern = [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ];
   List<ScheduledDose> scheduledDosings = [];
   PrnDose? prnDosing;
-  TimeReminderBefore timeReminderBefore;
-  TimeReminderLater timeReminderLater;
-  String instructions = '';
+  int startWarningMinutes = 60;
+  int stopWarningMinutes = 60;
 
   Schedule({
     this.endDate,
-    this.timeReminderBefore = TimeReminderBefore.fiveMinutes,
-    this.timeReminderLater = TimeReminderLater.fiveMinutes,
-    this.intervalBetweenDoses = IntervalBetweenDoses.eightHours,
-    this.instructions = '',
     required this.startDate,
-    this.frequency = 1,
-    this.dayPattern,
-    this.monthPattern = const [10],
     required this.scheduledDosings,
     this.prnDosing,
   });
 
-  String getScheduleDescription(ScheduleType type) {
+  String getScheduleDescription() {
     // var scheduleType = getScheduleType();
     var str = 'Take';
     if (type != ScheduleType.asNeeded) {
-      for (final dosing in scheduledDosings) {
-        str =
-            '$str ${utils.removeDecimalZeroFormat(dosing.qty)} at ${dosing.timeOfDay.hour.toString().padLeft(2, '0')}:${dosing.timeOfDay.minute.toString().padLeft(2, '0')}';
+      if (scheduledDosings != null) {
+        for (final dosing in scheduledDosings) {
+          str =
+              '$str ${utils.removeDecimalZeroFormat(dosing.qty)} at ${dosing.timeOfDay.hour.toString().padLeft(2, '0')}:${dosing.timeOfDay.minute.toString().padLeft(2, '0')},';
+        }
       }
 
       if (type == ScheduleType.daily) {
@@ -65,12 +88,12 @@ class Schedule {
           freqStr = 'every three weeks';
         }
 
-        if (!dayPattern!.any((element) => element == 0)) {
+        if (!dayPattern.any((element) => element == 0)) {
           str = '$str $freqStr.';
         } else {
           var dayStr = '$freqStr on';
-          for (var day = 0; day < dayPattern!.length; day++) {
-            if (dayPattern![day] == 1) {
+          for (var day = 0; day < dayPattern.length; day++) {
+            if (dayPattern[day] == 1) {
               var d = utils.getDay(day).toLowerCase();
               dayStr = '$dayStr $d,';
             }
@@ -88,15 +111,19 @@ class Schedule {
           freqStr = 'every three months';
         }
 
-        var dayStr = '$freqStr on day';
-        for (var day = 0; day < monthPattern!.length; day++) {
-          if (monthPattern![day] > 0) {
-            var d = (day + 1).toString();
-            dayStr = '$dayStr $d';
+        if (!monthPattern.any((element) => element == 0)) {
+          str = '$str $freqStr each day.';
+        } else {
+          var dayStr = '$freqStr on day';
+          for (var day = 0; day < monthPattern.length; day++) {
+            if (monthPattern[day] == 1) {
+              var d = (day + 1).toString();
+              dayStr = '$dayStr $d,';
+            }
           }
-        }
 
-        str = '$str $dayStr';
+          str = '$str $dayStr';
+        }
       }
       return str;
     }
