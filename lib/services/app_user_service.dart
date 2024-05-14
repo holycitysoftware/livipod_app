@@ -89,6 +89,24 @@ class AppUserService {
     return Future.value(user);
   }
 
+  Future<AppUser?> getUserByAuthId(String authId) async {
+    AppUser? user;
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .where('authId', isEqualTo: authId)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          user = AppUser.fromJson(querySnapshot.docs[0].data());
+        }
+      });
+    } catch (e) {
+      debugPrint('$e');
+    }
+    return Future.value(user);
+  }
+
   Future<AppUser> getAccountOwner(Account account) async {
     AppUser? user;
     try {

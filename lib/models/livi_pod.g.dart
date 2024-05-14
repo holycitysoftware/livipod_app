@@ -9,7 +9,6 @@ part of 'livi_pod.dart';
 LiviPod _$LiviPodFromJson(Map<String, dynamic> json) => LiviPod(
       remoteId: json['remoteId'] as String,
     )
-      ..id = json['id'] as String
       ..userId = json['userId'] as String
       ..macAddress = json['macAddress'] as String? ?? ''
       ..ipAddress = json['ipAddress'] as String? ?? ''
