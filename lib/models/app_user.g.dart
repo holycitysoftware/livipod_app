@@ -25,9 +25,10 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       useEmail: json['useEmail'] as bool? ?? false,
       useSMS: json['useSMS'] as bool? ?? false,
       usePushNotifications: json['usePushNotifications'] as bool? ?? true,
-    );
+    )..authId = json['authId'] as String;
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
+      'authId': instance.authId,
       'accountId': instance.accountId,
       'name': instance.name,
       'appUserType': _$AppUserTypeEnumMap[instance.appUserType]!,

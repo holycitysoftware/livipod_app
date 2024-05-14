@@ -53,13 +53,9 @@ class AuthController extends ChangeNotifier {
 
   Future<void> getAppUser() async {
     if (_user != null) {
-      final account =
-          await _accountService.getAccount(Account(ownerId: _user!.uid));
-      if (account != null) {
-        final user = await _accountService.getOwner(account);
-        if (user != null) {
-          _appUser = user;
-        }
+      final user = await _appUserService.getUserByAuthId(_user!.uid);
+      if (user != null) {
+        _appUser = user;
       }
       notifyListeners();
     }
@@ -251,6 +247,8 @@ class AuthController extends ChangeNotifier {
         try {
           // STEP 2: CREATE USER
           final user = await _appUserService.createUser(_appUser!);
+          user.authId =
+              userCredential.user!.uid; // security link to Firebase Auth
 
           // STEP 3: ASSOCIATE OWNER
           account.ownerId = user.id;

@@ -9,6 +9,7 @@ part 'app_user.g.dart';
 class AppUser {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String id = '';
+  String authId = '';
   String accountId = '';
   String name = '';
   AppUserType appUserType;
