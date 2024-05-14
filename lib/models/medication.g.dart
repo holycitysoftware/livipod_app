@@ -26,7 +26,8 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
           : Dosing.fromJson(json['nextDosing'] as Map<String, dynamic>)
       ..lastDosing = json['lastDosing'] == null
           ? null
-          : Dosing.fromJson(json['lastDosing'] as Map<String, dynamic>);
+          : Dosing.fromJson(json['lastDosing'] as Map<String, dynamic>)
+      ..enabled = json['enabled'] as bool;
 
 Map<String, dynamic> _$MedicationToJson(Medication instance) =>
     <String, dynamic>{
@@ -42,6 +43,7 @@ Map<String, dynamic> _$MedicationToJson(Medication instance) =>
       'hasChanged': instance.hasChanged,
       'nextDosing': instance.nextDosing?.toJson(),
       'lastDosing': instance.lastDosing?.toJson(),
+      'enabled': instance.enabled,
     };
 
 const _$DosageFormEnumMap = {

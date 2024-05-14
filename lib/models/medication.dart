@@ -25,6 +25,7 @@ class Medication {
   bool hasChanged = true;
   Dosing? nextDosing;
   Dosing? lastDosing;
+  bool enabled = true;
 
   Medication({
     required this.name,
