@@ -1032,6 +1032,100 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
+  Future<void> showDialogTime({int? editIndex, ScheduledDose? dose}) async {
+    if (editIndex != null && dose != null) {
+      _takeDosesController.text = dose.qty.toInt().toString();
+      _timeOfDay = dose.timeOfDay;
+    }
+    final scheduleDoses = await showDialog<ScheduledDose>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          backgroundColor: LiviThemes.colors.baseWhite,
+          surfaceTintColor: LiviThemes.colors.baseWhite,
+          insetPadding: EdgeInsets.symmetric(horizontal: 32),
+          title: const Text(Strings.enterDates),
+          content: Container(
+            height: 250,
+            width: 400,
+            color: LiviThemes.colors.baseWhite,
+            child: Column(
+              children: [
+                LiviThemes.spacing.heightSpacer64(),
+                LiviDivider(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: Strings.take,
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                        ),
+                        focusNode: FocusNode(),
+                        keyboardType: TextInputType.number,
+                        controller: _takeDosesController,
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            labelText: Strings.at,
+                            hintText: _timeOfDay == null
+                                ? ''
+                                : formartTimeOfDay(_timeOfDay!)),
+                        readOnly: true,
+                        onTap: () async {
+                          await showTimerPickerWidget(setState);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text(Strings.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text(Strings.ok),
+              onPressed: () {
+                Navigator.of(context).pop(ScheduledDose(
+                    timeOfDay: _timeOfDay ??
+                        TimeOfDay(hour: now.hour, minute: now.minute),
+                    qty: double.parse(_takeDosesController.text)));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+    if (editIndex != null && dose != null) {
+      widget.medication.schedules[currentIndex].scheduledDosings[editIndex] =
+          scheduleDoses!;
+      setState(() {});
+      return;
+    } else {
+      widget.medication.schedules[currentIndex].scheduledDosings
+          .add(scheduleDoses!);
+    }
+    setState(() {});
+  }
+
   Widget timeOfDayWidget() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -1058,25 +1152,29 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   final item = schedules[currentIndex].scheduledDosings[index];
                   return Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            LiviTextStyles.interRegular16(
-                                'Take ${item.qty.toInt()} at ${formartTimeOfDay(item.timeOfDay)}'),
-                            IconCircleBox(
-                              onTap: () {
-                                schedules[currentIndex]
-                                    .scheduledDosings
-                                    .removeAt(index);
-                                setState(() {});
-                              },
-                              padding: EdgeInsets.zero,
-                              color: LiviThemes.colors.error500,
-                              child: LiviThemes.icons.minusWidget(),
-                            ),
-                          ],
+                      InkWell(
+                        onTap: () =>
+                            showDialogTime(editIndex: index, dose: item),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LiviTextStyles.interRegular16(
+                                  'Take ${item.qty.toInt()} at ${formartTimeOfDay(item.timeOfDay)}'),
+                              IconCircleBox(
+                                onTap: () {
+                                  schedules[currentIndex]
+                                      .scheduledDosings
+                                      .removeAt(index);
+                                  setState(() {});
+                                },
+                                padding: EdgeInsets.zero,
+                                color: LiviThemes.colors.error500,
+                                child: LiviThemes.icons.minusWidget(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       LiviDivider(),
@@ -1089,97 +1187,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 children: [
                   LiviInkWell(
                     splashFactory: NoSplash.splashFactory,
-                    onTap: () async {
-                      final scheduleDoses = await showDialog<ScheduledDose>(
-                        context: context,
-                        builder: (context) => StatefulBuilder(
-                          builder: (context, setState) => AlertDialog(
-                            backgroundColor: LiviThemes.colors.baseWhite,
-                            surfaceTintColor: LiviThemes.colors.baseWhite,
-                            insetPadding: EdgeInsets.symmetric(horizontal: 32),
-                            title: const Text(Strings.enterDates),
-                            content: Container(
-                              height: 250,
-                              width: 400,
-                              color: LiviThemes.colors.baseWhite,
-                              child: Column(
-                                children: [
-                                  LiviThemes.spacing.heightSpacer64(),
-                                  LiviDivider(),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextField(
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: Strings.take,
-                                            floatingLabelBehavior:
-                                                FloatingLabelBehavior.always,
-                                          ),
-                                          focusNode: FocusNode(),
-                                          keyboardType: TextInputType.number,
-                                          controller: _takeDosesController,
-                                        ),
-                                      ),
-                                      SizedBox(width: 16),
-                                      Expanded(
-                                        child: TextField(
-                                          decoration: InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.always,
-                                              labelText: Strings.at,
-                                              hintText: _timeOfDay == null
-                                                  ? ''
-                                                  : formartTimeOfDay(
-                                                      _timeOfDay!)),
-                                          readOnly: true,
-                                          onTap: () async {
-                                            await showTimerPickerWidget(
-                                                setState);
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  textStyle:
-                                      Theme.of(context).textTheme.labelLarge,
-                                ),
-                                child: const Text(Strings.cancel),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  textStyle:
-                                      Theme.of(context).textTheme.labelLarge,
-                                ),
-                                child: const Text(Strings.ok),
-                                onPressed: () {
-                                  Navigator.of(context).pop(ScheduledDose(
-                                      timeOfDay: _timeOfDay ??
-                                          TimeOfDay(
-                                              hour: now.hour,
-                                              minute: now.minute),
-                                      qty: double.parse(
-                                          _takeDosesController.text)));
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                      widget.medication.schedules[currentIndex].scheduledDosings
-                          .add(scheduleDoses!);
-                      setState(() {});
-                    },
+                    onTap: showDialogTime,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 16),
