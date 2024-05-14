@@ -56,6 +56,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   int currentIndex = 0;
   bool dropdownIsSelected = false;
 
+  final TextEditingController _takeDosesController = TextEditingController();
+  TimeOfDay? _timeOfDay;
+
   final List<TextEditingController> _startDateController = [
     TextEditingController()
   ];
@@ -241,18 +244,17 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   void selectFrequency(ScheduleType scheduleType) {
-//TODO: everytime we change the type schedule we have to reset all the fields...
-// if it was daily and we change to weekly we have fill the new fields and reset the old ones? ask bill
     final backup = widget.medication;
     widget.medication = Medication(name: backup.name);
-    widget.medication.schedules = [
-      Schedule(
-        startDate: now,
-        scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
-      ),
-    ];
+    widget.medication.schedules = backup.schedules;
     for (final element in widget.medication.schedules) {
       element.type = scheduleType;
+      if (scheduleType == ScheduleType.asNeeded) {
+        element.prnDosing = PrnDose();
+        element.scheduledDosings = [];
+      } else {
+        element.prnDosing = null;
+      }
     }
 
     setState(() {});
@@ -617,6 +619,17 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
+  Future<void> showTimerPickerWidget(StateSetter setStates) async {
+    _timeOfDay = await showTimePicker(
+      context: context,
+      cancelText: Strings.cancel,
+      confirmText: Strings.ok,
+      initialTime: TimeOfDay.now(),
+    );
+    setStates(() {});
+    setState(() {});
+  }
+
 //TODO block end date bvy intial date
   Future<void> showMaterialDatePicker({
     required BuildContext context,
@@ -686,13 +699,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              dayWidget(DateTime.sunday),
-              dayWidget(DateTime.monday),
-              dayWidget(DateTime.tuesday),
-              dayWidget(DateTime.wednesday),
-              dayWidget(DateTime.thursday),
-              dayWidget(DateTime.friday),
-              dayWidget(DateTime.saturday),
+              dayWidget(Days.sunday.index),
+              dayWidget(Days.monday.index),
+              dayWidget(Days.tuesday.index),
+              dayWidget(Days.wednesday.index),
+              dayWidget(Days.thursday.index),
+              dayWidget(Days.friday.index),
+              dayWidget(Days.saturday.index),
             ],
           ),
         ],
@@ -773,10 +786,10 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     return InkWell(
       onTap: () {
         if (schedules[currentIndex].dayPattern != null) {
-          if (schedules[currentIndex].dayPattern!.contains(dayOfWeek)) {
-            schedules[currentIndex].dayPattern!.remove(dayOfWeek);
+          if (schedules[currentIndex].dayPattern[dayOfWeek] == 0) {
+            schedules[currentIndex].dayPattern[dayOfWeek] = 1;
           } else {
-            schedules[currentIndex].dayPattern!.add(dayOfWeek);
+            schedules[currentIndex].dayPattern[dayOfWeek] = 0;
           }
           setState(() {});
         }
@@ -787,7 +800,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: schedules[currentIndex].dayPattern != null &&
-                    schedules[currentIndex].dayPattern!.contains(dayOfWeek)
+                    schedules[currentIndex].dayPattern[dayOfWeek] == 1
                 ? LiviThemes.colors.brand600
                 : dayOfWeek.isWeekend()
                     ? LiviThemes.colors.brand50
@@ -799,7 +812,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           child: LiviTextStyles.interRegular16(
               getStringFromDateTimeInteger(dayOfWeek).getFirstLetter(),
               color: schedules[currentIndex].dayPattern != null &&
-                      schedules[currentIndex].dayPattern!.contains(dayOfWeek)
+                      schedules[currentIndex].dayPattern[dayOfWeek] == 1
                   ? LiviThemes.colors.baseWhite
                   : dayOfWeek.isWeekend()
                       ? LiviThemes.colors.brand600
@@ -1076,12 +1089,95 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                 children: [
                   LiviInkWell(
                     splashFactory: NoSplash.splashFactory,
-                    onTap: () {
-                      schedules[currentIndex].scheduledDosings.add(
-                            ScheduledDose(
-                              timeOfDay: TimeOfDay.now(),
+                    onTap: () async {
+                      final scheduleDoses = await showDialog<ScheduledDose>(
+                        context: context,
+                        builder: (context) => StatefulBuilder(
+                          builder: (context, setState) => AlertDialog(
+                            backgroundColor: LiviThemes.colors.baseWhite,
+                            surfaceTintColor: LiviThemes.colors.baseWhite,
+                            insetPadding: EdgeInsets.symmetric(horizontal: 32),
+                            title: const Text(Strings.enterDates),
+                            content: Container(
+                              height: 250,
+                              width: 400,
+                              color: LiviThemes.colors.baseWhite,
+                              child: Column(
+                                children: [
+                                  LiviThemes.spacing.heightSpacer64(),
+                                  LiviDivider(),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            labelText: Strings.take,
+                                            floatingLabelBehavior:
+                                                FloatingLabelBehavior.always,
+                                          ),
+                                          focusNode: FocusNode(),
+                                          keyboardType: TextInputType.number,
+                                          controller: _takeDosesController,
+                                        ),
+                                      ),
+                                      SizedBox(width: 16),
+                                      Expanded(
+                                        child: TextField(
+                                          decoration: InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              floatingLabelBehavior:
+                                                  FloatingLabelBehavior.always,
+                                              labelText: Strings.at,
+                                              hintText: _timeOfDay == null
+                                                  ? ''
+                                                  : formartTimeOfDay(
+                                                      _timeOfDay!)),
+                                          readOnly: true,
+                                          onTap: () async {
+                                            await showTimerPickerWidget(
+                                                setState);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          );
+                            actions: <Widget>[
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: const Text(Strings.cancel),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelLarge,
+                                ),
+                                child: const Text(Strings.ok),
+                                onPressed: () {
+                                  Navigator.of(context).pop(ScheduledDose(
+                                      timeOfDay: _timeOfDay ??
+                                          TimeOfDay(
+                                              hour: now.hour,
+                                              minute: now.minute),
+                                      qty: double.parse(
+                                          _takeDosesController.text)));
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                      widget.medication.schedules[currentIndex].scheduledDosings
+                          .add(scheduleDoses!);
                       setState(() {});
                     },
                     child: Padding(

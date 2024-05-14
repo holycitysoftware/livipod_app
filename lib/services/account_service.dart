@@ -22,11 +22,7 @@ class AccountService {
 
   Future<AppUser?> getOwner(Account account) async {
     AppUser? user;
-    await FirebaseFirestore.instance
-        .collection('users')
-        .where('accountId', isEqualTo: account.id)
-        .get()
-        .then((snapshot) {
+    await FirebaseFirestore.instance.collection('users').get().then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         user = AppUser.fromJson(snapshot.docs[0].data());
       }

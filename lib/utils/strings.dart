@@ -8,9 +8,12 @@ class Strings {
   static const String none = 'None';
   static const String ok = 'OK';
   static const String now = 'Now';
+  static const String take = 'Take';
+  static const String at = 'At';
   static const String timeOfDay = 'Time of Day';
   static const String monthlyOnTheDay = 'Monthly on the Day';
   static const String addTime = 'Add Time';
+  static const String enterDates = 'Enter dates';
   static const String selectDates = 'Select Dates';
   static const String addDay = 'Add day';
   static const String newSchedule = 'New Schedule';

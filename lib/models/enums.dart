@@ -252,3 +252,25 @@ enum IntervalBetweenDoses implements Comparable<IntervalBetweenDoses> {
   int compareTo(IntervalBetweenDoses other) =>
       duration.compareTo(other.duration);
 }
+
+enum Days implements Comparable<Days> {
+  sunday(description: Strings.sunday),
+  monday(description: Strings.monday),
+  tuesday(description: Strings.tuesday),
+  wednesday(description: Strings.wednesday),
+  thursday(description: Strings.thursday),
+  friday(description: Strings.friday),
+  saturday(description: Strings.saturday);
+
+  const Days({
+    required this.description,
+  });
+
+  final String description;
+
+  @override
+  String toString() => description;
+
+  @override
+  int compareTo(Days other) => description.compareTo(other.description);
+}

@@ -40,7 +40,7 @@ extension DateTimeExt on DateTime {
 
 extension IntExt on int {
   bool isWeekend() {
-    return this == DateTime.saturday || this == DateTime.sunday;
+    return this == 0 || this == 6;
   }
 }
 

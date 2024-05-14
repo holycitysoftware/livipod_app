@@ -301,6 +301,17 @@ class LiviTypography {
       );
 
   /// ## Inter
+  /// Size: 48
+  ///
+  /// Font weight: 400
+  TextStyle get interRegular_48 => TextStyle(
+        fontSize: 48,
+        fontWeight: FontWeight.w400,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  /// ## Inter
   /// Size: 30
   ///
   /// Font weight: 400

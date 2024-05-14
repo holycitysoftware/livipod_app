@@ -7,6 +7,10 @@ import 'livi_themes.dart';
 class LiviTheme {
   ThemeData getAppTheme() {
     return ThemeData(
+        dialogTheme: DialogTheme(
+          backgroundColor: LiviThemes.colors.baseWhite,
+          surfaceTintColor: LiviThemes.colors.baseWhite,
+        ),
         appBarTheme: AppBarTheme(
           // titleTextStyle: GoogleFonts.getFont('Outfit',
           //     fontSize: 18, fontWeight: FontWeight.bold, color: AppColor.BLACK),
@@ -21,6 +25,19 @@ class LiviTheme {
         colorScheme: ColorScheme.light(
           primary: LiviThemes.colors.brand600,
         ),
+        timePickerTheme: TimePickerThemeData(
+            dialBackgroundColor: LiviThemes.colors.gray300,
+            // hourMinuteColor: LiviThemes.colors.gray300,
+            dayPeriodTextColor: LiviThemes.colors.brand600,
+            backgroundColor: LiviThemes.colors.baseWhite,
+            dialHandColor: LiviThemes.colors.brand600,
+            dayPeriodColor: LiviThemes.colors.brand300,
+            dayPeriodBorderSide: BorderSide(color: LiviThemes.colors.brand300),
+            dayPeriodTextStyle: LiviThemes.typography.interSemiBold_16
+                .copyWith(color: LiviThemes.colors.brand600),
+            hourMinuteTextStyle: LiviThemes.typography.interRegular_48
+                .copyWith(color: LiviThemes.colors.brand600),
+            hourMinuteTextColor: LiviThemes.colors.baseBlack),
         datePickerTheme: DatePickerThemeData(
           // dayOverlayColor: MaterialStatePropertyAll(LiviThemes.colors.brand600),
           // dayForegroundColor:
