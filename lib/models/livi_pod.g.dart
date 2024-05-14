@@ -16,7 +16,6 @@ LiviPod _$LiviPodFromJson(Map<String, dynamic> json) => LiviPod(
       ..medicationId = json['medicationId'] as String;
 
 Map<String, dynamic> _$LiviPodToJson(LiviPod instance) => <String, dynamic>{
-      'id': instance.id,
       'userId': instance.userId,
       'remoteId': instance.remoteId,
       'macAddress': instance.macAddress,

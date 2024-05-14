@@ -9,7 +9,6 @@ part of 'medication.dart';
 Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
       name: json['name'] as String,
     )
-      ..id = json['id'] as String
       ..appUserId = json['appUserId'] as String
       ..manufacturer = json['manufacturer'] as String
       ..dosageForm = $enumDecode(_$DosageFormEnumMap, json['dosageForm'])
@@ -31,7 +30,6 @@ Medication _$MedicationFromJson(Map<String, dynamic> json) => Medication(
 
 Map<String, dynamic> _$MedicationToJson(Medication instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'appUserId': instance.appUserId,
       'name': instance.name,
       'manufacturer': instance.manufacturer,

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:uuid/uuid.dart';
 
 import '../models/models.dart';
 import '../services/account_service.dart';
@@ -57,7 +56,10 @@ class AuthController extends ChangeNotifier {
       final account =
           await _accountService.getAccount(Account(ownerId: _user!.uid));
       if (account != null) {
-        _appUser = await _accountService.getOwner(account);
+        final user = await _accountService.getOwner(account);
+        if (user != null) {
+          _appUser = user;
+        }
       }
       notifyListeners();
     }
@@ -84,8 +86,8 @@ class AuthController extends ChangeNotifier {
     personaType ??= calculatePersona();
     this.personaType = personaType;
     if (_appUser != null) {
-      _appUser!.appUserType = personaType!;
-      _appUserService.updateUser(_appUser!);
+      _appUser!.appUserType = personaType;
+      await _appUserService.updateUser(_appUser!);
     }
   }
 
@@ -149,7 +151,7 @@ class AuthController extends ChangeNotifier {
             await _authenticate(credential);
           } catch (e, s) {
             _verificationError = e.toString();
-            signOut();
+            await signOut();
             logger(e.toString());
             logger(s.toString());
             notifyListeners();
@@ -218,7 +220,7 @@ class AuthController extends ChangeNotifier {
       return null;
     } on Exception catch (e, s) {
       _verificationError = e.toString().removeExceptionString();
-      signOut();
+      await signOut();
       notifyListeners();
       logger(e.toString());
       logger(s.toString());
@@ -233,8 +235,6 @@ class AuthController extends ChangeNotifier {
 
   Future<void> createUser(UserCredential userCredential) async {
     try {
-      final accountUuid = Uuid().v4();
-
       //Check if user already exists
       if (userCredential != null && userCredential.user != null) {
         final user =
@@ -244,25 +244,27 @@ class AuthController extends ChangeNotifier {
         }
       }
       if (userCredential.user != null) {
-        _appUser!.id = userCredential.user!.uid;
-        _appUser!.accountId = accountUuid;
-
+        // STEP 1: CREATE ACCOUNT SHELL
         final account = await _accountService.createAccount(
-          Account(
-            id: accountUuid,
-            ownerId: _appUser!.id,
-          ),
+          Account(), // create account shell
         );
+        try {
+          // STEP 2: CREATE USER
+          final user = await _appUserService.createUser(_appUser!);
 
-        if (_appUser != null) {
-          try {
-            await _appUserService.createUser(_appUser!);
-          } catch (e) {
-            _accountService.deleteAccount(account);
-            _promptForUserCode = false;
-            _verificationError = e.toString().removeExceptionString();
-            signOut();
-          }
+          // STEP 3: ASSOCIATE OWNER
+          account.ownerId = user.id;
+          await _accountService.updateAccount(account); // associated new owner
+
+          // STEP 4: ASSOCIATE ACCOUNT
+          user.accountId = account.id;
+          await _appUserService.updateUser(user);
+          _appUser = user;
+        } catch (e) {
+          await _accountService.deleteAccount(account);
+          _promptForUserCode = false;
+          _verificationError = e.toString().removeExceptionString();
+          await signOut();
         }
       }
     } catch (e) {
@@ -275,10 +277,10 @@ class AuthController extends ChangeNotifier {
     bool isAccountCreation = false,
   }) async {
     try {
-      setLoading(true);
+      await setLoading(true);
 
       // Create a PhoneAuthCredential with the code
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: _verificationId, smsCode: code);
       final UserCredential? userCredential =
           await _authenticate(credential, isAccountCreation: isAccountCreation);
@@ -293,11 +295,11 @@ class AuthController extends ChangeNotifier {
       }
       _promptForUserCode = false;
 
-      setLoading(false);
+      await setLoading(false);
     } catch (e, s) {
       _verificationError = e.toString().removeExceptionString();
-      signOut();
-      setLoading(false);
+      await signOut();
+      await setLoading(false);
       notifyListeners();
       logger(e.toString());
       logger(s.toString());
@@ -306,7 +308,7 @@ class AuthController extends ChangeNotifier {
 
   Future<void> signOut() async {
     _appUser = null;
-    FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
   }
 
   Future<void> refreshToken() async {}
