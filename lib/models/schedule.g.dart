@@ -11,9 +11,8 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
           ? null
           : DateTime.parse(json['endDate'] as String),
       startDate: DateTime.parse(json['startDate'] as String),
-      scheduledDosings: (json['scheduledDosings'] as List<dynamic>)
-          .map((e) => ScheduledDose.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      scheduledDosings:
+          Schedule.scheduledDosingsFromJson(json['scheduledDosings'] as List),
       prnDosing: json['prnDosing'] == null
           ? null
           : PrnDose.fromJson(json['prnDosing'] as Map<String, dynamic>),
@@ -29,8 +28,8 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
       ..stopWarningMinutes = json['stopWarningMinutes'] as int;
 
 Map<String, dynamic> _$ScheduleToJson(Schedule instance) => <String, dynamic>{
-      'startDate': instance.startDate.toIso8601String(),
-      'endDate': instance.endDate?.toIso8601String(),
+      'startDate': Schedule.startDateToJson(instance.startDate),
+      'endDate': Schedule.endDateToJson(instance.endDate),
       'type': _$ScheduleTypeEnumMap[instance.type]!,
       'frequency': instance.frequency,
       'dayPattern': instance.dayPattern,

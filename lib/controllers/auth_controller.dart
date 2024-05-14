@@ -57,7 +57,6 @@ class AuthController extends ChangeNotifier {
       if (user != null) {
         _appUser = user;
       }
-      notifyListeners();
     }
   }
 

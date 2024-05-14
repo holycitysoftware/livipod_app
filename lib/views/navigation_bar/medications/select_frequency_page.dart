@@ -176,7 +176,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       widget.medication.schedules.first.type.isMonthly() ||
       widget.medication.schedules.first.type.isDaily();
 
-  bool get getNotToExceed => widget.medication.schedules.first.type.isDaily();
+  bool get getNotToExceed =>
+      widget.medication.schedules.first.type.isAsNeeded();
 
   bool get getIntervalBetweenDoses =>
       widget.medication.schedules.first.type.isAsNeeded();
@@ -254,6 +255,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         element.scheduledDosings = [];
       } else {
         element.prnDosing = null;
+        element.scheduledDosings = [
+          ScheduledDose(
+            timeOfDay: TimeOfDay.now(),
+          )
+        ];
       }
     }
 
@@ -594,7 +600,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   value: TimeReminderLater.values.singleWhere(
                       (element) =>
                           element.duration.inMinutes ==
-                          schedules[currentIndex].startWarningMinutes,
+                          schedules[currentIndex].stopWarningMinutes,
                       orElse: () => TimeReminderLater.oneMinute),
                   onChanged: (TimeReminderLater? value) {
                     setState(() {
@@ -1033,9 +1039,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   Future<void> showDialogTime({int? editIndex, ScheduledDose? dose}) async {
+    var rightNow = DateTime.now();
     if (editIndex != null && dose != null) {
       _takeDosesController.text = dose.qty.toInt().toString();
       _timeOfDay = dose.timeOfDay;
+    } else {
+      _takeDosesController.text = '1';
+      _timeOfDay = TimeOfDay(hour: rightNow.hour, minute: rightNow.minute);
     }
     final scheduleDoses = await showDialog<ScheduledDose>(
       context: context,
@@ -1119,9 +1129,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           scheduleDoses!;
       setState(() {});
       return;
-    } else {
+    } else if (scheduleDoses != null) {
       widget.medication.schedules[currentIndex].scheduledDosings
-          .add(scheduleDoses!);
+          .add(scheduleDoses);
     }
     setState(() {});
   }

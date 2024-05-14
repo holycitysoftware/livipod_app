@@ -1,15 +1,16 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/utils.dart' as utils;
-import 'prn_dose.dart';
+import 'models.dart';
 import 'schedule_type.dart';
-import 'scheduled_dose.dart';
 
 part 'schedule.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Schedule {
+  @JsonKey(toJson: startDateToJson)
   DateTime startDate = DateTime.now();
+  @JsonKey(toJson: endDateToJson)
   DateTime? endDate;
   ScheduleType type = ScheduleType.daily;
   List<int> frequency = [1];
@@ -47,6 +48,9 @@ class Schedule {
     0,
     0
   ];
+  @JsonKey(
+    fromJson: scheduledDosingsFromJson,
+  )
   List<ScheduledDose> scheduledDosings = [];
   PrnDose? prnDosing;
   int startWarningMinutes = 60;
@@ -58,6 +62,23 @@ class Schedule {
     required this.scheduledDosings,
     this.prnDosing,
   });
+
+  static List<ScheduledDose> scheduledDosingsFromJson(List<dynamic> json) {
+    return json
+        .map((e) => ScheduledDose.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  static String startDateToJson(DateTime date) {
+    return DateTime(date.year, date.month, date.day).toIso8601String();
+  }
+
+  static String? endDateToJson(DateTime? date) {
+    if (date != null) {
+      return DateTime(date.year, date.month, date.day).toIso8601String();
+    }
+    return null;
+  }
 
   String getScheduleDescription() {
     // var scheduleType = getScheduleType();
