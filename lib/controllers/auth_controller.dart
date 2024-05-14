@@ -33,7 +33,7 @@ class AuthController extends ChangeNotifier {
         (user) {
           _user = user;
           getAppUser();
-          notifyListeners();
+          //notifyListeners();
         },
         cancelOnError: true,
         onDone: () {
@@ -53,11 +53,12 @@ class AuthController extends ChangeNotifier {
 
   Future<void> getAppUser() async {
     if (_user != null) {
-      final user = await _appUserService.getUserByAuthId(_user!.uid);
-      if (user != null) {
-        _appUser = user;
+      _appUser = await _appUserService.getUserByAuthId(_user!.uid);
+      if (_appUser == null) {
+        signOut();
+      } else {
+        notifyListeners();
       }
-      notifyListeners();
     }
   }
 
