@@ -26,7 +26,11 @@ class BackBar extends StatelessWidget {
         children: [
           _backBar(context),
           if (title != null) Spacer(),
-          if (title != null) LiviTextStyles.interSemiBold16(title!),
+          if (title != null) ...[
+            LiviTextStyles.interSemiBold16(title!),
+            if (title != null) Spacer(),
+            _backBar(context, isHidden: true),
+          ],
           if (hasTrailing ?? false)
             SizedBox()
           else ...[

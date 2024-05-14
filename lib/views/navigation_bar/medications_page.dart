@@ -62,7 +62,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
               stream: MedicationService()
                   .listenToMedicationsRealTime(value.appUser!),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.data != null && snapshot.data!.isNotEmpty) {
                   final medications = snapshot.data!;
                   return ListView.builder(
                     itemCount: medications.length,
