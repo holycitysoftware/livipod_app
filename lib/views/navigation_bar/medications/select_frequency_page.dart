@@ -1,17 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../components/buttons/livi_inkwell.dart';
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
 import '../../../models/enums.dart';
 import '../../../models/models.dart';
 import '../../../models/schedule_type.dart';
 import '../../../services/medication_service.dart';
-import '../../../themes/livi_themes.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
@@ -676,11 +672,14 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       context: context,
       cancelText: isStartDate ? Strings.now : Strings.forever,
       confirmText: Strings.apply,
-      initialDate: initialDate,
-      firstDate:
-          firstDate, //DateTime.now() - not to allow to choose before today.
+      initialDate:
+          isStartDate ? initialDate : schedules[currentIndex].startDate,
+      firstDate: isStartDate
+          ? firstDate
+          : schedules[currentIndex]
+              .startDate, //DateTime.now() - not to allow to choose before today.
       lastDate:
-          isForever ? DateTime(_foreverYear) : schedules[currentIndex].endDate!,
+          isForever ? DateTime(_foreverYear) : schedules[currentIndex].endDate,
     );
     if (dateTime == null) {
       if (isStartDate) {
@@ -766,7 +765,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         textColor: LiviThemes.colors.baseBlack,
         onTap: () {
           schedules.removeAt(currentIndex);
-          currentIndex--;
+          if (currentIndex != 0) {
+            currentIndex--;
+          }
           setState(() {});
         },
       ),
@@ -794,8 +795,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     }
     schedules.add(
       Schedule(
-        startDate: now,
-        endDate: now,
+        startDate: startDateValue(),
+        endDate: startDateValue().add(Duration(days: 1)),
         scheduledDosings: [
           ScheduledDose(
             timeOfDay: TimeOfDay.now(),
