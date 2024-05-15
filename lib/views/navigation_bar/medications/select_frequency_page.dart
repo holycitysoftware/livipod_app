@@ -652,12 +652,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   Future<void> showTimerPickerWidget(StateSetter setStates) async {
-    _timeOfDay = await showTimePicker(
-      context: context,
-      cancelText: Strings.cancel,
-      confirmText: Strings.ok,
-      initialTime: _timeOfDay ?? TimeOfDay(hour: 8, minute: 0),
-    );
+    _timeOfDay = (await showTimePicker(
+          context: context,
+          cancelText: Strings.cancel,
+          confirmText: Strings.ok,
+          initialTime: _timeOfDay ?? TimeOfDay(hour: 8, minute: 0),
+        )) ??
+        TimeOfDay(hour: 8, minute: 0);
     setStates(() {});
     setState(() {});
   }
@@ -1130,7 +1131,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                                   FloatingLabelBehavior.always,
                               labelText: Strings.at,
                               hintText: _timeOfDay == null
-                                  ? ''
+                                  ? formartTimeOfDay(
+                                      TimeOfDay(hour: 8, minute: 0))
                                   : formartTimeOfDay(_timeOfDay!)),
                           readOnly: true,
                           onTap: () async => showTimerPickerWidget(setState)),
