@@ -99,6 +99,9 @@ class AppUserService {
           .then((querySnapshot) {
         if (querySnapshot.docs.isNotEmpty) {
           user = AppUser.fromJson(querySnapshot.docs[0].data());
+          if (user != null) {
+            user!.id = querySnapshot.docs[0].id;
+          }
         }
       });
     } catch (e) {

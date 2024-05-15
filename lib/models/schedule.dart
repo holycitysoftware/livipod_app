@@ -11,7 +11,7 @@ class Schedule {
   @JsonKey(toJson: startDateToJson)
   DateTime startDate = DateTime.now();
   @JsonKey(toJson: endDateToJson)
-  DateTime? endDate;
+  DateTime endDate = DateTime.now();
   ScheduleType type = ScheduleType.daily;
   List<int> frequency = [1];
   List<int> dayPattern = [1, 1, 1, 1, 1, 1, 1];
@@ -57,7 +57,7 @@ class Schedule {
   int stopWarningMinutes = 60;
 
   Schedule({
-    this.endDate,
+    required this.endDate,
     required this.startDate,
     required this.scheduledDosings,
     this.prnDosing,
@@ -75,7 +75,7 @@ class Schedule {
 
   static String? endDateToJson(DateTime? date) {
     if (date != null) {
-      return DateTime(date.year, date.month, date.day).toIso8601String();
+      return date.toIso8601String();
     }
     return null;
   }

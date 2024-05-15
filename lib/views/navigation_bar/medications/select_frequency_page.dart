@@ -77,6 +77,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   final FocusNode _instructionsFocus = FocusNode();
 
   List<Schedule> get schedules => widget.medication.schedules;
+  bool get isForever =>
+      schedules[currentIndex].endDate == schedules[currentIndex].startDate;
   @override
   void initState() {
     dayTime = now.hour > 12 ? DayTime.pm : DayTime.am;
@@ -94,6 +96,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       widget.medication.schedules = [
         Schedule(
           startDate: now,
+          endDate: now,
           scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
         ),
       ];
@@ -128,7 +131,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       _startDateController[index].text =
           dateFormat.format(schedules[index].startDate);
     }
-    if (schedules[index].endDate == null) {
+    if (schedules[index].endDate == schedules[index].startDate) {
       _endDateController[index].text = Strings.forever;
     } else {
       _endDateController[index].text =
@@ -138,49 +141,45 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   bool get getShowInventoryQuantityField =>
-      widget.medication.schedules.first.type.isAsNeeded() ||
-      widget.medication.schedules.first.type.isDaily() ||
-      widget.medication.schedules.first.type.isWeekly() ||
-      widget.medication.schedules.first.type.isMonthly();
+      schedules.first.type.isAsNeeded() ||
+      schedules.first.type.isDaily() ||
+      schedules.first.type.isWeekly() ||
+      schedules.first.type.isMonthly();
 
   bool get getShowQuantityNeededField =>
-      widget.medication.schedules.first.type.isAsNeeded() ||
-      widget.medication.schedules.first.type.isDaily() ||
-      widget.medication.schedules.first.type.isWeekly() ||
-      widget.medication.schedules.first.type.isMonthly();
+      schedules.first.type.isAsNeeded() ||
+      schedules.first.type.isDaily() ||
+      schedules.first.type.isWeekly() ||
+      schedules.first.type.isMonthly();
 
   bool get getShowInstructions =>
-      widget.medication.schedules.first.type.isAsNeeded() ||
-      widget.medication.schedules.first.type.isDaily() ||
-      widget.medication.schedules.first.type.isWeekly() ||
-      widget.medication.schedules.first.type.isMonthly();
+      schedules.first.type.isAsNeeded() ||
+      schedules.first.type.isDaily() ||
+      schedules.first.type.isWeekly() ||
+      schedules.first.type.isMonthly();
 
-  bool get getShowDaysWidget =>
-      widget.medication.schedules.first.type.isWeekly();
+  bool get getShowDaysWidget => schedules.first.type.isWeekly();
 
   bool get getAtWhatTimesWidget =>
-      widget.medication.schedules.first.type.isWeekly() ||
-      widget.medication.schedules.first.type.isMonthly() ||
-      widget.medication.schedules.first.type.isDaily();
+      schedules.first.type.isWeekly() ||
+      schedules.first.type.isMonthly() ||
+      schedules.first.type.isDaily();
 
-  bool get getMonthlyOnTheDay =>
-      widget.medication.schedules.first.type.isMonthly();
+  bool get getMonthlyOnTheDay => schedules.first.type.isMonthly();
 
   bool get getRemindMeBefore =>
-      widget.medication.schedules.first.type.isWeekly() ||
-      widget.medication.schedules.first.type.isMonthly() ||
-      widget.medication.schedules.first.type.isDaily();
+      schedules.first.type.isWeekly() ||
+      schedules.first.type.isMonthly() ||
+      schedules.first.type.isDaily();
 
   bool get getRemindMeLater =>
-      widget.medication.schedules.first.type.isWeekly() ||
-      widget.medication.schedules.first.type.isMonthly() ||
-      widget.medication.schedules.first.type.isDaily();
+      schedules.first.type.isWeekly() ||
+      schedules.first.type.isMonthly() ||
+      schedules.first.type.isDaily();
 
-  bool get getNotToExceed =>
-      widget.medication.schedules.first.type.isAsNeeded();
+  bool get getNotToExceed => schedules.first.type.isAsNeeded();
 
-  bool get getIntervalBetweenDoses =>
-      widget.medication.schedules.first.type.isAsNeeded();
+  bool get getIntervalBetweenDoses => schedules.first.type.isAsNeeded();
 
   // bool get showQuantityNeededField => selectedFrequency.isAsNeeded();
   // bool get showQuantityField => selectedFrequency.isDaily();
@@ -196,10 +195,10 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   PrnDose prnDose() {
-    if (widget.medication.schedules[currentIndex].prnDosing == null) {
-      return widget.medication.schedules[currentIndex].prnDosing = PrnDose();
+    if (schedules[currentIndex].prnDosing == null) {
+      return schedules[currentIndex].prnDosing = PrnDose();
     } else {
-      return widget.medication.schedules[currentIndex].prnDosing!;
+      return schedules[currentIndex].prnDosing!;
     }
   }
 
@@ -248,7 +247,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     final backup = widget.medication;
     widget.medication = Medication(name: backup.name);
     widget.medication.schedules = backup.schedules;
-    for (final element in widget.medication.schedules) {
+    for (final element in schedules) {
       element.type = scheduleType;
       if (scheduleType == ScheduleType.asNeeded) {
         element.prnDosing = PrnDose();
@@ -294,7 +293,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     return Scaffold(
       backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
-        mainWidget: widget.medication.schedules.length > 1
+        mainWidget: schedules.length > 1
             ? DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
                   onTap: () {
@@ -306,7 +305,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                     dropdownIsSelected = false;
                     setState(() {});
                   },
-                  items: widget.medication.schedules.asMap().entries.map(
+                  items: schedules.asMap().entries.map(
                     (entry) {
                       return DropdownMenuItem<int>(
                         value: entry.key,
@@ -401,7 +400,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LiviTextStyles.interMedium16(Strings.frequency,
+          LiviTextStyles.interMedium16(Strings.scheduleType,
               color: LiviThemes.colors.gray500),
           LiviThemes.spacing.heightSpacer8(),
           Container(
@@ -507,8 +506,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       focusNode: FocusNode(),
       onTap: () => showMaterialDatePicker(
           context: context,
-          initialDate: now,
-          firstDate: now,
+          initialDate: startDateValue(),
+          firstDate: startDateValue(),
           lastDate: DateTime(_foreverYear),
           isStartDate: true),
       readOnly: true,
@@ -518,6 +517,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         child: LiviThemes.icons.calendarIcon(),
       ),
     );
+  }
+
+  DateTime startDateValue() {
+    if (schedules.length < 2) {
+      return now;
+    }
+    return schedules[currentIndex - 1].endDate.add(Duration(minutes: 1));
   }
 
   Widget endDateWidget() {
@@ -630,7 +636,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       context: context,
       cancelText: Strings.cancel,
       confirmText: Strings.ok,
-      initialTime: TimeOfDay.now(),
+      initialTime: _timeOfDay ?? TimeOfDay(hour: 8, minute: 0),
     );
     setStates(() {});
     setState(() {});
@@ -649,24 +655,39 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       context: context,
       cancelText: isStartDate ? Strings.now : Strings.forever,
       confirmText: Strings.apply,
-      initialDate: isStartDate ? now : schedules[currentIndex].startDate,
+      initialDate:
+          isStartDate ? initialDate : schedules[currentIndex].startDate,
       firstDate: isStartDate
-          ? now
+          ? firstDate
           : schedules[currentIndex]
               .startDate, //DateTime.now() - not to allow to choose before today.
-      lastDate: DateTime(_foreverYear),
+      lastDate:
+          isForever ? DateTime(_foreverYear) : schedules[currentIndex].endDate!,
     );
     if (dateTime == null) {
       if (isStartDate) {
         schedules[currentIndex].startDate = now;
       } else {
-        schedules[currentIndex].endDate = dateTime;
+        if (dateTime == null) {
+          schedules[currentIndex].endDate = schedules[currentIndex].startDate;
+        } else {
+          schedules[currentIndex].endDate = dateTime.wholeDay();
+        }
       }
     } else {
       if (isStartDate) {
         schedules[currentIndex].startDate = dateTime;
+        if (schedules[currentIndex]
+            .endDate
+            .isBefore(schedules[currentIndex].startDate)) {
+          schedules[currentIndex].endDate = dateTime;
+        }
       } else {
-        schedules[currentIndex].endDate = dateTime;
+        if (dateTime == null) {
+          schedules[currentIndex].endDate = schedules[currentIndex].startDate;
+        } else {
+          schedules[currentIndex].endDate = dateTime.wholeDay();
+        }
       }
     }
     setDate(currentIndex);
@@ -680,12 +701,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         child: Ink(
           height: double.maxFinite,
           decoration: BoxDecoration(
-              color: widget.medication.schedules.first.type == scheduleType
+              color: schedules.first.type == scheduleType
                   ? LiviThemes.colors.brand50
                   : LiviThemes.colors.baseWhite),
           child: Align(
             child: LiviTextStyles.interBold14(scheduleType.description,
-                color: widget.medication.schedules.first.type == scheduleType
+                color: schedules.first.type == scheduleType
                     ? LiviThemes.colors.brand600
                     : LiviThemes.colors.gray500),
           ),
@@ -726,7 +747,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         text: Strings.deleteSchedule,
         textColor: LiviThemes.colors.baseBlack,
         onTap: () {
-          widget.medication.schedules.removeAt(currentIndex);
+          schedules.removeAt(currentIndex);
           currentIndex--;
           setState(() {});
         },
@@ -745,32 +766,41 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
+  void createNewSchedule(int index) {
+    if (isForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        LiviSnackBar()
+            .liviSnackBar(text: Strings.cannotCreateSchedule, isError: true),
+      );
+      return;
+    }
+    schedules.add(
+      Schedule(
+        startDate: now,
+        endDate: now,
+        scheduledDosings: [
+          ScheduledDose(
+            timeOfDay: TimeOfDay.now(),
+          )
+        ],
+      ),
+    );
+    _startDateController.add(TextEditingController());
+    _endDateController.add(TextEditingController());
+    _instructionsController.add(TextEditingController());
+
+    setDate(index);
+    currentIndex = schedules.length - 1;
+    setState(() {});
+  }
+
   Widget addAnotherScheduleWidget(int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: LiviFilledButtonWhite(
         text: Strings.newSchedule,
         textColor: LiviThemes.colors.baseBlack,
-        onTap: () {
-          //TODO: add schedule dose here
-          schedules.add(
-            Schedule(
-              startDate: now,
-              scheduledDosings: [
-                ScheduledDose(
-                  timeOfDay: TimeOfDay.now(),
-                )
-              ],
-            ),
-          );
-          _startDateController.add(TextEditingController());
-          _endDateController.add(TextEditingController());
-          _instructionsController.add(TextEditingController());
-
-          setDate(index);
-          currentIndex = schedules.length - 1;
-          setState(() {});
-        },
+        onTap: () => createNewSchedule(index),
       ),
     );
   }
@@ -844,14 +874,14 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   Color getBackgroundColor(int index) {
-    if (widget.medication.schedules[currentIndex].monthPattern[index] == 1) {
+    if (schedules[currentIndex].monthPattern[index] == 1) {
       return LiviThemes.colors.brand600;
     }
     return LiviThemes.colors.transparent;
   }
 
   Color getTextColor(int index) {
-    if (widget.medication.schedules[currentIndex].monthPattern[index] == 1) {
+    if (schedules[currentIndex].monthPattern[index] == 1) {
       return LiviThemes.colors.baseWhite;
     }
     return LiviThemes.colors.baseBlack;
@@ -867,13 +897,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         child: InkWell(
             borderRadius: BorderRadius.circular(64),
             onTap: () {
-              if (widget.medication.schedules[currentIndex].monthPattern !=
-                  null) {
-                if (widget.medication.schedules[currentIndex].monthPattern[i] ==
-                    0) {
-                  widget.medication.schedules[currentIndex].monthPattern[i] = 1;
+              if (schedules[currentIndex].monthPattern != null) {
+                if (schedules[currentIndex].monthPattern[i] == 0) {
+                  schedules[currentIndex].monthPattern[i] = 1;
                 } else {
-                  widget.medication.schedules[currentIndex].monthPattern[i] = 0;
+                  schedules[currentIndex].monthPattern[i] = 0;
                 }
                 setStates(() {});
               }
@@ -1010,8 +1038,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                             ),
                           ));
                   if (cancel == true) {
-                    widget.medication.schedules[currentIndex].monthPattern =
-                        list;
+                    schedules[currentIndex].monthPattern = list;
                   }
 
                   setState(() {});
@@ -1039,13 +1066,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   Future<void> showDialogTime({int? editIndex, ScheduledDose? dose}) async {
-    var rightNow = DateTime.now();
     if (editIndex != null && dose != null) {
       _takeDosesController.text = dose.qty.toInt().toString();
       _timeOfDay = dose.timeOfDay;
     } else {
       _takeDosesController.text = '1';
-      _timeOfDay = TimeOfDay(hour: rightNow.hour, minute: rightNow.minute);
+      _timeOfDay = TimeOfDay(hour: 8, minute: 0);
     }
     final scheduleDoses = await showDialog<ScheduledDose>(
       context: context,
@@ -1080,18 +1106,16 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                     SizedBox(width: 16),
                     Expanded(
                       child: TextField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            labelText: Strings.at,
-                            hintText: _timeOfDay == null
-                                ? ''
-                                : formartTimeOfDay(_timeOfDay!)),
-                        readOnly: true,
-                        onTap: () async {
-                          await showTimerPickerWidget(setState);
-                        },
-                      ),
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              labelText: Strings.at,
+                              hintText: _timeOfDay == null
+                                  ? ''
+                                  : formartTimeOfDay(_timeOfDay!)),
+                          readOnly: true,
+                          onTap: () async => showTimerPickerWidget(setState)),
                     ),
                   ],
                 ),
@@ -1124,14 +1148,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         ),
       ),
     );
-    if (editIndex != null && dose != null) {
-      widget.medication.schedules[currentIndex].scheduledDosings[editIndex] =
-          scheduleDoses!;
+    if (editIndex != null && dose != null && scheduleDoses != null) {
+      schedules[currentIndex].scheduledDosings[editIndex] = scheduleDoses;
       setState(() {});
       return;
     } else if (scheduleDoses != null) {
-      widget.medication.schedules[currentIndex].scheduledDosings
-          .add(scheduleDoses);
+      schedules[currentIndex].scheduledDosings.add(scheduleDoses);
     }
     setState(() {});
   }
@@ -1166,19 +1188,15 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                         onTap: () =>
                             showDialogTime(editIndex: index, dose: item),
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               LiviTextStyles.interRegular16(
                                   'Take ${item.qty.toInt()} at ${formartTimeOfDay(item.timeOfDay)}'),
                               IconCircleBox(
-                                onTap: () {
-                                  schedules[currentIndex]
-                                      .scheduledDosings
-                                      .removeAt(index);
-                                  setState(() {});
-                                },
+                                tapPadding: EdgeInsets.fromLTRB(48, 16, 16, 16),
+                                onTap: () => removeScheduleDose(index),
                                 padding: EdgeInsets.zero,
                                 color: LiviThemes.colors.error500,
                                 child: LiviThemes.icons.minusWidget(),
@@ -1221,5 +1239,17 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         ],
       ),
     );
+  }
+
+  void removeScheduleDose(int index) {
+    if (schedules[currentIndex].scheduledDosings.length > 1) {
+      schedules[currentIndex].scheduledDosings.removeAt(index);
+      setState(() {});
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        LiviSnackBar()
+            .liviSnackBar(text: Strings.lastScheduleDoseError, isError: true),
+      );
+    }
   }
 }

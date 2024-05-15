@@ -36,6 +36,10 @@ extension DateTimeExt on DateTime {
   bool isSameDayMonthYear(DateTime now) {
     return now.year == year && now.month == month && now.day == day;
   }
+
+  DateTime wholeDay() {
+    return DateTime(year, month, day, 23, 59, 59);
+  }
 }
 
 extension IntExt on int {

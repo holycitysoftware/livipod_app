@@ -9,6 +9,11 @@ class Strings {
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
+  static const String scheduleType = 'Schedule Type';
+  static const String lastScheduleDoseError =
+      'Unable to delete the only scheduled dose.';
+  static const String cannotCreateSchedule =
+      'To add another schedule you must specify an end date.';
   static const String at = 'At';
   static const String timeOfDay = 'Time of Day';
   static const String monthlyOnTheDay = 'Monthly on the Day';

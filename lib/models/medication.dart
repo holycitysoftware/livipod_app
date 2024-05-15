@@ -1,10 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
+
 import '../utils/string_ext.dart';
+import '../utils/utils.dart' as utils;
 import 'dosing.dart';
 import 'enums.dart';
 import 'schedule.dart';
 import 'schedule_type.dart';
-import '../utils/utils.dart' as utils;
 
 part 'medication.g.dart';
 
