@@ -535,7 +535,10 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
-  DateTime startDateValue() {
+  DateTime startDateValue({bool stillAdding = false}) {
+    if (stillAdding) {
+      return schedules[currentIndex].endDate.add(Duration(minutes: 1));
+    }
     if (schedules.length < 2) {
       return now;
     }
@@ -795,8 +798,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     }
     schedules.add(
       Schedule(
-        startDate: startDateValue(),
-        endDate: startDateValue().add(Duration(days: 1)),
+        startDate: startDateValue(stillAdding: true),
+        endDate: startDateValue(stillAdding: true).add(Duration(days: 1)),
         scheduledDosings: [
           ScheduledDose(
             timeOfDay: TimeOfDay.now(),
