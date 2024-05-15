@@ -67,12 +67,16 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   ];
   final TextEditingController _inventoryQuantityController =
       TextEditingController(text: '30');
+  final List<TextEditingController> _quantityController = [
+    TextEditingController(text: '1')
+  ];
 
   final List<TextEditingController> _instructionsController = [
     TextEditingController()
   ];
 
   final FocusNode _inventoryQuantityFocus = FocusNode();
+  final FocusNode _quantityFocus = FocusNode();
 
   final FocusNode _instructionsFocus = FocusNode();
 
@@ -87,9 +91,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       _inventoryQuantityController.text =
           widget.medication.inventoryQuantity.toString();
       for (var i = 0; i < schedules.length; i++) {
+        ///TODO:Set this values
         _startDateController.add(TextEditingController());
         _endDateController.add(TextEditingController());
         _instructionsController.add(TextEditingController());
+        _quantityController.add(TextEditingController(
+            text: schedules[i].prnDosing?.maxQty.toInt().toString()));
         setDate(i);
       }
     } else {
@@ -167,6 +174,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
 
   bool get getMonthlyOnTheDay => schedules.first.type.isMonthly();
 
+  bool get getQuantity => schedules.first.type.isAsNeeded();
+
   bool get getRemindMeBefore =>
       schedules.first.type.isWeekly() ||
       schedules.first.type.isMonthly() ||
@@ -208,6 +217,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       endDateWidget(),
       if (currentIndex == 0) selectFrequencyWidget(),
       if (getIntervalBetweenDoses) intervalBetweenDosesWidget(),
+      if (getQuantity) quantityWidget(),
       if (getShowDaysWidget) daysWidget(),
       if (getMonthlyOnTheDay) monthlyOnTheDayWidget(),
       if (getAtWhatTimesWidget) timeOfDayWidget(),
@@ -232,6 +242,16 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         _inventoryQuantityController.text.isEmpty
             ? '0'
             : _inventoryQuantityController.text);
+    for (var i = 0; i < schedules.length; i++) {
+      if (_quantityController[i].text.isNotEmpty) {
+        widget.medication.schedules[i].prnDosing!.maxQty =
+            double.parse(_quantityController[i].text);
+      }
+    }
+    //      widget.medication.schedules[1].prnDosing.q = int.parse(
+    // _inventoryQuantityController.text.isEmpty
+    //     ? '0'
+    //     : _inventoryQuantityController.text);
     widget.medication.appUserId =
         Provider.of<AuthController>(context, listen: false).appUser!.id;
     widget.medication.instructions = _instructionsController[currentIndex].text;
@@ -535,8 +555,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       onTap: () => showMaterialDatePicker(
         context: context,
         isStartDate: false,
-        initialDate: now,
-        firstDate: now,
+        initialDate: startDateValue(),
+        firstDate: startDateValue(),
         lastDate: DateTime(_foreverYear),
       ),
       controller: _endDateController[currentIndex],
@@ -655,12 +675,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       context: context,
       cancelText: isStartDate ? Strings.now : Strings.forever,
       confirmText: Strings.apply,
-      initialDate:
-          isStartDate ? initialDate : schedules[currentIndex].startDate,
-      firstDate: isStartDate
-          ? firstDate
-          : schedules[currentIndex]
-              .startDate, //DateTime.now() - not to allow to choose before today.
+      initialDate: initialDate,
+      firstDate:
+          firstDate, //DateTime.now() - not to allow to choose before today.
       lastDate:
           isForever ? DateTime(_foreverYear) : schedules[currentIndex].endDate!,
     );
@@ -787,6 +804,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
     _startDateController.add(TextEditingController());
     _endDateController.add(TextEditingController());
+    _quantityController.add(TextEditingController(text: '1'));
     _instructionsController.add(TextEditingController());
 
     setDate(index);
@@ -1251,5 +1269,14 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             .liviSnackBar(text: Strings.lastScheduleDoseError, isError: true),
       );
     }
+  }
+
+  Widget quantityWidget() {
+    return LiviInputField(
+      title: Strings.quantity,
+      focusNode: _quantityFocus,
+      controller: _quantityController[currentIndex],
+      keyboardType: TextInputType.number,
+    );
   }
 }
