@@ -235,8 +235,6 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
 
   Future<void> saveMedication() async {
     for (final element in schedules) {
-      element.scheduledDosings = [];
-
       if (schedules.first.type == ScheduleType.asNeeded) {
         element.scheduledDosings = [];
       } else {
@@ -247,6 +245,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         _inventoryQuantityController.text.isEmpty
             ? '0'
             : _inventoryQuantityController.text);
+
     if (schedules.first.prnDosing != null) {
       for (var i = 0; i < schedules.length; i++) {
         if (_quantityController[i].text.isNotEmpty) {
@@ -255,10 +254,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         }
       }
     }
-    //      widget.medication.schedules[1].prnDosing.q = int.parse(
-    // _inventoryQuantityController.text.isEmpty
-    //     ? '0'
-    //     : _inventoryQuantityController.text);
+
     widget.medication.appUserId =
         Provider.of<AuthController>(context, listen: false).appUser!.id;
     widget.medication.instructions = _instructionsController.text;
@@ -701,14 +697,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     setState(() {});
   }
 
-//TODO block end date bvy intial date
   Future<void> showMaterialDatePicker({
     required BuildContext context,
     required DateTime initialDate,
     required DateTime firstDate,
     required DateTime lastDate,
     required bool isStartDate,
-    required,
   }) async {
     final dateTime = await showDatePicker(
       context: context,
