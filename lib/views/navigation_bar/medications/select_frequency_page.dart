@@ -8,7 +8,6 @@ import '../../../models/enums.dart';
 import '../../../models/models.dart';
 import '../../../models/schedule_type.dart';
 import '../../../services/medication_service.dart';
-import '../../../themes/livi_theme.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
@@ -76,8 +75,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   final FocusNode _instructionsFocus = FocusNode();
 
   List<Schedule> get schedules => widget.medication.schedules;
-  bool get isForever =>
-      schedules[currentIndex].endDate == schedules[currentIndex].startDate;
+  bool get isForever => schedules[currentIndex]
+      .endDate
+      .isSameDayMonthYear(schedules[currentIndex].startDate);
   @override
   void initState() {
     dayTime = now.hour > 12 ? DayTime.pm : DayTime.am;
@@ -86,7 +86,6 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       _inventoryQuantityController.text =
           widget.medication.inventoryQuantity.toString();
       for (var i = 0; i < schedules.length; i++) {
-        ///TODO:Set this values
         _startDateController.add(TextEditingController());
         _endDateController.add(TextEditingController());
         _instructionsController.text = widget.medication.instructions;
@@ -97,8 +96,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     } else {
       widget.medication.schedules = [
         Schedule(
-          startDate: now,
-          endDate: now,
+          startDate: DateTime(now.year, now.month, now.day),
+          endDate: DateTime(now.year, now.month, now.day),
           scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
         ),
       ];
@@ -134,11 +133,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       _startDateController[index].text =
           dateFormat.format(schedules[index].startDate);
     }
-    if (schedules[index].endDate == schedules[index].startDate) {
+    if (isForever) {
       _endDateController[index].text = Strings.forever;
     } else {
       _endDateController[index].text =
-          dateFormat.format(schedules[index].endDate!);
+          dateFormat.format(schedules[index].endDate);
     }
     setState(() {});
   }
