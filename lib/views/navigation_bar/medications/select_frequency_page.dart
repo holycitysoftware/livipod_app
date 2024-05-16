@@ -67,9 +67,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     TextEditingController(text: '1')
   ];
 
-  final List<TextEditingController> _instructionsController = [
-    TextEditingController()
-  ];
+  final TextEditingController _instructionsController = TextEditingController();
 
   final FocusNode _inventoryQuantityFocus = FocusNode();
   final FocusNode _quantityFocus = FocusNode();
@@ -90,7 +88,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         ///TODO:Set this values
         _startDateController.add(TextEditingController());
         _endDateController.add(TextEditingController());
-        _instructionsController.add(TextEditingController());
+        _instructionsController.text = widget.medication.instructions;
         _quantityController.add(TextEditingController(
             text: schedules[i].prnDosing?.maxQty.toInt().toString()));
         setDate(i);
@@ -103,6 +101,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
         ),
       ];
+      schedules.first.prnDosing = PrnDose();
       setDate(currentIndex);
     }
     _inventoryQuantityController.addListener(() {
@@ -224,7 +223,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       if (getNotToExceed) notToExceedWidget(),
       if (getShowInventoryQuantityField && currentIndex == 0)
         inventoryQuantityWidget(),
-      if (getShowInstructions) instructionsWidget(),
+      if (getShowInstructions && currentIndex == 0) instructionsWidget(),
 
       if (widget.isEdit) deleteScheduleWidget(),
       if (widget.isEdit) deleteMedicationWidget(),
@@ -234,14 +233,25 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   Future<void> saveMedication() async {
+    for (final element in schedules) {
+      element.scheduledDosings = [];
+
+      if (schedules.first.type == ScheduleType.asNeeded) {
+        element.scheduledDosings = [];
+      } else {
+        element.prnDosing = null;
+      }
+    }
     widget.medication.inventoryQuantity = int.parse(
         _inventoryQuantityController.text.isEmpty
             ? '0'
             : _inventoryQuantityController.text);
-    for (var i = 0; i < schedules.length; i++) {
-      if (_quantityController[i].text.isNotEmpty) {
-        widget.medication.schedules[i].prnDosing!.maxQty =
-            double.parse(_quantityController[i].text);
+    if (schedules.first.prnDosing != null) {
+      for (var i = 0; i < schedules.length; i++) {
+        if (_quantityController[i].text.isNotEmpty) {
+          widget.medication.schedules[i].prnDosing!.maxQty =
+              double.parse(_quantityController[i].text);
+        }
       }
     }
     //      widget.medication.schedules[1].prnDosing.q = int.parse(
@@ -250,7 +260,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     //     : _inventoryQuantityController.text);
     widget.medication.appUserId =
         Provider.of<AuthController>(context, listen: false).appUser!.id;
-    widget.medication.instructions = _instructionsController[currentIndex].text;
+    widget.medication.instructions = _instructionsController.text;
     goToHomePage();
     if (widget.isEdit) {
       await MedicationService().updateMedication(widget.medication);
@@ -265,17 +275,6 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     widget.medication.schedules = backup.schedules;
     for (final element in schedules) {
       element.type = scheduleType;
-      if (scheduleType == ScheduleType.asNeeded) {
-        element.prnDosing = PrnDose();
-        element.scheduledDosings = [];
-      } else {
-        element.prnDosing = null;
-        element.scheduledDosings = [
-          ScheduledDose(
-            timeOfDay: TimeOfDay.now(),
-          )
-        ];
-      }
     }
 
     setState(() {});
@@ -312,6 +311,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         mainWidget: schedules.length > 1
             ? DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
+                  hint: Text('ha'),
                   onTap: () {
                     dropdownIsSelected = true;
                   },
@@ -463,7 +463,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         focusNode: _instructionsFocus,
         maxLines: 2,
         hint: "e.g. Don't drink alcohol when taking this medicine.",
-        controller: _instructionsController[currentIndex],
+        controller: _instructionsController,
         keyboardType: TextInputType.text,
       );
     } else {
@@ -760,20 +760,22 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     );
   }
 
+  void deleteSchedule() {
+    schedules.removeAt(currentIndex);
+    if (currentIndex != 0) {
+      currentIndex--;
+    }
+    setDate(currentIndex);
+    setState(() {});
+  }
+
   Widget deleteScheduleWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: LiviFilledButtonWhite(
-        text: Strings.deleteSchedule,
-        textColor: LiviThemes.colors.baseBlack,
-        onTap: () {
-          schedules.removeAt(currentIndex);
-          if (currentIndex != 0) {
-            currentIndex--;
-          }
-          setState(() {});
-        },
-      ),
+          text: Strings.deleteSchedule,
+          textColor: LiviThemes.colors.baseBlack,
+          onTap: deleteSchedule),
     );
   }
 
@@ -810,7 +812,6 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     _startDateController.add(TextEditingController());
     _endDateController.add(TextEditingController());
     _quantityController.add(TextEditingController(text: '1'));
-    _instructionsController.add(TextEditingController());
 
     setDate(index);
     currentIndex = schedules.length - 1;

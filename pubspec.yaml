@@ -45,7 +45,6 @@ dependencies:
   json_annotation: ^4.8.1
   visibility_detector: ^0.4.0+2
   web_socket_channel: ^2.4.4
-  intl: ^0.18.0
   input_quantity: ^2.3.2
   async: ^2.11.0
   flutter_svg: ^2.0.10+1
@@ -58,7 +57,7 @@ dependencies:
   firebase_app_check: ^0.2.2+1
   http: ^1.2.1
   pin_code_fields: ^8.0.1
-  intl_translation: ^0.19.0
+  intl_translation: ^0.20.0
   url_launcher: ^6.2.6
 
 dev_dependencies:
@@ -84,6 +83,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   assets:
     - assets/

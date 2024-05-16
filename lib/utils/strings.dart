@@ -228,6 +228,187 @@ class Strings {
   static const String twentyThreeHours = '23 hours';
   static const String twentyFourHours = '24 hours';
 
+  static const String aerosol = 'Aerosol';
+  static const String aerosol_foam = 'Aerosol, Foam';
+  static const String aerosol_metered = 'Aerosol, Metered';
+  static const String aerosol_powder = 'Aerosol, Powder';
+  static const String aerosol_spray = 'Aerosol, Spray';
+  static const String bar_chewable = 'Bar, Chewable';
+  static const String bead = 'Bead';
+  static const String capsule_coated = 'Capsule, Coated';
+  static const String capsule_coated_pellets = 'Capsule, Coated Pellets';
+  static const String capsule_coated_extended_release =
+      'Capsule, Coated, Extended Release';
+  static const String capsule_delayed_release = 'Capsule, Delayed Release';
+  static const String capsule_delayed_release_pellets =
+      'Capsule, Delayed Release Pellets';
+  static const String capsule_extended_release = 'Capsule, Extended Release';
+  static const String capsule_film_coated_extended_release =
+      'Capsule, Film Coated, Extended Release';
+  static const String capsule_gelatin_coated = 'Capsule, Gelatin Coated';
+  static const String capsule_liquid_filled = 'Capsule, Liquid Filled';
+  static const String cellular_sheet = 'Cellular Sheet';
+  static const String chewable_gel = 'Chewable Gel';
+  static const String cloth = 'Cloth';
+  static const String concentrate = 'Concentrate';
+  static const String cream = 'Cream';
+  static const String cream_augmented = 'Cream, Augmented';
+  static const String crystal = 'Crystal';
+  static const String disc = 'Disc';
+  static const String douche = 'Douche';
+  static const String dressing = 'Dressing';
+  static const String drug_eluting_contact_lens = 'Drug-Eluting Contact Lens';
+  static const String elixir = 'Elixir';
+  static const String emulsion = 'Emulsion';
+  static const String enema = 'Enema';
+  static const String extract = 'Extract';
+  static const String fiber_extended_release = 'Fiber, Extended Release';
+  static const String film = 'Film';
+  static const String film_extended_release = 'Film, Extended Release';
+  static const String film_soluble = 'Film, Soluble';
+  static const String for_solution = 'For Solution';
+  static const String for_suspension = 'For Suspension';
+  static const String for_suspension_extended_release =
+      'For Suspension, Extended Release';
+  static const String gas = 'Gas';
+  static const String gel = 'Gel';
+  static const String gel_dentifrice = 'Gel, Dentifrice';
+  static const String gel_metered = 'Gel, Metered';
+  static const String globule = 'Globule';
+  static const String granule = 'Granule';
+  static const String granule_delayed_release = 'Granule, Delayed Release';
+  static const String granule_effervescent = 'Granule, Effervescent';
+  static const String granule_for_solution = 'Granule, For Solution';
+  static const String granule_for_suspension = 'Granule, For Suspension';
+  static const String granule_for_suspension_extended_release =
+      'Granule, For Suspension, Extended Release';
+  static const String gum_chewing = 'Gum, Chewing';
+  static const String implant = 'Implant';
+  static const String inhalant = 'Inhalant';
+  static const String injectable_foam = 'Injectable Foam';
+  static const String injectable_liposomal = 'Injectable, Liposomal';
+  static const String injection_emulsion = 'Injection, Emulsion';
+  static const String injection_lipid_complex = 'Injection, Lipid Complex';
+  static const String injection_powder_for_solution =
+      'Injection, Powder, For Solution';
+  static const String injection_powder_for_suspension =
+      'Injection, Powder, For Suspension';
+  static const String injection_powder_for_suspension_extended_release =
+      'Injection, Powder, For Suspension, Extended Release';
+  static const String injection_powder_lyophilized_for_liposomal_suspension =
+      'Injection, Powder, Lyophilized, For Liposomal Suspension';
+  static const String injection_powder_lyophilized_for_solution =
+      'Injection, Powder, Lyophilized, For Solution';
+  static const String injection_powder_lyophilized_for_suspension =
+      'Injection, Powder, Lyophilized, For Suspension';
+  static const String
+      injection_powder_lyophilized_for_suspension_extended_release =
+      'Injection, Powder, Lyophilized, For Suspension, Extended Release';
+  static const String injection_solution = 'Injection, Solution';
+  static const String injection_solution_concentrate =
+      'Injection, Solution, Concentrate';
+  static const String injection_suspension = 'Injection, Suspension';
+  static const String injection_suspension_extended_release =
+      'Injection, Suspension, Extended Release';
+  static const String injection_suspension_liposomal =
+      'Injection, Suspension, Liposomal';
+  static const String injection_suspension_sonicated =
+      'Injection, Suspension, Sonicated';
+  static const String insert = 'Insert';
+  static const String insert_extended_release = 'Insert, Extended Release';
+  static const String intrauterine_device = 'Intrauterine Device';
+  static const String irrigant = 'Irrigant';
+  static const String jelly = 'Jelly';
+  static const String kit = 'Kit';
+  static const String liniment = 'Liniment';
+  static const String lipstick = 'Lipstick';
+  static const String liquid_extended_release = 'Liquid, Extended Release';
+  static const String lotion = 'Lotion';
+  static const String lotion_augmented = 'Lotion, Augmented';
+  static const String lotion_shampoo = 'Lotion/Shampoo';
+  static const String lozenge = 'Lozenge';
+  static const String mouthwash = 'Mouthwash';
+  static const String not_applicable = 'Not Applicable';
+  static const String oil = 'Oil';
+  static const String ointment_augmented = 'Ointment, Augmented';
+  static const String paste = 'Paste';
+  static const String paste_dentifrice = 'Paste, Dentifrice';
+  static const String pastille = 'Pastille';
+  static const String patch_extended_release = 'Patch, Extended Release';
+  static const String patch_extended_release_electrically_controlled =
+      'Patch, Extended Release, Electrically Controlled';
+  static const String pellet = 'Pellet';
+  static const String pellet_implantable = 'Pellet, Implantable';
+  static const String pellets_coated_extended_release =
+      'Pellets, Coated, Extended Release';
+  static const String pill = 'Pill';
+  static const String plaster = 'Plaster';
+  static const String poultice = 'Poultice';
+  static const String powder = 'Powder';
+  static const String powder_dentifrice = 'Powder, Dentifrice';
+  static const String powder_for_solution = 'Powder, For Solution';
+  static const String powder_for_suspension = 'Powder, For Suspension';
+  static const String powder_metered = 'Powder, Metered';
+  static const String ring = 'Ring';
+  static const String rinse = 'Rinse';
+  static const String salve = 'Salve';
+  static const String shampoo = 'Shampoo';
+  static const String shampoo_suspension = 'Shampoo, Suspension';
+  static const String soap = 'Soap';
+  static const String solution = 'Solution';
+  static const String solution_concentrate = 'Solution, Concentrate';
+  static const String solution_for_slush = 'Solution, For Slush';
+  static const String solution_gel_forming_drops =
+      'Solution, Gel Forming / Drops';
+  static const String solution_gel_forming_extended_release =
+      'Solution, Gel Forming, Extended Release';
+  static const String solution_drops = 'Solution/ Drops';
+  static const String sponge = 'Sponge';
+  static const String spray = 'Spray';
+  static const String spray_metered = 'Spray, Metered';
+  static const String spray_suspension = 'Spray, Suspension';
+  static const String stick = 'Stick';
+  static const String strip = 'Strip';
+  static const String suppository = 'Suppository';
+  static const String suppository_extended_release =
+      'Suppository, Extended Release';
+  static const String suspension = 'Suspension';
+  static const String suspension_extended_release =
+      'Suspension, Extended Release';
+  static const String suspension_drops = 'Suspension/ Drops';
+  static const String swab = 'Swab';
+  static const String syrup = 'Syrup';
+  static const String system = 'System';
+  static const String tablet_chewable = 'Tablet, Chewable';
+  static const String tablet_chewable_extended_release =
+      'Tablet, Chewable, Extended Release';
+  static const String tablet_coated = 'Tablet, Coated';
+  static const String tablet_coated_particles = 'Tablet, Coated Particles';
+  static const String tablet_delayed_release = 'Tablet, Delayed Release';
+  static const String tablet_delayed_release_particles =
+      'Tablet, Delayed Release Particles';
+  static const String tablet_effervescent = 'Tablet, Effervescent';
+  static const String tablet_extended_release = 'Tablet, Extended Release';
+  static const String tablet_film_coated = 'Tablet, Film Coated';
+  static const String tablet_film_coated_extended_release =
+      'Tablet, Film Coated, Extended Release';
+  static const String tablet_for_solution = 'Tablet, For Solution';
+  static const String tablet_for_suspension = 'Tablet, For Suspension';
+  static const String tablet_multilayer = 'Tablet, Multilayer';
+  static const String tablet_multilayer_extended_release =
+      'Tablet, Multilayer, Extended Release';
+  static const String tablet_orally_disintegrating =
+      'Tablet, Orally Disintegrating';
+  static const String tablet_orally_disintegrating_delayed_release =
+      'Tablet, Orally Disintegrating, Delayed Release';
+  static const String tablet_soluble = 'Tablet, Soluble';
+  static const String tablet_sugar_coated = 'Tablet, Sugar Coated';
+  static const String tablet_with_sensor = 'Tablet With Sensor';
+  static const String tampon = 'Tampon';
+  static const String tape = 'Tape';
+  static const String tincture = 'Tincture';
+  static const String troche = 'Troche';
+  static const String wafer = 'Wafer';
   static const String later = ' Later';
   static const String before = ' Before';
 }
