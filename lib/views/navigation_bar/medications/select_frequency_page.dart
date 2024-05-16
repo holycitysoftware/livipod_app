@@ -713,8 +713,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           ? firstDate
           : schedules[currentIndex]
               .startDate, //DateTime.now() - not to allow to choose before today.
-      lastDate:
-          isForever ? DateTime(_foreverYear) : schedules[currentIndex].endDate,
+      lastDate: isForever || !isStartDate
+          ? DateTime(_foreverYear)
+          : schedules[currentIndex].endDate,
     );
     if (dateTime == null) {
       if (isStartDate) {

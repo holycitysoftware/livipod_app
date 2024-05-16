@@ -33,12 +33,13 @@ class _MedicationsPageState extends State<MedicationsPage> {
     await Navigator.push(
       context,
       MaterialPageRoute(
+        maintainState: false,
         builder: (context) => SelectFrequencyPage(
           medication: medication,
           isEdit: true,
         ),
       ),
-    );
+    ).then((e) => setState(() {}));
   }
 
   @override
