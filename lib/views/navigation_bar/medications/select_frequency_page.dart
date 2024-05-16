@@ -225,8 +225,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       if (getShowInventoryQuantityField && currentIndex == 0)
         inventoryQuantityWidget(),
       if (getShowInstructions && currentIndex == 0) instructionsWidget(),
-
-      if (widget.isEdit) deleteScheduleWidget(),
+      LiviThemes.spacing.heightSpacer16(),
+      if (widget.isEdit && schedules.length > 1) deleteScheduleWidget(),
       if (widget.isEdit) deleteMedicationWidget(),
       if (!widget.isEdit) addAnotherScheduleWidget(schedules.length),
       if (!widget.isEdit) saveWidget(),
