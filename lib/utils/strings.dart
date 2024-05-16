@@ -6,9 +6,11 @@ class Strings {
   static const String loginToYourAccount = 'Log in to your account';
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
+  static const String delete = 'Delete';
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
+  static const String areYouSureYouWantToDelete = 'Are you sure you want to delete this medication? This action cannot be undone.';
   static const String scheduleType = 'Schedule Type';
   static const String lastScheduleDoseError =
       'Unable to delete the only scheduled dose.';

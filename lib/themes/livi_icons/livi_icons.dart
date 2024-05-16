@@ -404,9 +404,37 @@ class LiviIcons {
     );
   }
 
-  Widget get trash1 => SvgPicture.asset(
-        '$svgPath/trash_01.svg',
-      );
+  String get _trash1Icon => '$svgPath/trash_01.svg';
+
+  Widget trash1Icon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _trash1Icon,
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      height: height,
+    );
+  }
+
+  String get _closeIcon => '$svgPath/close.svg';
+
+  Widget closeIcon({
+    Color? color,
+    double? height,
+  }) {
+    // color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _closeIcon,
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      height: height,
+    );
+  }
 
   Widget get arrowNarrowright => SvgPicture.asset(
         '$svgPath/arrow_narrow_right.svg',

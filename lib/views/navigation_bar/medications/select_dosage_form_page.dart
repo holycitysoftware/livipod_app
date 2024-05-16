@@ -186,7 +186,8 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
                 LiviTextStyles.interRegular16(dosageForm.description,
                     color: this.dosageForm == dosageForm
                         ? LiviThemes.colors.brand600
-                        : LiviThemes.colors.gray400),
+                        : LiviThemes.colors.gray400,
+                    maxLines: 2),
               ],
             ),
           ),

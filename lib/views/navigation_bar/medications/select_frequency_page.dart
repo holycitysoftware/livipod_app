@@ -8,6 +8,7 @@ import '../../../models/enums.dart';
 import '../../../models/models.dart';
 import '../../../models/schedule_type.dart';
 import '../../../services/medication_service.dart';
+import '../../../themes/livi_theme.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
@@ -281,26 +282,61 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   void deleteMedication() {
-    // showModalBottomSheet(
-    //   context: context,
-    //   builder: (context) => BottomSheet(
-    //     onClosing: () {},
-    //     builder: (context) => Column(
-    //       mainAxisSize: MainAxisSize.min,
-    //       children: [
-    //         ListTile(
-    //           title: Text('Delete Medication'),
-    //           onTap: () {
-    //             Navigator.pop(context);
-    //             deleteMedication();
-    //           },
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
-    MedicationService().deleteMedication(widget.medication);
-    Navigator.pop(context);
+    showDialog(
+        context: context,
+        builder: (context) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)), //this right here
+              child: Container(
+                height: 320,
+                width: 400.0,
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconCircleBox(
+                          padding: EdgeInsets.all(12),
+                          color: LiviThemes.colors.error50,
+                          child: LiviThemes.icons
+                              .trash1Icon(color: LiviThemes.colors.error600),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: LiviThemes.icons.closeIcon(
+                            color: LiviThemes.colors.gray300,
+                          ),
+                        ),
+                      ],
+                    ),
+                    LiviThemes.spacing.heightSpacer8(),
+                    LiviTextStyles.interSemiBold18(
+                        '${Strings.delete} ${widget.medication.getNameStrengthDosageForm()}?'),
+                    LiviTextStyles.interRegular16(
+                        Strings.areYouSureYouWantToDelete),
+                    Spacer(),
+                    LiviFilledButton(
+                      color: LiviThemes.colors.error600,
+                      text: Strings.deleteMedication,
+                      onTap: () {
+                        MedicationService().deleteMedication(widget.medication);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                    ),
+                    LiviThemes.spacing.heightSpacer12(),
+                    LiviFilledButtonWhite(
+                      onTap: () => Navigator.pop(context),
+                      text: Strings.cancel,
+                      textColor: LiviThemes.colors.baseBlack,
+                    )
+                  ],
+                ),
+              ),
+            ));
   }
 
   @override
@@ -311,11 +347,13 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         mainWidget: schedules.length > 1
             ? DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
-                  hint: Text('ha'),
-                  onTap: () {
-                    dropdownIsSelected = true;
-                  },
-                  value: currentIndex,
+                  hint: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    child: LiviTextStyles.interSemiBold16(
+                        widget.medication.getNameStrengthDosageForm(),
+                        maxLines: 1),
+                  ),
+                  value: null,
                   onChanged: (int? value) {
                     currentIndex = value!;
                     dropdownIsSelected = false;
@@ -340,7 +378,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
               )
             : SizedBox(
                 width: MediaQuery.of(context).size.width * 0.45,
-                child: LiviTextStyles.interSemiBold16(widget.medication.name,
+                child: LiviTextStyles.interSemiBold16(
+                    widget.medication.getNameStrengthDosageForm(),
                     textAlign: TextAlign.center),
               ),
         title: widget.medication.getNameStrengthDosageForm(),
