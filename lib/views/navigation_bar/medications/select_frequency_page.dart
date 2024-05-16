@@ -348,7 +348,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             ? DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
                   hint: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.45,
+                    width: MediaQuery.of(context).size.width * 0.43,
                     child: LiviTextStyles.interSemiBold16(
                         widget.medication.getNameStrengthDosageForm(),
                         maxLines: 1),
