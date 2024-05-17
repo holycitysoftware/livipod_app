@@ -10,10 +10,14 @@ class Strings {
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
-  static const String areYouSureYouWantToDelete = 'Are you sure you want to delete this medication? This action cannot be undone.';
+  static const String every = 'Every';
+  static const String areYouSureYouWantToDelete =
+      'Are you sure you want to delete this medication? This action cannot be undone.';
   static const String scheduleType = 'Schedule Type';
   static const String lastScheduleDoseError =
       'Unable to delete the only scheduled dose.';
+  static const String lastDayOfTheMonth =
+      'Unable to delete the only selected day.';
   static const String cannotCreateSchedule =
       'To add another schedule you must specify an end date.';
   static const String at = 'At';

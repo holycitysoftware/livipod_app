@@ -98,7 +98,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         Schedule(
           startDate: DateTime(now.year, now.month, now.day),
           endDate: DateTime(now.year, now.month, now.day),
-          scheduledDosings: [ScheduledDose(timeOfDay: TimeOfDay.now())],
+          scheduledDosings: [
+            ScheduledDose(timeOfDay: TimeOfDay(hour: 8, minute: 0))
+          ],
         ),
       ];
       schedules.first.prnDosing = PrnDose();
@@ -1012,29 +1014,16 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                       children: [
                         LiviInkWell(
                           splashFactory: NoSplash.splashFactory,
-                          onTap: () {
-                            final list = <int>[];
-                            list.addAll(schedules[currentIndex].monthPattern);
-                            list.removeAt(index);
-                            schedules[currentIndex].monthPattern = list;
-                            setState(() {});
-                          },
+                          onTap: () {},
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 LiviTextStyles.interRegular16(
-                                    'Every ${formartDay(index + 1)}'),
+                                    '${Strings.every} ${formartDay(index + 1)}'),
                                 IconCircleBox(
-                                  onTap: () {
-                                    final list = <int>[];
-                                    list.addAll(
-                                        schedules[currentIndex].monthPattern);
-                                    list.removeAt(index);
-                                    schedules[currentIndex].monthPattern = list;
-                                    setState(() {});
-                                  },
+                                  onTap: () => removeDayOfMonth(index),
                                   padding: EdgeInsets.zero,
                                   color: LiviThemes.colors.error500,
                                   child: LiviThemes.icons.minusWidget(),
@@ -1054,52 +1043,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
               LiviDivider(),
               LiviInkWell(
                 splashFactory: NoSplash.splashFactory,
-                onTap: () async {
-                  final list = <int>[];
-                  list.addAll(schedules[currentIndex].monthPattern);
-                  final cancel = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => StatefulBuilder(
-                            builder: (context, setState) => AlertDialog(
-                              insetPadding:
-                                  EdgeInsets.symmetric(horizontal: 20),
-                              title: const Text(Strings.selectDates),
-                              content: Container(
-                                  height: 300,
-                                  width: 400,
-                                  child: buildDaysOfMonthSelector(setState)),
-                              actions: <Widget>[
-                                TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle:
-                                        Theme.of(context).textTheme.labelLarge,
-                                  ),
-                                  child: const Text(Strings.cancel),
-                                  onPressed: () {
-                                    const cancel = true;
-                                    Navigator.of(context).pop(cancel);
-                                  },
-                                ),
-                                TextButton(
-                                  style: TextButton.styleFrom(
-                                    textStyle:
-                                        Theme.of(context).textTheme.labelLarge,
-                                  ),
-                                  child: const Text(Strings.ok),
-                                  onPressed: () {
-                                    const cancel = false;
-                                    Navigator.of(context).pop(cancel);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ));
-                  if (cancel == true) {
-                    schedules[currentIndex].monthPattern = list;
-                  }
-
-                  setState(() {});
-                },
+                onTap: showDaysOfMonth,
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -1120,6 +1064,50 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         ],
       ),
     );
+  }
+
+  Future<void> showDaysOfMonth() async {
+    final list = <int>[];
+    list.addAll(schedules[currentIndex].monthPattern);
+    final cancel = await showDialog<bool>(
+        context: context,
+        builder: (context) => StatefulBuilder(
+              builder: (context, setState) => AlertDialog(
+                insetPadding: EdgeInsets.symmetric(horizontal: 20),
+                title: const Text(Strings.selectDates),
+                content: SizedBox(
+                    height: 300,
+                    width: 400,
+                    child: buildDaysOfMonthSelector(setState)),
+                actions: <Widget>[
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    child: const Text(Strings.cancel),
+                    onPressed: () {
+                      const cancel = true;
+                      Navigator.of(context).pop(cancel);
+                    },
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    child: const Text(Strings.ok),
+                    onPressed: () {
+                      const cancel = false;
+                      Navigator.of(context).pop(cancel);
+                    },
+                  ),
+                ],
+              ),
+            ));
+    if (cancel == true) {
+      schedules[currentIndex].monthPattern = list;
+    }
+
+    setState(() {});
   }
 
   Future<void> showDialogTime({int? editIndex, ScheduledDose? dose}) async {
@@ -1318,5 +1306,22 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       controller: _quantityController[currentIndex],
       keyboardType: TextInputType.number,
     );
+  }
+
+  void removeDayOfMonth(int index) {
+    final oneList =
+        schedules[currentIndex].monthPattern.where((index) => index == 1);
+    if (oneList.length > 1) {
+      final list = <int>[];
+      list.addAll(schedules[currentIndex].monthPattern);
+      list[index] = 0;
+      schedules[currentIndex].monthPattern = list;
+      setState(() {});
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        LiviSnackBar()
+            .liviSnackBar(text: Strings.lastDayOfTheMonth, isError: true),
+      );
+    }
   }
 }
