@@ -97,10 +97,15 @@ class MessagingController extends ChangeNotifier {
       _fcmToken = await FirebaseMessaging.instance
               .getToken(vapidKey: constants.vapidPublicKey) ??
           '';
+      notifyListeners();
     } else {
-      _apnsToken = await FirebaseMessaging.instance.getAPNSToken() ?? '';
-      _fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      // For apple platforms, ensure the APNS token is available before making any FCM plugin API calls
+      final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+      if (apnsToken != null) {
+        _apnsToken = apnsToken;
+        _fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+        notifyListeners();
+      }
     }
-    notifyListeners();
   }
 }
