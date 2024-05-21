@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:livipod_app/controllers/communication_controller.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
+import 'controllers/messaging_controller.dart';
 import 'firebase_options.dart';
 import 'services/livi_pod_service.dart';
 import 'themes/livi_themes.dart';
@@ -120,6 +121,7 @@ class _MyAppState extends State<MyApp> {
   //late final ScheduleController _scheduleController;
   final LiviPodService _liviPodController = LiviPodService();
   final AuthController _authController = AuthController();
+  final MessagingController _messagingController = MessagingController();
 
   @override
   void initState() {
@@ -141,6 +143,9 @@ class _MyAppState extends State<MyApp> {
         // ),
         ChangeNotifierProvider(
           create: (context) => _devicesController,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => _messagingController,
         ),
         // ChangeNotifierProvider(
         //   create: (context) => _webSocketController,

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../controllers/auth_controller.dart';
+import '../../controllers/messaging_controller.dart';
+import '../../services/app_user_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../views.dart';
@@ -21,6 +25,10 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.alwaysShow;
 
+  late MessagingController _messagingController;
+  late AuthController _authController;
+  final AppUserService _appUserService = AppUserService();
+
   List<Widget> navigationBarPages = const [
     HomePage(),
     MedicationsPage(),
@@ -35,7 +43,22 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
         goToTellUsAboutYourselfPage();
       });
     }
+    _authController = Provider.of<AuthController>(context, listen: false);
+    setupMessaging();
     super.initState();
+  }
+
+  Future setupMessaging() async {
+    _messagingController =
+        Provider.of<MessagingController>(context, listen: false);
+    await _messagingController.getFcmToken();
+  }
+
+  Future updateUserFcmToken(String fcmToken) async {
+    if (_authController.appUser?.fcmToken != fcmToken) {
+      _authController.appUser?.fcmToken = fcmToken;
+      await _appUserService.updateUser(_authController.appUser!);
+    }
   }
 
   Future<void> goToTellUsAboutYourselfPage() async {
@@ -82,26 +105,34 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: LiviThemes.colors.baseWhite,
-        bottomNavigationBar: BottomNavigationBar(
-          items: navigationBarItems,
-          backgroundColor: LiviThemes.colors.baseWhite94,
-          currentIndex: currentPageIndex,
-          showUnselectedLabels: true,
-          unselectedItemColor: LiviThemes.colors.randomGray,
-          selectedItemColor: LiviThemes.colors.brand600,
-          onTap: selectItem,
-          selectedLabelStyle: LiviThemes.typography.interSemiBold_11.copyWith(
-            color: LiviThemes.colors.brand600,
-          ),
-          unselectedLabelStyle: LiviThemes.typography.interMedium_11.copyWith(
-            color: LiviThemes.colors.randomGray,
-          ),
-        ),
-        body: navigationBarPages[currentPageIndex],
-      ),
-    );
+        canPop: false,
+        child: Consumer<MessagingController>(
+            builder: (context, messagingController, child) {
+          if (messagingController.fcmToken.isNotEmpty) {
+            updateUserFcmToken(messagingController.fcmToken);
+          }
+
+          return Scaffold(
+            backgroundColor: LiviThemes.colors.baseWhite,
+            bottomNavigationBar: BottomNavigationBar(
+              items: navigationBarItems,
+              backgroundColor: LiviThemes.colors.baseWhite94,
+              currentIndex: currentPageIndex,
+              showUnselectedLabels: true,
+              unselectedItemColor: LiviThemes.colors.randomGray,
+              selectedItemColor: LiviThemes.colors.brand600,
+              onTap: selectItem,
+              selectedLabelStyle:
+                  LiviThemes.typography.interSemiBold_11.copyWith(
+                color: LiviThemes.colors.brand600,
+              ),
+              unselectedLabelStyle:
+                  LiviThemes.typography.interMedium_11.copyWith(
+                color: LiviThemes.colors.randomGray,
+              ),
+            ),
+            body: navigationBarPages[currentPageIndex],
+          );
+        }));
   }
 }
