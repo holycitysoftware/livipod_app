@@ -125,9 +125,9 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
                     currentCode: code,
                     onCodeSubmitted: goToIdentifyPersonPage,
                     onCodeChanged: (code) {
-                      if (code!.length == 6) {
-                        goToIdentifyPersonPage(code);
-                      }
+                      // if (code!.length == 6) {
+                      //   goToIdentifyPersonPage(code);
+                      // }
                     },
                     focusNode: pinFocusNode,
                     decoration: BoxLooseDecoration(

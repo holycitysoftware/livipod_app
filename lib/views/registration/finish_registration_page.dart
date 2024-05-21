@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/buttons/livi_filled_button_white.dart';
 import '../../components/components.dart';
 import '../../controllers/controllers.dart';
 import '../../models/models.dart';

@@ -18,6 +18,7 @@ class AppUser {
   String? email;
   String authToken = '';
   bool enabled;
+  String language;
   String fcmToken = ''; // firebase cloud messaging token
   String timezone;
   bool useEmail;
@@ -30,6 +31,7 @@ class AppUser {
     required this.name,
     this.appUserType = AppUserType.selfGuidedUser,
     required this.phoneNumber,
+    this.language = 'en',
     this.podsList = const [],
     this.email,
     this.authToken = '',

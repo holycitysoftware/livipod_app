@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -247,6 +248,7 @@ class AuthController extends ChangeNotifier {
         try {
           // STEP 2: CREATE USER
           final user = await _appUserService.createUser(_appUser!);
+          user.language = Platform.localeName.split('_').first;
           user.authId =
               userCredential.user!.uid; // security link to Firebase Auth
 
