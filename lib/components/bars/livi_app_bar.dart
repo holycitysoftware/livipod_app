@@ -37,7 +37,7 @@ class _LiviAppBarState extends State<LiviAppBar> {
       foregroundColor: LiviThemes.colors.baseWhite,
       backgroundColor: LiviThemes.colors.baseWhite,
       shadowColor: LiviThemes.colors.baseWhite,
-      elevation: widget.elevation ?? 0,
+      elevation: widget.elevation ?? 0, centerTitle: true,
       surfaceTintColor: LiviThemes.colors.baseWhite,
       leading: widget.backButton ||
               (ModalRoute.of(context)?.impliesAppBarDismissal ?? false)

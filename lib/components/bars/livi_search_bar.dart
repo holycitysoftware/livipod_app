@@ -9,8 +9,10 @@ class LiviSearchBar extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final ValueChanged<String>? onChanged;
+  final Function()? onTap;
   const LiviSearchBar({
     super.key,
+    this.onTap,
     this.onFieldSubmitted,
     required this.focusNode,
     required this.controller,
@@ -35,6 +37,7 @@ class _LiviSearchBarState extends State<LiviSearchBar> {
   @override
   Widget build(BuildContext context) {
     return LiviInputField(
+      onTap: () => widget.onTap,
       onChanged: widget.onChanged,
       focusNode: widget.focusNode,
       controller: widget.controller,

@@ -19,12 +19,15 @@ class MedicationsPage extends StatefulWidget {
 
 class _MedicationsPageState extends State<MedicationsPage> {
   final FocusNode focusNode = FocusNode();
+  final searchTextController = TextEditingController();
 
   void goToSearchMedications({String? medication}) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchMedicationPage(),
+        builder: (context) => SearchMedicationPage(
+          medication: medication,
+        ),
       ),
     );
   }
@@ -96,7 +99,9 @@ class _MedicationsPageState extends State<MedicationsPage> {
                               textAlign: TextAlign.center),
                           LiviThemes.spacing.heightSpacer16(),
                           LiviSearchBar(
-                            controller: TextEditingController(),
+                            onTap: () => goToSearchMedications(
+                                medication: searchTextController.text),
+                            controller: searchTextController,
                             onFieldSubmitted: (e) {
                               goToSearchMedications(medication: e);
                             },

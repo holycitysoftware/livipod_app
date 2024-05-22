@@ -213,7 +213,9 @@ class AuthController extends ChangeNotifier {
       // session-expired - use refresh token
 
       _verificationError = e.message ?? e.code;
+      await getAppUser();
       notifyListeners();
+
       return null;
     } on Exception catch (e, s) {
       _verificationError = e.toString().removeExceptionString();

@@ -52,8 +52,8 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
       });
       if (_controller.text.isNotEmpty) {
         medications.clear();
-        medications =
-            await _service.searchDrugs(_controller.text, isSearch, null, null);
+        medications = await _service.searchDrugs(
+            _controller.text.toLowerCase(), isSearch, null, null);
       }
     } catch (e, s) {
       logger(e.toString());

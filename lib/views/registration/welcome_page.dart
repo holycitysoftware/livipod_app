@@ -14,7 +14,7 @@ class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
   Future<void> goToLoginPage(BuildContext context) async {
-    await Navigator.push(
+    await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) => SmsFlowPage(
@@ -25,7 +25,7 @@ class WelcomePage extends StatelessWidget {
   }
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
-    await Navigator.push(
+    await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) => SmsFlowPage(
