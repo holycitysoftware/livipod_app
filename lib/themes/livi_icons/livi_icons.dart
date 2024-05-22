@@ -138,6 +138,69 @@ class LiviIcons {
     );
   }
 
+  String get _caregiverPath => '$svgPath/caregiver.svg';
+
+  Widget caregiverIcon({
+    Color? color,
+    double? height,
+  }) {
+    return SvgPicture.asset(
+      _caregiverPath,
+      height: height,
+    );
+  }
+
+  String get _devicesPath => '$svgPath/devices.svg';
+
+  Widget devicesIcon({
+    Color? color,
+    double? height,
+  }) {
+    return SvgPicture.asset(
+      _devicesPath,
+      height: height,
+    );
+  }
+
+  String get _schedulePath => '$svgPath/schedule.svg';
+
+  Widget scheduleIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _schedulePath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _smallLiviPodPath => '$svgPath/small_livi_pod.svg';
+
+  Widget smallLiviPodIcon({
+    Color? color,
+    double? height,
+  }) {
+    return SvgPicture.asset(
+      _smallLiviPodPath,
+      height: height,
+    );
+  }
+
+  String get _wifiPath => '$svgPath/wifi.svg';
+
+  Widget wifiIcon({
+    Color? color,
+    double? height,
+  }) {
+    return SvgPicture.asset(
+      _wifiPath,
+      height: height,
+    );
+  }
+
   Widget blueBackgroundLogo({
     Color? color,
     double? height,

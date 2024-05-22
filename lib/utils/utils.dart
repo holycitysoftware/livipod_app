@@ -4,6 +4,7 @@ import 'package:sunrise_sunset_calc/sunrise_sunset_calc.dart';
 
 import '../models/enums.dart';
 
+import '../models/models.dart';
 import '../themes/livi_themes.dart';
 
 int daysBetween(DateTime end, DateTime start) {
@@ -412,6 +413,17 @@ String getDay(int index) {
     default:
       return 'Unknown';
   }
+}
+
+String getFirstLettersOfName(AppUser user) {
+  String firstLetter = '';
+  String secondLetter = '';
+  final splittedNames = user.name.split(' ');
+  firstLetter = splittedNames.first[0];
+  if (splittedNames.length > 1) {
+    secondLetter = splittedNames.last[0];
+  }
+  return '$firstLetter$secondLetter'.toUpperCase();
 }
 
 String formartDay(int day) {

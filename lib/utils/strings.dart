@@ -7,12 +7,18 @@ class Strings {
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
   static const String delete = 'Delete';
+  static const String livipod = 'LiviPod';
   static const String morning = 'Morning';
   static const String afternoon = 'Afternoon';
+  static const String notifications = 'Notifications';
+  static const String militaryTime = 'Military Time (AM e PM)';
+  static const String shareFeedback = 'Share Feedback';
+  static const String termsAndPrivacy = 'Terms & Privacy';
   static const String night = 'Night';
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
+  static const String caregivers = 'Caregivers';
   static const String every = 'Every';
   static const String areYouSureYouWantToDelete =
       'Are you sure you want to delete this medication? This action cannot be undone.';
@@ -421,8 +427,10 @@ class Strings {
   static const String later = 'Later';
   static const String before = 'Before';
   static const String nextMedsDueAt = 'Next meds due at ';
+  static const String logout = 'Log Out';
+  static const String myDevices = 'My Devices';
+  static const String allowAutomaticDispensing = 'Allow Automatic Dispensing';
 }
-      
   // static const String logIn = 'Iniciar sesión';
   // static const String signUp = 'Registrarse';
   // static const String yourAccountHasBeenCreated = '¡Tu cuenta ha sido creada!';
