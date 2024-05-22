@@ -77,6 +77,12 @@ class AuthController extends ChangeNotifier {
     );
   }
 
+  void goBackBySettingPromptForUserCode() {
+    _promptForUserCode = false;
+    _appUser = null;
+    notifyListeners();
+  }
+
   Future<void> setPersona({
     AppUserType? personaType,
   }) async {

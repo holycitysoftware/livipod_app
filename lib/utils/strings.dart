@@ -7,6 +7,9 @@ class Strings {
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
   static const String delete = 'Delete';
+  static const String morning = 'Morning';
+  static const String afternoon = 'Afternoon';
+  static const String night = 'Night';
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
@@ -415,8 +418,9 @@ class Strings {
   static const String tincture = 'Tincture';
   static const String troche = 'Troche';
   static const String wafer = 'Wafer';
-  static const String later = ' Later';
-  static const String before = ' Before';
+  static const String later = 'Later';
+  static const String before = 'Before';
+  static const String nextMedsDueAt = 'Next meds due at ';
 }
       
   // static const String logIn = 'Iniciar sesión';

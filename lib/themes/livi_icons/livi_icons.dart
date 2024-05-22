@@ -33,6 +33,111 @@ class LiviIcons {
     );
   }
 
+  String get _alarmClockIconPath => '$svgPath/alarm_clock.svg';
+
+  Widget alarmClockIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _alarmClockIconPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _chevronUpIconPath => '$svgPath/chevron_up.svg';
+
+  Widget chevronUpIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _chevronUpIconPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _heartHandIconPath => '$svgPath/heart_hand.svg';
+
+  Widget heartHandIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _heartHandIconPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _moon1Path => '$svgPath/moon_01.svg';
+
+  Widget moon1Icon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _moon1Path,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _rocket2Path => '$svgPath/rocket_02.svg';
+
+  Widget rocket2Icon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _rocket2Path,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _sunSetting1Path => '$svgPath/sun_setting_01.svg';
+
+  Widget sunSetting1Icon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _sunSetting1Path,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _sunPath => '$svgPath/sun.svg';
+
+  Widget sunIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _sunPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
   Widget blueBackgroundLogo({
     Color? color,
     double? height,

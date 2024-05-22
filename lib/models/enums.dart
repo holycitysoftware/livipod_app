@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../utils/strings.dart';
 
 enum DosageForm implements Comparable<DosageForm> {
@@ -454,4 +456,34 @@ enum Days implements Comparable<Days> {
 
   @override
   int compareTo(Days other) => description.compareTo(other.description);
+}
+
+enum PeriodOfDay {
+  morning(
+      description: Strings.morning,
+      startTime: TimeOfDay(hour: 6, minute: 0),
+      endTime: TimeOfDay(hour: 11, minute: 59),
+      colors: [Color(0xffEBEDE2), Color(0xffDEEDF6)]),
+  afternoon(
+      description: Strings.afternoon,
+      startTime: TimeOfDay(hour: 12, minute: 0),
+      endTime: TimeOfDay(hour: 20, minute: 59),
+      colors: [Color(0xffEED3CB), Color(0xffF9F7F0)]),
+  night(
+      description: Strings.night,
+      startTime: TimeOfDay(hour: 21, minute: 0),
+      endTime: TimeOfDay(hour: 5, minute: 59),
+      colors: [Color(0xffBFC2D7), Color(0xffE4E2DD)]);
+
+  const PeriodOfDay({
+    required this.description,
+    required this.startTime,
+    required this.endTime,
+    required this.colors,
+  });
+
+  final String description;
+  final TimeOfDay startTime;
+  final TimeOfDay endTime;
+  final List<Color> colors;
 }

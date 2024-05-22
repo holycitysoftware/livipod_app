@@ -8,10 +8,20 @@ class BackBar extends StatelessWidget {
   final String? title;
   final EdgeInsets? padding;
   final bool? hasTrailing;
+  final Function()? onTap;
 
-  const BackBar({super.key, this.title, this.padding, this.hasTrailing = true});
+  const BackBar(
+      {super.key,
+      this.title,
+      this.padding,
+      this.hasTrailing = true,
+      this.onTap});
 
   void pop(BuildContext context) {
+    if (onTap != null) {
+      onTap!();
+      return;
+    }
     Navigator.pop(context);
   }
 

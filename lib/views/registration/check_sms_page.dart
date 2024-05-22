@@ -102,7 +102,11 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
       ),
       body: Column(
         children: [
-          BackBar(title: Strings.verification),
+          BackBar(
+            title: Strings.verification,
+            onTap: () => Provider.of<AuthController>(context, listen: false)
+                .goBackBySettingPromptForUserCode(),
+          ),
           LiviThemes.spacing.heightSpacer8(),
           Align(child: LiviTextStyles.interSemiBold24(Strings.checkYourSms)),
           LiviThemes.spacing.heightSpacer8(),

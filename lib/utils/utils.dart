@@ -1,9 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sunrise_sunset_calc/sunrise_sunset_calc.dart';
 
 import '../models/enums.dart';
+
 import '../themes/livi_themes.dart';
 
 int daysBetween(DateTime end, DateTime start) {
@@ -328,7 +328,7 @@ Widget dosageFormIcon({required DosageForm dosageForm, Color? color}) {
       return LiviThemes.icons.tabletIcon(color: color);
     case DosageForm.tablet_soluble:
       return LiviThemes.icons.tabletIcon(color: color);
-  case DosageForm.tablet_sugar_coated:
+    case DosageForm.tablet_sugar_coated:
       return LiviThemes.icons.tabletIcon(color: color);
     case DosageForm.tablet_with_sensor:
       return LiviThemes.icons.tabletIcon(color: color);
