@@ -76,7 +76,7 @@ class BleController extends ChangeNotifier {
     });
   }
 
-  void listen(AppUser user) {
+  void listenForLiviPodsRealTime(AppUser user) {
     liviPodController.listenToLiviPodsRealTime(user).listen(_handleLiviPods);
   }
 
