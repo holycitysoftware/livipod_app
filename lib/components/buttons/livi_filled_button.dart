@@ -14,6 +14,8 @@ class LiviFilledButton extends StatelessWidget {
   final bool? isLoading;
   final Color? color;
   final bool? enabled;
+  final Color? textColor;
+  final Color? borderColor;
 
   const LiviFilledButton({
     super.key,
@@ -22,6 +24,8 @@ class LiviFilledButton extends StatelessWidget {
     required this.onTap,
     this.color,
     this.enabled = true,
+    this.textColor,
+    this.borderColor,
     this.isLoading = false,
     this.isCloseToNotch = false,
     this.showArrow = false,
@@ -35,10 +39,14 @@ class LiviFilledButton extends StatelessWidget {
       padding: EdgeInsets.only(bottom: isButtonCloseToNotch ? 32 : 0),
       child: ElevatedButton(
         style: ButtonStyle(
+          foregroundColor: MaterialStatePropertyAll(textColor),
+          overlayColor: MaterialStatePropertyAll(textColor?.withOpacity(.1)),
           shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+                borderRadius: BorderRadius.circular(8),
+                side: borderColor != null
+                    ? BorderSide(color: borderColor!)
+                    : BorderSide.none),
           ),
           maximumSize: MaterialStatePropertyAll(
             Size(double.infinity, 48),
@@ -66,9 +74,10 @@ class LiviFilledButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   LiviTextStyles.interSemiBold16(text,
-                      color: (enabled ?? false)
-                          ? LiviThemes.colors.baseWhite
-                          : LiviThemes.colors.gray400),
+                      color: textColor ??
+                          ((enabled ?? false)
+                              ? LiviThemes.colors.baseWhite
+                              : LiviThemes.colors.gray400)),
                   LiviThemes.spacing.widthSpacer8(),
                   if (showArrow)
                     (enabled ?? false)

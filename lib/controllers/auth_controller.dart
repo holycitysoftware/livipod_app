@@ -62,6 +62,11 @@ class AuthController extends ChangeNotifier {
     }
   }
 
+  Future<void> editAppUser(AppUser user) async {
+    await _appUserService.updateUser(user);
+    notifyListeners();
+  }
+
   Future<void> setAppUser(
       {required String fullNameController,
       String? emailController,

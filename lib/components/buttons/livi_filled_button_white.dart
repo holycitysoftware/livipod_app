@@ -27,7 +27,6 @@ class LiviFilledButtonWhite extends StatelessWidget {
             RoundedRectangleBorder(
               side: BorderSide(
                 color: LiviThemes.colors.gray300,
-                width: 1,
               ),
               borderRadius: BorderRadius.circular(8),
             ),

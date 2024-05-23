@@ -6,8 +6,10 @@ class Strings {
   static const String loginToYourAccount = 'Log in to your account';
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
+  static const String addCaregiver = 'Add Caregiver';
   static const String delete = 'Delete';
   static const String livipod = 'LiviPod';
+  static const String podSettings = 'Pod Settings';
   static const String morning = 'Morning';
   static const String afternoon = 'Afternoon';
   static const String notifications = 'Notifications';
@@ -15,9 +17,13 @@ class Strings {
   static const String shareFeedback = 'Share Feedback';
   static const String termsAndPrivacy = 'Terms & Privacy';
   static const String night = 'Night';
+  static const String alert = 'Alert';
+  static const String areYouSureYouWantToLogout =
+      'Are you sure you want to logout of the application?';
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
+  static const String editInfo = 'Edit Info';
   static const String caregivers = 'Caregivers';
   static const String every = 'Every';
   static const String areYouSureYouWantToDelete =
@@ -137,6 +143,7 @@ class Strings {
   static const String yourMedications = 'Your Medications';
   static const String addNew = 'Add New';
   static const String noMedicationsAddedYet = 'No medications added yet.';
+  static const String noLiviPodsAdded = 'No LiviPods added yet.';
 
   static const String typeTheNameOfTheMedicine =
       'Type the name of the medicine in the search bar below to add your first medication.';
@@ -429,6 +436,7 @@ class Strings {
   static const String nextMedsDueAt = 'Next meds due at ';
   static const String logout = 'Log Out';
   static const String myDevices = 'My Devices';
+  static const String myPods = 'My Pods';
   static const String allowAutomaticDispensing = 'Allow Automatic Dispensing';
 }
   // static const String logIn = 'Iniciar sesión';

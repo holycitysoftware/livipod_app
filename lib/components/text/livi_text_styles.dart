@@ -98,6 +98,29 @@ class LiviTextStyles {
         textAlign: textAlign,
       );
 
+  static LiviTextComponent interSemiBold17(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interSemiBold_17.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+
   static LiviTextComponent interSemiBold16(
     String data, {
     Color? color,
@@ -212,6 +235,29 @@ class LiviTextStyles {
         textAlign: textAlign,
       );
 
+  static LiviTextComponent interRegular17(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interRegular_17.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+
   static LiviTextComponent interRegular16(
     String data, {
     Color? color,
@@ -279,6 +325,7 @@ class LiviTextStyles {
         ),
         textAlign: textAlign,
       );
+
   static LiviTextComponent interMedium14(
     String data, {
     Color? color,

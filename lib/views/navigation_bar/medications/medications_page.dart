@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/components.dart';
-import '../../controllers/controllers.dart';
-import '../../models/models.dart';
-import '../../services/medication_service.dart';
-import '../../themes/livi_themes.dart';
-import '../../utils/strings.dart';
-import '../views.dart';
-import 'medications/select_frequency_page.dart';
+import '../../../components/components.dart';
+import '../../../controllers/controllers.dart';
+import '../../../models/models.dart';
+import '../../../services/medication_service.dart';
+import '../../../themes/livi_themes.dart';
+import '../../../utils/strings.dart';
+import '../../views.dart';
+import 'select_frequency_page.dart';
 
 class MedicationsPage extends StatefulWidget {
   const MedicationsPage({super.key});

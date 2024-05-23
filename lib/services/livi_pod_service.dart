@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../models/livi_pod.dart';
+import '../models/models.dart';
 
 class LiviPodService {
   final StreamController<List<LiviPod>> _liviPodStreamController =
@@ -76,24 +77,28 @@ class LiviPodService {
     return Future.value(exists);
   }
 
-  Stream<List<LiviPod>> listenToLiviPodsRealTime() {
-    FirebaseFirestore.instance.collection('livipods').snapshots().listen(
-        (liviPodsSnapshot) {
-          if (liviPodsSnapshot.docs.isNotEmpty) {
-            var liviPods = liviPodsSnapshot.docs.map((snapshot) {
-              var liviPod = LiviPod.fromJson(snapshot.data());
-              liviPod.id = snapshot.id;
-              return liviPod;
-            }).toList();
-            _liviPodStreamController.add(liviPods);
-          }
-        },
-        cancelOnError: true,
-        onError: (error) {
-          if (kDebugMode) {
-            print(error);
-          }
-        });
+  Stream<List<LiviPod>> listenToLiviPodsRealTime(AppUser appUser) {
+    FirebaseFirestore.instance
+        .collection('livipods')
+        .where('userId', isEqualTo: appUser.id)
+        .snapshots()
+        .listen(
+            (liviPodsSnapshot) {
+              if (liviPodsSnapshot.docs.isNotEmpty) {
+                var liviPods = liviPodsSnapshot.docs.map((snapshot) {
+                  var liviPod = LiviPod.fromJson(snapshot.data());
+                  liviPod.id = snapshot.id;
+                  return liviPod;
+                }).toList();
+                _liviPodStreamController.add(liviPods);
+              }
+            },
+            cancelOnError: true,
+            onError: (error) {
+              if (kDebugMode) {
+                print(error);
+              }
+            });
     return _liviPodStreamController.stream;
   }
 }

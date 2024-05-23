@@ -59,7 +59,8 @@ class BleController extends ChangeNotifier {
       notifyListeners();
     });
 
-    liviPodController.listenToLiviPodsRealTime().listen(_handleLiviPods);
+    //TODO: Bring it back somehow
+    // liviPodController.listenToLiviPodsRealTime().listen(_handleLiviPods);
 
     FlutterBluePlus.scanResults.listen((results) {
       _scanResults = results;

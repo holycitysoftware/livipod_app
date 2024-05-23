@@ -191,6 +191,17 @@ class LiviTypography {
       );
 
   /// ## Inter
+  /// Size: 17
+  ///
+  /// Font weight: 600
+  TextStyle get interSemiBold_17 => TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  /// ## Inter
   /// Size: 16
   ///
   /// Font weight: 600
@@ -339,6 +350,17 @@ class LiviTypography {
   /// Font weight: 400
   TextStyle get interRegular_18 => TextStyle(
         fontSize: 18,
+        fontWeight: FontWeight.w400,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  /// ## Inter
+  /// Size: 17
+  ///
+  /// Font weight: 400
+  TextStyle get interRegular_17 => TextStyle(
+        fontSize: 17,
         fontWeight: FontWeight.w400,
         letterSpacing: _letterSpacing,
         fontFamily: 'Inter',

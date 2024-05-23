@@ -3,6 +3,9 @@ import '../models/models.dart';
 
 Country getUS() => countriesList.singleWhere((element) => element.code == 'US');
 
+Country getCountryByCode(String code) =>
+    countriesList.singleWhere((element) => element.dialCode == code);
+
 List<Country> countriesList = const [
   Country(name: 'Andorra', dialCode: '+376', code: 'AD'),
   Country(name: 'United Arab Emirates', dialCode: '+971', code: 'AE'),
