@@ -13,6 +13,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           $enumDecodeNullable(_$AppUserTypeEnumMap, json['appUserType']) ??
               AppUserType.selfGuidedUser,
       phoneNumber: json['phoneNumber'] as String,
+      language: json['language'] as String? ?? 'en',
       podsList: (json['podsList'] as List<dynamic>?)
               ?.map((e) => LiviPod.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -37,6 +38,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'email': instance.email,
       'authToken': instance.authToken,
       'enabled': instance.enabled,
+      'language': instance.language,
       'fcmToken': instance.fcmToken,
       'timezone': instance.timezone,
       'useEmail': instance.useEmail,

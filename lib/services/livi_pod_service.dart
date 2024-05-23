@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import '../models/app_user.dart';
 import '../models/livi_pod.dart';
 import '../models/models.dart';
 
@@ -80,7 +81,7 @@ class LiviPodService {
   Stream<List<LiviPod>> listenToLiviPodsRealTime(AppUser appUser) {
     FirebaseFirestore.instance
         .collection('livipods')
-        .where('userId', isEqualTo: appUser.id)
+        .where('appUserId', isEqualTo: appUser.id)
         .snapshots()
         .listen(
             (liviPodsSnapshot) {

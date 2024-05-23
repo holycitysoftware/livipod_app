@@ -10,7 +10,7 @@ part 'livi_pod.g.dart';
 class LiviPod {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String id = '';
-  String userId = '';
+  String appUserId = '';
   final String remoteId;
   @JsonKey(defaultValue: '')
   String macAddress = '';

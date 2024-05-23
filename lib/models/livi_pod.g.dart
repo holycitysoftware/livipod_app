@@ -9,13 +9,13 @@ part of 'livi_pod.dart';
 LiviPod _$LiviPodFromJson(Map<String, dynamic> json) => LiviPod(
       remoteId: json['remoteId'] as String,
     )
-      ..userId = json['userId'] as String
+      ..appUserId = json['appUserId'] as String
       ..macAddress = json['macAddress'] as String? ?? ''
       ..ipAddress = json['ipAddress'] as String? ?? ''
       ..medicationId = json['medicationId'] as String;
 
 Map<String, dynamic> _$LiviPodToJson(LiviPod instance) => <String, dynamic>{
-      'userId': instance.userId,
+      'appUserId': instance.appUserId,
       'remoteId': instance.remoteId,
       'macAddress': instance.macAddress,
       'ipAddress': instance.ipAddress,
