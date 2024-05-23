@@ -78,7 +78,7 @@ class _DeviceViewState extends State<DeviceView> {
     if (!_connected) {
       await showAlert();
     } else {
-      liviPod.userId = _authController.appUser!.id;
+      liviPod.appUserId = _authController.appUser!.id;
       if (!await _liviPodController.liviPodExists(liviPod)) {
         liviPod = await _liviPodController.addLiviPod(liviPod);
 

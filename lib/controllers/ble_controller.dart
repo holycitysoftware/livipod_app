@@ -4,9 +4,11 @@ import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
+import '../models/app_user.dart';
 import '../models/livi_pod.dart';
 import 'ble_device_controller.dart';
 import '../services/livi_pod_service.dart';
+import 'controllers.dart';
 
 class BleController extends ChangeNotifier {
   final LiviPodService liviPodController;
@@ -59,8 +61,6 @@ class BleController extends ChangeNotifier {
       notifyListeners();
     });
 
-    liviPodController.listenToLiviPodsRealTime().listen(_handleLiviPods);
-
     FlutterBluePlus.scanResults.listen((results) {
       _scanResults = results;
       notifyListeners();
@@ -74,6 +74,10 @@ class BleController extends ChangeNotifier {
       _isScanning = state;
       notifyListeners();
     });
+  }
+
+  void listen(AppUser user) {
+    liviPodController.listenToLiviPodsRealTime(user).listen(_handleLiviPods);
   }
 
   void _handleLiviPods(List<LiviPod> liviPods) {
