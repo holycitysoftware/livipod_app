@@ -41,6 +41,33 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  Future<void> goToEditCaregiver(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditCaregiverPage(),
+      ),
+    );
+  }
+
+  Future<void> goToAddCaregiver(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCaregiverPage(),
+      ),
+    );
+  }
+
+  Future<void> goToNotificationsPage(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NotificationsPage(),
+      ),
+    );
+  }
+
   Future<void> goToTermsPrivacyPage(BuildContext context) async {
     await Navigator.push(
       context,
@@ -81,12 +108,14 @@ class SettingsPage extends StatelessWidget {
                   InkWell(
                     onTap: () => goToEditInfoPage(context),
                     borderRadius: BorderRadius.circular(8),
-                    child: Ink(
+                    child: Container(
                       padding: EdgeInsets.all(12),
                       // margin: EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
                           color: LiviThemes.colors.baseWhite,
-                          border: Border.all(color: LiviThemes.colors.gray300),
+                          border: Border.all(
+                            color: LiviThemes.colors.gray300,
+                          ),
                           borderRadius: BorderRadius.circular(8)),
                       child: LiviTextStyles.interMedium14(
                         Strings.editInfo,
@@ -121,32 +150,10 @@ class SettingsPage extends StatelessWidget {
               ),
               contentBlock(
                 children: [
-                  ListTile(
-                    leading: NameCircleBox(
-                      appUser: authController.appUser!,
-                      isSmaller: true,
-                    ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LiviTextStyles.interSemiBold16('David Duranceau'),
-                        LiviTextStyles.interMedium14(
-                          'davidduranceau@pharmarigh',
-                          color: LiviThemes.colors.gray500,
-                        ),
-                        LiviTextStyles.interMedium14(
-                          '+1 (215) 268-8872',
-                          color: LiviThemes.colors.gray500,
-                        ),
-                      ],
-                    ),
-                    trailing: LiviThemes.icons.chevronRight(),
-                  ),
-                  LiviDivider(),
+                  caregiverWidget(authController, context),
+                  caregiverWidget(authController, context),
                   LiviInkWell(
-                    onTap: () {
-                      print(' ha');
-                    },
+                    onTap: () => goToAddCaregiver(context),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Row(
@@ -170,6 +177,7 @@ class SettingsPage extends StatelessWidget {
               contentBlock(
                 children: [
                   ListTile(
+                    onTap: () => goToNotificationsPage(context),
                     leading: Icon(
                       Icons.notifications,
                       color: LiviThemes.colors.error500,
@@ -224,6 +232,36 @@ class SettingsPage extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  Widget caregiverWidget(AuthController authController, BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          onTap: () => goToEditCaregiver(context),
+          leading: NameCircleBox(
+            appUser: authController.appUser!,
+            isSmaller: true,
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LiviTextStyles.interSemiBold16('David Duranceau'),
+              LiviTextStyles.interMedium14(
+                'davidduranceau@pharmarigh',
+                color: LiviThemes.colors.gray500,
+              ),
+              LiviTextStyles.interMedium14(
+                '+1 (215) 268-8872',
+                color: LiviThemes.colors.gray500,
+              ),
+            ],
+          ),
+          trailing: LiviThemes.icons.chevronRight(),
+        ),
+        LiviDivider(),
+      ],
     );
   }
 

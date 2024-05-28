@@ -9,21 +9,27 @@ class Strings {
   static const String addCaregiver = 'Add Caregiver';
   static const String delete = 'Delete';
   static const String livipod = 'LiviPod';
+  static const String connected = 'Connected';
   static const String podSettings = 'Pod Settings';
   static const String morning = 'Morning';
   static const String afternoon = 'Afternoon';
   static const String notifications = 'Notifications';
+  static const String notificationsSettings = 'Notifications Settings';
   static const String militaryTime = 'Military Time (AM e PM)';
   static const String shareFeedback = 'Share Feedback';
   static const String termsAndPrivacy = 'Terms & Privacy';
   static const String night = 'Night';
   static const String alert = 'Alert';
+  static const String stayInformedAboutImportant =
+      'Stay informed about important events and updates through different communication channels.';
+  static const String appNotification = 'App notification';
   static const String areYouSureYouWantToLogout =
       'Are you sure you want to logout of the application?';
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
   static const String editInfo = 'Edit Info';
+  static const String editCaregiver = 'Edit Caregiver';
   static const String caregivers = 'Caregivers';
   static const String every = 'Every';
   static const String areYouSureYouWantToDelete =
@@ -62,6 +68,16 @@ class Strings {
   static const String phoneNumber = 'Phone number';
   static const String skip = 'Skip';
   static const String email = 'Email';
+  static const String medicationPreferences = 'Medication Preferences';
+  static const String chooseWithNotifications =
+      'Choose which notifications related to your medications you want to receive.';
+  static const String medicationsAvailable = 'Medications Available';
+  static const String medicationsLate = 'Medications Late';
+  static const String medicationsDue = 'Medications Due';
+  static const String medicationsMissed = 'Medications Missed';
+  static const String podInventory = 'Pod Inventory';
+  static const String setYourNotificationPreferences =
+      "Set your notification preferences to track your pod's inventory and more.";
   static const String pleaseEnterYourPhoneNumber =
       'Please enter your phone number';
   static const String optional = '(Optional)';
@@ -438,6 +454,19 @@ class Strings {
   static const String myDevices = 'My Devices';
   static const String myPods = 'My Pods';
   static const String allowAutomaticDispensing = 'Allow Automatic Dispensing';
+  static const String notifyWhenPodInventoryIsLow =
+      'Notify when pod inventory is low';
+  static const String notifyWhenPodInventoryIsEmpty =
+      'Notify when pod inventory is empty';
+  static const String notifyWhenWifiIsUnavailable =
+      'Notify when Wi-Fi is unavailable';
+  static const String grantPermissionToDispense =
+      'Grant permission to dispense medications remotely.';
+  static const String caregiverMustBePresentAtThePod =
+      'Caregiver must be present at the Pod when remote dispensing is active.';
+  static const String removeCaregiver = 'Remove Caregiver';
+  static const String noMedication = 'No medication';
+  static const String selectAMedication = 'Select a medication';
 }
   // static const String logIn = 'Iniciar sesión';
   // static const String signUp = 'Registrarse';

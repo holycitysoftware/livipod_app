@@ -7,6 +7,7 @@ final BorderRadius _borderRadius = BorderRadius.circular(8);
 
 class LiviInputField extends StatefulWidget {
   final String? title;
+  final TextStyle? titleStyle;
   final String? subTitle;
   final String? hint;
   final String? errorText;
@@ -32,6 +33,7 @@ class LiviInputField extends StatefulWidget {
     this.onTap,
     this.readOnly = false,
     this.padding,
+    this.titleStyle,
     this.subTitle,
     this.maxLines = 1,
     this.hint,
@@ -112,8 +114,13 @@ class _LiviInputFieldState extends State<LiviInputField> {
           Row(
             children: [
               if (widget.title != null)
-                LiviTextStyles.interMedium16(widget.title!,
-                    color: LiviThemes.colors.gray500),
+                widget.titleStyle != null
+                    ? Text(
+                        widget.title!,
+                        style: widget.titleStyle,
+                      )
+                    : LiviTextStyles.interMedium16(widget.title!,
+                        color: LiviThemes.colors.gray500),
               LiviThemes.spacing.widthSpacer4(),
               if (widget.subTitle != null && widget.subTitle!.isNotEmpty)
                 LiviTextStyles.interMedium16(widget.subTitle!,

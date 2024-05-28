@@ -162,6 +162,18 @@ class LiviIcons {
     );
   }
 
+  String get _smallRealLiviPodPath => '$svgPath/small_real_livi_pod.svg';
+
+  Widget smallRealLiviPodIcon({
+    Color? color,
+    double? height,
+  }) {
+    return SvgPicture.asset(
+      _smallRealLiviPodPath,
+      height: height,
+    );
+  }
+
   String get _schedulePath => '$svgPath/schedule.svg';
 
   Widget scheduleIcon({

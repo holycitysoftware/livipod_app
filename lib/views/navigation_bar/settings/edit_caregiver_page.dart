@@ -10,24 +10,25 @@ import '../../../utils/countries.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
 
-class EditInfoPage extends StatefulWidget {
+class EditCaregiverPage extends StatefulWidget {
   static const String routeName = '/my-pods-page';
   final String? medication;
-  const EditInfoPage({
+  const EditCaregiverPage({
     super.key,
     this.medication,
   });
 
   @override
-  State<EditInfoPage> createState() => _EditInfoPageState();
+  State<EditCaregiverPage> createState() => _EditCaregiverPageState();
 }
 
-class _EditInfoPageState extends State<EditInfoPage> {
+class _EditCaregiverPageState extends State<EditCaregiverPage> {
   late final AuthController authController;
   Medication? medication;
   bool isLoading = false;
   Country country = getUS();
   AppUser? appUser;
+  var grantPermissionToDispense = true;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -58,6 +59,12 @@ class _EditInfoPageState extends State<EditInfoPage> {
     super.initState();
   }
 
+  void removeCaregiver() {
+    //TODO: Implement removeCaregiver
+    // authController.removeCaregiver(appUser!);
+    // Navigator.pop(context);
+  }
+
   void setAppUser() {
     appUser = authController.appUser;
     if (appUser != null) {
@@ -81,9 +88,19 @@ class _EditInfoPageState extends State<EditInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.fromLTRB(16, 6, 16, 24),
+        child: LiviFilledButton(
+          color: LiviThemes.colors.baseWhite,
+          text: Strings.removeCaregiver,
+          borderColor: LiviThemes.colors.error300,
+          textColor: LiviThemes.colors.error600,
+          onTap: () => removeCaregiver(),
+        ),
+      ),
       backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
-        title: Strings.editInfo,
+        title: Strings.editCaregiver,
         onPressed: () {},
         tail: [
           LiviTextIcon(
@@ -145,6 +162,34 @@ class _EditInfoPageState extends State<EditInfoPage> {
               hint: Strings.steveJobsNumber,
             );
           }),
+          LiviThemes.spacing.heightSpacer8(),
+          LiviDivider(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: LiviTextStyles.interMedium14(
+                        Strings.grantPermissionToDispense,
+                        maxLines: 2,
+                      ),
+                    ),
+                    LiviSwitchButton(
+                      value: true,
+                      onChanged: (e) {
+                        grantPermissionToDispense = e;
+                      },
+                    )
+                  ],
+                ),
+                LiviTextStyles.interRegular14(
+                    Strings.caregiverMustBePresentAtThePod),
+              ],
+            ),
+          )
         ],
       ),
     );

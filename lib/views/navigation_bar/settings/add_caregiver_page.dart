@@ -10,19 +10,19 @@ import '../../../utils/countries.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
 
-class EditInfoPage extends StatefulWidget {
+class AddCaregiverPage extends StatefulWidget {
   static const String routeName = '/my-pods-page';
   final String? medication;
-  const EditInfoPage({
+  const AddCaregiverPage({
     super.key,
     this.medication,
   });
 
   @override
-  State<EditInfoPage> createState() => _EditInfoPageState();
+  State<AddCaregiverPage> createState() => _AddCaregiverPageState();
 }
 
-class _EditInfoPageState extends State<EditInfoPage> {
+class _AddCaregiverPageState extends State<AddCaregiverPage> {
   late final AuthController authController;
   Medication? medication;
   bool isLoading = false;
@@ -83,7 +83,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
     return Scaffold(
       backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
-        title: Strings.editInfo,
+        title: Strings.addCaregiver,
         onPressed: () {},
         tail: [
           LiviTextIcon(
