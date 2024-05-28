@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'app_user_type.dart';
 
 import 'livi_pod.dart';
+import 'notification.dart';
 
 part 'app_user.g.dart';
 
@@ -24,24 +25,33 @@ class AppUser {
   bool useEmail;
   bool useSMS;
   bool usePushNotifications;
+  String base64EncodedImage;
+  bool allowAutomaticDispensing;
+  List<String> caregiverIds = [];
+  bool useMilitaryTime;
+  @JsonKey(defaultValue: <Notification>[])
+  List<Notification> notifications = [];
 
-  AppUser({
-    this.id = '',
-    this.accountId = '',
-    required this.name,
-    this.appUserType = AppUserType.selfGuidedUser,
-    required this.phoneNumber,
-    this.language = 'en',
-    this.podsList = const [],
-    this.email,
-    this.authToken = '',
-    this.enabled = true,
-    this.fcmToken = '',
-    this.timezone = 'US/Eastern',
-    this.useEmail = false,
-    this.useSMS = false,
-    this.usePushNotifications = true,
-  });
+  AppUser(
+      {required this.name,
+      required this.phoneNumber,
+      this.appUserType = AppUserType.selfGuidedUser,
+      this.id = '',
+      this.accountId = '',
+      this.language = 'en',
+      this.podsList = const [],
+      this.email,
+      this.authToken = '',
+      this.enabled = true,
+      this.fcmToken = '',
+      this.timezone = 'US/Eastern',
+      this.useEmail = false,
+      this.useSMS = false,
+      this.usePushNotifications = true,
+      this.base64EncodedImage = '',
+      this.allowAutomaticDispensing = false,
+      this.caregiverIds = const [],
+      this.useMilitaryTime = false});
 
   factory AppUser.fromJson(Map<String, dynamic> json) =>
       _$AppUserFromJson(json);

@@ -7,12 +7,12 @@ part of 'app_user.dart';
 // **************************************************************************
 
 AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
-      accountId: json['accountId'] as String? ?? '',
       name: json['name'] as String,
+      phoneNumber: json['phoneNumber'] as String,
       appUserType:
           $enumDecodeNullable(_$AppUserTypeEnumMap, json['appUserType']) ??
               AppUserType.selfGuidedUser,
-      phoneNumber: json['phoneNumber'] as String,
+      accountId: json['accountId'] as String? ?? '',
       language: json['language'] as String? ?? 'en',
       podsList: (json['podsList'] as List<dynamic>?)
               ?.map((e) => LiviPod.fromJson(e as Map<String, dynamic>))
@@ -26,7 +26,20 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       useEmail: json['useEmail'] as bool? ?? false,
       useSMS: json['useSMS'] as bool? ?? false,
       usePushNotifications: json['usePushNotifications'] as bool? ?? true,
-    )..authId = json['authId'] as String;
+      base64EncodedImage: json['base64EncodedImage'] as String? ?? '',
+      allowAutomaticDispensing:
+          json['allowAutomaticDispensing'] as bool? ?? false,
+      caregiverIds: (json['caregiverIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      useMilitaryTime: json['useMilitaryTime'] as bool? ?? false,
+    )
+      ..authId = json['authId'] as String
+      ..notifications = (json['notifications'] as List<dynamic>?)
+              ?.map((e) => Notification.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'authId': instance.authId,
@@ -44,6 +57,11 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'useEmail': instance.useEmail,
       'useSMS': instance.useSMS,
       'usePushNotifications': instance.usePushNotifications,
+      'base64EncodedImage': instance.base64EncodedImage,
+      'allowAutomaticDispensing': instance.allowAutomaticDispensing,
+      'caregiverIds': instance.caregiverIds,
+      'useMilitaryTime': instance.useMilitaryTime,
+      'notifications': instance.notifications.map((e) => e.toJson()).toList(),
     };
 
 const _$AppUserTypeEnumMap = {
