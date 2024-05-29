@@ -104,7 +104,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
       body: ListView(
         children: [
           LiviThemes.spacing.heightSpacer16(),
-          NameCircleBox(appUser: authController.appUser!),
+          NameCircleBox(name: authController.appUser!.name),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(
             focusNode: fullNameFocus,

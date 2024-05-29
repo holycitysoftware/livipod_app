@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
+import '../../../controllers/auth_controller.dart';
 import '../../../models/models.dart';
+import '../../../models/notification_type.dart';
+import '../../../services/app_user_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
 
@@ -20,16 +24,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
   final quantityController = TextEditingController(text: '10');
   bool isLoading = false;
   List<String> medications = [];
+  late final AuthController authController;
 
-  var appNotification = true;
-  var email = false;
-  var medicationsAvailable = false;
-  var medicationsLate = false;
-  var medicationsDue = true;
-  var medicationsMissed = true;
-  var notifyWhenPodInventoryIsLow = false;
-  var notifyWhenPodInventoryIsEmpty = false;
-  var notifyWhenWifiIsUnavailable = false;
+  @override
+  void initState() {
+    authController = Provider.of<AuthController>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,80 +39,100 @@ class _NotificationsPageState extends State<NotificationsPage> {
       appBar: LiviAppBar(
         title: Strings.notificationsSettings,
       ),
-      body: ListView(
-        children: [
-          LiviThemes.spacing.heightSpacer16(),
-          notificationInfo(
-              Strings.notifications, Strings.stayInformedAboutImportant),
-          notificationOption(
-            Strings.appNotification,
-            appNotification,
-            (e) => onChanged(appNotification, e),
-          ),
-          notificationOption(
-            Strings.email,
-            email,
-            (e) => onChanged(email, e),
-          ),
-          LiviDivider(height: 8),
-          LiviThemes.spacing.heightSpacer16(),
-          notificationInfo(
-              Strings.medicationPreferences, Strings.chooseWithNotifications),
-          notificationOption(
-            Strings.medicationsAvailable,
-            medicationsAvailable,
-            (e) => onChanged(medicationsAvailable, e),
-          ),
-          notificationOption(
-            Strings.medicationsLate,
-            medicationsLate,
-            (e) => onChanged(medicationsLate, e),
-          ),
-          notificationOption(
-            Strings.medicationsDue,
-            medicationsDue,
-            (e) => onChanged(medicationsDue, e),
-          ),
-          notificationOption(
-            Strings.medicationsMissed,
-            medicationsMissed,
-            (e) => onChanged(medicationsMissed, e),
-          ),
-          LiviDivider(height: 8),
-          LiviThemes.spacing.heightSpacer16(),
-          notificationInfo(
-              Strings.podInventory, Strings.setYourNotificationPreferences),
-          LiviInputField(
-            title: Strings.quantity,
-            titleStyle: LiviThemes.typography.interMedium_14,
-            focusNode: FocusNode(),
-            controller: quantityController,
-            keyboardType: TextInputType.number,
-          ),
-          notificationOption(
-            Strings.notifyWhenPodInventoryIsLow,
-            notifyWhenPodInventoryIsLow,
-            (e) => onChanged(notifyWhenPodInventoryIsLow, e),
-          ),
-          notificationOption(
-            Strings.notifyWhenPodInventoryIsEmpty,
-            notifyWhenPodInventoryIsEmpty,
-            (e) => onChanged(notifyWhenPodInventoryIsEmpty, e),
-          ),
-          notificationOption(
-            Strings.notifyWhenWifiIsUnavailable,
-            notifyWhenWifiIsUnavailable,
-            (e) => onChanged(notifyWhenWifiIsUnavailable, e),
-          ),
-        ],
-      ),
+      body: StreamBuilder<AppUser>(
+          stream: AppUserService().listenToUserRealTime(
+              Provider.of<AuthController>(context, listen: false).appUser!),
+          builder: (context, snapshot) {
+            final user = snapshot.data;
+            if (user == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return ListView(
+              children: [
+                LiviThemes.spacing.heightSpacer16(),
+                notificationInfo(
+                    Strings.notifications, Strings.stayInformedAboutImportant),
+                notificationOption(
+                  Strings.appNotification,
+                  user.usePushNotifications,
+                  (e) => onChangedUseNotification(e, user),
+                ),
+                notificationOption(
+                  Strings.email,
+                  user.useEmail,
+                  (e) => onChangedUseEmail(e, user),
+                ),
+                LiviDivider(height: 8),
+                LiviThemes.spacing.heightSpacer16(),
+                notificationInfo(Strings.medicationPreferences,
+                    Strings.chooseWithNotifications),
+                notificationOption(
+                  Strings.medicationsAvailable,
+                  user.medicationAvailable,
+                  (e) =>
+                      onChanged(NotificationType.medicationAvailable, e, user),
+                ),
+                notificationOption(
+                  Strings.medicationsLate,
+                  user.medicationLate,
+                  (e) => onChanged(NotificationType.medicationLate, e, user),
+                ),
+                notificationOption(
+                  Strings.medicationsDue,
+                  user.medicationDue,
+                  (e) => onChanged(NotificationType.medicationDue, e, user),
+                ),
+                notificationOption(
+                  Strings.medicationsMissed,
+                  user.medicationMissed,
+                  (e) => onChanged(NotificationType.medicationMissed, e, user),
+                ),
+                LiviDivider(height: 8),
+                LiviThemes.spacing.heightSpacer16(),
+                notificationInfo(Strings.podInventory,
+                    Strings.setYourNotificationPreferences),
+                LiviInputField(
+                  title: Strings.quantity,
+                  titleStyle: LiviThemes.typography.interMedium_14,
+                  focusNode: FocusNode(),
+                  controller: quantityController,
+                  keyboardType: TextInputType.number,
+                ),
+                notificationOption(
+                  Strings.notifyWhenPodInventoryIsLow,
+                  user.inventoryLow,
+                  (e) => onChanged(NotificationType.inventoryLow, e, user),
+                ),
+                notificationOption(
+                  Strings.notifyWhenPodInventoryIsEmpty,
+                  user.inventoryEmpty,
+                  (e) => onChanged(NotificationType.inventoryEmpty, e, user),
+                ),
+                notificationOption(
+                  Strings.notifyWhenWifiIsUnavailable,
+                  user.wifiUnavailable,
+                  (e) => onChanged(NotificationType.wifiUnavailable, e, user),
+                ),
+              ],
+            );
+          }),
     );
   }
 
-  void onChanged(bool variable, bool value) {
-    setState(() {
-      variable = value;
-    });
+  Future<void> onChanged(
+      NotificationType notificationType, bool value, AppUser user) async {
+    user.setNotification(notificationType, value);
+    await AppUserService().updateUser(user);
+  }
+
+  Future<void> onChangedUseNotification(bool value, AppUser user) async {
+    user.usePushNotifications = value;
+    await AppUserService().updateUser(user);
+  }
+
+  Future<void> onChangedUseEmail(bool value, AppUser user) async {
+    user.useEmail = value;
+    await AppUserService().updateUser(user);
   }
 
   Widget notificationOption(
@@ -124,8 +145,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
               color: LiviThemes.colors.baseBlack),
           Spacer(),
           LiviSwitchButton(
-            value: true,
-            onChanged: (value) {},
+            value: value,
+            onChanged: (value) {
+              onChanged(value);
+            },
           ),
         ],
       ),

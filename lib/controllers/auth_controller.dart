@@ -76,7 +76,6 @@ class AuthController extends ChangeNotifier {
     _appUser = AppUser(
       name: fullNameController,
       email: emailController,
-      useEmail: emailController != null && emailController.isNotEmpty,
       phoneNumber: phoneNumberController,
       timezone: timezone,
     );

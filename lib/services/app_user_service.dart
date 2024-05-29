@@ -198,6 +198,41 @@ class AppUserService {
     }
   }
 
+  Stream<List<AppUser>> listenToCaregiversRealTime(AppUser patient) {
+    final StreamController<List<AppUser>> _caregiversController =
+        StreamController<List<AppUser>>.broadcast();
+    FirebaseFirestore.instance.collection('users').snapshots().listen(
+        (usersSnapshot) {
+          if (usersSnapshot.docs.isNotEmpty) {
+            final List<AppUser> users = [];
+            final list = usersSnapshot.docs.map((snapshot) {
+              final user = AppUser.fromJson(snapshot.data());
+              if (patient.caregiverIds.contains(snapshot.id) &&
+                  user.appUserType == AppUserType.caregiver) {
+                return user;
+              }
+            }).toList();
+            for (final element in list) {
+              if (element != null) {
+                users.add(element);
+              }
+            }
+            if (users.isNotEmpty) {
+              _caregiversController.add(users);
+            }
+          } else {
+            _caregiversController.add([]);
+          }
+        },
+        cancelOnError: true,
+        onError: (error) {
+          if (kDebugMode) {
+            print(error);
+          }
+        });
+    return _caregiversController.stream;
+  }
+
   Stream<AppUser> listenToUserRealTime(AppUser user) {
     FirebaseFirestore.instance
         .collection('users')

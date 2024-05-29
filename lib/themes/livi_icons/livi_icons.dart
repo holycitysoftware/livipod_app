@@ -643,6 +643,11 @@ class LiviIcons {
         '$imagesPath/livipod.png',
       );
 
+  Widget get liviPodImageSmaller => Image.asset(
+        'assets/images/livipod.png',
+        height: 40,
+      );
+
   AssetImage get splashBackgroundImage =>
       AssetImage('$imagesPath/splash_background.png');
 }

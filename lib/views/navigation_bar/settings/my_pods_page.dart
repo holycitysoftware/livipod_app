@@ -74,8 +74,8 @@ class _MyPodsPageState extends State<MyPodsPage> {
                             padding: const EdgeInsets.all(16),
                             child: Row(
                               children: [
-                                LiviThemes.icons.smallLiviPodIcon(height: 30),
-                                LiviThemes.spacing.widthSpacer8(),
+                                LiviThemes.icons.liviPodImageSmaller,
+                                LiviThemes.spacing.widthSpacer24(),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -85,6 +85,10 @@ class _MyPodsPageState extends State<MyPodsPage> {
                                     medicationStatus(true),
                                   ],
                                 ),
+                                Spacer(),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: LiviThemes.icons.chevronRight()),
                               ],
                             ),
                           ),
@@ -124,10 +128,7 @@ class _MyPodsPageState extends State<MyPodsPage> {
                   }),
             ),
           ),
-          LiviDivider(),
-          LiviDivider(),
-          LiviDivider(),
-          LiviDivider(),
+          LiviDivider(height: 8),
           Expanded(
             child: Consumer<BleController>(builder: (context, value, child) {
               return Card(

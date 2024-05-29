@@ -24,5 +24,8 @@ const _$NotificationTypeEnumMap = {
   NotificationType.medicationDue: 'medicationDue',
   NotificationType.medicationLate: 'medicationLate',
   NotificationType.medicationMissed: 'medicationMissed',
+  NotificationType.inventoryLow: 'inventoryLow',
+  NotificationType.inventoryEmpty: 'inventoryEmpty',
+  NotificationType.wifiUnavailable: 'wifiUnavailable',
   NotificationType.none: 'none',
 };

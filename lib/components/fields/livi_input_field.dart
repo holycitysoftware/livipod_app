@@ -13,6 +13,7 @@ class LiviInputField extends StatefulWidget {
   final String? errorText;
   final bool readOnly;
   final Function()? onTap;
+  final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
   final EdgeInsets? padding;
   final TextEditingController? controller;
@@ -34,6 +35,7 @@ class LiviInputField extends StatefulWidget {
     this.readOnly = false,
     this.padding,
     this.titleStyle,
+    this.textInputAction,
     this.subTitle,
     this.maxLines = 1,
     this.hint,
@@ -145,6 +147,7 @@ class _LiviInputFieldState extends State<LiviInputField> {
               style: LiviThemes.typography.interRegular_16,
               onFieldSubmitted: widget.onFieldSubmitted,
               focusNode: widget.focusNode,
+              textInputAction: widget.textInputAction ?? TextInputAction.next,
               keyboardType: widget.keyboardType ?? TextInputType.text,
               decoration: InputDecoration(
                 prefixIcon: widget.prefix,

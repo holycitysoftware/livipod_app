@@ -12,10 +12,10 @@ import '../../../utils/strings.dart';
 
 class EditCaregiverPage extends StatefulWidget {
   static const String routeName = '/my-pods-page';
-  final String? medication;
+  final AppUser appUser;
   const EditCaregiverPage({
     super.key,
-    this.medication,
+    required this.appUser,
   });
 
   @override
@@ -41,8 +41,8 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     return fullNameController.text.isNotEmpty &&
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
-            (appUser!.name != fullNameController.text ||
-                appUser!.phoneNumber != phoneNumberController.text));
+            (widget.appUser.name != fullNameController.text ||
+                widget.appUser.phoneNumber != phoneNumberController.text));
   }
 
   @override
@@ -66,13 +66,13 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   }
 
   void setAppUser() {
-    appUser = authController.appUser;
+    appUser = widget.appUser;
     if (appUser != null) {
-      fullNameController.text = appUser!.name;
-      if (appUser!.email != null && appUser!.email!.isNotEmpty) {
-        emailController.text = appUser!.email!;
+      fullNameController.text = widget.appUser.name;
+      if (widget.appUser.email != null && widget.appUser.email!.isNotEmpty) {
+        emailController.text = widget.appUser.email!;
       }
-      phoneNumberController.text = appUser!.phoneNumber;
+      phoneNumberController.text = widget.appUser.phoneNumber;
     }
   }
 
@@ -121,7 +121,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
       body: ListView(
         children: [
           LiviThemes.spacing.heightSpacer16(),
-          NameCircleBox(appUser: authController.appUser!),
+          NameCircleBox(name: appUser!.name),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(
             focusNode: fullNameFocus,

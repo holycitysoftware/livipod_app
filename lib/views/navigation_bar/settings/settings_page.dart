@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
+import '../../../models/models.dart';
+import '../../../services/app_user_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
 import '../../views.dart';
@@ -41,11 +43,13 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Future<void> goToEditCaregiver(BuildContext context) async {
+  Future<void> goToEditCaregiver(BuildContext context, AppUser user) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditCaregiverPage(),
+        builder: (context) => EditCaregiverPage(
+          appUser: user,
+        ),
       ),
     );
   }
@@ -77,6 +81,16 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  Future<void> updateAllowAutomaticDispensing(AppUser user, bool value) async {
+    user.allowAutomaticDispensing = value;
+    await AppUserService().updateUser(user);
+  }
+
+  Future<void> updateMilitaryTime(AppUser user, bool value) async {
+    user.useMilitaryTime = value;
+    await AppUserService().updateUser(user);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -87,7 +101,7 @@ class SettingsPage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: ListView(
             children: [
-              NameCircleBox(appUser: authController.appUser!),
+              NameCircleBox(name: authController.appUser!.name),
 
               LiviThemes.spacing.heightSpacer8(),
               LiviTextStyles.interBold20(
@@ -126,32 +140,53 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ],
               ),
+              StreamBuilder<AppUser>(
+                  stream: AppUserService().listenToUserRealTime(
+                      Provider.of<AuthController>(context, listen: false)
+                          .appUser!),
+                  builder: (context, snapshot) {
+                    final user = snapshot.data!;
+                    return contentBlock(
+                      children: [
+                        ListTile(
+                          onTap: () => goToMyPodsPage(context),
+                          leading: LiviThemes.icons.devicesIcon(),
+                          title: Text(Strings.myPods),
+                          trailing: LiviThemes.icons.chevronRight(),
+                        ),
+                        LiviDivider(),
+                        ListTile(
+                          leading: LiviThemes.icons.wifiIcon(),
+                          title: Text(Strings.allowAutomaticDispensing),
+                          trailing: LiviSwitchButton(
+                            value: user.allowAutomaticDispensing,
+                            onChanged: (value) {
+                              updateAllowAutomaticDispensing(user, value);
+                            },
+                          ),
+                        ),
+                      ],
+                      titleIcon: LiviThemes.icons.smallLiviPodIcon(),
+                      title: Strings.podSettings,
+                    );
+                  }),
 
               contentBlock(
                 children: [
-                  ListTile(
-                    onTap: () => goToMyPodsPage(context),
-                    leading: LiviThemes.icons.devicesIcon(),
-                    title: Text(Strings.myPods),
-                    trailing: LiviThemes.icons.chevronRight(),
-                  ),
-                  LiviDivider(),
-                  ListTile(
-                    leading: LiviThemes.icons.wifiIcon(),
-                    title: Text(Strings.allowAutomaticDispensing),
-                    trailing: LiviSwitchButton(
-                      value: true,
-                      onChanged: (value) {},
-                    ),
-                  ),
-                ],
-                titleIcon: LiviThemes.icons.smallLiviPodIcon(),
-                title: Strings.podSettings,
-              ),
-              contentBlock(
-                children: [
-                  caregiverWidget(authController, context),
-                  caregiverWidget(authController, context),
+                  StreamBuilder<List<AppUser>>(
+                      stream: AppUserService()
+                          .listenToCaregiversRealTime(authController.appUser!),
+                      builder: (context, snapshot) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final item = snapshot.data![index];
+                            return caregiverWidget(item, context);
+                          },
+                        );
+                      }),
                   LiviInkWell(
                     onTap: () => goToAddCaregiver(context),
                     child: Padding(
@@ -174,6 +209,7 @@ class SettingsPage extends StatelessWidget {
                 title: Strings.caregivers,
               ),
               // contentBlock([]),
+
               contentBlock(
                 children: [
                   ListTile(
@@ -186,17 +222,26 @@ class SettingsPage extends StatelessWidget {
                     trailing: LiviThemes.icons.chevronRight(),
                   ),
                   LiviDivider(),
-                  ListTile(
-                    leading: Icon(
-                      Icons.access_time_filled,
-                      color: LiviThemes.colors.blue400,
-                    ),
-                    title: Text(Strings.militaryTime),
-                    trailing: LiviSwitchButton(
-                      value: true,
-                      onChanged: (value) {},
-                    ),
-                  ),
+                  StreamBuilder<AppUser>(
+                      stream: AppUserService().listenToUserRealTime(
+                          Provider.of<AuthController>(context, listen: false)
+                              .appUser!),
+                      builder: (context, snapshot) {
+                        final user = snapshot.data!;
+                        return ListTile(
+                          leading: Icon(
+                            Icons.access_time_filled,
+                            color: LiviThemes.colors.blue400,
+                          ),
+                          title: Text(Strings.militaryTime),
+                          trailing: LiviSwitchButton(
+                            value: user.useMilitaryTime,
+                            onChanged: (value) {
+                              updateMilitaryTime(user, value);
+                            },
+                          ),
+                        );
+                      }),
                   LiviDivider(),
                   ListTile(
                     leading: Icon(
@@ -235,25 +280,26 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget caregiverWidget(AuthController authController, BuildContext context) {
+  Widget caregiverWidget(AppUser user, BuildContext context) {
     return Column(
       children: [
         ListTile(
-          onTap: () => goToEditCaregiver(context),
+          onTap: () => goToEditCaregiver(context, user),
           leading: NameCircleBox(
-            appUser: authController.appUser!,
+            name: user.name,
             isSmaller: true,
           ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LiviTextStyles.interSemiBold16('David Duranceau'),
+              LiviTextStyles.interSemiBold16(user.name),
+              if (user.email != null && user.email!.isNotEmpty)
+                LiviTextStyles.interMedium14(
+                  user.email!,
+                  color: LiviThemes.colors.gray500,
+                ),
               LiviTextStyles.interMedium14(
-                'davidduranceau@pharmarigh',
-                color: LiviThemes.colors.gray500,
-              ),
-              LiviTextStyles.interMedium14(
-                '+1 (215) 268-8872',
+                user.phoneNumber,
                 color: LiviThemes.colors.gray500,
               ),
             ],
