@@ -11,7 +11,9 @@ import '../../../utils/strings.dart';
 import '../../views.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  final appUserService = AppUserService();
+
+  SettingsPage({super.key});
 
   Future<void> logout(
       AuthController authController, BuildContext context) async {
@@ -83,12 +85,12 @@ class SettingsPage extends StatelessWidget {
 
   Future<void> updateAllowAutomaticDispensing(AppUser user, bool value) async {
     user.allowAutomaticDispensing = value;
-    await AppUserService().updateUser(user);
+    await appUserService.updateUser(user);
   }
 
   Future<void> updateMilitaryTime(AppUser user, bool value) async {
     user.useMilitaryTime = value;
-    await AppUserService().updateUser(user);
+    await appUserService.updateUser(user);
   }
 
   @override
@@ -141,10 +143,13 @@ class SettingsPage extends StatelessWidget {
                 ],
               ),
               StreamBuilder<AppUser>(
-                  stream: AppUserService().listenToUserRealTime(
+                  stream: appUserService.listenToUserRealTime(
                       Provider.of<AuthController>(context, listen: false)
                           .appUser!),
                   builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return SizedBox();
+                    }
                     final user = snapshot.data!;
                     return contentBlock(
                       children: [
@@ -174,9 +179,13 @@ class SettingsPage extends StatelessWidget {
               contentBlock(
                 children: [
                   StreamBuilder<List<AppUser>>(
-                      stream: AppUserService()
+                      stream: appUserService
                           .listenToCaregiversRealTime(authController.appUser!),
                       builder: (context, snapshot) {
+                        if (snapshot.data == null) {
+                          return SizedBox();
+                        }
+                        final user = snapshot.data!;
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
@@ -222,26 +231,29 @@ class SettingsPage extends StatelessWidget {
                     trailing: LiviThemes.icons.chevronRight(),
                   ),
                   LiviDivider(),
-                  StreamBuilder<AppUser>(
-                      stream: AppUserService().listenToUserRealTime(
-                          Provider.of<AuthController>(context, listen: false)
-                              .appUser!),
-                      builder: (context, snapshot) {
-                        final user = snapshot.data!;
-                        return ListTile(
-                          leading: Icon(
-                            Icons.access_time_filled,
-                            color: LiviThemes.colors.blue400,
-                          ),
-                          title: Text(Strings.militaryTime),
-                          trailing: LiviSwitchButton(
-                            value: user.useMilitaryTime,
-                            onChanged: (value) {
-                              updateMilitaryTime(user, value);
-                            },
-                          ),
-                        );
-                      }),
+                  // StreamBuilder<AppUser>(
+                  //     stream: appUserService.listenToUserRealTime(
+                  //         Provider.of<AuthController>(context, listen: false)
+                  //             .appUser!),
+                  //     builder: (context, snapshot) {
+                  //       if (snapshot.data == null) {
+                  //         return SizedBox();
+                  //       }
+                  //       final user = snapshot.data!;
+                  //       return ListTile(
+                  //         leading: Icon(
+                  //           Icons.access_time_filled,
+                  //           color: LiviThemes.colors.blue400,
+                  //         ),
+                  //         title: Text(Strings.militaryTime),
+                  //         trailing: LiviSwitchButton(
+                  //           value: user.useMilitaryTime,
+                  //           onChanged: (value) {
+                  //             updateMilitaryTime(user, value);
+                  //           },
+                  //         ),
+                  //       );
+                  //     }),
                   LiviDivider(),
                   ListTile(
                     leading: Icon(

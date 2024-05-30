@@ -199,7 +199,7 @@ class AppUserService {
   }
 
   Stream<List<AppUser>> listenToCaregiversRealTime(AppUser patient) {
-    final StreamController<List<AppUser>> _caregiversController =
+    final StreamController<List<AppUser>> caregiversController =
         StreamController<List<AppUser>>.broadcast();
     FirebaseFirestore.instance.collection('users').snapshots().listen(
         (usersSnapshot) {
@@ -215,13 +215,14 @@ class AppUserService {
             for (final element in list) {
               if (element != null) {
                 users.add(element);
+                element.id = usersSnapshot.docs[list.indexOf(element)].id;
               }
             }
             if (users.isNotEmpty) {
-              _caregiversController.add(users);
+              caregiversController.add(users);
             }
           } else {
-            _caregiversController.add([]);
+            caregiversController.add([]);
           }
         },
         cancelOnError: true,
@@ -230,7 +231,7 @@ class AppUserService {
             print(error);
           }
         });
-    return _caregiversController.stream;
+    return caregiversController.stream;
   }
 
   Stream<AppUser> listenToUserRealTime(AppUser user) {

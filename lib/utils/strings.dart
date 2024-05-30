@@ -10,7 +10,12 @@ class Strings {
   static const String delete = 'Delete';
   static const String livipod = 'LiviPod';
   static const String connected = 'Connected';
+  static const String remove = 'Remove';
   static const String podSettings = 'Pod Settings';
+  static const String areYouSureYouWantToRemove =
+      'Are you sure you want to remove';
+  static const String willNoLongerHaveAccess =
+      'will no longer have access to your medications, profile or the Pod.';
   static const String morning = 'Morning';
   static const String afternoon = 'Afternoon';
   static const String notifications = 'Notifications';
@@ -188,6 +193,7 @@ class Strings {
   static const String save = 'Save';
   static const String quantityNeeded = 'Quantity Needed';
   static const String quantity = 'Quantity';
+  static const String lowInventoryQuantity = 'Low Inventory Quantity';
   static const String intervalBetweenDoses = 'Interval Between Doses';
   static const String maximumDailyQuantity = 'Maximum Daily Quantity';
   static const String startDate = 'Start Date';

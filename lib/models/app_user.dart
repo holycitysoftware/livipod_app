@@ -17,6 +17,7 @@ class AppUser {
   AppUserType appUserType;
   String phoneNumber = '';
   List<LiviPod> podsList;
+  int lowInventoryQuantity;
   String? email;
   String authToken = '';
   bool enabled;
@@ -101,6 +102,7 @@ class AppUser {
     this.appUserType = AppUserType.selfGuidedUser,
     this.id = '',
     this.accountId = '',
+    this.lowInventoryQuantity = 10,
     this.language = 'en',
     this.podsList = const [],
     this.email,

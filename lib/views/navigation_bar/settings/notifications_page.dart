@@ -25,6 +25,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   bool isLoading = false;
   List<String> medications = [];
   late final AuthController authController;
+  final appUserService = AppUserService();
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         title: Strings.notificationsSettings,
       ),
       body: StreamBuilder<AppUser>(
-          stream: AppUserService().listenToUserRealTime(
+          stream: appUserService.listenToUserRealTime(
               Provider.of<AuthController>(context, listen: false).appUser!),
           builder: (context, snapshot) {
             final user = snapshot.data;
@@ -62,6 +63,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   user.useEmail,
                   (e) => onChangedUseEmail(e, user),
                 ),
+                LiviThemes.spacing.heightSpacer8(),
                 LiviDivider(height: 8),
                 LiviThemes.spacing.heightSpacer16(),
                 notificationInfo(Strings.medicationPreferences,
@@ -87,12 +89,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   user.medicationMissed,
                   (e) => onChanged(NotificationType.medicationMissed, e, user),
                 ),
+                LiviThemes.spacing.heightSpacer8(),
                 LiviDivider(height: 8),
                 LiviThemes.spacing.heightSpacer16(),
                 notificationInfo(Strings.podInventory,
                     Strings.setYourNotificationPreferences),
                 LiviInputField(
-                  title: Strings.quantity,
+                  title: Strings.lowInventoryQuantity,
                   titleStyle: LiviThemes.typography.interMedium_14,
                   focusNode: FocusNode(),
                   controller: quantityController,
@@ -113,6 +116,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   user.wifiUnavailable,
                   (e) => onChanged(NotificationType.wifiUnavailable, e, user),
                 ),
+                LiviThemes.spacing.heightSpacer16(),
               ],
             );
           }),
@@ -122,17 +126,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Future<void> onChanged(
       NotificationType notificationType, bool value, AppUser user) async {
     user.setNotification(notificationType, value);
-    await AppUserService().updateUser(user);
+    await appUserService.updateUser(user);
   }
 
   Future<void> onChangedUseNotification(bool value, AppUser user) async {
     user.usePushNotifications = value;
-    await AppUserService().updateUser(user);
+    await appUserService.updateUser(user);
   }
 
   Future<void> onChangedUseEmail(bool value, AppUser user) async {
     user.useEmail = value;
-    await AppUserService().updateUser(user);
+    await appUserService.updateUser(user);
   }
 
   Widget notificationOption(

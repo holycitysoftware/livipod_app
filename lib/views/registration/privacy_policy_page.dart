@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,8 +21,6 @@ class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
   Future<void> launchUrlPrivacy(Uri uri) async {
-    print('here');
-
     if (await canLaunchUrl(uri)) {
       launchUrl(uri);
     } else {

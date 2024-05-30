@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
 import '../../../models/models.dart';
+import '../../../services/services.dart';
 import '../../../themes/livi_spacing/livi_spacing.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/countries.dart';
@@ -29,6 +30,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   Country country = getUS();
   AppUser? appUser;
   var grantPermissionToDispense = true;
+  final appUserService = AppUserService();
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -59,10 +61,20 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     super.initState();
   }
 
-  void removeCaregiver() {
-    //TODO: Implement removeCaregiver
-    // authController.removeCaregiver(appUser!);
-    // Navigator.pop(context);
+  Future<void> updateAllowAutomaticDispensing(AppUser user, bool value) async {
+    user.allowAutomaticDispensing = value;
+    await appUserService.updateUser(user);
+  }
+
+  Future<void> removeCaregiver() async {
+    if (appUser != null && authController.appUser != null) {
+      final remove =
+          await LiviAlertDialog.removeCaregiver(context, appUser!.name);
+      await appUserService.deleteUser(appUser!);
+      authController.appUser!.caregiverIds.remove(appUser!.id);
+      await appUserService.updateUser(authController.appUser!);
+      Navigator.pop(context);
+    }
   }
 
   void setAppUser() {
@@ -177,12 +189,20 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
                         maxLines: 2,
                       ),
                     ),
-                    LiviSwitchButton(
-                      value: true,
-                      onChanged: (e) {
-                        grantPermissionToDispense = e;
-                      },
-                    )
+                    StreamBuilder<AppUser>(
+                        stream: appUserService.listenToUserRealTime(appUser!),
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return SizedBox();
+                          }
+                          final user = snapshot.data!;
+                          return LiviSwitchButton(
+                            value: user.allowAutomaticDispensing,
+                            onChanged: (e) {
+                              updateAllowAutomaticDispensing(appUser!, e);
+                            },
+                          );
+                        }),
                   ],
                 ),
                 LiviTextStyles.interRegular14(

@@ -29,7 +29,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   late AuthController _authController;
   final AppUserService _appUserService = AppUserService();
 
-  List<Widget> navigationBarPages = const [
+  List<Widget> navigationBarPages = [
     HomePage(),
     MedicationsPage(),
     HistoryPage(),

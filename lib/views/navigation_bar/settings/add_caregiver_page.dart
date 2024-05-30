@@ -30,6 +30,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   bool isLoading = false;
   Country country = getUS();
   AppUser appUser = AppUser(name: '', phoneNumber: '');
+  final appUserService = AppUserService();
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -87,7 +88,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
           fullNameController: fullNameController.text,
           emailController: emailController.text,
           phoneNumberController: phoneNumberController.text);
-      final user = await AppUserService().createUser(appUser);
+      final user = await appUserService.createUser(appUser);
       final loggedUser = authController.appUser;
       final list = <String>[];
       if (loggedUser!.caregiverIds != null) {
@@ -95,7 +96,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
         list.add(user.id);
       }
       loggedUser.caregiverIds = list;
-      await AppUserService().updateUser(authController.appUser!);
+      await appUserService.updateUser(authController.appUser!);
       Navigator.pop(context);
     }
   }
