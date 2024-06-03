@@ -83,7 +83,7 @@ class _SelectMedicationStrengthState extends State<SelectMedicationStrength> {
         children: [
           LiviTextStyles.interSemiBold36(
             Strings.selectMedicationStrength,
-            textAlign: TextAlign.end,
+            textAlign: TextAlign.center,
           ),
           LiviThemes.spacing.heightSpacer32(),
           if (isLoading)

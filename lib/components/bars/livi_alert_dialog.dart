@@ -1,11 +1,108 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../controllers/controllers.dart';
+import '../../models/models.dart';
+import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
 import '../components.dart';
 
 class LiviAlertDialog {
   void empty() {}
+
+  static Future<LiviPod> showModal(BuildContext context, LiviPod pod) async {
+    Medication? medication;
+    await showDialog(
+        context: context,
+        anchorPoint: Offset(80, 80),
+        builder: (e) {
+          return SimpleDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        LiviThemes.icons.liviPodImageSmaller,
+                        LiviThemes.spacing.widthSpacer24(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            LiviThemes.spacing.widthSpacer8(),
+                            LiviTextStyles.interMedium16(Strings.noMedication),
+                          ],
+                        ),
+                        Spacer(),
+                      ],
+                    ),
+                    LiviThemes.spacing.heightSpacer8(),
+                    LiviTextStyles.interMedium14(Strings.selectAMedication,
+                        color: LiviThemes.colors.gray500),
+                    StreamBuilder<List<Medication>>(
+                        stream: MedicationService().listenToMedicationsRealTime(
+                            Provider.of<AuthController>(context).appUser!),
+                        builder: (context, snapshot) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: LiviDropdownButton<Medication?>(
+                                onChanged: (e) {
+                                  medication = e;
+                                },
+                                isExpanded: true,
+                                value: medication,
+                                items: snapshot.data != null &&
+                                        snapshot.data!.isNotEmpty
+                                    ? snapshot.data!
+                                        .map(
+                                          (e) => DropdownMenuItem<Medication>(
+                                            child: LiviTextStyles.interMedium16(
+                                                e.name),
+                                          ),
+                                        )
+                                        .toList()
+                                    : [
+                                        DropdownMenuItem(
+                                          child: LiviTextStyles.interMedium16(
+                                              Strings.noMedsAvailable),
+                                        )
+                                      ]),
+                          );
+                        }),
+                    LiviThemes.spacing.heightSpacer8(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: LiviOutlinedButton(
+                            onTap: () {},
+                            text: Strings.cancel,
+                          ),
+                        ),
+                        LiviThemes.spacing.widthSpacer8(),
+                        Expanded(
+                          child: LiviOutlinedButton(
+                            onTap: () {},
+                            backgroundColor: LiviThemes.colors.brand600,
+                            text: Strings.claim,
+                            textColor: LiviThemes.colors.baseWhite,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          );
+        });
+    return pod;
+  }
+
   // This shows a C upertinoModalPopup which hosts a CupertinoAlertDialog.
   static Future<void> showAlertDialog(BuildContext context) async {
     await showCupertinoModalPopup<void>(

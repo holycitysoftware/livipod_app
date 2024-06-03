@@ -10,6 +10,9 @@ class Strings {
   static const String delete = 'Delete';
   static const String livipod = 'LiviPod';
   static const String connected = 'Connected';
+  static const String claim = 'Claim';
+  static const String searching = 'Searching...';
+  static const String availablePods = 'Available Pods';
   static const String remove = 'Remove';
   static const String podSettings = 'Pod Settings';
   static const String areYouSureYouWantToRemove =
@@ -472,6 +475,7 @@ class Strings {
       'Caregiver must be present at the Pod when remote dispensing is active.';
   static const String removeCaregiver = 'Remove Caregiver';
   static const String noMedication = 'No medication';
+  static const String noMedsAvailable = 'No meds available';
   static const String selectAMedication = 'Select a medication';
 }
   // static const String logIn = 'Iniciar sesión';

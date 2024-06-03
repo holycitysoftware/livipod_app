@@ -128,7 +128,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
         children: [
           LiviThemes.spacing.heightSpacer16(),
           NameCircleBox(
-            name: authController.appUser!.name,
+            name: appUser.name,
           ),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(

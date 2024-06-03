@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../themes/livi_themes.dart';
+import '../components.dart';
 
 class LiviDropdownButton<T> extends StatelessWidget {
   final ValueChanged<T?>? onChanged;
   final List<DropdownMenuItem<T>>? items;
   final T? value;
   final bool isExpanded;
+  final String? hint;
   const LiviDropdownButton({
     super.key,
     required this.onChanged,
     required this.items,
+    this.hint,
     this.value,
     this.isExpanded = false,
   });
@@ -33,6 +36,7 @@ class LiviDropdownButton<T> extends StatelessWidget {
         icon: LiviThemes.icons.chevronDownGray,
         value: value,
         elevation: 16,
+        hint: hint != null ? LiviTextStyles.interRegular16(hint!) : null,
         onChanged: onChanged,
         isExpanded: isExpanded,
         items: items,
