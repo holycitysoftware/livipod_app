@@ -32,6 +32,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   AppUser? appUser;
   var grantPermissionToDispense = true;
   final appUserService = AppUserService();
+  String? base64Image;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -41,11 +42,12 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   final FocusNode phoneFocus = FocusNode();
 
   bool enabledSaveButton() {
-    return fullNameController.text.isNotEmpty &&
-        phoneNumberController.text.isNotEmpty &&
+    return fullNameController.text.isNotEmpty ||
+        phoneNumberController.text.isNotEmpty ||
         (appUser != null &&
             (widget.appUser.name != fullNameController.text ||
-                widget.appUser.phoneNumber != phoneNumberController.text));
+                widget.appUser.phoneNumber != phoneNumberController.text)) ||
+        base64Image != null;
   }
 
   @override
@@ -95,6 +97,9 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     if (appUser != null) {
       appUser!.name = fullNameController.text;
       appUser!.email = emailController.text;
+      if (appUser != null && base64Image != null) {
+        appUser!.base64EncodedImage = base64Image!;
+      }
       await authController.editAppUser(appUser!);
       Navigator.pop(context);
     }
@@ -138,8 +143,12 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
           LiviThemes.spacing.heightSpacer16(),
           NameCircleBox(
             name: appUser!.name,
-            onTap: () => updateImage(context),
-            profilePic: widget.appUser.base64EncodedImage,
+            onTap: () async {
+              base64Image = await updateImage(context, widget.appUser);
+
+              setState(() {});
+            },
+            profilePic: base64Image,
           ),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(

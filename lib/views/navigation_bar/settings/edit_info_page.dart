@@ -34,6 +34,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
   bool isLoading = false;
   Country country = getUS();
   AppUser? appUser;
+  String? base64Image;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -43,11 +44,12 @@ class _EditInfoPageState extends State<EditInfoPage> {
   final FocusNode phoneFocus = FocusNode();
 
   bool enabledSaveButton() {
-    return fullNameController.text.isNotEmpty &&
-        phoneNumberController.text.isNotEmpty &&
+    return fullNameController.text.isNotEmpty ||
+        phoneNumberController.text.isNotEmpty ||
         (appUser != null &&
             (appUser!.name != fullNameController.text ||
-                appUser!.phoneNumber != phoneNumberController.text));
+                appUser!.phoneNumber != phoneNumberController.text)) ||
+        base64Image != null;
   }
 
   @override
@@ -79,6 +81,9 @@ class _EditInfoPageState extends State<EditInfoPage> {
     if (appUser != null) {
       appUser!.name = fullNameController.text;
       appUser!.email = emailController.text;
+      if (appUser != null && base64Image != null) {
+        appUser!.base64EncodedImage = base64Image!;
+      }
       await authController.editAppUser(appUser!);
       Navigator.pop(context);
     }
@@ -110,10 +115,16 @@ class _EditInfoPageState extends State<EditInfoPage> {
       body: ListView(
         children: [
           LiviThemes.spacing.heightSpacer16(),
-          NameCircleBox(
-              profilePic: authController.appUser!.base64EncodedImage,
-              name: authController.appUser!.name,
-              onTap: () => updateImage(context)),
+          Consumer<AuthController>(builder: (context, value, child) {
+            return NameCircleBox(
+                profilePic: base64Image,
+                name: value.appUser!.name,
+                onTap: () async {
+                  base64Image = await updateImage(context, value.appUser!);
+
+                  setState(() {});
+                });
+          }),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(
             focusNode: fullNameFocus,

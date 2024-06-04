@@ -11,6 +11,7 @@ import '../../../themes/livi_themes.dart';
 import '../../../utils/countries.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
+import '../../../utils/utils.dart';
 
 class AddCaregiverPage extends StatefulWidget {
   static const String routeName = '/my-pods-page';
@@ -31,6 +32,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   Country country = getUS();
   AppUser appUser = AppUser(name: '', phoneNumber: '');
   final appUserService = AppUserService();
+  String? base64Image;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -40,11 +42,12 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   final FocusNode phoneFocus = FocusNode();
 
   bool enabledSaveButton() {
-    return fullNameController.text.isNotEmpty &&
-        phoneNumberController.text.isNotEmpty &&
+    return fullNameController.text.isNotEmpty ||
+        phoneNumberController.text.isNotEmpty ||
         (appUser != null &&
             (appUser.name != fullNameController.text ||
-                appUser.phoneNumber != phoneNumberController.text));
+                appUser.phoneNumber != phoneNumberController.text)) ||
+        base64Image != null;
   }
 
   @override
@@ -96,6 +99,9 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
         list.add(user.id);
       }
       loggedUser.caregiverIds = list;
+      if (appUser != null && base64Image != null) {
+        appUser.base64EncodedImage = base64Image!;
+      }
       await appUserService.updateUser(authController.appUser!);
       Navigator.pop(context);
     }
@@ -129,6 +135,12 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
           LiviThemes.spacing.heightSpacer16(),
           NameCircleBox(
             name: appUser.name,
+            profilePic: base64Image,
+            onTap: () async {
+              base64Image = await updateImage(context, appUser);
+
+              setState(() {});
+            },
           ),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(

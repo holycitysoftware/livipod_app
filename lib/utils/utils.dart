@@ -434,7 +434,7 @@ String getFirstLettersOfName(String name) {
   return '$firstLetter$secondLetter'.toUpperCase();
 }
 
-Future<void> updateImage(BuildContext context) async {
+Future<String?> updateImage(BuildContext context, AppUser appUser) async {
   final ImagePicker picker = ImagePicker();
   XFile? file;
   await showModalBottomSheet(
@@ -489,13 +489,10 @@ Future<void> updateImage(BuildContext context) async {
   if (file != null) {
     final fileListInt = await convertToListInt(file);
     if (fileListInt != null) {
-      final base64 = base64Encode(fileListInt);
-      final authController =
-          Provider.of<AuthController>(context, listen: false);
-      authController.appUser!.base64EncodedImage = base64;
-      await authController.editAppUser(authController.appUser!);
+      return base64Encode(fileListInt);
     }
   }
+  return null;
 }
 
 Future<List<int>?> convertToListInt(XFile? file) async {
