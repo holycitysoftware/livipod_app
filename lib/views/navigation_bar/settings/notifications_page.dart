@@ -30,7 +30,21 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   void initState() {
     authController = Provider.of<AuthController>(context, listen: false);
+    quantityController.text =
+        authController.appUser!.lowInventoryQuantity.toString();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    saveUser();
+    super.dispose();
+  }
+
+  Future<void> saveUser() async {
+    authController.appUser!.lowInventoryQuantity =
+        int.parse(quantityController.text);
+    await appUserService.updateUser(authController.appUser!);
   }
 
   @override
@@ -99,6 +113,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   titleStyle: LiviThemes.typography.interMedium_14,
                   focusNode: FocusNode(),
                   controller: quantityController,
+                  // onFieldSubmitted: (e) {
+                  //   saveUser();
+                  // },
                   keyboardType: TextInputType.number,
                 ),
                 notificationOption(

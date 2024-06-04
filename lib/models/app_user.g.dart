@@ -13,6 +13,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
           $enumDecodeNullable(_$AppUserTypeEnumMap, json['appUserType']) ??
               AppUserType.selfGuidedUser,
       accountId: json['accountId'] as String? ?? '',
+      lowInventoryQuantity: json['lowInventoryQuantity'] as int? ?? 10,
       language: json['language'] as String? ?? 'en',
       podsList: (json['podsList'] as List<dynamic>?)
               ?.map((e) => LiviPod.fromJson(e as Map<String, dynamic>))
@@ -29,6 +30,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       base64EncodedImage: json['base64EncodedImage'] as String? ?? '',
       allowAutomaticDispensing:
           json['allowAutomaticDispensing'] as bool? ?? false,
+      allowRemoteDispensing: json['allowRemoteDispensing'] as bool? ?? false,
       caregiverIds: (json['caregiverIds'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -48,6 +50,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'appUserType': _$AppUserTypeEnumMap[instance.appUserType]!,
       'phoneNumber': instance.phoneNumber,
       'podsList': instance.podsList.map((e) => e.toJson()).toList(),
+      'lowInventoryQuantity': instance.lowInventoryQuantity,
       'email': instance.email,
       'authToken': instance.authToken,
       'enabled': instance.enabled,
@@ -59,6 +62,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) => <String, dynamic>{
       'usePushNotifications': instance.usePushNotifications,
       'base64EncodedImage': instance.base64EncodedImage,
       'allowAutomaticDispensing': instance.allowAutomaticDispensing,
+      'allowRemoteDispensing': instance.allowRemoteDispensing,
       'caregiverIds': instance.caregiverIds,
       'useMilitaryTime': instance.useMilitaryTime,
       'notifications': instance.notifications.map((e) => e.toJson()).toList(),

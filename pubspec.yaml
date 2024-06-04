@@ -61,6 +61,7 @@ dependencies:
   url_launcher: ^6.2.6
   sunrise_sunset_calc: ^3.0.0
   in_app_review: ^2.0.9
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

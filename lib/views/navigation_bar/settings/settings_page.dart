@@ -9,9 +9,11 @@ import '../../../services/app_user_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
 import '../../views.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 class SettingsPage extends StatelessWidget {
   final appUserService = AppUserService();
+  final InAppReview inAppReview = InAppReview.instance;
 
   SettingsPage({super.key});
 
@@ -34,6 +36,14 @@ class SettingsPage extends StatelessWidget {
         builder: (context) => MyPodsPage(),
       ),
     );
+  }
+
+  Future<void> showAppReview() async {
+    if (await inAppReview.isAvailable()) {
+      inAppReview.requestReview();
+    } else {
+      //TODO: hyperlink to app on playstore/appstore
+    }
   }
 
   Future<void> goToEditInfoPage(BuildContext context) async {
@@ -83,8 +93,22 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  Future<void> goToSetupWifi(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SetupWifiPage(),
+      ),
+    );
+  }
+
   Future<void> updateAllowAutomaticDispensing(AppUser user, bool value) async {
     user.allowAutomaticDispensing = value;
+    await appUserService.updateUser(user);
+  }
+
+  Future<void> updateAllowRemoteDispensing(AppUser user, bool value) async {
+    user.allowRemoteDispensing = value;
     await appUserService.updateUser(user);
   }
 
@@ -103,7 +127,10 @@ class SettingsPage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: ListView(
             children: [
-              NameCircleBox(name: authController.appUser!.name),
+              NameCircleBox(
+                name: authController.appUser!.name,
+                profilePic: authController.appUser!.base64EncodedImage,
+              ),
 
               LiviThemes.spacing.heightSpacer8(),
               LiviTextStyles.interBold20(
@@ -162,11 +189,28 @@ class SettingsPage extends StatelessWidget {
                         LiviDivider(),
                         ListTile(
                           leading: LiviThemes.icons.wifiIcon(),
+                          title: Text(Strings.setupWifi),
+                          onTap: () => goToSetupWifi(context),
+                          trailing: LiviThemes.icons.chevronRight(),
+                        ),
+                        LiviDivider(),
+                        //TODO: BLE:Those options must be hidden if wifi is not setup
+                        ListTile(
                           title: Text(Strings.allowAutomaticDispensing),
                           trailing: LiviSwitchButton(
                             value: user.allowAutomaticDispensing,
                             onChanged: (value) {
                               updateAllowAutomaticDispensing(user, value);
+                            },
+                          ),
+                        ),
+                        LiviDivider(),
+                        ListTile(
+                          title: Text(Strings.allowRemoteDispensing),
+                          trailing: LiviSwitchButton(
+                            value: user.allowRemoteDispensing,
+                            onChanged: (value) {
+                              updateAllowRemoteDispensing(user, value);
                             },
                           ),
                         ),
@@ -254,14 +298,13 @@ class SettingsPage extends StatelessWidget {
                   //         ),
                   //       );
                   //     }),
-                  LiviDivider(),
                   ListTile(
+                    onTap: showAppReview,
                     leading: Icon(
                       Icons.feedback,
                       color: LiviThemes.colors.purple500,
                     ),
                     title: Text(Strings.shareFeedback),
-                    trailing: LiviThemes.icons.chevronRight(),
                   ),
                   LiviDivider(),
                   ListTile(
@@ -299,6 +342,7 @@ class SettingsPage extends StatelessWidget {
           onTap: () => goToEditCaregiver(context, user),
           leading: NameCircleBox(
             name: user.name,
+            profilePic: user.base64EncodedImage,
             isSmaller: true,
           ),
           title: Column(

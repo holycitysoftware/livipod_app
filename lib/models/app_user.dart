@@ -29,6 +29,7 @@ class AppUser {
   bool usePushNotifications;
   String base64EncodedImage;
   bool allowAutomaticDispensing;
+  bool allowRemoteDispensing;
   List<String> caregiverIds = [];
   bool useMilitaryTime;
   @JsonKey(defaultValue: <Notification>[])
@@ -115,6 +116,7 @@ class AppUser {
     this.usePushNotifications = true,
     this.base64EncodedImage = '',
     this.allowAutomaticDispensing = false,
+    this.allowRemoteDispensing = false,
     this.caregiverIds = const [],
     this.useMilitaryTime = false,
   });

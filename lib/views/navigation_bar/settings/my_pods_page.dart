@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
@@ -30,7 +30,7 @@ class _MyPodsPageState extends State<MyPodsPage> {
   @override
   void initState() {
     bleController = Provider.of<BleController>(context, listen: false);
-    bleController.startScan();
+    startScan();
     super.initState();
   }
 
@@ -40,6 +40,10 @@ class _MyPodsPageState extends State<MyPodsPage> {
           color: LiviThemes.colors.success600);
     }
     return LiviTextStyles.interRegular14(Strings.selectAMedication);
+  }
+
+  void startScan() {
+    bleController.startScan();
   }
 
   @override
@@ -169,19 +173,53 @@ class _MyPodsPageState extends State<MyPodsPage> {
                   children: [
                     LiviTextStyles.interMedium14(Strings.availablePods,
                         color: LiviThemes.colors.gray500),
-                    if (value.isScanning)
-                      loadingCardAvailablePods()
-                    else
-                      ListView.builder(
-                        itemCount: value.scanResults.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final livipod = value.scanResults[index];
 
-                          return regularCardAvailablePods(
-                              LiviPod(remoteId: livipod.device.remoteId.str));
-                        },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Card(
+                        elevation: 0,
+                        color: LiviThemes.colors.gray50,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              LiviThemes.icons.liviPodImageSmaller,
+                              LiviThemes.spacing.widthSpacer24(),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  LiviThemes.spacing.widthSpacer8(),
+                                  LiviTextStyles.interMedium16(
+                                      Strings.noMedication),
+                                ],
+                              ),
+                              Spacer(),
+                              LiviOutlinedButton(
+                                onTap: () => claimPod(
+                                    //scanResult
+                                    ),
+                                text: Strings.claim,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
+                    ),
+
+                    // if (value.isScanning)
+                    //   loadingCardAvailablePods()
+                    // else if (value.scanResults.isEmpty)
+                    //   searchCardAvailablePods()
+                    // else
+                    //   Expanded(
+                    //     child: ListView.builder(
+                    //         itemCount: value.scanResults.length,
+                    //         itemBuilder: (context, index) {
+                    //           final item = value.scanResults[index];
+                    //           return regularCardAvailablePods(item);
+                    //         }),
+                    //   ),
+                    //TODO: BLE: remove this test
                   ],
                 ),
               ),
@@ -192,11 +230,48 @@ class _MyPodsPageState extends State<MyPodsPage> {
     );
   }
 
-  void claimPod(LiviPod pod) {
-    LiviAlertDialog.showModal(context, pod);
+  Future<void> claimPod(
+      //ScanResult scanResult,
+      ) async {
+    // bleController.connectToUnclaimedDevice(scanResult.device);
+    final pod =
+        await LiviAlertDialog.showModal(context, LiviPod(remoteId: 'test'));
   }
 
-  Widget regularCardAvailablePods(LiviPod pod) {
+  Widget regularCardAvailablePods(ScanResult scanResult) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Card(
+        elevation: 0,
+        color: LiviThemes.colors.gray50,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              LiviThemes.icons.liviPodImageSmaller,
+              LiviThemes.spacing.widthSpacer24(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  LiviThemes.spacing.widthSpacer8(),
+                  LiviTextStyles.interMedium16(Strings.noMedication),
+                ],
+              ),
+              Spacer(),
+              LiviOutlinedButton(
+                onTap: () => claimPod(
+                    // scanResult
+                    ),
+                text: Strings.claim,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget searchCardAvailablePods() {
     return Card(
       elevation: 0,
       color: LiviThemes.colors.gray50,
@@ -204,19 +279,16 @@ class _MyPodsPageState extends State<MyPodsPage> {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            LiviThemes.icons.liviPodImageSmaller,
-            LiviThemes.spacing.widthSpacer24(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LiviThemes.spacing.widthSpacer8(),
-                LiviTextStyles.interMedium16(Strings.noMedication),
-              ],
+            LiviTextStyles.interRegular14(
+              Strings.noDevicesFound,
+              color: LiviThemes.colors.gray400,
             ),
             Spacer(),
             LiviOutlinedButton(
-              onTap: () => claimPod(pod),
-              text: Strings.claim,
+              onTap: startScan,
+              backgroundColor: LiviThemes.colors.brand600,
+              text: Strings.search,
+              textColor: LiviThemes.colors.baseWhite,
             ),
           ],
         ),

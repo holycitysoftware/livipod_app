@@ -6,11 +6,20 @@ class Strings {
   static const String loginToYourAccount = 'Log in to your account';
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
+  static const String ssid = 'SSID';
   static const String addCaregiver = 'Add Caregiver';
   static const String delete = 'Delete';
   static const String livipod = 'LiviPod';
+  static const String setupWifi = 'Setup Wifi';
   static const String connected = 'Connected';
+  static const String noDevicesFound = 'No devices found';
+  static const String takePicture = 'Take a picture';
+  static const String pickImage = 'Pick image';
+  static const String search = 'Search';
+  static const String passwordRequired = 'Password field is required';
+  static const String passwordLength = 'Password must be at least 8 characters';
   static const String claim = 'Claim';
+  static const String password = 'Password';
   static const String searching = 'Searching...';
   static const String availablePods = 'Available Pods';
   static const String remove = 'Remove';
@@ -20,6 +29,7 @@ class Strings {
   static const String willNoLongerHaveAccess =
       'will no longer have access to your medications, profile or the Pod.';
   static const String morning = 'Morning';
+  static const String setWifi = 'Set Wifi';
   static const String afternoon = 'Afternoon';
   static const String notifications = 'Notifications';
   static const String notificationsSettings = 'Notifications Settings';
@@ -463,6 +473,7 @@ class Strings {
   static const String myDevices = 'My Devices';
   static const String myPods = 'My Pods';
   static const String allowAutomaticDispensing = 'Allow Automatic Dispensing';
+  static const String allowRemoteDispensing = 'Allow Remote Dispensing';
   static const String notifyWhenPodInventoryIsLow =
       'Notify when pod inventory is low';
   static const String notifyWhenPodInventoryIsEmpty =
