@@ -159,7 +159,6 @@ class LiviAlertDialog {
           CupertinoDialogAction(
             /// This parameter indicates this action is the default,
             /// and turns the action's text to bold text.
-            isDefaultAction: true,
             onPressed: () {
               Navigator.pop(context);
             },

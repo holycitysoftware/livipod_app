@@ -14,6 +14,7 @@ import '../../../themes/livi_themes.dart';
 import '../../../utils/countries.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
+import '../../../utils/utils.dart';
 
 class EditInfoPage extends StatefulWidget {
   static const String routeName = '/my-pods-page';
@@ -83,69 +84,6 @@ class _EditInfoPageState extends State<EditInfoPage> {
     }
   }
 
-  Future<void> updateImage() async {
-    final ImagePicker picker = ImagePicker();
-    XFile? file;
-    await showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        height: 90,
-        padding: const EdgeInsets.all(kSpacer_16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(60)),
-                leading: Icon(
-                  Icons.camera_alt,
-                  color: LiviThemes.colors.brand600,
-                ),
-                title: LiviTextStyles.interRegular16(Strings.takePicture),
-                onTap: () async {
-                  file = await picker.pickImage(source: ImageSource.camera);
-                  if (file != null) {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            ),
-            LiviDivider(
-              isVertical: true,
-            ),
-            Expanded(
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(60)),
-                leading: Icon(
-                  Icons.image,
-                  color: LiviThemes.colors.brand600,
-                ),
-                title: LiviTextStyles.interRegular16(Strings.pickImage),
-                onTap: () async {
-                  file = await picker.pickImage(source: ImageSource.gallery);
-                  if (file != null) {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-    if (file != null) {
-      final fileListInt = await convertToListInt(file);
-      if (fileListInt != null) {
-        final base64 = base64Encode(fileListInt);
-
-        authController.appUser!.base64EncodedImage = base64;
-        await authController.editAppUser(authController.appUser!);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,7 +113,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
           NameCircleBox(
               profilePic: authController.appUser!.base64EncodedImage,
               name: authController.appUser!.name,
-              onTap: updateImage),
+              onTap: () => updateImage(context)),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(
             focusNode: fullNameFocus,
@@ -219,12 +157,5 @@ class _EditInfoPageState extends State<EditInfoPage> {
         ],
       ),
     );
-  }
-
-  Future<List<int>?> convertToListInt(XFile? file) async {
-    if (file != null) {
-      return file.readAsBytes();
-    }
-    return null;
   }
 }

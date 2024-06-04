@@ -10,6 +10,7 @@ import '../../../themes/livi_themes.dart';
 import '../../../utils/countries.dart';
 import '../../../utils/string_ext.dart';
 import '../../../utils/strings.dart';
+import '../../../utils/utils.dart';
 
 class EditCaregiverPage extends StatefulWidget {
   static const String routeName = '/my-pods-page';
@@ -61,8 +62,8 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     super.initState();
   }
 
-  Future<void> updateAllowAutomaticDispensing(AppUser user, bool value) async {
-    user.allowAutomaticDispensing = value;
+  Future<void> updateAllowRemoteDispensing(AppUser user, bool value) async {
+    user.allowRemoteDispensing = value;
     await appUserService.updateUser(user);
   }
 
@@ -70,10 +71,12 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     if (appUser != null && authController.appUser != null) {
       final remove =
           await LiviAlertDialog.removeCaregiver(context, appUser!.name);
-      await appUserService.deleteUser(appUser!);
-      authController.appUser!.caregiverIds.remove(appUser!.id);
-      await appUserService.updateUser(authController.appUser!);
-      Navigator.pop(context);
+      if (remove) {
+        await appUserService.deleteUser(appUser!);
+        authController.appUser!.caregiverIds.remove(appUser!.id);
+        await appUserService.updateUser(authController.appUser!);
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -133,7 +136,11 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
       body: ListView(
         children: [
           LiviThemes.spacing.heightSpacer16(),
-          NameCircleBox(name: appUser!.name),
+          NameCircleBox(
+            name: appUser!.name,
+            onTap: () => updateImage(context),
+            profilePic: widget.appUser.base64EncodedImage,
+          ),
           LiviThemes.spacing.heightSpacer16(),
           LiviInputField(
             focusNode: fullNameFocus,
@@ -197,9 +204,9 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
                           }
                           final user = snapshot.data!;
                           return LiviSwitchButton(
-                            value: user.allowAutomaticDispensing,
+                            value: user.allowRemoteDispensing,
                             onChanged: (e) {
-                              updateAllowAutomaticDispensing(appUser!, e);
+                              updateAllowRemoteDispensing(appUser!, e);
                             },
                           );
                         }),

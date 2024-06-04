@@ -1,11 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:sunrise_sunset_calc/sunrise_sunset_calc.dart';
 
+import '../components/components.dart';
+import '../controllers/controllers.dart';
 import '../models/enums.dart';
 
 import '../models/models.dart';
+import '../themes/livi_spacing/livi_spacing.dart';
 import '../themes/livi_themes.dart';
+import 'strings.dart';
 
 int daysBetween(DateTime end, DateTime start) {
   return (end.difference(start).inHours / 24).round();
@@ -424,6 +432,77 @@ String getFirstLettersOfName(String name) {
     secondLetter = splittedNames.last[0];
   }
   return '$firstLetter$secondLetter'.toUpperCase();
+}
+
+Future<void> updateImage(BuildContext context) async {
+  final ImagePicker picker = ImagePicker();
+  XFile? file;
+  await showModalBottomSheet(
+    context: context,
+    builder: (context) => Container(
+      height: 90,
+      padding: const EdgeInsets.all(kSpacer_16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60)),
+              leading: Icon(
+                Icons.camera_alt,
+                color: LiviThemes.colors.brand600,
+              ),
+              title: LiviTextStyles.interRegular16(Strings.takePicture),
+              onTap: () async {
+                file = await picker.pickImage(source: ImageSource.camera);
+                if (file != null) {
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ),
+          LiviDivider(
+            isVertical: true,
+          ),
+          Expanded(
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60)),
+              leading: Icon(
+                Icons.image,
+                color: LiviThemes.colors.brand600,
+              ),
+              title: LiviTextStyles.interRegular16(Strings.pickImage),
+              onTap: () async {
+                file = await picker.pickImage(source: ImageSource.gallery);
+                if (file != null) {
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+  if (file != null) {
+    final fileListInt = await convertToListInt(file);
+    if (fileListInt != null) {
+      final base64 = base64Encode(fileListInt);
+      final authController =
+          Provider.of<AuthController>(context, listen: false);
+      authController.appUser!.base64EncodedImage = base64;
+      await authController.editAppUser(authController.appUser!);
+    }
+  }
+}
+
+Future<List<int>?> convertToListInt(XFile? file) async {
+  if (file != null) {
+    return file.readAsBytes();
+  }
+  return null;
 }
 
 String formartDay(int day) {
