@@ -76,8 +76,15 @@ class BleController extends ChangeNotifier {
     });
   }
 
-  void listenForLiviPodsRealTime(AppUser user) {
-    liviPodController.listenToLiviPodsRealTime(user).listen(_handleLiviPods);
+  bool isConnected(String remoteId) {
+    return _connectedDevices.contains((BleDeviceController element) =>
+        element.bluetoothDevice.remoteId == DeviceIdentifier(remoteId));
+  }
+
+  StreamSubscription<List<LiviPod>> listenForLiviPodsRealTime(AppUser user) {
+    return liviPodController
+        .listenToLiviPodsRealTime(user)
+        .listen(_handleLiviPods);
   }
 
   void _handleLiviPods(List<LiviPod> liviPods) {

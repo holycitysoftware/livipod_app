@@ -70,6 +70,12 @@ class Medication {
     return list;
   }
 
+  // @override
+  // bool operator ==(dynamic other) => id == other.id;
+
+  // @override
+  // int get hashCode => super.hashCode;
+
   factory Medication.fromJson(Map<String, dynamic> json) =>
       _$MedicationFromJson(json);
 

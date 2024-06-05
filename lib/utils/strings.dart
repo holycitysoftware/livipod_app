@@ -8,6 +8,8 @@ class Strings {
   static const String none = 'None';
   static const String ssid = 'SSID';
   static const String addCaregiver = 'Add Caregiver';
+  static const String removeMedication = 'Remove Medication';
+  static const String unclaim = 'Unclaim';
   static const String delete = 'Delete';
   static const String livipod = 'LiviPod';
   static const String setupWifi = 'Setup Wifi';
@@ -22,6 +24,7 @@ class Strings {
   static const String password = 'Password';
   static const String searching = 'Searching...';
   static const String availablePods = 'Available Pods';
+  static const String youHaveNoPods = 'You have no Pods';
   static const String remove = 'Remove';
   static const String podSettings = 'Pod Settings';
   static const String areYouSureYouWantToRemove =
@@ -488,6 +491,16 @@ class Strings {
   static const String noMedication = 'No medication';
   static const String noMedsAvailable = 'No meds available';
   static const String selectAMedication = 'Select a medication';
+  static const String notConnected = 'Not Connected';
+  static const String wifiConfigurationFailed = 'Wi-Fi Configuration Failed';
+  static const String wifiConfigurationSuccessful =
+      'Wi-Fi Configuration Successful';
+  static const String yourWifiSsidAndPassword =
+      'Your Wi-Fi SSID and password have been successfully configured. Your POD(s) can nowconnect to your local network.';
+  static const String unableToConfigureWifi =
+      'Unable to configure Wi-Fi SSID and password. Please check your network credentials and try again.';
+  static const String done = 'Done';
+  static const String tryAgain = 'Try Again';
 }
   // static const String logIn = 'Iniciar sesión';
   // static const String signUp = 'Registrarse';

@@ -10,10 +10,12 @@ class LiviOutlinedButton extends StatelessWidget {
   final double? width;
   final Color? backgroundColor;
   final Color? textColor;
+  final Color? borderColor;
   const LiviOutlinedButton({
     super.key,
     required this.onTap,
     this.width,
+    this.borderColor,
     required this.text,
     this.textColor,
     this.backgroundColor,
@@ -26,12 +28,15 @@ class LiviOutlinedButton extends StatelessWidget {
       height: 35,
       child: TextButton(
         style: ButtonStyle(
+          overlayColor: textColor != null
+              ? MaterialStatePropertyAll(textColor!.withOpacity(.1))
+              : null,
           backgroundColor: MaterialStatePropertyAll(
               backgroundColor ?? LiviThemes.colors.baseWhite),
           shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
-              side: BorderSide(color: LiviThemes.colors.gray300),
+              side: BorderSide(color: borderColor ?? LiviThemes.colors.gray300),
             ),
           ),
         ),
