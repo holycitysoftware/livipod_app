@@ -434,54 +434,80 @@ String getFirstLettersOfName(String name) {
   return '$firstLetter$secondLetter'.toUpperCase();
 }
 
-Future<String?> updateImage(BuildContext context, AppUser appUser) async {
+Future<String?> updateImage(BuildContext context, String base64) async {
   final ImagePicker picker = ImagePicker();
+  String? imageValue;
   XFile? file;
   await showModalBottomSheet(
     context: context,
     builder: (context) => Container(
-      height: 90,
       padding: const EdgeInsets.all(kSpacer_16),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(60)),
-              leading: Icon(
-                Icons.camera_alt,
-                color: LiviThemes.colors.brand600,
+          Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(60)),
+                  leading: Icon(
+                    Icons.camera_alt,
+                    color: LiviThemes.colors.brand600,
+                  ),
+                  title: LiviTextStyles.interRegular16(Strings.takePicture),
+                  onTap: () async {
+                    file = await picker.pickImage(source: ImageSource.camera);
+                    if (file != null) {
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
               ),
-              title: LiviTextStyles.interRegular16(Strings.takePicture),
-              onTap: () async {
-                file = await picker.pickImage(source: ImageSource.camera);
-                if (file != null) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
+            ],
           ),
-          LiviDivider(
-            isVertical: true,
-          ),
-          Expanded(
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(60)),
-              leading: Icon(
-                Icons.image,
-                color: LiviThemes.colors.brand600,
+          LiviDivider(),
+          Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(60)),
+                  leading: Icon(
+                    Icons.image,
+                    color: LiviThemes.colors.brand600,
+                  ),
+                  title: LiviTextStyles.interRegular16(Strings.pickImage),
+                  onTap: () async {
+                    file = await picker.pickImage(source: ImageSource.gallery);
+                    if (file != null) {
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
               ),
-              title: LiviTextStyles.interRegular16(Strings.pickImage),
-              onTap: () async {
-                file = await picker.pickImage(source: ImageSource.gallery);
-                if (file != null) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          )
+            ],
+          ),
+          if (base64.isNotEmpty) LiviDivider(),
+          if (base64.isNotEmpty)
+            Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(60)),
+                    leading: LiviThemes.icons
+                        .trash1Icon(color: LiviThemes.colors.error500),
+                    title: LiviTextStyles.interRegular16(Strings.deleteImage),
+                    onTap: () async {
+                      imageValue = '';
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
+            )
         ],
       ),
     ),
@@ -489,10 +515,10 @@ Future<String?> updateImage(BuildContext context, AppUser appUser) async {
   if (file != null) {
     final fileListInt = await convertToListInt(file);
     if (fileListInt != null) {
-      return base64Encode(fileListInt);
+      imageValue = base64Encode(fileListInt);
     }
   }
-  return null;
+  return imageValue;
 }
 
 Future<List<int>?> convertToListInt(XFile? file) async {

@@ -33,6 +33,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   var grantPermissionToDispense = true;
   final appUserService = AppUserService();
   String? base64Image;
+  bool imageWasChanged = false;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -97,9 +98,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     if (appUser != null) {
       appUser!.name = fullNameController.text;
       appUser!.email = emailController.text;
-      if (appUser != null && base64Image != null) {
-        appUser!.base64EncodedImage = base64Image!;
-      }
+      appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
       await authController.editAppUser(appUser!);
       Navigator.pop(context);
     }
@@ -138,96 +137,120 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
           )
         ],
       ),
-      body: ListView(
-        children: [
-          LiviThemes.spacing.heightSpacer16(),
-          NameCircleBox(
-            name: appUser!.name,
-            onTap: () async {
-              base64Image = await updateImage(context, widget.appUser);
-
-              setState(() {});
-            },
-            profilePic: base64Image,
-          ),
-          LiviThemes.spacing.heightSpacer16(),
-          LiviInputField(
-            focusNode: fullNameFocus,
-            padding: const EdgeInsets.symmetric(
-                horizontal: kSpacer_16, vertical: kSpacer_8),
-            title: Strings.fullName.requiredSymbol(),
-            textCapitalization: TextCapitalization.words,
-            hint: Strings.steveJobsFullName,
-            controller: fullNameController,
-          ),
-          LiviInputField(
-            focusNode: emailFocus,
-            padding: const EdgeInsets.symmetric(
-                horizontal: kSpacer_16, vertical: kSpacer_8),
-            title: Strings.email,
-            subTitle: Strings.optional,
-            hint: Strings.steveJobsEmail,
-            controller: emailController,
-          ),
-          Consumer<AuthController>(builder: (context, authController, child) {
-            return LiviInputField(
+      body: Consumer<AuthController>(builder: (context, value, child) {
+        return ListView(
+          children: [
+            LiviThemes.spacing.heightSpacer16(),
+            NameCircleBox(
+              profilePic: imageWasChanged
+                  ? base64Image
+                  : value.appUser!.base64EncodedImage,
+              name: appUser!.name,
+            ),
+            LiviThemes.spacing.heightSpacer8(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 64),
+              child: LiviTextButton(
+                  text: !imageWasChanged &&
+                          value.appUser!.base64EncodedImage.isEmpty
+                      ? Strings.addImage
+                      : Strings.edit,
+                  onTap: () async {
+                    final result = await updateImage(
+                        context,
+                        imageWasChanged
+                            ? base64Image ?? ''
+                            : value.appUser!.base64EncodedImage);
+                    if (result != null) {
+                      base64Image = result;
+                      imageWasChanged = true;
+                    } else {
+                      if (result != base64Image && result != null) {
+                        imageWasChanged = true;
+                        base64Image = result;
+                      }
+                    }
+                    setState(() {});
+                  }),
+            ),
+            LiviInputField(
+              focusNode: fullNameFocus,
               padding: const EdgeInsets.symmetric(
                   horizontal: kSpacer_16, vertical: kSpacer_8),
-              title: Strings.phoneNumber.requiredSymbol(),
-              controller: phoneNumberController,
-              focusNode: phoneFocus,
-              errorText: authController.verificationError.isEmpty
-                  ? null
-                  : authController.verificationError,
-              prefix: CountryDropdownButton(
-                country: country!,
-                onChanged: (Country? value) {
-                  setState(() {
-                    country = value!;
-                  });
-                },
-              ),
-              hint: Strings.steveJobsNumber,
-            );
-          }),
-          LiviThemes.spacing.heightSpacer8(),
-          LiviDivider(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: LiviTextStyles.interMedium14(
-                        Strings.grantPermissionToDispense,
-                        maxLines: 2,
-                      ),
-                    ),
-                    StreamBuilder<AppUser>(
-                        stream: appUserService.listenToUserRealTime(appUser!),
-                        builder: (context, snapshot) {
-                          if (snapshot.data == null) {
-                            return SizedBox();
-                          }
-                          final user = snapshot.data!;
-                          return LiviSwitchButton(
-                            value: user.allowRemoteDispensing,
-                            onChanged: (e) {
-                              updateAllowRemoteDispensing(appUser!, e);
-                            },
-                          );
-                        }),
-                  ],
-                ),
-                LiviTextStyles.interRegular14(
-                    Strings.caregiverMustBePresentAtThePod),
-              ],
+              title: Strings.fullName.requiredSymbol(),
+              textCapitalization: TextCapitalization.words,
+              hint: Strings.steveJobsFullName,
+              controller: fullNameController,
             ),
-          )
-        ],
-      ),
+            LiviInputField(
+              focusNode: emailFocus,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kSpacer_16, vertical: kSpacer_8),
+              title: Strings.email,
+              subTitle: Strings.optional,
+              hint: Strings.steveJobsEmail,
+              controller: emailController,
+            ),
+            Consumer<AuthController>(builder: (context, authController, child) {
+              return LiviInputField(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: kSpacer_16, vertical: kSpacer_8),
+                title: Strings.phoneNumber.requiredSymbol(),
+                controller: phoneNumberController,
+                focusNode: phoneFocus,
+                errorText: authController.verificationError.isEmpty
+                    ? null
+                    : authController.verificationError,
+                prefix: CountryDropdownButton(
+                  country: country!,
+                  onChanged: (Country? value) {
+                    setState(() {
+                      country = value!;
+                    });
+                  },
+                ),
+                hint: Strings.steveJobsNumber,
+              );
+            }),
+            LiviThemes.spacing.heightSpacer8(),
+            LiviDivider(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: LiviTextStyles.interMedium14(
+                          Strings.grantPermissionToDispense,
+                          maxLines: 2,
+                        ),
+                      ),
+                      StreamBuilder<AppUser>(
+                          stream: appUserService.listenToUserRealTime(appUser!),
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return SizedBox();
+                            }
+                            final user = snapshot.data!;
+                            return LiviSwitchButton(
+                              value: user.allowRemoteDispensing,
+                              onChanged: (e) {
+                                updateAllowRemoteDispensing(appUser!, e);
+                              },
+                            );
+                          }),
+                    ],
+                  ),
+                  LiviTextStyles.interRegular14(
+                      Strings.caregiverMustBePresentAtThePod),
+                ],
+              ),
+            )
+          ],
+        );
+      }),
     );
   }
 }

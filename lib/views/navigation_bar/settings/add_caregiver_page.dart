@@ -33,6 +33,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   AppUser appUser = AppUser(name: '', phoneNumber: '');
   final appUserService = AppUserService();
   String? base64Image;
+  bool imageWasChanged = false;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -99,9 +100,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
         list.add(user.id);
       }
       loggedUser.caregiverIds = list;
-      if (appUser != null && base64Image != null) {
-        appUser.base64EncodedImage = base64Image!;
-      }
+      appUser.base64EncodedImage = base64Image == null ? '' : base64Image!;
       await appUserService.updateUser(authController.appUser!);
       Navigator.pop(context);
     }
@@ -130,61 +129,83 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
           )
         ],
       ),
-      body: ListView(
-        children: [
-          LiviThemes.spacing.heightSpacer16(),
-          NameCircleBox(
-            name: appUser.name,
-            profilePic: base64Image,
-            onTap: () async {
-              base64Image = await updateImage(context, appUser);
-
-              setState(() {});
-            },
-          ),
-          LiviThemes.spacing.heightSpacer16(),
-          LiviInputField(
-            focusNode: fullNameFocus,
-            padding: const EdgeInsets.symmetric(
-                horizontal: kSpacer_16, vertical: kSpacer_8),
-            title: Strings.fullName.requiredSymbol(),
-            textCapitalization: TextCapitalization.words,
-            hint: Strings.steveJobsFullName,
-            controller: fullNameController,
-          ),
-          LiviInputField(
-            focusNode: emailFocus,
-            padding: const EdgeInsets.symmetric(
-                horizontal: kSpacer_16, vertical: kSpacer_8),
-            title: Strings.email,
-            subTitle: Strings.optional,
-            hint: Strings.steveJobsEmail,
-            controller: emailController,
-          ),
-          Consumer<AuthController>(builder: (context, authController, child) {
-            return LiviInputField(
-              textInputAction: TextInputAction.done,
+      body: Consumer<AuthController>(builder: (context, value, child) {
+        return ListView(
+          children: [
+            LiviThemes.spacing.heightSpacer16(),
+            NameCircleBox(
+              name: appUser.name,
+              profilePic: base64Image,
+            ),
+            LiviThemes.spacing.heightSpacer8(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 64),
+              child: LiviTextButton(
+                  text: !imageWasChanged &&
+                          value.appUser!.base64EncodedImage.isEmpty
+                      ? Strings.addImage
+                      : Strings.edit,
+                  onTap: () async {
+                    final result = await updateImage(
+                        context,
+                        imageWasChanged
+                            ? base64Image ?? ''
+                            : value.appUser!.base64EncodedImage);
+                    if (result != null) {
+                      base64Image = result;
+                      imageWasChanged = true;
+                    } else {
+                      if (result != base64Image && result != null) {
+                        imageWasChanged = true;
+                        base64Image = result;
+                      }
+                    }
+                    setState(() {});
+                  }),
+            ),
+            LiviInputField(
+              focusNode: fullNameFocus,
               padding: const EdgeInsets.symmetric(
                   horizontal: kSpacer_16, vertical: kSpacer_8),
-              title: Strings.phoneNumber.requiredSymbol(),
-              controller: phoneNumberController,
-              focusNode: phoneFocus,
-              errorText: authController.verificationError.isEmpty
-                  ? null
-                  : authController.verificationError,
-              prefix: CountryDropdownButton(
-                country: country!,
-                onChanged: (Country? value) {
-                  setState(() {
-                    country = value!;
-                  });
-                },
-              ),
-              hint: Strings.steveJobsNumber,
-            );
-          }),
-        ],
-      ),
+              title: Strings.fullName.requiredSymbol(),
+              textCapitalization: TextCapitalization.words,
+              hint: Strings.steveJobsFullName,
+              controller: fullNameController,
+            ),
+            LiviInputField(
+              focusNode: emailFocus,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: kSpacer_16, vertical: kSpacer_8),
+              title: Strings.email,
+              subTitle: Strings.optional,
+              hint: Strings.steveJobsEmail,
+              controller: emailController,
+            ),
+            Consumer<AuthController>(builder: (context, authController, child) {
+              return LiviInputField(
+                textInputAction: TextInputAction.done,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: kSpacer_16, vertical: kSpacer_8),
+                title: Strings.phoneNumber.requiredSymbol(),
+                controller: phoneNumberController,
+                focusNode: phoneFocus,
+                errorText: authController.verificationError.isEmpty
+                    ? null
+                    : authController.verificationError,
+                prefix: CountryDropdownButton(
+                  country: country!,
+                  onChanged: (Country? value) {
+                    setState(() {
+                      country = value!;
+                    });
+                  },
+                ),
+                hint: Strings.steveJobsNumber,
+              );
+            }),
+          ],
+        );
+      }),
     );
   }
 }

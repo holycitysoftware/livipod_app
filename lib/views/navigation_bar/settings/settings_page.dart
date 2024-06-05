@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -94,6 +96,15 @@ class SettingsPage extends StatelessWidget {
   }
 
   Future<void> goToSetupWifi(BuildContext context) async {
+    if (Platform.isAndroid) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SetupWifiListPage(),
+        ),
+      );
+      return;
+    }
     await Navigator.push(
       context,
       MaterialPageRoute(

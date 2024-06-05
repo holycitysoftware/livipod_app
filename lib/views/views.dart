@@ -16,6 +16,7 @@ export 'navigation_bar/settings/my_pods_page.dart';
 export 'navigation_bar/settings/notifications_page.dart';
 export 'navigation_bar/settings/privacy_terms_page.dart';
 export 'navigation_bar/settings/settings_page.dart';
+export 'navigation_bar/settings/setup_wifi_list_page.dart';
 export 'navigation_bar/settings/setup_wifi_page.dart';
 export 'profile_view.dart';
 export 'registration/check_sms_page.dart';
