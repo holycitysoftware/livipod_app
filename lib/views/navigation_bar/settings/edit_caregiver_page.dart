@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
@@ -38,17 +39,17 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
+  PhoneNumber? number;
   final FocusNode fullNameFocus = FocusNode();
   final FocusNode emailFocus = FocusNode();
   final FocusNode phoneFocus = FocusNode();
 
   bool enabledSaveButton() {
-    return fullNameController.text.isNotEmpty ||
-        phoneNumberController.text.isNotEmpty ||
+    return fullNameController.text.isNotEmpty &&
+        phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
             (widget.appUser.name != fullNameController.text ||
-                widget.appUser.phoneNumber != phoneNumberController.text)) ||
-        base64Image != null;
+                widget.appUser.phoneNumber != phoneNumberController.text));
   }
 
   @override
@@ -60,9 +61,27 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     phoneNumberController.addListener(() {
       setState(() {});
     });
-    // country = getCountryByCode(authController.appUser!.phoneNumber);
     setAppUser();
+
+    doAsyncStuff();
     super.initState();
+  }
+
+  Future<void> doAsyncStuff() async {
+    await getCountry();
+  }
+
+  Future<void> getCountry() async {
+    number =
+        await PhoneNumber.getRegionInfoFromPhoneNumber(appUser!.phoneNumber);
+    if (number != null) {
+      final String parsableNumber = number!.dialCode ?? '';
+      country = getCountryByCode('+$parsableNumber');
+      if (number != null && number!.phoneNumber != null) {
+        phoneNumberController.text = number!.parseNumber().replaceAll('+', '');
+      }
+      setState(() {});
+    }
   }
 
   Future<void> updateAllowRemoteDispensing(AppUser user, bool value) async {
@@ -90,7 +109,6 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
       if (widget.appUser.email != null && widget.appUser.email!.isNotEmpty) {
         emailController.text = widget.appUser.email!;
       }
-      phoneNumberController.text = widget.appUser.phoneNumber;
     }
   }
 
@@ -99,6 +117,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
       appUser!.name = fullNameController.text;
       appUser!.email = emailController.text;
       appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
+      appUser!.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
       await authController.editAppUser(appUser!);
       Navigator.pop(context);
     }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
@@ -36,7 +37,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
   AppUser? appUser;
   String? base64Image;
   bool imageWasChanged = false;
-
+  PhoneNumber? number;
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
@@ -45,12 +46,11 @@ class _EditInfoPageState extends State<EditInfoPage> {
   final FocusNode phoneFocus = FocusNode();
 
   bool enabledSaveButton() {
-    return fullNameController.text.isNotEmpty ||
-        phoneNumberController.text.isNotEmpty ||
+    return fullNameController.text.isNotEmpty &&
+        phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
             (appUser!.name != fullNameController.text ||
-                appUser!.phoneNumber != phoneNumberController.text)) ||
-        base64Image != null;
+                appUser!.phoneNumber != phoneNumberController.text));
   }
 
   @override
@@ -64,7 +64,25 @@ class _EditInfoPageState extends State<EditInfoPage> {
     });
     // country = getCountryByCode(authController.appUser!.phoneNumber);
     setAppUser();
+    doAsyncStuff();
     super.initState();
+  }
+
+  Future<void> doAsyncStuff() async {
+    await getCountry();
+  }
+
+  Future<void> getCountry() async {
+    number =
+        await PhoneNumber.getRegionInfoFromPhoneNumber(appUser!.phoneNumber);
+    if (number != null) {
+      final String parsableNumber = number!.dialCode ?? '';
+      country = getCountryByCode('+$parsableNumber');
+      if (number != null && number!.phoneNumber != null) {
+        phoneNumberController.text = number!.parseNumber().replaceAll('+', '');
+      }
+      setState(() {});
+    }
   }
 
   void setAppUser() {
@@ -83,6 +101,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
       appUser!.name = fullNameController.text;
       appUser!.email = emailController.text;
       appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
+      appUser!.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
       await authController.editAppUser(appUser!);
       Navigator.pop(context);
     }

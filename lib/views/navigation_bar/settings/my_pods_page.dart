@@ -133,28 +133,8 @@ class _MyPodsPageState extends State<MyPodsPage> {
                                         itemBuilder: (ctx, index) {
                                           final liviPod = snapshot.data![index];
                                           return GestureDetector(
-                                            onTap: () async {
-                                              if (liviPod
-                                                  .medicationId.isEmpty) {
-                                                await LiviAlertDialog
-                                                    .showModalClaim(
-                                                        context, liviPod);
-                                                return;
-                                              }
-                                              final result =
-                                                  await LiviAlertDialog
-                                                      .showModalClaimedDevice(
-                                                          context,
-                                                          liviPod,
-                                                          medicationsList[
-                                                              index]);
-                                              if (result == null) {
-                                                // Provider.of<BleDeviceController>(
-                                                //         context,
-                                                //         listen: false)
-                                                //     .disconnect();
-                                                setState(() {});
-                                              }
+                                            onTap: () {
+                                              deviceTapped(liviPod, false);
                                             },
                                             child: Card(
                                               elevation: 0,
@@ -247,24 +227,26 @@ class _MyPodsPageState extends State<MyPodsPage> {
                                 }
                                 return ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: 1,
+                                  itemCount: scanResults.length,
                                   itemBuilder: (context, index) {
-                                    // final scanResult = scanResults[index];
+                                    final scanResult = scanResults[index];
                                     return regularCardAvailablePods(
-                                      ScanResult(
-                                          rssi: 0,
-                                          timeStamp: DateTime.now(),
-                                          device: BluetoothDevice(
-                                            remoteId: DeviceIdentifier('jaja'),
-                                          ),
-                                          advertisementData: AdvertisementData(
-                                              advName: '',
-                                              txPowerLevel: 0,
-                                              appearance: 0,
-                                              connectable: true,
-                                              manufacturerData: {},
-                                              serviceData: {},
-                                              serviceUuids: [])),
+                                      scanResult,
+                                      // ScanResult(
+                                      //     rssi: 0,
+                                      //     timeStamp: DateTime.now(),
+                                      //     device: BluetoothDevice(
+                                      //       remoteId: DeviceIdentifier('jaja'),
+                                      //     ),
+                                      //     advertisementData: AdvertisementData(
+                                      //         advName: '',
+                                      //         txPowerLevel: 0,
+                                      //         appearance: 0,
+                                      //         connectable: true,
+                                      //         manufacturerData: {},
+                                      //         serviceData: {},
+                                      //         serviceUuids: []),
+                                      //         ),
                                     );
                                   },
                                 );
@@ -322,7 +304,12 @@ class _MyPodsPageState extends State<MyPodsPage> {
                 //   deviceTapped(liviPod, true);
                 // },
 
-                onTap: () => claimPod(scanResult),
+                onTap: () {
+                  final liviPod = LiviPod(
+                    remoteId: scanResult.device.remoteId.toString(),
+                  );
+                  deviceTapped(liviPod, true);
+                },
                 text: Strings.claim,
               ),
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
@@ -34,6 +35,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   final appUserService = AppUserService();
   String? base64Image;
   bool imageWasChanged = false;
+  PhoneNumber? number;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -43,12 +45,8 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   final FocusNode phoneFocus = FocusNode();
 
   bool enabledSaveButton() {
-    return fullNameController.text.isNotEmpty ||
-        phoneNumberController.text.isNotEmpty ||
-        (appUser != null &&
-            (appUser.name != fullNameController.text ||
-                appUser.phoneNumber != phoneNumberController.text)) ||
-        base64Image != null;
+    return fullNameController.text.isNotEmpty &&
+        phoneNumberController.text.isNotEmpty;
   }
 
   @override
@@ -68,7 +66,25 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
       }
     });
     // country = getCountryByCode(authController.appUser!.phoneNumber);
+    doAsyncStuff();
     super.initState();
+  }
+
+  Future<void> doAsyncStuff() async {
+    await getCountry();
+  }
+
+  Future<void> getCountry() async {
+    number =
+        await PhoneNumber.getRegionInfoFromPhoneNumber(appUser!.phoneNumber);
+    if (number != null) {
+      final String parsableNumber = number!.dialCode ?? '';
+      country = getCountryByCode('+$parsableNumber');
+      if (number != null && number!.phoneNumber != null) {
+        phoneNumberController.text = number!.parseNumber().replaceAll('+', '');
+      }
+      setState(() {});
+    }
   }
 
   Future<void> setAppUser(
@@ -101,7 +117,8 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
       }
       loggedUser.caregiverIds = list;
       appUser.base64EncodedImage = base64Image == null ? '' : base64Image!;
-      await appUserService.updateUser(authController.appUser!);
+      appUser.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
+      await appUserService.updateUser(appUser);
       Navigator.pop(context);
     }
   }

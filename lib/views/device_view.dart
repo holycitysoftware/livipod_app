@@ -1,12 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 
+import '../components/components.dart';
 import '../controllers/controllers.dart';
 import '../models/livi_pod.dart';
 import '../services/livi_pod_service.dart';
+import '../services/medication_service.dart';
+import '../themes/livi_themes.dart';
+import '../utils/strings.dart';
 
 class DeviceView extends StatefulWidget {
   final LiviPod liviPod;
@@ -19,7 +24,7 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView> {
   late final AuthController _authController;
-  late final LiviPodService _liviPodController;
+  final LiviPodService _liviPodController = LiviPodService();
   late final BleController _bleController;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -31,7 +36,7 @@ class _DeviceViewState extends State<DeviceView> {
   @override
   void initState() {
     _authController = Provider.of<AuthController>(context, listen: false);
-    _liviPodController = Provider.of<LiviPodService>(context, listen: false);
+
     _bleController = Provider.of<BleController>(context, listen: false);
     connect(widget.liviPod, widget.claim);
     liviPod = widget.liviPod;
@@ -120,24 +125,95 @@ class _DeviceViewState extends State<DeviceView> {
   }
 
   Future showAlert() async {
+    // await showCupertinoModalPopup<void>(
+    //   context: context,
+    //   builder: (BuildContext context) => CupertinoAlertDialog(
+    //     title: LiviTextStyles.interSemiBold17(Strings.alert),
+    //     content: LiviTextStyles.interRegular14(
+    //         Strings.areYouSureYouWantToLogout,
+    //         color: LiviThemes.colors.dayMaster100),
+    //     actions: <CupertinoDialogAction>[
+    //       CupertinoDialogAction(
+    //         /// This parameter indicates this action is the default,
+    //         /// and turns the action's text to bold text.
+    //         isDefaultAction: true,
+    //         onPressed: () {
+    //           Navigator.pop(context);
+    //         },
+    //         child: LiviTextStyles.interRegular17(Strings.cancel,
+    //             color: LiviThemes.colors.dayBrand100),
+    //       ),
+    //       CupertinoDialogAction(
+    //         /// This parameter indicates the action would perform
+    //         /// a destructive action such as deletion, and turns
+    //         /// the action's text color to red.
+    //         isDestructiveAction: true,
+    //         onPressed: () {
+    //           Navigator.pop(context);
+    //         },
+    //         child: LiviTextStyles.interRegular17(Strings.logout,
+    //             color: LiviThemes.colors.error600),
+    //       ),
+    //     ],
+    //   ),
+    // );
+
     await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             content: const Text(
-              'The Pod is not connected.  Please make sure you are in proximity and the Pod is plugged in.',
+              Strings.thePodIsNotConnected,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14),
             ),
-            title: const Text('No Connection'),
+            title: const Text(Strings.noConnection),
             actions: [
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text('Ok'))
+                    child: const Text(Strings.ok))
               ])
+            ],
+          );
+        });
+  }
+
+  Future showDeleteMedicationAlert() async {
+    void pop() {
+      Navigator.pop(context);
+    }
+
+    await showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            content: const Text(
+              Strings.thisActionWillRemoveTheMedication,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14),
+            ),
+            title: const Text(Strings.deleteMedication),
+            actions: [
+              CupertinoDialogAction(
+                isDefaultAction: true,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: LiviTextStyles.interRegular17(Strings.no,
+                    color: LiviThemes.colors.dayBrand100),
+              ),
+              CupertinoDialogAction(
+                isDestructiveAction: true,
+                onPressed: () async {
+                  await clearClaim();
+                  pop();
+                },
+                child: LiviTextStyles.interRegular17(Strings.yes,
+                    color: LiviThemes.colors.error600),
+              ),
             ],
           );
         });
@@ -148,66 +224,34 @@ class _DeviceViewState extends State<DeviceView> {
       Navigator.pop(context);
     }
 
-    await showDialog(
+    await showCupertinoModalPopup(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.red[200],
+          return CupertinoAlertDialog(
             content: const Text(
-              'This action will remove the medication and schedule from your LiviPod.  This action cannot be undone.  Are you sure you want to unclaim this device?',
+              Strings.thisActionWillRemoveThisLiviPod,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14),
             ),
-            title: const Text('Unclaim'),
+            title: const Text(Strings.unclaim),
             actions: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('No')),
-                ElevatedButton(
-                    onPressed: () async {
-                      await clearClaim();
-                      pop();
-                    },
-                    child: const Text('Yes'))
-              ])
-            ],
-          );
-        });
-  }
-
-  Future showResetAlert() async {
-    void pop() {
-      Navigator.pop(context);
-    }
-
-    await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.red[200],
-            content: const Text(
-              'This action will remove this LiviPod from your account and reset the firmware.  This action cannot be undone.  Are you sure you want to reset this device?',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14),
-            ),
-            title: const Text('Reset'),
-            actions: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('No')),
-                ElevatedButton(
-                    onPressed: () async {
-                      await reset();
-                      pop();
-                    },
-                    child: const Text('Yes'))
-              ])
+              CupertinoDialogAction(
+                isDefaultAction: true,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: LiviTextStyles.interRegular17(Strings.no,
+                    color: LiviThemes.colors.dayBrand100),
+              ),
+              CupertinoDialogAction(
+                isDestructiveAction: true,
+                onPressed: () async {
+                  await reset();
+                  pop();
+                },
+                child: LiviTextStyles.interRegular17(Strings.yes,
+                    color: LiviThemes.colors.error600),
+              ),
             ],
           );
         });
@@ -258,17 +302,8 @@ class _DeviceViewState extends State<DeviceView> {
       }
 
       return Scaffold(
-          appBar: AppBar(
-            title: const Text('LiviPod'),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: Icon(
-                  Icons.circle,
-                  color: _connected ? Colors.green : Colors.red,
-                ),
-              )
-            ],
+          appBar: LiviAppBar(
+            title: Strings.myPod,
           ),
           body: SizedBox(
             width: double.infinity,
@@ -419,28 +454,49 @@ class _DeviceViewState extends State<DeviceView> {
                         //     ),
                         //   ),
                         // ),
-                        Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                await showUnclaimAlert();
-                              },
-                              child: const Text(
-                                'Unclaim',
+                        Expanded(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                  height: 120,
+                                  child: LiviThemes.icons.liviPodImage),
+                              LiviThemes.spacing.heightSpacer8(),
+                              // if(widget.liviPod.medicationId.isNotEmpty){
+                              //    StreamBuilder(stream:
+                              //   MedicationService().listenToMedicationsRealTime( Provider.of<AuthController>(context,listen:false).appUser!),
+                              //   builder:
+
+                              //   ),
+                              // }
+                              Spacer(),
+                              LiviFilledButton(
+                                color: LiviThemes.colors.baseWhite,
+                                text: Strings.deleteMedication,
+                                borderColor: LiviThemes.colors.error300,
+                                textColor: LiviThemes.colors.error600,
+                                onTap: () async {
+                                  await showDeleteMedicationAlert();
+                                },
                               ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                await showResetAlert();
-                              },
-                              child: const Text(
-                                'Reset Pod',
+                              LiviThemes.spacing.heightSpacer8(),
+                              LiviFilledButton(
+                                color: LiviThemes.colors.baseWhite,
+                                text: Strings.unclaim,
+                                borderColor: LiviThemes.colors.error300,
+                                textColor: LiviThemes.colors.error600,
+                                onTap: () => showUnclaimAlert(),
                               ),
-                            ),
-                          ],
+                              LiviThemes.spacing.heightSpacer8(),
+                              // ElevatedButton(
+                              //   onPressed: () async {
+                              //     await showResetAlert();
+                              //   },
+                              //   child: const Text(
+                              //     'Reset Pod',
+                              //   ),
+                              // ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

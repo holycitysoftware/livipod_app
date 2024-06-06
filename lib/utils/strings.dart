@@ -50,6 +50,14 @@ class Strings {
   static const String appNotification = 'App notification';
   static const String areYouSureYouWantToLogout =
       'Are you sure you want to logout of the application?';
+  static const String reset = 'Reset';
+  static const String thisActionWillRemoveTheMedication =
+      'This action will remove the medication and schedule from your LiviPod. This action cannot be undone. Are you sure you want to unclaim this device?';
+  static const String thisActionWillRemoveThisLiviPod =
+      'This action will remove this LiviPod from your account and reset the firmware. This action cannot be undone. Are you sure you want to reset this device?';
+  static const String thePodIsNotConnected =
+      'The Pod is not connected. Please make sure you are in proximity and the Pod is plugged in.';
+  static const String noConnection = 'No Connection';
   static const String ok = 'OK';
   static const String now = 'Now';
   static const String take = 'Take';
@@ -479,6 +487,7 @@ class Strings {
   static const String logout = 'Log Out';
   static const String myDevices = 'My Devices';
   static const String myPods = 'My Pods';
+  static const String myPod = 'My Pod';
   static const String allowAutomaticDispensing = 'Allow Automatic Dispensing';
   static const String allowRemoteDispensing = 'Allow Remote Dispensing';
   static const String notifyWhenPodInventoryIsLow =

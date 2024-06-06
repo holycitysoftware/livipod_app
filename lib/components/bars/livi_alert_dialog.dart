@@ -28,7 +28,7 @@ class LiviAlertDialog {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [
+                      children: [ 
                         LiviThemes.icons.liviPodImageSmaller,
                         LiviThemes.spacing.widthSpacer24(),
                         Column(
