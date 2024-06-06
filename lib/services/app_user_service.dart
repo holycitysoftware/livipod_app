@@ -220,10 +220,10 @@ class AppUserService {
             }
             if (users.isNotEmpty) {
               caregiversController.add(users);
+              return;
             }
-          } else {
-            caregiversController.add([]);
           }
+          caregiversController.add([]);
         },
         cancelOnError: true,
         onError: (error) {

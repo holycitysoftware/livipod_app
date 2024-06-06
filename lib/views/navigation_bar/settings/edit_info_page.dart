@@ -73,6 +73,9 @@ class _EditInfoPageState extends State<EditInfoPage> {
   }
 
   Future<void> getCountry() async {
+    if (appUser!.phoneNumber.isEmpty) {
+      return;
+    }
     number =
         await PhoneNumber.getRegionInfoFromPhoneNumber(appUser!.phoneNumber);
     if (number != null) {

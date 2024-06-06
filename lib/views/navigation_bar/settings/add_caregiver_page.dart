@@ -75,8 +75,11 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   }
 
   Future<void> getCountry() async {
+    if (appUser.phoneNumber.isEmpty) {
+      return;
+    }
     number =
-        await PhoneNumber.getRegionInfoFromPhoneNumber(appUser!.phoneNumber);
+        await PhoneNumber.getRegionInfoFromPhoneNumber(appUser.phoneNumber);
     if (number != null) {
       final String parsableNumber = number!.dialCode ?? '';
       country = getCountryByCode('+$parsableNumber');

@@ -72,6 +72,9 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   }
 
   Future<void> getCountry() async {
+    if (appUser!.phoneNumber.isEmpty) {
+      return;
+    }
     number =
         await PhoneNumber.getRegionInfoFromPhoneNumber(appUser!.phoneNumber);
     if (number != null) {
