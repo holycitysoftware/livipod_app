@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:livipod_app/controllers/communication_controller.dart';
 import 'package:provider/provider.dart';
@@ -34,14 +33,21 @@ void main() async {
     appleProvider: AppleProvider.appAttest,
   );
 
-  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-    if (!isAllowed) {
-      // This is just a basic example. For real apps, you must show some
-      // friendly dialog box before call the request method.
-      // This is very important to not harm the user experience
-      AwesomeNotifications().requestPermissionToSendNotifications();
-    }
-  });
+  // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+  //   if (!isAllowed) {
+  //     // This is just a basic example. For real apps, you must show some
+  //     // friendly dialog box before call the request method.
+  //     // This is very important to not harm the user experience
+  //     AwesomeNotifications().requestPermissionToSendNotifications();
+  //   }
+  // });
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.requestNotificationsPermission();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -134,55 +140,45 @@ class _MyAppState extends State<MyApp> {
   final LiviPodService _liviPodController = LiviPodService();
   final AuthController _authController = AuthController();
   final MessagingController _messagingController = MessagingController();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  var initializationSettingsAndroid = AndroidInitializationSettings(
+      'res_app_icon'); // <- default icon name is @mipmap/ic_launcher
+  //  var initializationSettingsIOS = IOSInitializationSettings(onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+  AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
+    'your channel id',
+    'your channel name',
+    channelDescription: 'your channel description',
+    importance: Importance.max,
+    priority: Priority.high,
+    colorized: true,
+    color: LiviThemes.colors.brand500,
+    ticker: 'ticker',
+  );
+  late NotificationDetails notificationDetails;
 
   @override
   void initState() {
     _devicesController = BleController(liviPodController: _liviPodController);
     // _scheduleController =
     //     ScheduleController(liviPodController: _liviPodController);
+    notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
     doAsyncStuff();
     super.initState();
   }
 
-  Future<void> doAsyncStuff() async {}
+  Future<void> doAsyncStuff() async {
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+    );
 
-  Future<void> notifs() async {
-    await AwesomeNotifications().initialize(
-        // set the icon to null if you want to use the default app icon
-        'resource://drawable/res_app_icon',
-        [
-          NotificationChannel(
-              channelGroupKey: 'basic_channel_group',
-              channelKey: 'basic_channel',
-              channelName: 'Basic notifications',
-              channelDescription: 'Notification channel for basic tests',
-              defaultColor: Color(0xFF9D50DD),
-              ledColor: Colors.white)
-        ],
-        // Channel groups are only visual and are not required
-        channelGroups: [
-          NotificationChannelGroup(
-              channelGroupKey: 'basic_channel_group',
-              channelGroupName: 'Basic group')
-        ],
-        debug: true);
-    await AwesomeNotifications().setListeners(
-        onActionReceivedMethod: NotificationController.onActionReceivedMethod,
-        onNotificationCreatedMethod:
-            NotificationController.onNotificationCreatedMethod,
-        onNotificationDisplayedMethod:
-            NotificationController.onNotificationDisplayedMethod,
-        onDismissActionReceivedMethod:
-            NotificationController.onDismissActionReceivedMethod);
-
-    await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-      id: 11,
-      channelKey: 'basic_channel',
-      actionType: ActionType.Default,
-      title: 'Hello World!',
-      body: 'This is my first notification!',
-    ));
+    await flutterLocalNotificationsPlugin.show(2, 'Baclofen 10 mg Tablet',
+        'Time to take your 9:40 AM medications', notificationDetails,
+        payload: 'item x');
   }
 
   @override
@@ -211,35 +207,5 @@ class _MyAppState extends State<MyApp> {
         home: SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),
     );
-  }
-}
-
-class NotificationController {
-  /// Use this method to detect when a new notification or a schedule is created
-  @pragma("vm:entry-point")
-  static Future<void> onNotificationCreatedMethod(
-      ReceivedNotification receivedNotification) async {
-    // Your code goes here
-  }
-
-  /// Use this method to detect every time that a new notification is displayed
-  @pragma("vm:entry-point")
-  static Future<void> onNotificationDisplayedMethod(
-      ReceivedNotification receivedNotification) async {
-    // Your code goes here
-  }
-
-  /// Use this method to detect if the user dismissed a notification
-  @pragma("vm:entry-point")
-  static Future<void> onDismissActionReceivedMethod(
-      ReceivedAction receivedAction) async {
-    // Your code goes here
-  }
-
-  /// Use this method to detect when the user taps on a notification or action button
-  @pragma("vm:entry-point")
-  static Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction) async {
-    // Your code goes here
   }
 }

@@ -9,8 +9,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission  android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission  android:name="android.permission.ACCESS_NETWORK_STATE"  />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
         <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>
     <!-- If your app checks for SMS support -->
@@ -29,7 +27,7 @@
     </intent>
     </queries>
     <application
-        android:label="livipod_app"
+        android:label="LiviPod"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
