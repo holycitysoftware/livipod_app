@@ -1,6 +1,7 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -156,6 +157,35 @@ class _MyAppState extends State<MyApp> {
     color: LiviThemes.colors.brand500,
     ticker: 'ticker',
   );
+  late final DarwinInitializationSettings initializationSettingsDarwin;
+
+  Future<void> onDidReceiveLocalNotification(
+      int id, String? title, String? body, String? payload) async {
+    // display a dialog with the notification details, tap ok to go to another page
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(title ?? ''),
+        content: Text(body ?? ''),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text('Ok'),
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SmsFlowPage(),
+                ),
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   late NotificationDetails notificationDetails;
 
   @override
@@ -165,13 +195,17 @@ class _MyAppState extends State<MyApp> {
     //     ScheduleController(liviPodController: _liviPodController);
     notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
+    initializationSettingsDarwin = DarwinInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     doAsyncStuff();
     super.initState();
   }
 
   Future<void> doAsyncStuff() async {
-    var initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsDarwin);
+
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
     );

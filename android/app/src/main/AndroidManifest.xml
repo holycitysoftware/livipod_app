@@ -27,7 +27,7 @@
     </intent>
     </queries>
     <application
-        android:label="LiviPod"
+        android:label="LiviPod App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

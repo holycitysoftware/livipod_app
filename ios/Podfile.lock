@@ -827,7 +827,14 @@ PODS:
     - gRPC-Core/Interface (= 1.49.1)
   - gRPC-Core/Interface (1.49.1)
   - GTMSessionFetcher/Core (3.3.1)
+  - image_picker_ios (0.0.1):
+    - Flutter
+  - in_app_review (0.2.0):
+    - Flutter
   - leveldb-library (1.22.4)
+  - libphonenumber_plugin (0.0.1):
+    - Flutter
+    - PhoneNumberKit
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
     - nanopb/encode (= 2.30909.1)
@@ -839,6 +846,12 @@ PODS:
     - Flutter
   - permission_handler_apple (9.3.0):
     - Flutter
+  - PhoneNumberKit (3.7.10):
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.7.10)
+    - PhoneNumberKit/UIKit (= 3.7.10)
+  - PhoneNumberKit/PhoneNumberKitCore (3.7.10)
+  - PhoneNumberKit/UIKit (3.7.10):
+    - PhoneNumberKit/PhoneNumberKitCore
   - PromisesObjC (2.4.0)
   - RecaptchaInterop (100.0.0)
   - shared_preferences_foundation (0.0.1):
@@ -847,6 +860,8 @@ PODS:
   - sms_autofill (0.0.1):
     - Flutter
   - url_launcher_ios (0.0.1):
+    - Flutter
+  - wifi_scan (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -861,12 +876,16 @@ DEPENDENCIES:
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
+  - libphonenumber_plugin (from `.symlinks/plugins/libphonenumber_plugin/ios`)
   - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sms_autofill (from `.symlinks/plugins/sms_autofill/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - wifi_scan (from `.symlinks/plugins/wifi_scan/ios`)
 
 SPEC REPOS:
   trunk:
@@ -892,6 +911,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - leveldb-library
     - nanopb
+    - PhoneNumberKit
     - PromisesObjC
     - RecaptchaInterop
 
@@ -918,6 +938,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_timezone:
     :path: ".symlinks/plugins/flutter_timezone/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
+  in_app_review:
+    :path: ".symlinks/plugins/in_app_review/ios"
+  libphonenumber_plugin:
+    :path: ".symlinks/plugins/libphonenumber_plugin/ios"
   network_info_plus:
     :path: ".symlinks/plugins/network_info_plus/ios"
   package_info:
@@ -930,6 +956,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sms_autofill/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  wifi_scan:
+    :path: ".symlinks/plugins/wifi_scan/ios"
 
 SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
@@ -963,16 +991,21 @@ SPEC CHECKSUMS:
   "gRPC-C++": 2df8cba576898bdacd29f0266d5236fa0e26ba6a
   gRPC-Core: a21a60aefc08c68c247b439a9ef97174b0c54f96
   GTMSessionFetcher: 8a1b34ad97ebe6f909fb8b9b77fba99943007556
+  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
+  in_app_review: 318597b3a06c22bb46dc454d56828c85f444f99d
   leveldb-library: 06a69cc7582d64b29424a63e085e683cc188230a
+  libphonenumber_plugin: 48bf4078546377eedaab4aa54978cd0f6fa23072
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   network_info_plus: 6d0c3eb8367b8164fa3fb0c19875e3f59d49697f
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   permission_handler_apple: 036b856153a2b1f61f21030ff725f3e6fece2b78
+  PhoneNumberKit: 3d9a20cfe8ee68f35c2a3ae9474093133f72a8a1
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sms_autofill: c461043483362c3f1709ee76eaae6eb570b31686
   url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
+  wifi_scan: 6d20b3b4f59bbad1ddcf3e241560f3acd62f6cbe
 
 PODFILE CHECKSUM: 586cc3e74bb63bd20d4426a255b5493b372a1f39
 
