@@ -34,25 +34,6 @@ void main() async {
     appleProvider: AppleProvider.appAttest,
   );
 
-  AwesomeNotifications().initialize(
-      // set the icon to null if you want to use the default app icon
-      'resource://drawable/res_app_icon',
-      [
-        NotificationChannel(
-            channelGroupKey: 'basic_channel_group',
-            channelKey: 'basic_channel',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            defaultColor: Color(0xFF9D50DD),
-            ledColor: Colors.white)
-      ],
-      // Channel groups are only visual and are not required
-      channelGroups: [
-        NotificationChannelGroup(
-            channelGroupKey: 'basic_channel_group',
-            channelGroupName: 'Basic group')
-      ],
-      debug: true);
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
       // This is just a basic example. For real apps, you must show some
@@ -61,6 +42,7 @@ void main() async {
       AwesomeNotifications().requestPermissionToSendNotifications();
     }
   });
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -158,9 +140,11 @@ class _MyAppState extends State<MyApp> {
     _devicesController = BleController(liviPodController: _liviPodController);
     // _scheduleController =
     //     ScheduleController(liviPodController: _liviPodController);
-
+    doAsyncStuff();
     super.initState();
   }
+
+  Future<void> doAsyncStuff() async {}
 
   Future<void> notifs() async {
     await AwesomeNotifications().initialize(
@@ -193,7 +177,7 @@ class _MyAppState extends State<MyApp> {
 
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
-      id: 10,
+      id: 11,
       channelKey: 'basic_channel',
       actionType: ActionType.Default,
       title: 'Hello World!',

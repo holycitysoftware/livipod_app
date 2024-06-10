@@ -514,6 +514,13 @@ class Strings {
       'Unable to configure Wi-Fi SSID and password. Please check your network credentials and try again.';
   static const String done = 'Done';
   static const String tryAgain = 'Try Again';
+  static const String confirm = 'Confirm';
+  static const String late = 'Late';
+  static const String medsDue = 'Meds Due';
+  static const String asNeededWithHyphen = 'As-Needed';
+  static const String confirmQuantity = 'Confirm Quantity';
+  static const String takeAll = 'Take All';
+  static const String expand = 'Expand';
 }
   // static const String logIn = 'Iniciar sesión';
   // static const String signUp = 'Registrarse';
