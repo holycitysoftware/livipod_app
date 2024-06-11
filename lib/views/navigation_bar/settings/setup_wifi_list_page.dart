@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wifi_scan/wifi_scan.dart';
@@ -8,6 +9,7 @@ import '../../../components/components.dart';
 import '../../../controllers/ble_controller.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
+import 'setup_wifi_page.dart';
 
 class SetupWifiListPage extends StatefulWidget {
   const SetupWifiListPage({super.key});
@@ -27,60 +29,48 @@ class _SetupWifiListPageState extends State<SetupWifiListPage> {
 
   @override
   void initState() {
-    startScan();
+    _startScan();
+    startListeningToScanResults();
     super.initState();
   }
 
-  Future<void> startScan() async {
-    // check platform support and necessary requirements
-    final can = await WiFiScan.instance.canStartScan(askPermissions: true);
-    switch (can) {
-      case CanStartScan.yes:
-        // start full scan async-ly
-        final isScanning = await WiFiScan.instance.startScan();
-        //...
-        break;
-      // ... handle other cases of CanStartScan values
-      case CanStartScan.notSupported:
-      // TODO: Handle this case.
-      case CanStartScan.noLocationPermissionRequired:
-      // TODO: Handle this case.
-      case CanStartScan.noLocationPermissionDenied:
-      // TODO: Handle this case.
-      case CanStartScan.noLocationPermissionUpgradeAccuracy:
-      // TODO: Handle this case.
-      case CanStartScan.noLocationServiceDisabled:
-      // TODO: Handle this case.
-      case CanStartScan.failed:
-      // TODO: Handle this case.
+  /// Show snackbar.
+  void kShowSnackBar(BuildContext context, String message) {
+    if (kDebugMode) print(message);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<bool> _canGetScannedResults(BuildContext context) async {
+    // check if can-getScannedResults
+    final can = await WiFiScan.instance.canGetScannedResults();
+    // if can-not, then show error
+    if (can != CanGetScannedResults.yes) {
+      if (mounted) {
+        kShowSnackBar(context, 'Cannot get scanned results: $can');
+      }
+      accessPoints = <WiFiAccessPoint>[];
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _startScan() async {
+    final can = await WiFiScan.instance.canStartScan();
+    // if can-not, then show error
+    if (can != CanStartScan.yes) {
+      if (mounted) {
+        kShowSnackBar(context, 'Cannot start scan: $can');
+      }
+      return;
     }
   }
 
-  Future<void> startListeningToScannedResults() async {
-    // check platform support and necessary requirements
-    final can =
-        await WiFiScan.instance.canGetScannedResults(askPermissions: true);
-    switch (can) {
-      case CanGetScannedResults.yes:
-        // listen to onScannedResultsAvailable stream
-        subscription =
-            WiFiScan.instance.onScannedResultsAvailable.listen((results) {
-          // update accessPoints
-          setState(() => accessPoints = results);
-        });
-        // ...
-        break;
-      // ... handle other cases of CanGetScannedResults values
-      case CanGetScannedResults.notSupported:
-      // TODO: Handle this case.
-      case CanGetScannedResults.noLocationPermissionRequired:
-      // TODO: Handle this case.
-      case CanGetScannedResults.noLocationPermissionDenied:
-      // TODO: Handle this case.
-      case CanGetScannedResults.noLocationPermissionUpgradeAccuracy:
-      // TODO: Handle this case.
-      case CanGetScannedResults.noLocationServiceDisabled:
-      // TODO: Handle this case.
+  Future<void> startListeningToScanResults() async {
+    if (await _canGetScannedResults(context)) {
+      subscription = WiFiScan.instance.onScannedResultsAvailable
+          .listen((result) => setState(() => accessPoints = result));
     }
   }
 
@@ -115,6 +105,17 @@ class _SetupWifiListPageState extends State<SetupWifiListPage> {
     return null;
   }
 
+  Future<void> goToWifiList(WiFiAccessPoint wiFiAccessPoint) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SetupWifiPage(
+          wiFiAccessPoint: wiFiAccessPoint,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,22 +125,49 @@ class _SetupWifiListPageState extends State<SetupWifiListPage> {
         title: Strings.wifiList,
       ),
       body: Form(
-          key: _formkey,
-          child: ListView.builder(
-              itemCount: accessPoints.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SetupWifiListPage()));
-                  },
-                  title: Text(accessPoints[index].ssid),
-                  subtitle: Text(accessPoints[index].bssid),
-                  trailing: Text(accessPoints[index].level.toString()),
-                );
-              })),
+        key: _formkey,
+        child: ListView.builder(
+          itemCount: accessPoints.length,
+          itemBuilder: (BuildContext context, int index) {
+            final item = accessPoints[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              child: Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(color: LiviThemes.colors.gray200),
+                ),
+                color: LiviThemes.colors.gray50,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () => goToWifiList(item),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.wifi,
+                          color: LiviThemes.colors.brand600,
+                        ),
+                        LiviThemes.spacing.widthSpacer24(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            LiviThemes.spacing.widthSpacer8(),
+                            LiviTextStyles.interMedium16(item.ssid,
+                                overflow: TextOverflow.ellipsis),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

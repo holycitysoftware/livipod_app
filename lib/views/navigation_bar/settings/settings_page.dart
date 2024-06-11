@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wifi_scan/wifi_scan.dart';
 
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
@@ -96,7 +97,9 @@ class SettingsPage extends StatelessWidget {
   }
 
   Future<void> goToSetupWifi(BuildContext context) async {
-    if (Platform.isAndroid) {
+    final can = await WiFiScan.instance.canGetScannedResults();
+
+    if (Platform.isAndroid && can == CanGetScannedResults.yes) {
       await Navigator.push(
         context,
         MaterialPageRoute(
