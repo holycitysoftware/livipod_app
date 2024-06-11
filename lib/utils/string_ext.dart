@@ -70,6 +70,10 @@ extension StringExt on String {
     return this[0];
   }
 
+  String getFirstWord() {
+    return this.split(' ').first;
+  }
+
   String removeExceptionString() {
     return replaceAll('Exception: ', '');
   }

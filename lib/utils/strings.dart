@@ -483,7 +483,7 @@ class Strings {
   static const String wafer = 'Wafer';
   static const String later = 'Later';
   static const String before = 'Before';
-  static const String nextMedsDueAt = 'Next meds due at ';
+  static const String nextMedsDueAt = 'Next meds due at';
   static const String logout = 'Log Out';
   static const String myDevices = 'My Devices';
   static const String myPods = 'My Pods';

@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/string_ext.dart';
+import '../utils/strings.dart';
 import '../utils/utils.dart' as utils;
 import 'dosing.dart';
 import 'enums.dart';
@@ -62,12 +63,27 @@ class Medication {
     return utils.getFormattedDateAndTime(offsetDosingTime);
   }
 
+  String getNextDosingDescription() {
+    if (nextDosing == null) {
+      return '-';
+    }
+    if (schedules.isNotEmpty && schedules[0].type == ScheduleType.asNeeded) {
+      return 'as needed';
+    }
+    var offsetDosingTime = nextDosing!.scheduledDosingTime!.toLocal();
+    return '${Strings.take} ${nextDosing!.qtyRequested.toInt()} ${Strings.at} ${utils.getFormattedTime(offsetDosingTime)}';
+  }
+
   List<String> getScheduleDescriptions() {
     var list = <String>[];
     for (var schedule in schedules) {
       list.add(schedule.getScheduleDescription());
     }
     return list;
+  }
+
+  String getMedicationInfo() {
+    return '$name $strength $dosageForm';
   }
 
   // @override

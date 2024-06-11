@@ -463,17 +463,17 @@ enum PeriodOfDay {
       description: Strings.morning,
       startTime: TimeOfDay(hour: 6, minute: 0),
       endTime: TimeOfDay(hour: 11, minute: 59),
-      colors: [Color(0xffEBEDE2), Color(0xffDEEDF6)]),
+      colors: [Color(0xffDEEDF6), Color(0xffEBEDE2)]),
   afternoon(
       description: Strings.afternoon,
       startTime: TimeOfDay(hour: 12, minute: 0),
-      endTime: TimeOfDay(hour: 20, minute: 59),
-      colors: [Color(0xffEED3CB), Color(0xffF9F7F0)]),
+      endTime: TimeOfDay(hour: 19, minute: 59),
+      colors: [Color(0xffF9F7F0), Color(0xffEED3CB)]),
   night(
       description: Strings.night,
-      startTime: TimeOfDay(hour: 21, minute: 0),
+      startTime: TimeOfDay(hour: 20, minute: 0),
       endTime: TimeOfDay(hour: 5, minute: 59),
-      colors: [Color(0xffBFC2D7), Color(0xffE4E2DD)]);
+      colors: [Color(0xffE4E2DD), Color(0xffBFC2D7)]);
 
   const PeriodOfDay({
     required this.description,
@@ -481,6 +481,28 @@ enum PeriodOfDay {
     required this.endTime,
     required this.colors,
   });
+
+  static PeriodOfDay getPeriodOfDayColors() {
+    final now = DateTime.now();
+    if ((now.hour >= morning.startTime.hour &&
+            now.hour <= morning.endTime.hour) &&
+        (now.minute >= morning.startTime.minute &&
+            now.minute <= morning.endTime.minute)) {
+      return morning;
+    }
+    if ((now.hour >= afternoon.startTime.hour &&
+            now.hour <= afternoon.endTime.hour) &&
+        (now.minute >= afternoon.startTime.minute &&
+            now.minute <= afternoon.endTime.minute)) {
+      return afternoon;
+    }
+    if ((now.hour >= night.startTime.hour && now.hour <= night.endTime.hour) &&
+        (now.minute >= night.startTime.minute &&
+            now.minute <= night.endTime.minute)) {
+      return night;
+    }
+    return morning;
+  }
 
   final String description;
   final TimeOfDay startTime;

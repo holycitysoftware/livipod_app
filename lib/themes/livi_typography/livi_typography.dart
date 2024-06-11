@@ -169,6 +169,17 @@ class LiviTypography {
       );
 
   /// ## Inter
+  /// Size: 32
+  ///
+  /// Font weight: 600
+  TextStyle get interSemiBold_32 => TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.w600,
+        letterSpacing: _letterSpacing,
+        fontFamily: 'Inter',
+      );
+
+  /// ## Inter
   /// Size: 24
   ///
   /// Font weight: 600

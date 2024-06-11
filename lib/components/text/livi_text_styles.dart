@@ -166,7 +166,6 @@ class LiviTextStyles {
         ),
         textAlign: textAlign,
       );
-
   static LiviTextComponent interSemiBold36(
     String data, {
     Color? color,
@@ -184,6 +183,29 @@ class LiviTextStyles {
         margin: margin,
         overflow: overflow,
         textStyle: LiviThemes.typography.interSemiBold_36.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+
+  static LiviTextComponent interSemiBold32(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interSemiBold_32.copyWith(
           height: height,
           decoration: lineThrough ?? TextDecoration.none,
         ),
@@ -320,6 +342,29 @@ class LiviTextStyles {
         margin: margin,
         overflow: overflow,
         textStyle: LiviThemes.typography.interRegular_12.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
+
+  static LiviTextComponent interMedium12(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interMedium_12.copyWith(
           height: height,
           decoration: lineThrough ?? TextDecoration.none,
         ),
