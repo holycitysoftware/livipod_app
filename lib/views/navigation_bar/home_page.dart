@@ -152,11 +152,11 @@ class _HomePageState extends State<HomePage> {
                     if (nextMed == null) {
                       return SizedBox();
                     }
-                    if (nextMed.nextDosing!.scheduledDosingTime!.day !=
+                    if (nextMed.nextDosing!.scheduledDosingTime!.day ==
                             now.day &&
-                        nextMed.nextDosing!.scheduledDosingTime!.month !=
+                        nextMed.nextDosing!.scheduledDosingTime!.month ==
                             now.month &&
-                        nextMed.nextDosing!.scheduledDosingTime!.year !=
+                        nextMed.nextDosing!.scheduledDosingTime!.year ==
                             now.year) {
                       return LiviTextStyles.interRegular16(
                           '${Strings.nextMedsDueAt} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
@@ -175,69 +175,143 @@ class _HomePageState extends State<HomePage> {
                       if (snapshot.data == null) {
                         return SizedBox();
                       }
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            final item = snapshot.data![index];
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: LiviThemes.colors.baseWhite,
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: LiviThemes.colors.gray200,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    dosageFormIcon(dosageForm: item.dosageForm),
-                                    LiviThemes.spacing.widthSpacer16(),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          LiviTextStyles.interSemiBold16(
-                                            item.name,
-                                          ),
-                                          LiviTextStyles.interRegular14(
-                                            item.getMedicationInfo(),
-                                            color: LiviThemes.colors.gray700,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                          ),
-                                          for (final scheduleDescription
-                                              in item.schedules)
-                                            LiviTextStyles.interRegular14(
-                                                scheduleDescription
-                                                    .getScheduleDescription(),
-                                                color:
-                                                    LiviThemes.colors.brand600),
-                                          Row(
-                                            children: [
-                                              LiviOutlinedButton(
-                                                  onTap: () {},
-                                                  text: Strings.skip),
-                                              LiviOutlinedButton(
-                                                  onTap: () {},
-                                                  text: Strings.confirm)
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          });
-                    }),
+                      return CardStackScreen(medications: snapshot.data!);
+                    })
               ],
             ),
           );
         }),
+      ),
+    );
+  }
+}
+
+class CardStackScreen extends StatefulWidget {
+  final List<Medication> medications;
+  CardStackScreen({super.key, required this.medications});
+  @override
+  _CardStackScreenState createState() => _CardStackScreenState();
+}
+
+class _CardStackScreenState extends State<CardStackScreen>
+    with SingleTickerProviderStateMixin {
+  bool isExpanded = false;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _toggleExpanded() {
+    setState(() {
+      isExpanded = !isExpanded;
+      if (isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildCard(int index, Color color) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(index * 4, index * 4, index * 4, 0),
+      child: GestureDetector(
+        onTap: _toggleExpanded,
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, 150 * index * (1 - _animation.value)),
+              child: child,
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: LiviThemes.colors.baseWhite,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: LiviThemes.colors.gray200,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  dosageFormIcon(
+                      dosageForm: widget.medications[index].dosageForm),
+                  LiviThemes.spacing.widthSpacer16(),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LiviTextStyles.interSemiBold16(
+                          widget.medications[index].name,
+                        ),
+                        LiviTextStyles.interRegular14(
+                          widget.medications[index].getMedicationInfo(),
+                          color: LiviThemes.colors.gray700,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                        for (final scheduleDescription
+                            in widget.medications[index].schedules)
+                          LiviTextStyles.interRegular14(
+                              scheduleDescription.getScheduleDescription(),
+                              color: LiviThemes.colors.brand600),
+                        Row(
+                          children: [
+                            LiviOutlinedButton(
+                                onTap: () {
+                                  print('here');
+                                },
+                                text: Strings.skip),
+                            LiviOutlinedButton(
+                                onTap: () {
+                                  print('here');
+                                },
+                                text: Strings.confirm)
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            for (int i = 0; i < widget.medications.length; i++)
+              _buildCard(i, Colors.primaries[i % Colors.primaries.length]),
+          ],
+        ),
       ),
     );
   }
