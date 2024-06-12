@@ -12,6 +12,7 @@ class Strings {
   static const String removeMedication = 'Remove Medication';
   static const String unclaim = 'Unclaim';
   static const String delete = 'Delete';
+  static const String collapse = 'Collapse';
   static const String deleteImage = 'Delete image';
   static const String livipod = 'LiviPod';
   static const String setupWifi = 'Setup Wifi';
@@ -21,6 +22,7 @@ class Strings {
   static const String takePicture = 'Take a picture';
   static const String pickImage = 'Pick image';
   static const String search = 'Search';
+  static const String takeAll = 'Take All';
   static const String edit = 'Edit';
   static const String passwordRequired = 'Password field is required';
   static const String passwordLength = 'Password must be at least 8 characters';
@@ -29,7 +31,10 @@ class Strings {
   static const String searching = 'Searching...';
   static const String availablePods = 'Available Pods';
   static const String youHaveNoPods = 'You have no Pods';
+  static const String youHaveNoMedicines = 'You have no medicines available';
   static const String remove = 'Remove';
+  static const String nextMedsDueTomorrowAt = 'Next meds due tomorrow at';
+  static const String youHaveLateMedicines = 'You have late medicines';
   static const String podSettings = 'Pod Settings';
   static const String areYouSureYouWantToRemove =
       'Are you sure you want to remove';
@@ -519,7 +524,6 @@ class Strings {
   static const String medsDue = 'Meds Due';
   static const String asNeededWithHyphen = 'As-Needed';
   static const String confirmQuantity = 'Confirm Quantity';
-  static const String takeAll = 'Take All';
   static const String expand = 'Expand';
 }
   // static const String logIn = 'Iniciar sesión';

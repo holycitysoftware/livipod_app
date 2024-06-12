@@ -3,14 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:sunrise_sunset_calc/sunrise_sunset_calc.dart';
 
 import '../components/components.dart';
-import '../controllers/controllers.dart';
 import '../models/enums.dart';
 
-import '../models/models.dart';
 import '../themes/livi_spacing/livi_spacing.dart';
 import '../themes/livi_themes.dart';
 import 'strings.dart';

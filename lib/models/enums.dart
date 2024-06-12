@@ -467,11 +467,11 @@ enum PeriodOfDay {
   afternoon(
       description: Strings.afternoon,
       startTime: TimeOfDay(hour: 12, minute: 0),
-      endTime: TimeOfDay(hour: 19, minute: 59),
+      endTime: TimeOfDay(hour: 16, minute: 59),
       colors: [Color(0xffF9F7F0), Color(0xffEED3CB)]),
   night(
       description: Strings.night,
-      startTime: TimeOfDay(hour: 20, minute: 0),
+      startTime: TimeOfDay(hour: 17, minute: 0),
       endTime: TimeOfDay(hour: 5, minute: 59),
       colors: [Color(0xffE4E2DD), Color(0xffBFC2D7)]);
 

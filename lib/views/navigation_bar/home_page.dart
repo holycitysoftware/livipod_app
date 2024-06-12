@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:card_stack_widget/card_stack_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -54,46 +55,51 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  CardStackWidget _buildCardStackWidget(BuildContext context) {
-    final mockList = _buildMockList(context, size: 4);
-
-    return CardStackWidget(
-      opacityChangeOnDrag: true,
-      swipeOrientation: CardOrientation.both,
-      cardDismissOrientation: CardOrientation.both,
-      positionFactor: 3,
-      scaleFactor: 1.5,
-      alignment: Alignment.center,
-      reverseOrder: true,
-      animateCardScale: true,
-      dismissedCardDuration: const Duration(milliseconds: 150),
-      cardList: _buildMockList(context, size: 4),
-    );
-  }
-
-  List<CardModel> _buildMockList(BuildContext context, {int size = 0}) {
-    final double containerWidth = MediaQuery.of(context).size.width - 16;
-
-    var list = <CardModel>[];
-    for (int i = 0; i < size; i++) {
-      var color = Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-          .withOpacity(1.0);
-
-      list.add(
-        CardModel(
-          backgroundColor: color,
-          radius: Radius.circular(8),
-          shadowColor: Colors.black.withOpacity(0.2),
-          child: SizedBox(
-            height: 310,
-            width: containerWidth,
-            child: Container(), // Whatever you want
-          ),
-        ),
-      );
+  Widget descriptionNextMeds(List<Medication> medications) {
+    Medication? nextMed;
+    if (medications.isEmpty) {
+      return LiviTextStyles.interRegular16(Strings.youHaveNoMedicines,
+          color: LiviThemes.colors.baseBlack);
     }
-
-    return list;
+    bool lateMedications = false;
+    medications.forEach(
+      (element) {
+        if (element.nextDosing!.outcome == DosingOutcome.missed) {
+          lateMedications = true;
+        }
+      },
+    );
+    if (lateMedications) {
+      return LiviTextStyles.interRegular16(Strings.youHaveLateMedicines,
+          color: LiviThemes.colors.baseBlack);
+    }
+    for (final element in medications) {
+      if (element.nextDosing != null) {
+        final date = element.nextDosing!.scheduledDosingTime;
+      }
+      if (nextMed == null) {
+        nextMed = element;
+      } else if (element.nextDosing!.scheduledDosingTime!
+          .isBefore(nextMed.nextDosing!.scheduledDosingTime!)) {
+        nextMed = element;
+      }
+    }
+    if (nextMed == null) {
+      return SizedBox();
+    }
+    if (nextMed.nextDosing!.scheduledDosingTime!.isToday()) {
+      return LiviTextStyles.interRegular16(
+          '${Strings.nextMedsDueAt} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
+          color: LiviThemes.colors.baseBlack);
+    } else if (nextMed.nextDosing!.scheduledDosingTime!.isTomorrow()) {
+      return LiviTextStyles.interRegular16(
+          '${Strings.nextMedsDueTomorrowAt} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
+          color: LiviThemes.colors.baseBlack);
+    } else {
+      return LiviTextStyles.interRegular16(
+          '${Strings.nextMedsDueAt} ${DateFormat.yMMMMd('en_US').format(nextMed.nextDosing!.scheduledDosingTime!)} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
+          color: LiviThemes.colors.baseBlack);
+    }
   }
 
   @override
@@ -137,37 +143,46 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.data == null) {
                       return SizedBox();
                     }
-                    Medication? nextMed;
-                    for (final element in snapshot.data!) {
-                      if (element.nextDosing != null) {
-                        final date = element.nextDosing!.scheduledDosingTime;
-                      }
-                      if (nextMed == null) {
-                        nextMed = element;
-                      } else if (element.nextDosing!.scheduledDosingTime!
-                          .isBefore(nextMed.nextDosing!.scheduledDosingTime!)) {
-                        nextMed = element;
-                      }
-                    }
-                    if (nextMed == null) {
-                      return SizedBox();
-                    }
-                    if (nextMed.nextDosing!.scheduledDosingTime!.day ==
-                            now.day &&
-                        nextMed.nextDosing!.scheduledDosingTime!.month ==
-                            now.month &&
-                        nextMed.nextDosing!.scheduledDosingTime!.year ==
-                            now.year) {
-                      return LiviTextStyles.interRegular16(
-                          '${Strings.nextMedsDueAt} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
-                          color: LiviThemes.colors.baseBlack);
-                    } else {
-                      return LiviTextStyles.interRegular16(
-                          '${Strings.nextMedsDueAt} ${DateFormat.yMMMMd('en_US').format(nextMed.nextDosing!.scheduledDosingTime!)} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
-                          color: LiviThemes.colors.baseBlack);
-                    }
+                    return descriptionNextMeds(snapshot.data!);
                   },
                 ),
+                // Column(
+                //   children: [
+                //     Container(
+                //       color: Colors.red,
+                //       height: 90,
+                //     ),
+                //     Container(
+                //       color: Colors.red,
+                //       height: 90,
+                //     ),
+                //     Container(
+                //       color: Colors.red,
+                //       height: 90,
+                //     ),
+                //     Container(
+                //       color: Colors.black,
+                //       height: 90,
+                //     ),
+                //     Container(
+                //       color: Colors.black,
+                //       height: 90,
+                //     ),
+                //     Container(
+                //       color: Colors.red,
+                //       height: 90,
+                //     ),
+                //     Container(
+                //       color: Colors.red,
+                //       height: 90,
+                //     ),
+                //     Container(
+                //       color: Colors.black,
+                //       height: 90,
+                //     ),
+                //   ],
+                // ),
+                LiviThemes.spacing.heightSpacer16(),
                 StreamBuilder<List<Medication>>(
                     stream: MedicationService()
                         .listenToMedicationsRealTime(authController.appUser!),
@@ -175,6 +190,23 @@ class _HomePageState extends State<HomePage> {
                       if (snapshot.data == null) {
                         return SizedBox();
                       }
+                      var list = snapshot.data!.where((element) {
+                        return element.nextDosing != null &&
+                            element.nextDosing!.outcome == DosingOutcome.missed;
+                      }).toList();
+                      return CardStackScreen(medications: snapshot.data!);
+                    }),
+                StreamBuilder<List<Medication>>(
+                    stream: MedicationService()
+                        .listenToMedicationsRealTime(authController.appUser!),
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) {
+                        return SizedBox();
+                      }
+                      var list = snapshot.data!.where((element) {
+                        return element.nextDosing != null &&
+                            element.nextDosing!.outcome == DosingOutcome.missed;
+                      }).toList();
                       return CardStackScreen(medications: snapshot.data!);
                     })
               ],
@@ -198,7 +230,7 @@ class _CardStackScreenState extends State<CardStackScreen>
   bool isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _animation;
-
+  final cardHeight = 150.0;
   @override
   void initState() {
     super.initState();
@@ -229,16 +261,41 @@ class _CardStackScreenState extends State<CardStackScreen>
     super.dispose();
   }
 
-  Widget _buildCard(int index, Color color) {
+  double getTopMargin(int index) {
+    if (index == 0) {
+      return 0;
+    } else if (index == 1) {
+      return 16;
+    } else {
+      return index * 16;
+    }
+  }
+
+  double getSideMargin(int index) {
+    if (!isExpanded) {
+      return 0;
+    }
+    if (index == 0) {
+      return 0;
+    } else if (index == 1) {
+      return 8;
+    } else {
+      return index * 8;
+    }
+  }
+
+  Widget _buildCard(int index) {
     return Container(
-      margin: EdgeInsets.fromLTRB(index * 4, index * 4, index * 4, 0),
+      height: cardHeight,
+      margin: EdgeInsets.fromLTRB(
+          getSideMargin(index), getTopMargin(index), getSideMargin(index), 0),
       child: GestureDetector(
         onTap: _toggleExpanded,
         child: AnimatedBuilder(
           animation: _animation,
           builder: (context, child) {
             return Transform.translate(
-              offset: Offset(0, 150 * index * (1 - _animation.value)),
+              offset: Offset(0, cardHeight * index * (1 - _animation.value)),
               child: child,
             );
           },
@@ -252,45 +309,71 @@ class _CardStackScreenState extends State<CardStackScreen>
             ),
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Row(
+              child: Column(
                 children: [
-                  dosageFormIcon(
-                      dosageForm: widget.medications[index].dosageForm),
-                  LiviThemes.spacing.widthSpacer16(),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        LiviTextStyles.interSemiBold16(
-                          widget.medications[index].name,
-                        ),
-                        LiviTextStyles.interRegular14(
-                          widget.medications[index].getMedicationInfo(),
-                          color: LiviThemes.colors.gray700,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                        for (final scheduleDescription
-                            in widget.medications[index].schedules)
-                          LiviTextStyles.interRegular14(
-                              scheduleDescription.getScheduleDescription(),
-                              color: LiviThemes.colors.brand600),
-                        Row(
-                          children: [
-                            LiviOutlinedButton(
-                                onTap: () {
-                                  print('here');
-                                },
-                                text: Strings.skip),
-                            LiviOutlinedButton(
-                                onTap: () {
-                                  print('here');
-                                },
-                                text: Strings.confirm)
-                          ],
+                        if (widget.medications[index].dosageForm != null)
+                          Container(
+                            height: 40,
+                            width: 40,
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: LiviThemes.colors.brand50,
+                              borderRadius: BorderRadius.circular(64),
+                            ),
+                            child: dosageFormIcon(
+                                dosageForm:
+                                    widget.medications[index].dosageForm),
+                          ),
+                        LiviThemes.spacing.widthSpacer16(),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              LiviTextStyles.interSemiBold16(
+                                widget.medications[index].name,
+                                maxLines: 1,
+                              ),
+                              LiviTextStyles.interRegular14(
+                                widget.medications[index].getMedicationInfo(),
+                                color: LiviThemes.colors.gray700,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                              for (final scheduleDescription
+                                  in widget.medications[index].schedules)
+                                LiviTextStyles.interRegular14(
+                                    scheduleDescription
+                                        .getScheduleDescription(),
+                                    maxLines: 1,
+                                    color: LiviThemes.colors.brand600),
+                              Spacer(),
+                            ],
+                          ),
                         ),
                       ],
                     ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: LiviOutlinedButton(
+                            onTap: () {
+                              print('here');
+                            },
+                            text: Strings.skip),
+                      ),
+                      LiviThemes.spacing.widthSpacer8(),
+                      Expanded(
+                        child: LiviOutlinedButton(
+                            onTap: () {
+                              print('here');
+                            },
+                            text: Strings.confirm),
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -301,17 +384,95 @@ class _CardStackScreenState extends State<CardStackScreen>
     );
   }
 
+  List<Widget> cards() {
+    final List<Widget> list = [];
+    if (isExpanded) {
+      for (int i = widget.medications.length - 1; i > -1; i--) {
+        list.add(_buildCard(i));
+      }
+    } else {
+      for (int i = widget.medications.length - 1; i > -1; i--) {
+        list.add(_buildCard(i));
+      }
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            for (int i = 0; i < widget.medications.length; i++)
-              _buildCard(i, Colors.primaries[i % Colors.primaries.length]),
-          ],
-        ),
+      height: double.maxFinite,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              LiviTextStyles.interMedium12(Strings.medsDue.toUpperCase(),
+                  color: LiviThemes.colors.gray600),
+              Spacer(),
+              // if( )
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: LiviThemes.colors.baseWhite,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: LiviThemes.colors.gray200,
+                  ),
+                ),
+                child: InkWell(
+                  onTap: _toggleExpanded,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (isExpanded)
+                        LiviThemes.icons
+                            .chevronDownIcon(color: LiviThemes.colors.gray400)
+                      else
+                        LiviThemes.icons
+                            .chevronUpIcon(color: LiviThemes.colors.gray400),
+                      LiviThemes.spacing.widthSpacer8(),
+                      if (widget.medications.isNotEmpty)
+                        LiviTextStyles.interMedium12(
+                          isExpanded ? Strings.expand : Strings.collapse,
+                          color: LiviThemes.colors.gray700,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              LiviThemes.spacing.widthSpacer8(),
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: LiviThemes.colors.baseWhite,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: LiviThemes.colors.gray200,
+                  ),
+                ),
+                child: InkWell(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LiviTextStyles.interMedium12(
+                        Strings.takeAll,
+                        color: LiviThemes.colors.gray700,
+                      ),
+                      LiviThemes.spacing.widthSpacer8(),
+                      LiviThemes.icons
+                          .checkIcon(color: LiviThemes.colors.gray400),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SingleChildScrollView(
+            child: Stack(alignment: Alignment.center, children: cards()),
+          ),
+        ],
       ),
     );
   }

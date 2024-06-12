@@ -63,6 +63,21 @@ class LiviIcons {
     );
   }
 
+  String get _chevronDownIconPath => '$svgPath/chevron_down.svg';
+
+  Widget chevronDownIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _chevronDownIconPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
   String get _heartHandIconPath => '$svgPath/heart_hand.svg';
 
   Widget heartHandIcon({

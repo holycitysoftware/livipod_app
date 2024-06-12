@@ -40,6 +40,22 @@ extension DateTimeExt on DateTime {
   DateTime wholeDay() {
     return DateTime(year, month, day, 23, 59, 59);
   }
+
+  bool isTomorrow() {
+    final DateTime now = DateTime.now();
+    return DateTime(year, month, day)
+            .difference(DateTime(now.year, now.month, now.day))
+            .inDays ==
+        1;
+  }
+
+  bool isToday() {
+    final DateTime now = DateTime.now();
+    return DateTime(year, month, day)
+            .difference(DateTime(now.year, now.month, now.day))
+            .inDays ==
+        0;
+  }
 }
 
 extension IntExt on int {
