@@ -120,6 +120,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             child: ListView(
+              shrinkWrap: true,
               padding: const EdgeInsets.all(24.0),
               children: [
                 LiviThemes.spacing.heightSpacer24(),
@@ -194,8 +195,12 @@ class _HomePageState extends State<HomePage> {
                         return element.nextDosing != null &&
                             element.nextDosing!.outcome == DosingOutcome.missed;
                       }).toList();
-                      return CardStackScreen(medications: snapshot.data!);
+                      return CardStackScreen(
+                        medications: snapshot.data!,
+                        title: Strings.medsDue.toUpperCase(),
+                      );
                     }),
+                LiviThemes.spacing.heightSpacer24(),
                 StreamBuilder<List<Medication>>(
                     stream: MedicationService()
                         .listenToMedicationsRealTime(authController.appUser!),
@@ -203,11 +208,14 @@ class _HomePageState extends State<HomePage> {
                       if (snapshot.data == null) {
                         return SizedBox();
                       }
-                      var list = snapshot.data!.where((element) {
+                      final list = snapshot.data!.where((element) {
                         return element.nextDosing != null &&
                             element.nextDosing!.outcome == DosingOutcome.missed;
                       }).toList();
-                      return CardStackScreen(medications: snapshot.data!);
+                      return CardStackScreen(
+                        medications: snapshot.data!,
+                        title: Strings.asNeeded.toUpperCase(),
+                      );
                     })
               ],
             ),
@@ -219,8 +227,13 @@ class _HomePageState extends State<HomePage> {
 }
 
 class CardStackScreen extends StatefulWidget {
+  final String title;
   final List<Medication> medications;
-  CardStackScreen({super.key, required this.medications});
+  CardStackScreen({
+    super.key,
+    required this.medications,
+    required this.title,
+  });
   @override
   _CardStackScreenState createState() => _CardStackScreenState();
 }
@@ -400,16 +413,14 @@ class _CardStackScreenState extends State<CardStackScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: double.maxFinite,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              LiviTextStyles.interMedium12(Strings.medsDue.toUpperCase(),
-                  color: LiviThemes.colors.gray600),
-              Spacer(),
-              // if( )
+    return Column(
+      children: [
+        Row(
+          children: [
+            LiviTextStyles.interMedium12(widget.title,
+                color: LiviThemes.colors.gray600),
+            Spacer(),
+            if (widget.medications.isNotEmpty && widget.medications.length > 1)
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -441,39 +452,38 @@ class _CardStackScreenState extends State<CardStackScreen>
                   ),
                 ),
               ),
-              LiviThemes.spacing.widthSpacer8(),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: LiviThemes.colors.baseWhite,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: LiviThemes.colors.gray200,
-                  ),
-                ),
-                child: InkWell(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      LiviTextStyles.interMedium12(
-                        Strings.takeAll,
-                        color: LiviThemes.colors.gray700,
-                      ),
-                      LiviThemes.spacing.widthSpacer8(),
-                      LiviThemes.icons
-                          .checkIcon(color: LiviThemes.colors.gray400),
-                    ],
-                  ),
+            LiviThemes.spacing.widthSpacer8(),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: LiviThemes.colors.baseWhite,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: LiviThemes.colors.gray200,
                 ),
               ),
-            ],
-          ),
-          SingleChildScrollView(
-            child: Stack(alignment: Alignment.center, children: cards()),
-          ),
-        ],
-      ),
+              child: InkWell(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LiviTextStyles.interMedium12(
+                      Strings.takeAll,
+                      color: LiviThemes.colors.gray700,
+                    ),
+                    LiviThemes.spacing.widthSpacer8(),
+                    LiviThemes.icons
+                        .checkIcon(color: LiviThemes.colors.gray400),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        SingleChildScrollView(
+          child: Stack(alignment: Alignment.center, children: cards()),
+        ),
+      ],
     );
   }
 }
