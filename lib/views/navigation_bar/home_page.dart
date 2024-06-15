@@ -6,7 +6,6 @@ import '../../components/components.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/enums.dart';
 import '../../models/models.dart';
-import '../../models/schedule_type.dart';
 import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/string_ext.dart';
@@ -24,6 +23,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final now = DateTime.now();
+  final medicationService = MedicationService();
+  final _modalTextController = TextEditingController();
 
   @override
   void initState() {
@@ -60,7 +61,8 @@ class _HomePageState extends State<HomePage> {
     bool lateMedications = false;
     medications.forEach(
       (element) {
-        if (element.nextDosing!.outcome == DosingOutcome.missed) {
+        if (element.nextDosing != null &&
+            element.nextDosing!.outcome == DosingOutcome.missed) {
           lateMedications = true;
         }
       },
@@ -70,8 +72,8 @@ class _HomePageState extends State<HomePage> {
           color: LiviThemes.colors.baseBlack);
     }
     for (final element in medications) {
-      if (element.nextDosing != null) {
-        final date = element.nextDosing!.scheduledDosingTime;
+      if (element.nextDosing == null) {
+        break;
       }
       if (nextMed == null) {
         nextMed = element;
@@ -157,18 +159,19 @@ class _HomePageState extends State<HomePage> {
                           }
                           final list = snapshot.data!.where((element) {
                             return element.nextDosing != null &&
-                                element.nextDosing!.outcome ==
-                                    DosingOutcome.missed;
+                                (element.nextDosing!.outcome ==
+                                        DosingOutcome.missed ||
+                                    element.isDue());
                           }).toList();
-                          return CardStackScreen(
+                          return CardStackAnimation(
                             key: Key('meds-due-cards'),
-                            buttons: skipConfirmButton(),
-                            medications: snapshot.data!,
-                            // medications: list,
+                            buttons: skipConfirmButton,
+                            // medications: snapshot.data !,
+                            medications: list,
                             title: Strings.medsDue.toUpperCase(),
                           );
                         }),
-                    LiviThemes.spacing.heightSpacer24(),
+                    LiviThemes.spacing.heightSpacer12(),
                     StreamBuilder<List<Medication>>(
                         stream: MedicationService().listenToMedicationsRealTime(
                             authController.appUser!),
@@ -177,17 +180,39 @@ class _HomePageState extends State<HomePage> {
                             return SizedBox();
                           }
                           final list = snapshot.data!.where((element) {
-                            return element.schedules.first.type ==
-                                ScheduleType.asNeeded;
+                            return element.isAsNeeded();
                           }).toList();
-                          return CardStackScreen(
-                            // medications: list,
+                          return CardStackAnimation(
+                            medications: list,
                             key: Key('as-needed-cards'),
-                            buttons: confirmQuantityButton(),
-                            medications: snapshot.data!,
+                            buttons: confirmQuantityButton,
+                            // medications: snapshot.data!,
                             title: Strings.asNeeded.toUpperCase(),
                           );
-                        })
+                        }),
+                    // LiviThemes.spacing.heightSpacer12(),
+                    // StreamBuilder<List<Medication>>(
+                    //     stream: MedicationService().listenToMedicationsRealTime(
+                    //         authController.appUser!),
+                    //     builder: (context, snapshot) {
+                    //       if (snapshot.data == null || snapshot.data!.isEmpty) {
+                    //         return SizedBox();
+                    //       }
+                    //       final list = snapshot.data!.where((element) {
+                    //         return element.nextDosing != null &&
+                    //             element.nextDosing!.outcome !=
+                    //                 DosingOutcome.missed &&
+                    //             !element.isDue();
+                    //       }).toList();
+                    //       return CardStackAnimation(
+                    //         medications: list,
+                    //         key: Key('as-needed-cards'),
+                    //         buttons: confirmQuantityButton(),
+                    //         // medications: snapshot.data!,
+                    //         title: Strings.asNeeded.toUpperCase(),
+                    //       );
+                    //     }),
+                    LiviThemes.spacing.heightSpacer16(),
                   ],
                 ),
               ),
@@ -197,294 +222,173 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-Widget skipConfirmButton() {
-  return Row(
-    children: [
-      Expanded(
-        child: LiviOutlinedButton(
-            onTap: () {
-              print('here');
-            },
-            text: Strings.skip),
-      ),
-      LiviThemes.spacing.widthSpacer8(),
-      Expanded(
-        child: LiviOutlinedButton(
-            onTap: () {
-              print('here');
-            },
-            text: Strings.confirm),
-      )
-    ],
-  );
-}
+  Future<void> skipMedication(List<Medication> medications, int? index) async {
+    if (medications.first.nextDosing != null) {
+      medications.first.nextDosing!.outcome = DosingOutcome.skipped;
+      await medicationService.updateMedication(medications.first);
+    }
+    setState(() {});
+  }
 
-Widget confirmQuantityButton() {
-  return Row(
-    children: [
-      Expanded(
-        child: LiviOutlinedButton(
-          onTap: () {
-            print('here');
-          },
-          text: Strings.confirmQuantity,
+  Future<void> takeMedication(List<Medication> medications, int? index) async {
+    if (medications.first.nextDosing != null) {
+      medications.first.nextDosing!.outcome = DosingOutcome.taken;
+      await medicationService.updateMedication(medications.first);
+    }
+    setState(() {});
+  }
+
+  Widget skipConfirmButton(List<Medication> medications, int? index) {
+    return Row(
+      children: [
+        Expanded(
+          child: LiviOutlinedButton(
+            onTap: () => skipMedication(medications, index),
+            text: Strings.skip,
+          ),
         ),
-      ),
-    ],
-  );
-}
-
-class CardStackScreen extends StatefulWidget {
-  final String title;
-  final List<Medication> medications;
-  final Widget buttons;
-  CardStackScreen({
-    super.key,
-    required this.medications,
-    required this.title,
-    required this.buttons,
-  });
-  @override
-  _CardStackScreenState createState() => _CardStackScreenState();
-}
-
-class _CardStackScreenState extends State<CardStackScreen>
-    with SingleTickerProviderStateMixin {
-  bool isExpanded = false;
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  final cardHeight = 150.0;
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
+        LiviThemes.spacing.widthSpacer8(),
+        Expanded(
+          child: LiviOutlinedButton(
+            onTap: () => takeMedication(medications, index),
+            text: Strings.confirm,
+          ),
+        )
+      ],
     );
   }
 
-  void _toggleExpanded() {
-    isExpanded = !isExpanded;
-
-    setState(() {
-      if (isExpanded) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  double getTopMargin(int index) {
-    if (index == 0) {
-      return 0;
-    } else if (index == 1) {
-      return 16;
-    } else {
-      return index * 16;
-    }
-  }
-
-  double getSideMargin(int index) {
-    if (!isExpanded) {
-      return 0;
-    }
-    if (index == 0) {
-      return 0;
-    } else if (index == 1) {
-      return 8;
-    } else {
-      return index * 8;
-    }
-  }
-
-  Widget _buildCard(int index) {
-    return Container(
-      height: cardHeight,
-      margin: EdgeInsets.fromLTRB(
-          getSideMargin(index), getTopMargin(index), getSideMargin(index), 0),
-      child: GestureDetector(
-        onTap: _toggleExpanded,
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: Offset(0, cardHeight * index * (1 - _animation.value)),
-              child: child,
-            );
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: LiviThemes.colors.baseWhite,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: LiviThemes.colors.gray200,
-              ),
-            ),
-            padding: const EdgeInsets.all(16),
+  Future<void> showQuantityModal(Medication medication) async {
+    final quantity = await showDialog<int>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          backgroundColor: LiviThemes.colors.baseWhite,
+          surfaceTintColor: LiviThemes.colors.baseWhite,
+          insetPadding: EdgeInsets.symmetric(horizontal: 32),
+          content: Container(
+            height: 330,
+            width: 400,
+            color: LiviThemes.colors.baseWhite,
             child: Column(
               children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      if (widget.medications[index].dosageForm != null)
-                        Container(
-                          height: 40,
-                          width: 40,
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: LiviThemes.colors.brand50,
-                            borderRadius: BorderRadius.circular(64),
-                          ),
-                          child: dosageFormIcon(
-                              dosageForm: widget.medications[index].dosageForm),
+                Spacer(),
+                Row(
+                  children: [
+                    if (medication.dosageForm != null)
+                      Container(
+                        height: 40,
+                        width: 40,
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: LiviThemes.colors.brand50,
+                          borderRadius: BorderRadius.circular(64),
                         ),
-                      LiviThemes.spacing.widthSpacer16(),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            LiviTextStyles.interSemiBold16(
-                              widget.medications[index].name,
-                              maxLines: 1,
-                            ),
-                            LiviTextStyles.interRegular14(
-                              widget.medications[index].getMedicationInfo(),
-                              color: LiviThemes.colors.gray700,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                            for (final scheduleDescription
-                                in widget.medications[index].schedules)
-                              LiviTextStyles.interRegular14(
-                                  scheduleDescription.getScheduleDescription(),
-                                  maxLines: 1,
-                                  color: LiviThemes.colors.brand600),
-                            Spacer(),
-                          ],
-                        ),
+                        child:
+                            dosageFormIcon(dosageForm: medication.dosageForm),
                       ),
-                    ],
-                  ),
+                    LiviThemes.spacing.widthSpacer8(),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: LiviTextStyles.interSemiBold16(
+                              medication.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                widget.buttons,
+                LiviInputField(
+                  title: Strings.availableQuantity,
+                  focusNode: FocusNode(),
+                  readOnly: true,
+                  controller: TextEditingController(
+                      text: medication.inventoryQuantity.toString()),
+                  keyboardType: TextInputType.number,
+                ),
+                LiviInputField(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                  title: Strings.adjustQuantity,
+                  focusNode: FocusNode(),
+                  controller: _modalTextController,
+                  keyboardType: TextInputType.number,
+                ),
+                LiviThemes.spacing.heightSpacer16(),
+                LiviDivider(),
+                LiviThemes.spacing.heightSpacer16(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: LiviOutlinedButton(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: Strings.cancel,
+                      ),
+                    ),
+                    LiviThemes.spacing.widthSpacer8(),
+                    Expanded(
+                      child: LiviOutlinedButton(
+                        onTap: () {
+                          Navigator.of(context).pop(_modalTextController.text);
+                        },
+                        text: Strings.confirm,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
+          // actions: <Widget>[
+          //   TextButton(
+          //     style: TextButton.styleFrom(
+          //       textStyle: Theme.of(context).textTheme.labelLarge,
+          //     ),
+          //     child: const Text(Strings.cancel),
+          //     onPressed: () {
+          //       Navigator.of(context).pop();
+          //     },
+          //   ),
+          //   TextButton(
+          //     style: TextButton.styleFrom(
+          //       textStyle: Theme.of(context).textTheme.labelLarge,
+          //     ),
+          //     child: const Text(Strings.confirm),
+          //     onPressed: () {
+          //       Navigator.of(context).pop();
+          //     },
+          //   ),
+          // ],
         ),
       ),
     );
   }
 
-  List<Widget> cards() {
-    final List<Widget> list = [];
-    if (isExpanded) {
-      for (int i = widget.medications.length - 1; i > -1; i--) {
-        list.add(_buildCard(i));
-      }
-    } else {
-      for (int i = widget.medications.length - 1; i > -1; i--) {
-        list.add(_buildCard(i));
-      }
+  Future<void> takeAll(List<Medication> medications) async {
+    for (final medication in medications) {
+      await takeMedication([medication], null);
     }
-    return list;
+    setState(() {});
+    return Future.value();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.medications.isEmpty) {
-      return SizedBox();
-    }
-    return SizedBox(
-      height: isExpanded
-          ? (cardHeight + (24 * widget.medications.length))
-          : (cardHeight * widget.medications.length.toDouble()) +
-              (24 * widget.medications.length),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              LiviTextStyles.interMedium12(widget.title,
-                  color: LiviThemes.colors.gray600),
-              Spacer(),
-              if (widget.medications.isNotEmpty &&
-                  widget.medications.length > 1)
-                Container(
-                  alignment: Alignment.center,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: LiviThemes.colors.baseWhite,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: LiviThemes.colors.gray200,
-                    ),
-                  ),
-                  child: InkWell(
-                    onTap: _toggleExpanded,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (isExpanded)
-                          LiviThemes.icons
-                              .chevronDownIcon(color: LiviThemes.colors.gray400)
-                        else
-                          LiviThemes.icons
-                              .chevronUpIcon(color: LiviThemes.colors.gray400),
-                        LiviThemes.spacing.widthSpacer8(),
-                        if (widget.medications.isNotEmpty)
-                          LiviTextStyles.interMedium12(
-                            isExpanded ? Strings.expand : Strings.collapse,
-                            color: LiviThemes.colors.gray700,
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              LiviThemes.spacing.widthSpacer8(),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: LiviThemes.colors.baseWhite,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: LiviThemes.colors.gray200,
-                  ),
-                ),
-                child: InkWell(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      LiviTextStyles.interMedium12(
-                        Strings.takeAll,
-                        color: LiviThemes.colors.gray700,
-                      ),
-                      LiviThemes.spacing.widthSpacer8(),
-                      LiviThemes.icons
-                          .checkIcon(color: LiviThemes.colors.gray400),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+  Widget confirmQuantityButton(List<Medication> medications, int? index) {
+    return Row(
+      children: [
+        Expanded(
+          child: LiviOutlinedButton(
+            onTap: () => showQuantityModal(medications.first),
+            text: Strings.confirmQuantity,
           ),
-          SingleChildScrollView(
-              child: Stack(alignment: Alignment.center, children: cards())),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

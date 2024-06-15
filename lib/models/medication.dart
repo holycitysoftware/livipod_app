@@ -33,6 +33,17 @@ class Medication {
     required this.name,
   });
 
+  bool isAsNeeded() {
+    return schedules.isNotEmpty && schedules[0].type == ScheduleType.asNeeded;
+  }
+
+  bool isDue() {
+    final now = DateTime.now();
+    return nextDosing != null &&
+        nextDosing!.scheduledDosingTime != null &&
+        nextDosing!.scheduledDosingTime!.difference(now).inMinutes < 6;
+  }
+
   String getLastDosing() {
     if (lastDosing == null || lastDosing!.lastDosingTime == null) {
       return '-';

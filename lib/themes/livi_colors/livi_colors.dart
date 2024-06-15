@@ -165,6 +165,9 @@ class LiviColors {
 
   Color get randomGray => const Color(0xFF9198A3);
   Color get randomGray2 => const Color(0xffDCDCDC);
+  Color get randomBlue => const Color(0xff175CD3);
+  Color get randomBlue2 => const Color(0xffB2DDFF);
+  Color get randomBlue3 => const Color(0xffEFF8FF);
 
   Color get dayBrand100 => const Color(0xff0F77F0);
   Color get dayMaster100 => const Color(0xff181818);

@@ -24,6 +24,7 @@ class Strings {
   static const String search = 'Search';
   static const String takeAll = 'Take All';
   static const String edit = 'Edit';
+  static const String due = 'Due';
   static const String passwordRequired = 'Password field is required';
   static const String passwordLength = 'Password must be at least 8 characters';
   static const String claim = 'Claim';
@@ -525,6 +526,8 @@ class Strings {
   static const String asNeededWithHyphen = 'As-Needed';
   static const String confirmQuantity = 'Confirm Quantity';
   static const String expand = 'Expand';
+  static const String availableQuantity = 'Available Quantity';
+  static const String adjustQuantity = 'Adjust Quantity';
 }
   // static const String logIn = 'Iniciar sesión';
   // static const String signUp = 'Registrarse';

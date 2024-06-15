@@ -66,6 +66,9 @@ class _MedicationsPageState extends State<MedicationsPage> {
               stream: MedicationService()
                   .listenToMedicationsRealTime(value.appUser!),
               builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
                 if (snapshot.data != null && snapshot.data!.isNotEmpty) {
                   final medications = snapshot.data!;
                   return ListView.builder(
