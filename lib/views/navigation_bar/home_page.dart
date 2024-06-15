@@ -112,6 +112,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+    setState(() {});
   }
 
   Future<void> goToAddCaregiver() async {
@@ -121,6 +122,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => AddCaregiverPage(),
       ),
     );
+    setState(() {});
   }
 
   Future<void> goToNotificationsPage() async {
@@ -130,6 +132,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => NotificationsPage(),
       ),
     );
+    setState(() {});
   }
 
   @override
@@ -172,15 +175,24 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     StreamBuilder<List<Medication>>(
-                        stream: MedicationService().listenToMedicationsRealTime(
-                            authController.appUser!),
-                        builder: (context, snapshot) {
+                      stream: MedicationService()
+                          .listenToMedicationsRealTime(authController.appUser!),
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null) {
                           return descriptionNextMeds(snapshot.data!);
-                        }),
+                        } else {
+                          return SizedBox();
+                        }
+                      },
+                    ),
                     StreamBuilder<List<Medication>>(
                       stream: MedicationService()
                           .listenToMedicationsRealTime(authController.appUser!),
                       builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox();
+                        }
                         if (snapshot.data == null ||
                             (snapshot.data != null && snapshot.data!.isEmpty)) {
                           return Column(
@@ -263,65 +275,61 @@ class _HomePageState extends State<HomePage> {
                         stream: MedicationService().listenToMedicationsRealTime(
                             authController.appUser!),
                         builder: (context, snapshot) {
-                          if (snapshot.data == null || snapshot.data!.isEmpty) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height /
+                                          3),
+                                  child: CircularProgressIndicator()),
+                            );
+                          } else if (snapshot.data == null ||
+                              snapshot.data!.isEmpty) {
                             return SizedBox();
                           }
-                          final list = snapshot.data!.where((element) {
+                          final asNeededList = snapshot.data!.where((element) {
+                            return element.isAsNeeded();
+                          }).toList();
+                          final missedDuelist = snapshot.data!.where((element) {
                             return element.nextDosing != null &&
                                 (element.nextDosing!.outcome ==
                                         DosingOutcome.missed ||
                                     element.isDue());
                           }).toList();
-                          return CardStackAnimation(
-                            key: Key('meds-due-cards'),
-                            buttons: skipConfirmButton,
-                            // medications: snapshot.data !,
-                            medications: list,
-                            title: Strings.medsDue.toUpperCase(),
+                          final othersList = snapshot.data!.where((element) {
+                            return !asNeededList.contains(element) &&
+                                !missedDuelist.contains(element);
+                          }).toList();
+                          othersList.sort((a, b) {
+                            if (a.nextDosing == null || b.nextDosing == null) {
+                              return 0;
+                            }
+                            return a.nextDosing!.scheduledDosingTime!
+                                .compareTo(b.nextDosing!.scheduledDosingTime!);
+                          });
+
+                          return Column(
+                            children: [
+                              CardStackAnimation(
+                                medications: asNeededList,
+                                key: Key('as-needed-cards'),
+                                buttons: confirmQuantityButton,
+                                // medications: snapshot.data!,
+                                title: Strings.asNeeded.toUpperCase(),
+                              ),
+                              CardStackAnimation(
+                                key: Key('meds-due-cards'),
+                                buttons: skipConfirmButton,
+                                // medications: snapshot.data !,
+                                medications: missedDuelist,
+                                title: Strings.medsDue.toUpperCase(),
+                              ),
+                              ...otherCards(othersList),
+                            ],
                           );
                         }),
                     LiviThemes.spacing.heightSpacer12(),
-                    StreamBuilder<List<Medication>>(
-                        stream: MedicationService().listenToMedicationsRealTime(
-                            authController.appUser!),
-                        builder: (context, snapshot) {
-                          if (snapshot.data == null || snapshot.data!.isEmpty) {
-                            return SizedBox();
-                          }
-                          final list = snapshot.data!.where((element) {
-                            return element.isAsNeeded();
-                          }).toList();
-                          return CardStackAnimation(
-                            medications: list,
-                            key: Key('as-needed-cards'),
-                            buttons: confirmQuantityButton,
-                            // medications: snapshot.data!,
-                            title: Strings.asNeeded.toUpperCase(),
-                          );
-                        }),
-                    // LiviThemes.spacing.heightSpacer12(),
-                    // StreamBuilder<List<Medication>>(
-                    //     stream: MedicationService().listenToMedicationsRealTime(
-                    //         authController.appUser!),
-                    //     builder: (context, snapshot) {
-                    //       if (snapshot.data == null || snapshot.data!.isEmpty) {
-                    //         return SizedBox();
-                    //       }
-                    //       final list = snapshot.data!.where((element) {
-                    //         return element.nextDosing != null &&
-                    //             element.nextDosing!.outcome !=
-                    //                 DosingOutcome.missed &&
-                    //             !element.isDue();
-                    //       }).toList();
-                    //       return CardStackAnimation(
-                    //         medications: list,
-                    //         key: Key('as-needed-cards'),
-                    //         buttons: confirmQuantityButton(),
-                    //         // medications: snapshot.data!,
-                    //         title: Strings.asNeeded.toUpperCase(),
-                    //       );
-                    //     }),
-                    LiviThemes.spacing.heightSpacer16(),
                   ],
                 ),
               ),
@@ -574,5 +582,45 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
+  }
+
+  List<Widget> otherCards(List<Medication> medications) {
+    final list = <Widget>[];
+    for (var i = 0; i < medications.length; i++) {
+      final similarItems = medications
+          .where((element) =>
+              element.nextDosing != null &&
+              medications[i].nextDosing != null &&
+              element.nextDosing!.scheduledDosingTime ==
+                  medications[i].nextDosing!.scheduledDosingTime)
+          .toList();
+      list.add(
+        Column(
+          children: [
+            CardStackAnimation(
+              key: Key('other-cards-$i'),
+              buttons: skipConfirmButton,
+              // medications: snapshot.data !,
+              medications: similarItems,
+              title: getTimeDescription(
+                  similarItems.first.nextDosing!.scheduledDosingTime!),
+            ),
+            LiviThemes.spacing.heightSpacer32(),
+          ],
+        ),
+      );
+      i += similarItems.length - 1;
+    }
+    return list;
+  }
+
+  String getTimeDescription(DateTime scheduledDosingTime) {
+    if (scheduledDosingTime.isToday()) {
+      return DateFormat.jm().format(scheduledDosingTime);
+    } else if (scheduledDosingTime.isTomorrow()) {
+      return '${Strings.tomorrow} ${DateFormat.jm().format(scheduledDosingTime)}';
+    } else {
+      return '${DateFormat.MMMMd('en_US').format(scheduledDosingTime)} ${DateFormat.jm().format(scheduledDosingTime)}';
+    }
   }
 }

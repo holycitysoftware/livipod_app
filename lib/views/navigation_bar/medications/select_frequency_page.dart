@@ -923,7 +923,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   Widget buildDaysOfMonthSelector(StateSetter setStates) {
     return GridView.count(
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 2,
+      crossAxisSpacing: 1.5,
       mainAxisSpacing: 2,
       shrinkWrap: true,
       crossAxisCount: 6,
@@ -953,9 +953,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     final list = <Widget>[];
 
     for (var i = 0; i < 31; i++) {
+      print(i);
       final btn = SizedBox(
-        width: 50,
-        height: 50,
         child: InkWell(
             borderRadius: BorderRadius.circular(64),
             onTap: () {

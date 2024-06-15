@@ -24,10 +24,17 @@ class LiviPillInfoStyles {
       );
 
   static LiviPillInfo early() => LiviPillInfo(
-        backgroundColor: LiviThemes.colors.error50,
-        text: Strings.late,
-        iconColor: LiviThemes.colors.error500,
-        textColor: LiviThemes.colors.error700,
-        borderColor: LiviThemes.colors.error200,
+        backgroundColor: LiviThemes.colors.gray50,
+        text: Strings.early,
+        iconColor: LiviThemes.colors.gray500,
+        textColor: LiviThemes.colors.gray700,
+        borderColor: LiviThemes.colors.gray200,
+      );
+  static LiviPillInfo tomorrow() => LiviPillInfo(
+        backgroundColor: LiviThemes.colors.gray50,
+        text: Strings.tomorrow,
+        iconColor: LiviThemes.colors.gray500,
+        textColor: LiviThemes.colors.gray700,
+        borderColor: LiviThemes.colors.gray200,
       );
 }

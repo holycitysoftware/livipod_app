@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/models.dart';
 import '../../models/schedule_type.dart';
 import '../../themes/livi_themes.dart';
+import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
 import '../../utils/utils.dart';
 import '../components.dart';
@@ -56,7 +57,13 @@ class _CardStackAnimationState extends State<CardStackAnimation>
     if (widget.medications[index].isDue()) {
       return LiviPillInfoStyles.due();
     } else if (widget.medications[index].nextDosing!.scheduledDosingTime!
-        .isBefore(now)) {
+        .isTomorrow()) {
+      return LiviPillInfoStyles.tomorrow();
+    } else if (now.isAfter(
+      widget.medications[index].nextDosing!.scheduledDosingTime!.add(
+        Duration(minutes: 5),
+      ),
+    )) {
       return LiviPillInfoStyles.late();
     } else {
       return LiviPillInfoStyles.early();
@@ -82,9 +89,9 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   }
 
   double getTopMargin(int index) {
-    if (index == widget.medications.length - 1) {
-      return 8;
-    } else if (index == widget.medications.length - 2) {
+    if (index == 0) {
+      return 0;
+    } else if (index == 1) {
       return 16;
     } else {
       return index * 16;
@@ -95,9 +102,9 @@ class _CardStackAnimationState extends State<CardStackAnimation>
     if (!isExpanded) {
       return 0;
     }
-    if (index == widget.medications.length - 1) {
-      return 8;
-    } else if (index == widget.medications.length - 2) {
+    if (index == 0) {
+      return 0;
+    } else if (index == 1) {
       return 8;
     } else {
       return index * 8;
@@ -120,7 +127,8 @@ class _CardStackAnimationState extends State<CardStackAnimation>
             );
           },
           child: Opacity(
-            opacity: 1,
+            opacity:
+                isExpanded && index == widget.medications.length - 1 ? 0.5 : 1,
             child: Container(
               decoration: BoxDecoration(
                 color: LiviThemes.colors.baseWhite,
@@ -229,6 +237,9 @@ class _CardStackAnimationState extends State<CardStackAnimation>
         children: [
           Row(
             children: [
+              LiviThemes.icons
+                  .alarmClockIcon(color: LiviThemes.colors.gray600, height: 16),
+              LiviThemes.spacing.widthSpacer4(),
               LiviTextStyles.interMedium12(widget.title,
                   color: LiviThemes.colors.gray600),
               Spacer(),
@@ -267,33 +278,37 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                   ),
                 ),
               LiviThemes.spacing.widthSpacer8(),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: LiviThemes.colors.baseWhite,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: LiviThemes.colors.gray200,
+              if (widget.medications.isNotEmpty &&
+                  widget.medications.length > 1)
+                Container(
+                  alignment: Alignment.center,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: LiviThemes.colors.baseWhite,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: LiviThemes.colors.gray200,
+                    ),
+                  ),
+                  child: InkWell(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LiviTextStyles.interMedium12(
+                          Strings.takeAll,
+                          color: LiviThemes.colors.gray700,
+                        ),
+                        LiviThemes.spacing.widthSpacer4(),
+                        LiviThemes.icons
+                            .checkIcon(color: LiviThemes.colors.gray400),
+                      ],
+                    ),
                   ),
                 ),
-                child: InkWell(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      LiviTextStyles.interMedium12(
-                        Strings.takeAll,
-                        color: LiviThemes.colors.gray700,
-                      ),
-                      LiviThemes.spacing.widthSpacer8(),
-                      LiviThemes.icons
-                          .checkIcon(color: LiviThemes.colors.gray400),
-                    ],
-                  ),
-                ),
-              ),
             ],
           ),
+          LiviThemes.spacing.heightSpacer8(),
           SingleChildScrollView(
               child: Stack(alignment: Alignment.center, children: cards())),
         ],

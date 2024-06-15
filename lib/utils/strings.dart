@@ -511,6 +511,7 @@ class Strings {
   static const String noMedsAvailable = 'No meds available';
   static const String selectAMedication = 'Select a medication';
   static const String notConnected = 'Not Connected';
+  static const String early = 'Early';
   static const String wifiConfigurationFailed = 'Wi-Fi Configuration Failed';
   static const String wifiConfigurationSuccessful =
       'Wi-Fi Configuration Successful';
@@ -536,6 +537,7 @@ class Strings {
       'Dive into the editor and start creating';
   static const String setYourNotificationSettings =
       'Set your notification settings';
+  static const String tomorrow = 'Tomorrow';
   static const String letsGetYouOnboarded = "Let's get you onboarded";
 }
   // static const String logIn = 'Iniciar sesión';
