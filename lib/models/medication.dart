@@ -52,6 +52,19 @@ class Medication {
     return utils.getFormattedDateAndTime(offsetDosingTime);
   }
 
+  String dosageFormStrengthType() {
+    var dosageFormStrength = '';
+    if (dosageForm != DosageForm.none) {
+      dosageFormStrength = dosageForm.description.capitalizeFirstLetter();
+    }
+    if (strength.isNotEmpty) {
+      dosageFormStrength = '$dosageFormStrength $strength';
+    }
+    dosageFormStrength =
+        '$dosageFormStrength ${schedules[0].type.description.capitalizeFirstLetter()}';
+    return dosageFormStrength;
+  }
+
   String getNameStrengthDosageForm() {
     var name = this.name.capitalizeFirstLetter();
     if (strength.isNotEmpty) {

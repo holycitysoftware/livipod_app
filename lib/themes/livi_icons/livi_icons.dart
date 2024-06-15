@@ -162,6 +162,8 @@ class LiviIcons {
     return SvgPicture.asset(
       _caregiverPath,
       height: height,
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
     );
   }
 

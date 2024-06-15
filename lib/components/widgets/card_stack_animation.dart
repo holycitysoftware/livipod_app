@@ -42,7 +42,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
     if (widget.medications.isNotEmpty &&
         widget.medications.first.schedules.first.type ==
             ScheduleType.asNeeded) {
-      cardHeight = 170.0;
+      cardHeight = 175.0;
     }
   }
 
@@ -96,7 +96,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
       return 0;
     }
     if (index == widget.medications.length - 1) {
-      return 0;
+      return 8;
     } else if (index == widget.medications.length - 2) {
       return 8;
     } else {
@@ -120,7 +120,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
             );
           },
           child: Opacity(
-            opacity: isExpanded && index > 0 ? 0.5 : 1,
+            opacity: 1,
             child: Container(
               decoration: BoxDecoration(
                 color: LiviThemes.colors.baseWhite,

@@ -528,6 +528,15 @@ class Strings {
   static const String expand = 'Expand';
   static const String availableQuantity = 'Available Quantity';
   static const String adjustQuantity = 'Adjust Quantity';
+  static const String addYourFirstMedication = 'Add your first medication';
+  static const String addYourselfOrImportFromCSV =
+      'Add yourself or import from CSV';
+  static const String addYourCaregiver = 'Add your Caregiver';
+  static const String diveIntoTheEditorAndStartCreating =
+      'Dive into the editor and start creating';
+  static const String setYourNotificationSettings =
+      'Set your notification settings';
+  static const String letsGetYouOnboarded = "Let's get you onboarded";
 }
   // static const String logIn = 'Iniciar sesión';
   // static const String signUp = 'Registrarse';

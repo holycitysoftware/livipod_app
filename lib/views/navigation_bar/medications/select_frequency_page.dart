@@ -271,6 +271,9 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     final backup = widget.medication;
     widget.medication = Medication(name: backup.name);
     widget.medication.schedules = backup.schedules;
+    widget.medication.strength = backup.strength;
+    widget.medication.dosageForm = backup.dosageForm;
+
     for (final element in schedules) {
       element.type = scheduleType;
     }

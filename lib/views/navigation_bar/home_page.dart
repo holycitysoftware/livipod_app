@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -6,11 +7,13 @@ import '../../components/components.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/enums.dart';
 import '../../models/models.dart';
+import '../../services/app_user_service.dart';
 import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
 import '../../utils/utils.dart';
+import '../views.dart';
 
 ///Route: home-page
 class HomePage extends StatefulWidget {
@@ -100,6 +103,35 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void goToSearchMedications({String? medication}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchMedicationPage(
+          medication: medication,
+        ),
+      ),
+    );
+  }
+
+  Future<void> goToAddCaregiver() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCaregiverPage(),
+      ),
+    );
+  }
+
+  Future<void> goToNotificationsPage() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NotificationsPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -140,13 +172,90 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     StreamBuilder<List<Medication>>(
+                        stream: MedicationService().listenToMedicationsRealTime(
+                            authController.appUser!),
+                        builder: (context, snapshot) {
+                          return descriptionNextMeds(snapshot.data!);
+                        }),
+                    StreamBuilder<List<Medication>>(
                       stream: MedicationService()
                           .listenToMedicationsRealTime(authController.appUser!),
                       builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return SizedBox();
+                        if (snapshot.data == null ||
+                            (snapshot.data != null && snapshot.data!.isEmpty)) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              LiviThemes.spacing.heightSpacer16(),
+                              Row(
+                                children: [
+                                  LiviThemes.icons.rocket2Icon(
+                                      color: LiviThemes.colors.gray600,
+                                      height: 16),
+                                  LiviThemes.spacing.widthSpacer8(),
+                                  LiviTextStyles.interMedium12(
+                                      Strings.letsGetYouOnboarded.toUpperCase(),
+                                      color: LiviThemes.colors.gray600)
+                                ],
+                              ),
+                              LiviThemes.spacing.heightSpacer4(),
+                              onboardingCard(
+                                title: Strings.addYourFirstMedication,
+                                subtitle: Strings.addYourselfOrImportFromCSV,
+                                icon: LiviThemes.icons.alarmAddIcon(
+                                  height: 24,
+                                  color: LiviThemes.colors.brand600,
+                                ),
+                                onTap: goToSearchMedications,
+                              ),
+                              StreamBuilder<List<AppUser>>(
+                                stream: AppUserService()
+                                    .listenToCaregiversRealTime(
+                                        authController.appUser!),
+                                builder: (context, snapshot) {
+                                  if (snapshot.data == null ||
+                                      (snapshot.data != null &&
+                                          snapshot.data!.isEmpty)) {
+                                    return SizedBox();
+                                  }
+                                  final user = snapshot.data!;
+
+                                  return onboardingCard(
+                                    title: Strings.addYourCaregiver,
+                                    subtitle: Strings
+                                        .diveIntoTheEditorAndStartCreating,
+                                    icon: LiviThemes.icons.caregiverIcon(
+                                      height: 24,
+                                      color: LiviThemes.colors.green500,
+                                    ),
+                                    onTap: goToAddCaregiver,
+                                  );
+                                },
+                              ),
+                              onboardingCard(
+                                title: Strings.addYourCaregiver,
+                                subtitle:
+                                    Strings.diveIntoTheEditorAndStartCreating,
+                                icon: LiviThemes.icons.caregiverIcon(
+                                  height: 24,
+                                  color: LiviThemes.colors.green500,
+                                ),
+                                onTap: goToAddCaregiver,
+                              ),
+                              onboardingCard(
+                                title: Strings.setYourNotificationSettings,
+                                subtitle: Strings.addYourselfOrImportFromCSV,
+                                icon: Icon(
+                                  Icons.notifications,
+                                  size: 24,
+                                  color: LiviThemes.colors.error500,
+                                ),
+                                onTap: goToNotificationsPage,
+                              ),
+                            ],
+                          );
                         }
-                        return descriptionNextMeds(snapshot.data!);
+                        return SizedBox();
                       },
                     ),
                     LiviThemes.spacing.heightSpacer16(),
@@ -290,14 +399,30 @@ class _HomePageState extends State<HomePage> {
                       ),
                     LiviThemes.spacing.widthSpacer8(),
                     Expanded(
-                      child: Row(
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: LiviTextStyles.interSemiBold16(
-                              medication.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: LiviTextStyles.interSemiBold16(
+                                  medication.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: LiviTextStyles.interSemiBold16(
+                                  medication.dosageFormStrengthType(),
+                                  maxLines: 1,
+                                  color: LiviThemes.colors.gray700,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -377,6 +502,65 @@ class _HomePageState extends State<HomePage> {
     }
     setState(() {});
     return Future.value();
+  }
+
+  Widget onboardingCard({
+    required String title,
+    required String subtitle,
+    required Widget icon,
+    required Function() onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Card(
+        elevation: .5,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: LiviThemes.colors.gray200,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: icon,
+                ),
+              ),
+              LiviThemes.spacing.widthSpacer12(),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        Expanded(
+                          child: LiviTextStyles.interSemiBold14(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ]),
+                      Row(children: [
+                        Expanded(
+                          child: LiviTextStyles.interRegular14(
+                            subtitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ]),
+                    ]),
+              ),
+              LiviThemes.icons.chevronRight(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget confirmQuantityButton(List<Medication> medications, int? index) {
