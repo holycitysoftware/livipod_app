@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import '../models/dosing.dart';
+import 'dosing.dart';
 
 part 'medication_history.g.dart';
 
