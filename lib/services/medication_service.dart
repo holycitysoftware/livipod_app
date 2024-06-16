@@ -112,4 +112,11 @@ class MedicationService {
       return medicationHistory;
     }
   }
+
+  Future<void> createMedicationHistory(
+      MedicationHistory medicationHistory) async {
+    await FirebaseFirestore.instance
+        .collection('medicationHistory')
+        .add(medicationHistory.toJson());
+  }
 }
