@@ -11,8 +11,7 @@ MedicationHistory _$MedicationHistoryFromJson(Map<String, dynamic> json) =>
       dateTime: DateTime.parse(json['dateTime'] as String),
     )
       ..accountId = json['accountId'] as String
-      ..firstName = json['firstName'] as String
-      ..lastName = json['lastName'] as String
+      ..name = json['name'] as String
       ..medicationId = json['medicationId'] as String
       ..medicationName = json['medicationName'] as String
       ..outcome = $enumDecode(_$DosingOutcomeEnumMap, json['outcome'])
@@ -30,8 +29,7 @@ Map<String, dynamic> _$MedicationHistoryToJson(MedicationHistory instance) =>
     <String, dynamic>{
       'accountId': instance.accountId,
       'dateTime': instance.dateTime.toIso8601String(),
-      'firstName': instance.firstName,
-      'lastName': instance.lastName,
+      'name': instance.name,
       'medicationId': instance.medicationId,
       'medicationName': instance.medicationName,
       'outcome': _$DosingOutcomeEnumMap[instance.outcome]!,

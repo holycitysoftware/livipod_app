@@ -39,9 +39,14 @@ class Medication {
 
   bool isDue() {
     final now = DateTime.now();
+    var differenceMinutes =
+        nextDosing!.scheduledDosingTime!.difference(now).inMinutes;
+    if (differenceMinutes < 0) {
+      differenceMinutes = differenceMinutes * -1;
+    }
     return nextDosing != null &&
         nextDosing!.scheduledDosingTime != null &&
-        nextDosing!.scheduledDosingTime!.difference(now).inMinutes < 6;
+        differenceMinutes < 6;
   }
 
   String getLastDosing() {

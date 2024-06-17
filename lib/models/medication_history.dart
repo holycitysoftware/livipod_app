@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'dosing.dart';
+import 'models.dart';
 
 part 'medication_history.g.dart';
 
@@ -8,8 +8,7 @@ part 'medication_history.g.dart';
 class MedicationHistory {
   String accountId = '';
   DateTime dateTime;
-  String firstName = '';
-  String lastName = '';
+  String name = '';
   String medicationId = '';
   String medicationName = '';
   DosingOutcome outcome = DosingOutcome.missed;
@@ -25,6 +24,29 @@ class MedicationHistory {
 
   factory MedicationHistory.fromJson(Map<String, dynamic> json) =>
       _$MedicationHistoryFromJson(json);
+
+  ///create medication history by passing a medication and a dosing
+  static MedicationHistory createMedicationHistory(
+      Medication med, AppUser appUser) {
+    final history = MedicationHistory(
+      dateTime: DateTime.now(),
+    );
+
+    history.accountId = appUser.accountId;
+    history.name = appUser.name;
+    history.medicationId = med.id;
+    history.medicationName = med.name;
+    if (med.lastDosing != null) {
+      history.qtyDispensed = med.lastDosing!.qtyDispensed;
+      history.qtyMissed = med.lastDosing!.qtyMissed;
+      history.qtyRemaining = med.lastDosing!.qtyRemaining;
+      history.qtyRequested = med.lastDosing!.qtyRequested;
+      history.qtySkipped = med.lastDosing!.qtySkipped;
+      history.scheduledDosingTime = med.lastDosing!.scheduledDosingTime;
+    }
+    history.appUserId = appUser.id;
+    return history;
+  }
 
   Map<String, dynamic> toJson() => _$MedicationHistoryToJson(this);
 }

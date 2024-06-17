@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../components/components.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/enums.dart';
+import '../../models/medication_history.dart';
 import '../../models/models.dart';
 import '../../services/app_user_service.dart';
 import '../../services/medication_service.dart';
@@ -344,20 +345,22 @@ class _HomePageState extends State<HomePage> {
     if (medications.first.nextDosing != null) {
       medications.first.nextDosing!.outcome = DosingOutcome.skipped;
       medications.first.lastDosing = medications.first.nextDosing;
-      medications.first.nextDosing = null;
       await medicationService.updateMedication(medications.first);
+      await medicationService.createMedicationHistory(
+          MedicationHistory.createMedicationHistory(medications.first,
+              Provider.of<AuthController>(context, listen: false).appUser!));
     }
-    setState(() {});
   }
 
   Future<void> takeMedication(List<Medication> medications, int? index) async {
     if (medications.first.nextDosing != null) {
       medications.first.nextDosing!.outcome = DosingOutcome.taken;
       medications.first.lastDosing = medications.first.nextDosing;
-      medications.first.nextDosing = null;
       await medicationService.updateMedication(medications.first);
+      await medicationService.createMedicationHistory(
+          MedicationHistory.createMedicationHistory(medications.first,
+              Provider.of<AuthController>(context, listen: false).appUser!));
     }
-    setState(() {});
   }
 
   Widget skipConfirmButton(List<Medication> medications, int? index) {
@@ -586,7 +589,7 @@ class _HomePageState extends State<HomePage> {
               element.nextDosing!.scheduledDosingTime ==
                   medications[i].nextDosing!.scheduledDosingTime)
           .toList();
-      if (similarItems.isNotEmpty)
+      if (similarItems.isNotEmpty) {
         list.add(
           Column(
             children: [
@@ -598,10 +601,10 @@ class _HomePageState extends State<HomePage> {
                 title: getTimeDescription(
                     similarItems.first.nextDosing!.scheduledDosingTime!),
               ),
-              LiviThemes.spacing.heightSpacer32(),
             ],
           ),
         );
+      }
       i += similarItems.length - 1;
     }
     return list;
