@@ -216,7 +216,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   onTap: goToSearchMedications,
                                 ),
-                                 
                                 StreamBuilder<List<AppUser>>(
                                   stream: AppUserService()
                                       .listenToCaregiversRealTime(
@@ -288,18 +287,22 @@ class _HomePageState extends State<HomePage> {
     } else if (snapshot.data == null || snapshot.data!.isEmpty) {
       return SizedBox();
     }
-    final asNeededList = snapshot.data!.where((element) {
-      return element.isAsNeeded();
-    }).toList();
-    final missedDuelist = snapshot.data!.where((element) {
-      return element.nextDosing != null &&
-          (element.nextDosing!.outcome == DosingOutcome.missed ||
-              element.isDue());
-    }).toList();
-    final othersList = snapshot.data!.where((element) {
-      return !asNeededList.contains(element) &&
-          !missedDuelist.contains(element);
-    }).toList();
+
+    final asNeededList = <Medication>[];
+    final missedDuelist = <Medication>[];
+    final othersList = <Medication>[];
+    for (final element in snapshot.data!) {
+      if (element.isAsNeeded()) {
+        asNeededList.add(element);
+      } else if (element.lastDosing != null &&
+          (element.lastDosing!.outcome == DosingOutcome.missed ||
+              element.isDue())) {
+        missedDuelist.add(element);
+      } else {
+        othersList.add(element);
+      }
+    }
+
     othersList.sort((a, b) {
       if (a.nextDosing == null || b.nextDosing == null) {
         return 0;
@@ -314,16 +317,15 @@ class _HomePageState extends State<HomePage> {
           medications: asNeededList,
           key: Key('as-needed-cards'),
           buttons: confirmQuantityButton,
-          // medications: snapshot.data!,
           title: Strings.asNeeded.toUpperCase(),
         ),
         CardStackAnimation(
           key: Key('meds-due-cards'),
           buttons: skipConfirmButton,
-          // medications: snapshot.data !,
           medications: missedDuelist,
           title: Strings.medsDue.toUpperCase(),
         ),
+        LiviThemes.spacing.heightSpacer16(),
         ...otherCards(othersList),
       ],
     );

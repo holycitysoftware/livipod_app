@@ -55,17 +55,18 @@ class _CardStackAnimationState extends State<CardStackAnimation>
       return SizedBox();
     }
     final now = DateTime.now();
-    if (widget.medications[index].isDue()) {
+    if (widget.medications[index].lastDosing != null &&
+        now.isAfter(
+          widget.medications[index].lastDosing!.scheduledDosingTime!.add(
+            Duration(minutes: 5),
+          ),
+        )) {
+      return LiviPillInfoStyles.late();
+    } else if (widget.medications[index].isDue()) {
       return LiviPillInfoStyles.due();
     } else if (widget.medications[index].nextDosing!.scheduledDosingTime!
         .isTomorrow()) {
       return LiviPillInfoStyles.tomorrow();
-    } else if (now.isAfter(
-      widget.medications[index].nextDosing!.scheduledDosingTime!.add(
-        Duration(minutes: 5),
-      ),
-    )) {
-      return LiviPillInfoStyles.late();
     } else {
       return LiviPillInfoStyles.early();
     }
@@ -206,11 +207,15 @@ class _CardStackAnimationState extends State<CardStackAnimation>
     final List<Widget> list = [];
     if (isExpanded) {
       for (int i = widget.medications.length - 1; i > -1; i--) {
-        list.add(_buildCard(i));
+        list.add(
+          _buildCard(i),
+        );
       }
     } else {
       for (int i = widget.medications.length - 1; i > -1; i--) {
-        list.add(_buildCard(i));
+        list.add(
+          _buildCard(i),
+        );
       }
     }
     return list;
