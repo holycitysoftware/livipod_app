@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../models/models.dart';
 import '../../models/schedule_type.dart';
@@ -71,6 +72,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   }
 
   void _toggleExpanded() {
+    if (widget.medications.length == 1) return;
     isExpanded = !isExpanded;
 
     setState(() {
@@ -239,11 +241,19 @@ class _CardStackAnimationState extends State<CardStackAnimation>
         children: [
           Row(
             children: [
-              LiviThemes.icons
-                  .alarmClockIcon(color: LiviThemes.colors.gray600, height: 16),
-              LiviThemes.spacing.widthSpacer4(),
-              LiviTextStyles.interMedium12(widget.title,
-                  color: LiviThemes.colors.gray600),
+              Row(
+                children: [
+                  LiviThemes.icons.alarmClockIcon(
+                      color: LiviThemes.colors.gray600, height: 16),
+                  LiviThemes.spacing.widthSpacer4(),
+                  LiviTextStyles.interMedium12(
+                    widget.title,
+                    color: LiviThemes.colors.gray600,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
               Spacer(),
               if (widget.medications.isNotEmpty &&
                   widget.medications.length > 1)
@@ -261,7 +271,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                   child: InkWell(
                     onTap: _toggleExpanded,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         if (isExpanded)
                           LiviThemes.icons
@@ -269,7 +279,6 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                         else
                           LiviThemes.icons
                               .chevronUpIcon(color: LiviThemes.colors.gray400),
-                        LiviThemes.spacing.widthSpacer2(),
                         if (widget.medications.isNotEmpty)
                           LiviTextStyles.interMedium12(
                             isExpanded ? Strings.expand : Strings.collapse,
@@ -279,7 +288,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                     ),
                   ),
                 ),
-              LiviThemes.spacing.widthSpacer8(),
+              LiviThemes.spacing.widthSpacer6(),
               if (widget.medications.isNotEmpty &&
                   widget.medications.length > 1)
                 Container(
@@ -295,13 +304,12 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                   ),
                   child: InkWell(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         LiviTextStyles.interMedium12(
                           Strings.takeAll,
                           color: LiviThemes.colors.gray700,
                         ),
-                        LiviThemes.spacing.widthSpacer2(),
                         LiviThemes.icons
                             .checkIcon(color: LiviThemes.colors.gray400),
                       ],

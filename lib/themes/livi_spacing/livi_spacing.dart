@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+const double kSpacer_1 = 1;
 const double kSpacer_2 = 2;
 const double kSpacer_4 = 4;
 const double kSpacer_6 = 6;
@@ -29,6 +30,7 @@ class LiviSpacing {
   Widget heightSpacer64() => const SizedBox(height: kSpacer_64);
   Widget heightSpacer128() => const SizedBox(height: kSpacer_128);
 
+  Widget widthSpacer1() => const SizedBox(width: kSpacer_1);
   Widget widthSpacer2() => const SizedBox(width: kSpacer_2);
   Widget widthSpacer4() => const SizedBox(width: kSpacer_4);
   Widget widthSpacer6() => const SizedBox(width: kSpacer_6);

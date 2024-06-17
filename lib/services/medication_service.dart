@@ -33,24 +33,25 @@ class MedicationService {
         .where('appUserId', isEqualTo: authenticatedUser.id)
         .snapshots()
         .listen(
-            (medicationsSnapshot) {
-              if (medicationsSnapshot.docs.isNotEmpty) {
-                final medications = medicationsSnapshot.docs.map((snapshot) {
-                  final medication = Medication.fromJson(snapshot.data());
-                  medication.id = snapshot.id;
-                  return medication;
-                }).toList();
-                _medicationController.add(medications);
-              } else {
-                _medicationController.add([]);
-              }
-            },
-            cancelOnError: true,
-            onError: (error) {
-              if (kDebugMode) {
-                print(error);
-              }
-            });
+          (medicationsSnapshot) {
+            if (medicationsSnapshot.docs.isNotEmpty) {
+              final medications = medicationsSnapshot.docs.map((snapshot) {
+                final medication = Medication.fromJson(snapshot.data());
+                medication.id = snapshot.id;
+                return medication;
+              }).toList();
+              _medicationController.add(medications);
+            } else {
+              _medicationController.add([]);
+            }
+          },
+          cancelOnError: true,
+          onError: (error) {
+            if (kDebugMode) {
+              print(error);
+            }
+          },
+        );
     return _medicationController.stream;
   }
 
