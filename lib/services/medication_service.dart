@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../models/models.dart';
-import 'medication_history.dart';
+import '../models/medication_history.dart';
 
 class MedicationService {
   final StreamController<List<Medication>> _medicationController =
@@ -111,5 +111,12 @@ class MedicationService {
       debugPrint('$e');
       return medicationHistory;
     }
+  }
+
+  Future<void> createMedicationHistory(
+      MedicationHistory medicationHistory) async {
+    await FirebaseFirestore.instance
+        .collection('medicationHistory')
+        .add(medicationHistory.toJson());
   }
 }
