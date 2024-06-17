@@ -216,6 +216,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   onTap: goToSearchMedications,
                                 ),
+                                 
                                 StreamBuilder<List<AppUser>>(
                                   stream: AppUserService()
                                       .listenToCaregiversRealTime(
@@ -334,8 +335,9 @@ class _HomePageState extends State<HomePage> {
       medications.first.lastDosing = medications.first.nextDosing;
       await medicationService.updateMedication(medications.first);
       await medicationService.createMedicationHistory(
-          MedicationHistory.createMedicationHistory(medications.first,
-              Provider.of<AuthController>(context, listen: false).appUser!));
+        MedicationHistory.createMedicationHistory(medications.first,
+            Provider.of<AuthController>(context, listen: false).appUser!),
+      );
     }
   }
 
@@ -345,8 +347,9 @@ class _HomePageState extends State<HomePage> {
       medications.first.lastDosing = medications.first.nextDosing;
       await medicationService.updateMedication(medications.first);
       await medicationService.createMedicationHistory(
-          MedicationHistory.createMedicationHistory(medications.first,
-              Provider.of<AuthController>(context, listen: false).appUser!));
+        MedicationHistory.createMedicationHistory(medications.first,
+            Provider.of<AuthController>(context, listen: false).appUser!),
+      );
     }
   }
 
