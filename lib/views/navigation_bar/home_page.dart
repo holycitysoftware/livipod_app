@@ -343,6 +343,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> skipMedication(List<Medication> medications, int? index) async {
     if (medications.first.nextDosing != null) {
       medications.first.nextDosing!.outcome = DosingOutcome.skipped;
+      medications.first.lastDosing = medications.first.nextDosing;
+      medications.first.nextDosing = null;
       await medicationService.updateMedication(medications.first);
     }
     setState(() {});
@@ -351,6 +353,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> takeMedication(List<Medication> medications, int? index) async {
     if (medications.first.nextDosing != null) {
       medications.first.nextDosing!.outcome = DosingOutcome.taken;
+      medications.first.lastDosing = medications.first.nextDosing;
+      medications.first.nextDosing = null;
       await medicationService.updateMedication(medications.first);
     }
     setState(() {});
@@ -469,7 +473,8 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: LiviOutlinedButton(
                         onTap: () {
-                          Navigator.of(context).pop(_modalTextController.text);
+                          Navigator.of(context)
+                              .pop(int.parse(_modalTextController.text));
                         },
                         text: Strings.confirm,
                       ),
@@ -479,29 +484,16 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          // actions: <Widget>[
-          //   TextButton(
-          //     style: TextButton.styleFrom(
-          //       textStyle: Theme.of(context).textTheme.labelLarge,
-          //     ),
-          //     child: const Text(Strings.cancel),
-          //     onPressed: () {
-          //       Navigator.of(context).pop();
-          //     },
-          //   ),
-          //   TextButton(
-          //     style: TextButton.styleFrom(
-          //       textStyle: Theme.of(context).textTheme.labelLarge,
-          //     ),
-          //     child: const Text(Strings.confirm),
-          //     onPressed: () {
-          //       Navigator.of(context).pop();
-          //     },
-          //   ),
-          // ],
         ),
       ),
     );
+    if (quantity != null &&
+        medication.schedules.first.prnDosing != null &&
+        medication.schedules.first.prnDosing!.maxQty != quantity) {
+      medication.schedules.first.prnDosing!.maxQty = quantity.toDouble();
+      medication.schedules.first.prnDosing!.minQty = quantity.toDouble();
+      await medicationService.updateMedication(medication);
+    }
   }
 
   Future<void> takeAll(List<Medication> medications) async {
@@ -594,21 +586,22 @@ class _HomePageState extends State<HomePage> {
               element.nextDosing!.scheduledDosingTime ==
                   medications[i].nextDosing!.scheduledDosingTime)
           .toList();
-      list.add(
-        Column(
-          children: [
-            CardStackAnimation(
-              key: Key('other-cards-$i'),
-              buttons: skipConfirmButton,
-              // medications: snapshot.data !,
-              medications: similarItems,
-              title: getTimeDescription(
-                  similarItems.first.nextDosing!.scheduledDosingTime!),
-            ),
-            LiviThemes.spacing.heightSpacer32(),
-          ],
-        ),
-      );
+      if (similarItems.isNotEmpty)
+        list.add(
+          Column(
+            children: [
+              CardStackAnimation(
+                key: Key('other-cards-$i'),
+                buttons: skipConfirmButton,
+                // medications: snapshot.data !,
+                medications: similarItems,
+                title: getTimeDescription(
+                    similarItems.first.nextDosing!.scheduledDosingTime!),
+              ),
+              LiviThemes.spacing.heightSpacer32(),
+            ],
+          ),
+        );
       i += similarItems.length - 1;
     }
     return list;

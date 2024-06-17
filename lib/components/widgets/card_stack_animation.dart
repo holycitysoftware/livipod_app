@@ -27,7 +27,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   bool isExpanded = false;
   late AnimationController _controller;
   late Animation<double> _animation;
-  var cardHeight = 180.0;
+  var cardHeight = 182.0;
 
   @override
   void initState() {
@@ -189,6 +189,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                       ],
                     ),
                   ),
+                  LiviThemes.spacing.heightSpacer12(),
                   widget.buttons(widget.medications, index),
                 ],
               ),
@@ -218,10 +219,11 @@ class _CardStackAnimationState extends State<CardStackAnimation>
       return cardHeight + 50;
     } else {
       if (isExpanded) {
-        return cardHeight + (20 * widget.medications.length);
+        return cardHeight + (20 * widget.medications.length) + 20;
       } else {
         return (cardHeight * widget.medications.length.toDouble()) +
-            (20 * widget.medications.length);
+            (20 * widget.medications.length) +
+            20;
       }
     }
   }
@@ -267,7 +269,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                         else
                           LiviThemes.icons
                               .chevronUpIcon(color: LiviThemes.colors.gray400),
-                        LiviThemes.spacing.widthSpacer8(),
+                        LiviThemes.spacing.widthSpacer2(),
                         if (widget.medications.isNotEmpty)
                           LiviTextStyles.interMedium12(
                             isExpanded ? Strings.expand : Strings.collapse,
@@ -299,7 +301,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                           Strings.takeAll,
                           color: LiviThemes.colors.gray700,
                         ),
-                        LiviThemes.spacing.widthSpacer4(),
+                        LiviThemes.spacing.widthSpacer2(),
                         LiviThemes.icons
                             .checkIcon(color: LiviThemes.colors.gray400),
                       ],
@@ -308,7 +310,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                 ),
             ],
           ),
-          LiviThemes.spacing.heightSpacer8(),
+          LiviThemes.spacing.heightSpacer6(),
           SingleChildScrollView(
               child: Stack(alignment: Alignment.center, children: cards())),
         ],
