@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:livipod_app/controllers/communication_controller.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
+import 'controllers/medication_controller.dart';
 import 'controllers/messaging_controller.dart';
 import 'firebase_options.dart';
 import 'services/livi_pod_service.dart';
@@ -230,6 +231,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (context) => _messagingController,
         ),
+        ChangeNotifierProvider(
+          create: (context) => MedicationsController(_authController),
+        ),
         // ChangeNotifierProvider(
         //   create: (context) => _webSocketController,
         // ),
@@ -238,111 +242,6 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: LiviThemes.theme.getAppTheme(),
         home: SplashPage(), // const FdaSearchTest() // const TestCreateUser()
-      ),
-    );
-  }
-}
-
-class ExpandableOverlappedCardsScreen extends StatefulWidget {
-  @override
-  _ExpandableOverlappedCardsScreenState createState() =>
-      _ExpandableOverlappedCardsScreenState();
-}
-
-class _ExpandableOverlappedCardsScreenState
-    extends State<ExpandableOverlappedCardsScreen> {
-  bool _isExpanded = false;
-
-  void _toggleExpandCollapse() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Expandable Overlapped Cards'),
-        actions: [
-          IconButton(
-            icon: Icon(_isExpanded ? Icons.expand_less : Icons.expand_more),
-            onPressed: _toggleExpandCollapse,
-          ),
-        ],
-      ),
-      body: Stack(
-        children: List.generate(5, (index) => _buildCard(index)),
-      ),
-    );
-  }
-
-  Widget _buildCard(int index) {
-    final double initialTop = 20.0; // Initial top position for the first card
-    final double expandedTop =
-        20.0 + index * 120.0; // Top position for expanded cards
-    final double collapsedTop =
-        initialTop; // All collapsed cards have the same top position
-
-    return AnimatedPositioned(
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      top: _isExpanded ? expandedTop : collapsedTop,
-      left: 0,
-      right: 0,
-      child: Opacity(
-        opacity: _isExpanded ? 1.0 : 1.0,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: Card(
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.medication, size: 40),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Medication Name ${index + 1}'),
-                            Text('Dosage, Frequency'),
-                            Text('Time', style: TextStyle(color: Colors.blue)),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      ElevatedButton(
-                        onPressed: _toggleExpandCollapse,
-                        child: Text(_isExpanded ? 'Collapse' : 'Expand'),
-                      ),
-                    ],
-                  ),
-                  if (_isExpanded) ...[
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text('Skip'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text('Confirm'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
