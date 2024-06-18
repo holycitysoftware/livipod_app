@@ -325,7 +325,6 @@ class _HomePageState extends State<HomePage> {
           medications: missedDuelist,
           title: Strings.medsDue.toUpperCase(),
         ),
-        LiviThemes.spacing.heightSpacer16(),
         ...otherCards(othersList),
       ],
     );
@@ -593,11 +592,11 @@ class _HomePageState extends State<HomePage> {
                 title: getTimeDescription(
                     similarItems.first.nextDosing!.scheduledDosingTime!),
               ),
-              if (similarItems.length > 2)
-                LiviThemes.spacing.heightSpacer8()
+              if (similarItems.length < 3)
+                SizedBox()
               else
                 for (var j = 1; j < similarItems.length; j++)
-                  LiviThemes.spacing.heightSpacer16(),
+                  LiviThemes.spacing.heightSpacer4(),
             ],
           ),
         );

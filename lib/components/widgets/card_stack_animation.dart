@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,27 +26,17 @@ class CardStackAnimation extends StatefulWidget {
 
 class _CardStackAnimationState extends State<CardStackAnimation>
     with SingleTickerProviderStateMixin {
-  bool isExpanded = false;
-  late AnimationController _controller;
-  late Animation<double> _animation;
+  bool _isExpanded = false;
   var cardHeight = 182.0;
 
   @override
   void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
     if (widget.medications.isNotEmpty &&
         widget.medications.first.schedules.first.type ==
             ScheduleType.asNeeded) {
-      cardHeight = 175.0;
+      cardHeight = 160;
     }
+    super.initState();
   }
 
   Widget getPill(int index) {
@@ -72,37 +63,18 @@ class _CardStackAnimationState extends State<CardStackAnimation>
     }
   }
 
-  void _toggleExpanded() {
-    if (widget.medications.length == 1) return;
-    isExpanded = !isExpanded;
-
-    setState(() {
-      if (isExpanded) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   double getTopMargin(int index) {
     if (index == 0) {
       return 0;
     } else if (index == 1) {
-      return 16;
+      return 8;
     } else {
-      return index * 16;
+      return index * 8;
     }
   }
 
   double getSideMargin(int index) {
-    if (!isExpanded) {
+    if (!_isExpanded) {
       return 0;
     }
     if (index == 0) {
@@ -114,24 +86,167 @@ class _CardStackAnimationState extends State<CardStackAnimation>
     }
   }
 
-  Widget _buildCard(int index) {
+  void _toggleExpandCollapse() {
+    if (widget.medications.length == 1) return;
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  double getHeight() {
+    if (widget.medications.length == 1) {
+      return cardHeight + 50;
+    } else {
+      if (_isExpanded) {
+        return cardHeight + (20 * widget.medications.length) + 20;
+      } else {
+        return (cardHeight * widget.medications.length.toDouble()) +
+            (20 * widget.medications.length) +
+            20;
+      }
+    }
+  }
+
+  List<Widget> cards() {
+    final List<Widget> list = [];
+    if (_isExpanded) {
+      for (int i = widget.medications.length - 1; i > -1; i--) {
+        list.add(
+          _buildCard(i),
+        );
+      }
+    } else {
+      for (int i = widget.medications.length - 1; i > -1; i--) {
+        list.add(
+          _buildCard(i),
+        );
+      }
+    }
+    return list;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('CardStackAnimation build');
+    if (widget.medications.isEmpty) {
+      return SizedBox();
+    }
     return Container(
-      height: cardHeight,
-      margin: EdgeInsets.fromLTRB(
-          getSideMargin(index), getTopMargin(index), getSideMargin(index), 0),
-      child: GestureDetector(
-        onTap: _toggleExpanded,
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: Offset(0, cardHeight * index * (1 - _animation.value)),
-              child: child,
-            );
-          },
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Row(
+                children: [
+                  LiviThemes.icons.alarmClockIcon(
+                      color: LiviThemes.colors.gray600, height: 16),
+                  LiviThemes.spacing.widthSpacer4(),
+                  LiviTextStyles.interMedium12(
+                    widget.title,
+                    color: LiviThemes.colors.gray600,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+              Spacer(),
+              if (widget.medications.isNotEmpty &&
+                  widget.medications.length > 1)
+                Container(
+                  alignment: Alignment.center,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: LiviThemes.colors.baseWhite,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: LiviThemes.colors.gray200,
+                    ),
+                  ),
+                  child: InkWell(
+                    onTap: _toggleExpandCollapse,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (_isExpanded)
+                          LiviThemes.icons
+                              .chevronDownIcon(color: LiviThemes.colors.gray400)
+                        else
+                          LiviThemes.icons
+                              .chevronUpIcon(color: LiviThemes.colors.gray400),
+                        if (widget.medications.isNotEmpty)
+                          LiviTextStyles.interMedium12(
+                            _isExpanded ? Strings.expand : Strings.collapse,
+                            color: LiviThemes.colors.gray700,
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              LiviThemes.spacing.widthSpacer6(),
+              if (widget.medications.isNotEmpty &&
+                  widget.medications.length > 1)
+                Container(
+                  alignment: Alignment.center,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: LiviThemes.colors.baseWhite,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: LiviThemes.colors.gray200,
+                    ),
+                  ),
+                  child: InkWell(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        LiviTextStyles.interMedium12(
+                          Strings.takeAll,
+                          color: LiviThemes.colors.gray700,
+                        ),
+                        LiviThemes.icons
+                            .checkIcon(color: LiviThemes.colors.gray400),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(
+            height: getHeight(),
+            child: Stack(
+              children: cards(),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCard(int index) {
+    print('_buildCard ');
+    const double initialTop = 20.0; // Initial top position for the first card
+    final double expandedTop =
+        20.0 + index * cardHeight; // Top position for expanded cards
+    const double collapsedTop =
+        initialTop; // All collapsed cards have the same top position
+
+    return AnimatedPositioned(
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      top: !_isExpanded ? expandedTop : collapsedTop,
+      left: 0,
+      right: 0,
+      child: Container(
+        height: cardHeight,
+        margin: EdgeInsets.fromLTRB(
+            getSideMargin(index), getTopMargin(index), getSideMargin(index), 0),
+        child: GestureDetector(
+          onTap: _toggleExpandCollapse,
           child: Opacity(
             opacity:
-                isExpanded && index == widget.medications.length - 1 ? 0.5 : 1,
+                _isExpanded && index == widget.medications.length - 1 ? 0.5 : 1,
             child: Container(
               decoration: BoxDecoration(
                 color: LiviThemes.colors.baseWhite,
@@ -180,11 +295,11 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                               for (final scheduleDescription
                                   in widget.medications[index].schedules)
                                 LiviTextStyles.interRegular14(
-                                    scheduleDescription
-                                        .getScheduleDescription(),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    color: LiviThemes.colors.brand600),
+                                  scheduleDescription.getScheduleDescription(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  color: LiviThemes.colors.brand600,
+                                ),
                               Spacer(),
                             ],
                           ),
@@ -199,134 +314,6 @@ class _CardStackAnimationState extends State<CardStackAnimation>
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  List<Widget> cards() {
-    final List<Widget> list = [];
-    if (isExpanded) {
-      for (int i = widget.medications.length - 1; i > -1; i--) {
-        list.add(
-          _buildCard(i),
-        );
-      }
-    } else {
-      for (int i = widget.medications.length - 1; i > -1; i--) {
-        list.add(
-          _buildCard(i),
-        );
-      }
-    }
-    return list;
-  }
-
-  double getHeight() {
-    if (widget.medications.length == 1) {
-      return cardHeight + 50;
-    } else {
-      if (isExpanded) {
-        return cardHeight + (20 * widget.medications.length) + 20;
-      } else {
-        return (cardHeight * widget.medications.length.toDouble()) +
-            (20 * widget.medications.length) +
-            20;
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.medications.isEmpty) {
-      return SizedBox();
-    }
-    return SizedBox(
-      height: getHeight(),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Row(
-                children: [
-                  LiviThemes.icons.alarmClockIcon(
-                      color: LiviThemes.colors.gray600, height: 16),
-                  LiviThemes.spacing.widthSpacer4(),
-                  LiviTextStyles.interMedium12(
-                    widget.title,
-                    color: LiviThemes.colors.gray600,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ],
-              ),
-              Spacer(),
-              if (widget.medications.isNotEmpty &&
-                  widget.medications.length > 1)
-                Container(
-                  alignment: Alignment.center,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: LiviThemes.colors.baseWhite,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: LiviThemes.colors.gray200,
-                    ),
-                  ),
-                  child: InkWell(
-                    onTap: _toggleExpanded,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (isExpanded)
-                          LiviThemes.icons
-                              .chevronDownIcon(color: LiviThemes.colors.gray400)
-                        else
-                          LiviThemes.icons
-                              .chevronUpIcon(color: LiviThemes.colors.gray400),
-                        if (widget.medications.isNotEmpty)
-                          LiviTextStyles.interMedium12(
-                            isExpanded ? Strings.expand : Strings.collapse,
-                            color: LiviThemes.colors.gray700,
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              LiviThemes.spacing.widthSpacer6(),
-              if (widget.medications.isNotEmpty &&
-                  widget.medications.length > 1)
-                Container(
-                  alignment: Alignment.center,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: LiviThemes.colors.baseWhite,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: LiviThemes.colors.gray200,
-                    ),
-                  ),
-                  child: InkWell(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        LiviTextStyles.interMedium12(
-                          Strings.takeAll,
-                          color: LiviThemes.colors.gray700,
-                        ),
-                        LiviThemes.icons
-                            .checkIcon(color: LiviThemes.colors.gray400),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          LiviThemes.spacing.heightSpacer6(),
-          SingleChildScrollView(
-              child: Stack(alignment: Alignment.center, children: cards())),
-        ],
       ),
     );
   }
