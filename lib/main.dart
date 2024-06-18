@@ -231,9 +231,6 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (context) => _messagingController,
         ),
-        ChangeNotifierProvider(
-          create: (context) => MedicationsController(_authController),
-        ),
         // ChangeNotifierProvider(
         //   create: (context) => _webSocketController,
         // ),
