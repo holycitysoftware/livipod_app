@@ -38,48 +38,79 @@ class Medication {
   }
 
   bool isDue() {
+    var schedule = schedules.first;
     final now = DateTime.now();
     if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
       return false;
     }
-    return now.isAfter(nextDosing!.scheduledDosingTime!) &&
-        nextDosing!.scheduledDosingTime!.isBefore(
+    if (schedules.length > 1) {
+      for (var i = 0; i < schedules.length; i++) {
+        if (now.isAfter(schedules[i].startDate) &&
+            now.isBefore(schedules[i].endDate)) {
+          schedule = schedules[i];
+          break;
+        }
+      }
+    }
+    var a = now.isAfter(nextDosing!.scheduledDosingTime!) &&
+        now.isBefore(
           nextDosing!.scheduledDosingTime!.add(
-            Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
+            Duration(minutes: schedule.stopWarningMinutes ~/ 2),
           ),
         );
+    return a;
   }
 
   bool isLate() {
+    var schedule = schedules.first;
     final now = DateTime.now();
     if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
       return false;
     }
-    return now.isAfter(
+    if (schedules.length > 1) {
+      for (var i = 0; i < schedules.length; i++) {
+        if (now.isAfter(schedules[i].startDate) &&
+            now.isBefore(schedules[i].endDate)) {
+          schedule = schedules[i];
+          break;
+        }
+      }
+    }
+    var a = now.isAfter(
           nextDosing!.scheduledDosingTime!.add(
             Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
           ),
         ) &&
-        nextDosing!.scheduledDosingTime!.isBefore(
+        now.isBefore(
           nextDosing!.scheduledDosingTime!.add(
-            Duration(minutes: schedules.first.stopWarningMinutes),
+            Duration(minutes: schedule.stopWarningMinutes),
           ),
         );
+    return a;
   }
 
   bool isAvailable() {
+    var schedule = schedules.first;
     final now = DateTime.now();
     if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
       return false;
     }
-    return now.isAfter(
+    if (schedules.length > 1) {
+      for (var i = 0; i < schedules.length; i++) {
+        if (now.isAfter(schedules[i].startDate) &&
+            now.isBefore(schedules[i].endDate)) {
+          schedule = schedules[i];
+          break;
+        }
+      }
+    }
+    var a = now.isAfter(
           nextDosing!.scheduledDosingTime!.subtract(
-            Duration(minutes: schedules.first.startWarningMinutes),
+            Duration(minutes: schedule.startWarningMinutes),
           ),
         ) &&
-        nextDosing!.scheduledDosingTime!
-            .isBefore(nextDosing!.scheduledDosingTime!);
-    ;
+        now.isBefore(nextDosing!.scheduledDosingTime!);
+    return a;
   }
 
   String getLastDosing() {
