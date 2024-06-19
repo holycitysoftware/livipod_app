@@ -65,10 +65,16 @@ class _HomePageState extends State<HomePage> {
           color: LiviThemes.colors.baseBlack);
     }
     bool lateMedications = false;
+    bool availableMedications = false;
+    bool dueMeds = false;
     medications.forEach(
       (element) {
         if (element.isLate()) {
           lateMedications = true;
+        } else if (element.isAvailable()) {
+          availableMedications = true;
+        } else if (element.isDue()) {
+          dueMeds = true;
         }
       },
     );
@@ -76,6 +82,15 @@ class _HomePageState extends State<HomePage> {
       return LiviTextStyles.interRegular16(Strings.youHaveLateMedicines,
           color: LiviThemes.colors.baseBlack);
     }
+    if (availableMedications) {
+      return LiviTextStyles.interRegular16(Strings.youHaveAvailableMedicines,
+          color: LiviThemes.colors.baseBlack);
+    }
+    if (dueMeds) {
+      return LiviTextStyles.interRegular16(Strings.youHaveDueMedicines,
+          color: LiviThemes.colors.baseBlack);
+    }
+
     for (final element in medications) {
       if (nextMed == null) {
         nextMed = element;
@@ -372,6 +387,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> showQuantityModal(Medication medication) async {
+    _modalTextController.text =
+        medication.schedules.first.prnDosing?.minQty.toInt().toString() ?? '';
     final quantity = await showDialog<int>(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -483,7 +500,7 @@ class _HomePageState extends State<HomePage> {
         medication.schedules.first.prnDosing!.maxQty != quantity) {
       medication.schedules.first.prnDosing!.maxQty = quantity.toDouble();
       medication.schedules.first.prnDosing!.minQty = quantity.toDouble();
-      await medicationService.updateMedication(medication);
+      await takeMedication([medication], null);
     }
   }
 
@@ -496,6 +513,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget confirmQuantityButton(List<Medication> medications, int? index) {
+    if (medications.first.nextDosing != null &&
+        (medications.first.nextDosing!.qtyRemaining ==
+                medications.first.schedules.first.prnDosing?.minQty.toInt() ||
+            medications.first.schedules.first.prnDosing?.minQty.toInt() ==
+                medications.first.schedules.first.prnDosing?.maxQty.toInt())) {
+      return Row(
+        children: [
+          Expanded(
+            child: LiviOutlinedButton(
+              onTap: () => takeMedication(medications, index),
+              text: Strings.take,
+            ),
+          ),
+        ],
+      );
+    }
     return Row(
       children: [
         Expanded(

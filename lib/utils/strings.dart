@@ -36,6 +36,9 @@ class Strings {
   static const String remove = 'Remove';
   static const String nextMedsDueTomorrowAt = 'Next meds due tomorrow at';
   static const String youHaveLateMedicines = 'You have late medicines';
+  static const String youHaveAvailableMedicines =
+      'You have available medicines';
+  static const String youHaveDueMedicines = 'You have due medicines';
   static const String podSettings = 'Pod Settings';
   static const String areYouSureYouWantToRemove =
       'Are you sure you want to remove';
