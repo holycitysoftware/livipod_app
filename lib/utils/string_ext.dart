@@ -56,6 +56,20 @@ extension DateTimeExt on DateTime {
             .inDays ==
         0;
   }
+
+  bool isBeforeIgnoringTimezone(DateTime date) {
+    return DateTime(year, month, day, hour, minute, second).isBefore(
+      DateTime(
+          date.year, date.month, date.day, date.hour, date.minute, date.second),
+    );
+  }
+
+  bool isAfterIgnoringTimezone(DateTime date) {
+    return DateTime(year, month, day, hour, minute, second).isAfter(
+      DateTime(
+          date.year, date.month, date.day, date.hour, date.minute, date.second),
+    );
+  }
 }
 
 extension IntExt on int {

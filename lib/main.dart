@@ -8,7 +8,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:livipod_app/controllers/communication_controller.dart';
 import 'package:provider/provider.dart';
 import 'controllers/controllers.dart';
-import 'controllers/medication_controller.dart';
 import 'controllers/messaging_controller.dart';
 import 'firebase_options.dart';
 import 'services/livi_pod_service.dart';
@@ -32,7 +31,6 @@ void main() async {
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.appAttest,
   );
-
   // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
   //   if (!isAllowed) {
   //     // This is just a basic example. For real apps, you must show some

@@ -508,42 +508,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<Widget> otherCards(List<Medication> medications) {
-    final list = <Widget>[];
-    for (var i = 0; i < medications.length; i++) {
-      final similarItems = medications
-          .where((element) =>
-              element.nextDosing != null &&
-              medications[i].nextDosing != null &&
-              element.nextDosing!.scheduledDosingTime ==
-                  medications[i].nextDosing!.scheduledDosingTime)
-          .toList();
-      if (similarItems.isNotEmpty) {
-        list.add(
-          Column(
-            children: [
-              CardStackAnimation(
-                key: Key('other-cards-$i'),
-                buttons: skipConfirmButton,
-                // medications: snapshot.data !,
-                medications: similarItems,
-                takeAllFunction: () => takeAll(similarItems),
-                title: getTimeDescription(
-                    similarItems.first.nextDosing!.scheduledDosingTime!),
-              ),
-              if (similarItems.length < 3)
-                SizedBox()
-              else
-                for (var j = 1; j < similarItems.length; j++)
-                  LiviThemes.spacing.heightSpacer4(),
-            ],
-          ),
-        );
-      }
-    }
-    return list;
-  }
-
   String getTimeDescription(DateTime scheduledDosingTime) {
     if (scheduledDosingTime.isToday()) {
       return DateFormat.jm().format(scheduledDosingTime);

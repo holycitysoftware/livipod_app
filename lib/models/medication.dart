@@ -45,20 +45,19 @@ class Medication {
     }
     if (schedules.length > 1) {
       for (var i = 0; i < schedules.length; i++) {
-        if (now.isAfter(schedules[i].startDate) &&
-            now.isBefore(schedules[i].endDate)) {
+        if (now.isAfterIgnoringTimezone(schedules[i].startDate) &&
+            now.isBeforeIgnoringTimezone(schedules[i].endDate)) {
           schedule = schedules[i];
           break;
         }
       }
     }
-    var a = now.isAfter(nextDosing!.scheduledDosingTime!) &&
-        now.isBefore(
+    return now.isAfterIgnoringTimezone(nextDosing!.scheduledDosingTime!) &&
+        now.isBeforeIgnoringTimezone(
           nextDosing!.scheduledDosingTime!.add(
             Duration(minutes: schedule.stopWarningMinutes ~/ 2),
           ),
         );
-    return a;
   }
 
   bool isLate() {
@@ -69,24 +68,23 @@ class Medication {
     }
     if (schedules.length > 1) {
       for (var i = 0; i < schedules.length; i++) {
-        if (now.isAfter(schedules[i].startDate) &&
-            now.isBefore(schedules[i].endDate)) {
+        if (now.isAfterIgnoringTimezone(schedules[i].startDate) &&
+            now.isBeforeIgnoringTimezone(schedules[i].endDate)) {
           schedule = schedules[i];
           break;
         }
       }
     }
-    var a = now.isAfter(
+    return now.isAfterIgnoringTimezone(
           nextDosing!.scheduledDosingTime!.add(
             Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
           ),
         ) &&
-        now.isBefore(
+        now.isBeforeIgnoringTimezone(
           nextDosing!.scheduledDosingTime!.add(
             Duration(minutes: schedule.stopWarningMinutes),
           ),
         );
-    return a;
   }
 
   bool isAvailable() {
@@ -97,20 +95,20 @@ class Medication {
     }
     if (schedules.length > 1) {
       for (var i = 0; i < schedules.length; i++) {
-        if (now.isAfter(schedules[i].startDate) &&
-            now.isBefore(schedules[i].endDate)) {
+        if (now.isAfterIgnoringTimezone(schedules[i].startDate) &&
+            now.isBeforeIgnoringTimezone(schedules[i].endDate)) {
           schedule = schedules[i];
           break;
         }
       }
     }
-    var a = now.isAfter(
+
+    return now.isAfterIgnoringTimezone(
           nextDosing!.scheduledDosingTime!.subtract(
             Duration(minutes: schedule.startWarningMinutes),
           ),
         ) &&
-        now.isBefore(nextDosing!.scheduledDosingTime!);
-    return a;
+        now.isBeforeIgnoringTimezone(nextDosing!.scheduledDosingTime!);
   }
 
   String getLastDosing() {
