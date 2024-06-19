@@ -32,5 +32,12 @@ class Dosing {
 
   factory Dosing.fromJson(Map<String, dynamic> json) => _$DosingFromJson(json);
 
+  DateTime? get scheduledDosingTimeLocal {
+    if (scheduledDosingTime == null) {
+      return scheduledDosingTime;
+    }
+    return scheduledDosingTime!.toLocal();
+  }
+
   Map<String, dynamic> toJson() => _$DosingToJson(this);
 }

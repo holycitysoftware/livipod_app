@@ -538,6 +538,7 @@ class Strings {
   static const String setYourNotificationSettings =
       'Set your notification settings';
   static const String tomorrow = 'Tomorrow';
+  static const String available = 'Available';
   static const String letsGetYouOnboarded = "Let's get you onboarded";
 }
   // static const String logIn = 'Iniciar sesión';

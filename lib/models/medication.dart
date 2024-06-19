@@ -39,17 +39,47 @@ class Medication {
 
   bool isDue() {
     final now = DateTime.now();
-    if (nextDosing != null) {
-      var differenceMinutes =
-          nextDosing!.scheduledDosingTime!.difference(now).inMinutes;
-      if (differenceMinutes < 0) {
-        differenceMinutes = differenceMinutes * -1;
-      }
-      return nextDosing != null &&
-          nextDosing!.scheduledDosingTime != null &&
-          differenceMinutes < 6;
+    if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
+      return false;
     }
-    return false;
+    return now.isAfter(nextDosing!.scheduledDosingTime!) &&
+        nextDosing!.scheduledDosingTime!.isBefore(
+          nextDosing!.scheduledDosingTime!.add(
+            Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
+          ),
+        );
+  }
+
+  bool isLate() {
+    final now = DateTime.now();
+    if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
+      return false;
+    }
+    return now.isAfter(
+          nextDosing!.scheduledDosingTime!.add(
+            Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
+          ),
+        ) &&
+        nextDosing!.scheduledDosingTime!.isBefore(
+          nextDosing!.scheduledDosingTime!.add(
+            Duration(minutes: schedules.first.stopWarningMinutes),
+          ),
+        );
+  }
+
+  bool isAvailable() {
+    final now = DateTime.now();
+    if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
+      return false;
+    }
+    return now.isAfter(
+          nextDosing!.scheduledDosingTime!.subtract(
+            Duration(minutes: schedules.first.startWarningMinutes),
+          ),
+        ) &&
+        nextDosing!.scheduledDosingTime!
+            .isBefore(nextDosing!.scheduledDosingTime!);
+    ;
   }
 
   String getLastDosing() {

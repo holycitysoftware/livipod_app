@@ -41,27 +41,31 @@ class _CardStackAnimationState extends State<CardStackAnimation>
     super.initState();
   }
 
+  // Schedule iterateOverSchedules(List<Schedule> schedules) {
+  //   final now = DateTime.now();
+  //   for (var schedule in schedules) {
+  //     if (schedule.) {
+  //       return schedule;
+  //     }
+  //   }
+  //   return schedules.first;
+  // }
+
   Widget getPill(int index) {
     if (widget.medications[index].nextDosing == null ||
         widget.medications[index].nextDosing!.scheduledDosingTime == null ||
         widget.medications[index].isAsNeeded()) {
       return SizedBox();
     }
-    final now = DateTime.now();
-    if (widget.medications[index].lastDosing != null &&
-        now.isAfter(
-          widget.medications[index].lastDosing!.scheduledDosingTime!.add(
-            Duration(minutes: 5),
-          ),
-        )) {
-      return LiviPillInfoStyles.late();
+
+    if (widget.medications[index].isAvailable()) {
+      return LiviPillInfoStyles.available();
     } else if (widget.medications[index].isDue()) {
       return LiviPillInfoStyles.due();
-    } else if (widget.medications[index].nextDosing!.scheduledDosingTime!
-        .isTomorrow()) {
-      return LiviPillInfoStyles.tomorrow();
+    } else if (widget.medications[index].isLate()) {
+      return LiviPillInfoStyles.late();
     } else {
-      return LiviPillInfoStyles.early();
+      return SizedBox();
     }
   }
 

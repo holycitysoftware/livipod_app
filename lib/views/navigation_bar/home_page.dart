@@ -320,22 +320,11 @@ class _HomePageState extends State<HomePage> {
     for (final element in medications) {
       if (element.isAsNeeded()) {
         asNeededList.add(element);
-      } else if (element.lastDosing != null &&
-          (element.lastDosing!.outcome == DosingOutcome.missed ||
-              element.isDue())) {
+      } else if (element.isDue()) {
         missedDuelist.add(element);
-      } else {
-        othersList.add(element);
       }
     }
 
-    othersList.sort((a, b) {
-      if (a.nextDosing == null || b.nextDosing == null) {
-        return 0;
-      }
-      return a.nextDosing!.scheduledDosingTime!
-          .compareTo(b.nextDosing!.scheduledDosingTime!);
-    });
     return Column(
       children: [
         CardStackAnimation(
@@ -352,7 +341,6 @@ class _HomePageState extends State<HomePage> {
           medications: missedDuelist,
           title: Strings.medsDue.toUpperCase(),
         ),
-        ...otherCards(othersList),
       ],
     );
   }
@@ -570,7 +558,6 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       }
-      i += similarItems.length - 1;
     }
     return list;
   }

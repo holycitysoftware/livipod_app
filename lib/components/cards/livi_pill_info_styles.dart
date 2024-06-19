@@ -21,16 +21,9 @@ class LiviPillInfoStyles {
         borderColor: LiviThemes.colors.randomBlue2,
       );
 
-  static LiviPillInfo early() => LiviPillInfo(
+  static LiviPillInfo available() => LiviPillInfo(
         backgroundColor: LiviThemes.colors.gray50,
-        text: Strings.early,
-        iconColor: LiviThemes.colors.gray500,
-        textColor: LiviThemes.colors.gray700,
-        borderColor: LiviThemes.colors.gray200,
-      );
-  static LiviPillInfo tomorrow() => LiviPillInfo(
-        backgroundColor: LiviThemes.colors.gray50,
-        text: Strings.tomorrow,
+        text: Strings.available,
         iconColor: LiviThemes.colors.gray500,
         textColor: LiviThemes.colors.gray700,
         borderColor: LiviThemes.colors.gray200,
