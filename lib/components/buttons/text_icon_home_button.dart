@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../themes/livi_themes.dart';
-import '../../utils/strings.dart';
-import '../components.dart';
 
 class TextIconHomeButton extends StatelessWidget {
   final Function() onTap;

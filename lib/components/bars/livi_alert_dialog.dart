@@ -8,6 +8,7 @@ import '../../services/livi_pod_service.dart';
 import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
+import '../../utils/utils.dart';
 import '../components.dart';
 
 class LiviAlertDialog {
@@ -28,7 +29,7 @@ class LiviAlertDialog {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [ 
+                      children: [
                         LiviThemes.icons.liviPodImageSmaller,
                         LiviThemes.spacing.widthSpacer24(),
                         Column(
@@ -280,5 +281,118 @@ class LiviAlertDialog {
       ),
     );
     return remove;
+  }
+
+  static Future<int?> showConfirmQuantityModal(
+    BuildContext context,
+    Medication medication,
+    TextEditingController modalTextController,
+  ) async {
+    return showDialog<int>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          backgroundColor: LiviThemes.colors.baseWhite,
+          surfaceTintColor: LiviThemes.colors.baseWhite,
+          insetPadding: EdgeInsets.symmetric(horizontal: 32),
+          content: Container(
+            height: 330,
+            width: 400,
+            color: LiviThemes.colors.baseWhite,
+            child: Column(
+              children: [
+                Spacer(),
+                Row(
+                  children: [
+                    if (medication.dosageForm != null)
+                      Container(
+                        height: 40,
+                        width: 40,
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: LiviThemes.colors.brand50,
+                          borderRadius: BorderRadius.circular(64),
+                        ),
+                        child:
+                            dosageFormIcon(dosageForm: medication.dosageForm),
+                      ),
+                    LiviThemes.spacing.widthSpacer8(),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: LiviTextStyles.interSemiBold16(
+                                  medication.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: LiviTextStyles.interSemiBold16(
+                                  medication.dosageFormStrengthType(),
+                                  maxLines: 1,
+                                  color: LiviThemes.colors.gray700,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                LiviInputField(
+                  title: Strings.availableQuantity,
+                  focusNode: FocusNode(),
+                  readOnly: true,
+                  controller: TextEditingController(
+                      text: medication.inventoryQuantity.toString()),
+                  keyboardType: TextInputType.number,
+                ),
+                LiviInputField(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                  title: Strings.adjustQuantity,
+                  focusNode: FocusNode(),
+                  controller: modalTextController,
+                  keyboardType: TextInputType.number,
+                ),
+                LiviThemes.spacing.heightSpacer16(),
+                LiviDivider(),
+                LiviThemes.spacing.heightSpacer16(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: LiviOutlinedButton(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: Strings.cancel,
+                      ),
+                    ),
+                    LiviThemes.spacing.widthSpacer8(),
+                    Expanded(
+                      child: LiviOutlinedButton(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pop(int.parse(modalTextController.text));
+                        },
+                        text: Strings.confirm,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

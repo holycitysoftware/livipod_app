@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 
-import 'strings.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class Formatter {

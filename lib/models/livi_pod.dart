@@ -1,8 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../controllers/controllers.dart';
-import 'dosing.dart';
-import 'schedule.dart';
 
 part 'livi_pod.g.dart';
 

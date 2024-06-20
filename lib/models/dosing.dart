@@ -21,6 +21,8 @@ class Dosing {
   double qtyRequested = 0;
   double qtyRemaining = 0;
   @JsonKey(defaultValue: 0)
+  double qtyRemainingForDay = 0;
+  @JsonKey(defaultValue: 0)
   double qtySkipped = 0;
   @JsonKey(defaultValue: 0)
   double qtyMissed = 0;

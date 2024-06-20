@@ -5,22 +5,20 @@ import 'package:flutter/widgets.dart';
 import '../../models/models.dart';
 import '../../models/schedule_type.dart';
 import '../../themes/livi_themes.dart';
-import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
-import '../../utils/utils.dart';
 import '../components.dart';
 
 class CardStackAnimation extends StatefulWidget {
   final String title;
   final List<Medication> medications;
   final Widget Function(List<Medication>, int?) buttons;
-  final Function() takeAllFunction;
+  final Function()? takeAllFunction;
   const CardStackAnimation({
     super.key,
     required this.medications,
     required this.title,
     required this.buttons,
-    required this.takeAllFunction,
+    this.takeAllFunction,
   });
   @override
   _CardStackAnimationState createState() => _CardStackAnimationState();
@@ -144,7 +142,11 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   }
 
   double cardOpacity(int index) {
-    return _isExpanded && index == widget.medications.length - 1 ? 0.5 : 1;
+    final isOnlyOneCard = widget.medications.length == 1;
+    return (_isExpanded && index == widget.medications.length - 1) &&
+            !isOnlyOneCard
+        ? 0.5
+        : 1;
   }
 
   Widget _buildCardUI(int index) {
@@ -227,18 +229,20 @@ class _CardStackAnimationState extends State<CardStackAnimation>
                       color: LiviThemes.colors.gray700,
                     ),
                   ]),
-              LiviThemes.spacing.widthSpacer6(),
-              TextIconHomeButton(
-                  onTap: widget.takeAllFunction,
-                  isExpanded: _isExpanded,
-                  children: [
-                    LiviTextStyles.interMedium12(
-                      Strings.takeAll,
-                      color: LiviThemes.colors.gray700,
-                    ),
-                    LiviThemes.icons
-                        .checkIcon(color: LiviThemes.colors.gray400),
-                  ]),
+              if (widget.takeAllFunction != null)
+                LiviThemes.spacing.widthSpacer6(),
+              if (widget.takeAllFunction != null)
+                TextIconHomeButton(
+                    onTap: widget.takeAllFunction!,
+                    isExpanded: _isExpanded,
+                    children: [
+                      LiviTextStyles.interMedium12(
+                        Strings.takeAll,
+                        color: LiviThemes.colors.gray700,
+                      ),
+                      LiviThemes.icons
+                          .checkIcon(color: LiviThemes.colors.gray400),
+                    ]),
             ],
           ),
           SizedBox(

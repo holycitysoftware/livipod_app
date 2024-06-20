@@ -16,6 +16,7 @@ Dosing _$DosingFromJson(Map<String, dynamic> json) => Dosing()
       : DateTime.parse(json['lastDosingTime'] as String)
   ..qtyRequested = (json['qtyRequested'] as num).toDouble()
   ..qtyRemaining = (json['qtyRemaining'] as num).toDouble()
+  ..qtyRemainingForDay = (json['qtyRemainingForDay'] as num?)?.toDouble() ?? 0
   ..qtySkipped = (json['qtySkipped'] as num?)?.toDouble() ?? 0
   ..qtyMissed = (json['qtyMissed'] as num?)?.toDouble() ?? 0
   ..qtyDispensed = (json['qtyDispensed'] as num?)?.toDouble() ?? 0
@@ -27,6 +28,7 @@ Map<String, dynamic> _$DosingToJson(Dosing instance) => <String, dynamic>{
       'lastDosingTime': instance.lastDosingTime?.toIso8601String(),
       'qtyRequested': instance.qtyRequested,
       'qtyRemaining': instance.qtyRemaining,
+      'qtyRemainingForDay': instance.qtyRemainingForDay,
       'qtySkipped': instance.qtySkipped,
       'qtyMissed': instance.qtyMissed,
       'qtyDispensed': instance.qtyDispensed,

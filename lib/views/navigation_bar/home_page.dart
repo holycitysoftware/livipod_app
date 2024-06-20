@@ -15,7 +15,6 @@ import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
-import '../../utils/utils.dart';
 import '../views.dart';
 
 ///Route: home-page
@@ -96,6 +95,8 @@ class _HomePageState extends State<HomePage> {
         nextMed = element;
       } else if (element.nextDosing != null &&
           element.nextDosing!.scheduledDosingTime != null &&
+          nextMed.nextDosing != null &&
+          nextMed.nextDosing!.scheduledDosingTime != null &&
           element.nextDosing!.scheduledDosingTime!
               .isBefore(nextMed.nextDosing!.scheduledDosingTime!) &&
           element.schedules.first.type != ScheduleType.asNeeded) {
@@ -334,7 +335,7 @@ class _HomePageState extends State<HomePage> {
         CardStackAnimation(
           medications: asNeededList,
           key: Key('as-needed-cards'),
-          takeAllFunction: () => takeAll(asNeededList),
+          // takeAllFunction: () => takeAll(asNeededList),
           buttons: confirmQuantityButton,
           title: Strings.asNeeded.toUpperCase(),
         ),
@@ -389,118 +390,17 @@ class _HomePageState extends State<HomePage> {
   Future<void> showQuantityModal(Medication medication) async {
     _modalTextController.text =
         medication.schedules.first.prnDosing?.minQty.toInt().toString() ?? '';
-    final quantity = await showDialog<int>(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          backgroundColor: LiviThemes.colors.baseWhite,
-          surfaceTintColor: LiviThemes.colors.baseWhite,
-          insetPadding: EdgeInsets.symmetric(horizontal: 32),
-          content: Container(
-            height: 330,
-            width: 400,
-            color: LiviThemes.colors.baseWhite,
-            child: Column(
-              children: [
-                Spacer(),
-                Row(
-                  children: [
-                    if (medication.dosageForm != null)
-                      Container(
-                        height: 40,
-                        width: 40,
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: LiviThemes.colors.brand50,
-                          borderRadius: BorderRadius.circular(64),
-                        ),
-                        child:
-                            dosageFormIcon(dosageForm: medication.dosageForm),
-                      ),
-                    LiviThemes.spacing.widthSpacer8(),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: LiviTextStyles.interSemiBold16(
-                                  medication.name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: LiviTextStyles.interSemiBold16(
-                                  medication.dosageFormStrengthType(),
-                                  maxLines: 1,
-                                  color: LiviThemes.colors.gray700,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                LiviInputField(
-                  title: Strings.availableQuantity,
-                  focusNode: FocusNode(),
-                  readOnly: true,
-                  controller: TextEditingController(
-                      text: medication.inventoryQuantity.toString()),
-                  keyboardType: TextInputType.number,
-                ),
-                LiviInputField(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                  title: Strings.adjustQuantity,
-                  focusNode: FocusNode(),
-                  controller: _modalTextController,
-                  keyboardType: TextInputType.number,
-                ),
-                LiviThemes.spacing.heightSpacer16(),
-                LiviDivider(),
-                LiviThemes.spacing.heightSpacer16(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: LiviOutlinedButton(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        text: Strings.cancel,
-                      ),
-                    ),
-                    LiviThemes.spacing.widthSpacer8(),
-                    Expanded(
-                      child: LiviOutlinedButton(
-                        onTap: () {
-                          Navigator.of(context)
-                              .pop(int.parse(_modalTextController.text));
-                        },
-                        text: Strings.confirm,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    final quantity = await LiviAlertDialog.showConfirmQuantityModal(
+        context, medication, _modalTextController);
     if (quantity != null &&
         medication.schedules.first.prnDosing != null &&
-        medication.schedules.first.prnDosing!.maxQty != quantity) {
-      medication.schedules.first.prnDosing!.maxQty = quantity.toDouble();
-      medication.schedules.first.prnDosing!.minQty = quantity.toDouble();
-      await takeMedication([medication], null);
+        medication.nextDosing != null) {
+      final minQty = medication.schedules.first.prnDosing!.minQty;
+      final qtyRemaining = medication.nextDosing!.qtyRemaining;
+      if (minQty < qtyRemaining) {
+        medication.schedules.first.prnDosing!.minQty = quantity.toDouble();
+        await takeMedication([medication], null);
+      }
     }
   }
 
@@ -513,11 +413,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget confirmQuantityButton(List<Medication> medications, int? index) {
-    if (medications.first.nextDosing != null &&
-        (medications.first.nextDosing!.qtyRemaining ==
-                medications.first.schedules.first.prnDosing?.minQty.toInt() ||
-            medications.first.schedules.first.prnDosing?.minQty.toInt() ==
-                medications.first.schedules.first.prnDosing?.maxQty.toInt())) {
+    index ??= 0;
+
+    if (medications[index].nextDosing == null ||
+        (medications[index].nextDosing != null &&
+            medications[index].nextDosing!.qtyRemaining == null) ||
+        medications[index].schedules.first.prnDosing == null) {
+      return SizedBox();
+    }
+
+    final minQty = medications[index].schedules.first.prnDosing!.minQty.toInt();
+    final maxQty = medications[index].schedules.first.prnDosing!.maxQty.toInt();
+    final qtyRemaining = medications[index].nextDosing!.qtyRemaining.toInt();
+
+    if (qtyRemaining == minQty || minQty == maxQty) {
       return Row(
         children: [
           Expanded(
@@ -528,12 +437,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       );
+    } else if (minQty > qtyRemaining) {
+      return SizedBox();
     }
     return Row(
       children: [
         Expanded(
           child: LiviOutlinedButton(
-            onTap: () => showQuantityModal(medications.first),
+            onTap: () => showQuantityModal(medications[index!]),
             text: Strings.confirmQuantity,
           ),
         ),

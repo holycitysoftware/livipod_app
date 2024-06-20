@@ -111,14 +111,6 @@ class Medication {
         now.isBeforeIgnoringTimezone(nextDosing!.scheduledDosingTime!);
   }
 
-  String getLastDosing() {
-    if (lastDosing == null || lastDosing!.lastDosingTime == null) {
-      return '-';
-    }
-    var offsetDosingTime = lastDosing!.lastDosingTime!.toLocal();
-    return utils.getFormattedDateAndTime(offsetDosingTime);
-  }
-
   String dosageFormStrengthType() {
     var dosageFormStrength = '';
     if (dosageForm != DosageForm.none) {
