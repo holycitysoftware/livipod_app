@@ -355,9 +355,19 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> takeMedication(List<Medication> medications, int? index) async {
+  Future<void> takeMedication(List<Medication> medications, int? index,
+      {int? quantity}) async {
     if (medications.first.nextDosing != null) {
       medications.first.nextDosing!.outcome = DosingOutcome.taken;
+
+      final schedule = medications.first.getCurrentSchedule();
+      if (medications.first.isAsNeeded() && quantity != null) {
+        medications.first.nextDosing!.qtyRequested = quantity.toDouble();
+        medications.first.nextDosing!.qtyDispensed = quantity.toDouble();
+      } else {
+        medications.first.nextDosing!.qtyRequested = schedule.scheduledDosings.;
+        medications.first.nextDosing!.qtyDispensed = schedule.scheduledDosings.;
+      }
       medications.first.lastDosing = medications.first.nextDosing;
       await medicationService.updateMedication(medications.first);
       await medicationService.createMedicationHistory(
@@ -389,18 +399,20 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> showQuantityModal(Medication medication) async {
     _modalTextController.text =
-        medication.schedules.first.prnDosing?.minQty.toInt().toString() ?? '';
-    final quantity = await LiviAlertDialog.showConfirmQuantityModal(
+        medication.schedules.first.prnDosing?.maxQty.toInt().toString() ?? '';
+    var quantity = await LiviAlertDialog.showConfirmQuantityModal(
         context, medication, _modalTextController);
     if (quantity != null &&
         medication.schedules.first.prnDosing != null &&
         medication.nextDosing != null) {
-      final minQty = medication.schedules.first.prnDosing!.minQty;
+      final maxQty = medication.schedules.first.prnDosing!.maxQty;
       final qtyRemaining = medication.nextDosing!.qtyRemaining;
-      if (minQty < qtyRemaining) {
-        medication.schedules.first.prnDosing!.minQty = quantity.toDouble();
-        await takeMedication([medication], null);
+
+      if (maxQty > qtyRemaining) {
+        quantity = qtyRemaining.toInt();
       }
+
+      await takeMedication([medication], null);
     }
   }
 

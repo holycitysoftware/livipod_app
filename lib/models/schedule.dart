@@ -63,6 +63,10 @@ class Schedule {
     this.prnDosing,
   });
 
+  // getCurrentScheduleDosing(){
+  //   scheduledDosings.wher
+  // }
+
   static List<ScheduledDose> scheduledDosingsFromJson(List<dynamic> json) {
     return json
         .map((e) => ScheduledDose.fromJson(e as Map<String, dynamic>))
