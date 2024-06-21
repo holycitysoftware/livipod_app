@@ -343,32 +343,38 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> skipMedication(List<Medication> medications, int? index) async {
+  Future<void> takeMedication(
+    List<Medication> medications,
+    int? index, {
+    int takenQuantity = 0,
+    int qtySkipped = 0,
+    DosingOutcome outcome = DosingOutcome.taken,
+  }) async {
     if (medications.first.nextDosing != null) {
-      medications.first.nextDosing!.outcome = DosingOutcome.skipped;
-      medications.first.lastDosing = medications.first.nextDosing;
-      await medicationService.updateMedication(medications.first);
-      await medicationService.createMedicationHistory(
-        MedicationHistory.createMedicationHistory(medications.first,
-            Provider.of<AuthController>(context, listen: false).appUser!),
-      );
-    }
-  }
-
-  Future<void> takeMedication(List<Medication> medications, int? index,
-      {int? quantity}) async {
-    if (medications.first.nextDosing != null) {
-      medications.first.nextDosing!.outcome = DosingOutcome.taken;
+      medications.first.nextDosing!.outcome = outcome;
 
       final schedule = medications.first.getCurrentSchedule();
-      if (medications.first.isAsNeeded() && quantity != null) {
-        medications.first.nextDosing!.qtyRequested = quantity.toDouble();
-        medications.first.nextDosing!.qtyDispensed = quantity.toDouble();
+      if (medications.first.isAsNeeded() && takenQuantity != null) {
+        medications.first.nextDosing!.qtyRequested = takenQuantity.toDouble();
+        medications.first.nextDosing!.qtyDispensed = takenQuantity.toDouble();
       } else {
-        medications.first.nextDosing!.qtyRequested = schedule.scheduledDosings.;
-        medications.first.nextDosing!.qtyDispensed = schedule.scheduledDosings.;
+        final currentScheduleDosing = schedule.getCurrentScheduleDosing();
+        medications.first.nextDosing!.qtyRequested = currentScheduleDosing.qty;
+        medications.first.nextDosing!.qtyDispensed = currentScheduleDosing.qty;
       }
+      if (medications.first.schedules.isNotEmpty &&
+          medications.first.isAsNeeded()) {
+        medications.first.nextDosing!.qtyRemainingForDay -= takenQuantity;
+      }
+
+      ///ASK bill about this
+      const qtyMissed = 0;
+      medications.first.nextDosing!.qtyRemaining -=
+          qtyMissed + qtySkipped + takenQuantity;
       medications.first.lastDosing = medications.first.nextDosing;
+      medications.first.lastDosing!.lastDosingTime = DateTime.now();
+      medications.first.lastDosing!.outcome = outcome;
+
       await medicationService.updateMedication(medications.first);
       await medicationService.createMedicationHistory(
         MedicationHistory.createMedicationHistory(medications.first,
@@ -382,7 +388,8 @@ class _HomePageState extends State<HomePage> {
       children: [
         Expanded(
           child: LiviOutlinedButton(
-            onTap: () => skipMedication(medications, index),
+            onTap: () => takeMedication(medications, index,
+                outcome: DosingOutcome.skipped),
             text: Strings.skip,
           ),
         ),

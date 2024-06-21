@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/utils.dart' as utils;
@@ -63,9 +64,25 @@ class Schedule {
     this.prnDosing,
   });
 
-  // getCurrentScheduleDosing(){
-  //   scheduledDosings.wher
-  // }
+  ScheduledDose getCurrentScheduleDosing() {
+    final now = DateTime.now();
+    var scheduleDose = scheduledDosings.first;
+    var diffMinutes = 0;
+    for (var i = 0; i < scheduledDosings.length; i++) {
+      final nowTimeOfDay = TimeOfDay(hour: now.hour, minute: now.minute);
+      final scheduledTimeOfDay = scheduledDosings[i].timeOfDay;
+      var diff = (nowTimeOfDay.hour - scheduledTimeOfDay.hour) * 60 +
+          (nowTimeOfDay.minute - scheduledTimeOfDay.minute);
+      if (diff < 0) {
+        diff = diff * -1;
+      }
+      if (diff < diffMinutes) {
+        scheduleDose = scheduledDosings[i];
+        diffMinutes = diff;
+      }
+    }
+    return scheduleDose;
+  }
 
   static List<ScheduledDose> scheduledDosingsFromJson(List<dynamic> json) {
     return json
