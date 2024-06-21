@@ -60,12 +60,12 @@ class Medication {
 
     final schedule = getCurrentSchedule();
 
-    return now.isAfterIgnoringTimezone(
+    return now.isAfter(
           nextDosing!.scheduledDosingTime!.add(
             Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
           ),
         ) &&
-        now.isBeforeIgnoringTimezone(
+        now.isBefore(
           nextDosing!.scheduledDosingTime!.add(
             Duration(minutes: schedule.stopWarningMinutes),
           ),
@@ -79,12 +79,12 @@ class Medication {
     }
     final schedule = getCurrentSchedule();
 
-    return now.isAfterIgnoringTimezone(
+    return now.isAfter(
           nextDosing!.scheduledDosingTime!.subtract(
             Duration(minutes: schedule.startWarningMinutes),
           ),
         ) &&
-        now.isBeforeIgnoringTimezone(nextDosing!.scheduledDosingTime!);
+        now.isBefore(nextDosing!.scheduledDosingTime!);
   }
 
   Schedule getCurrentSchedule() {
@@ -92,8 +92,8 @@ class Medication {
     final now = DateTime.now();
     if (schedules.length > 1) {
       for (var i = 0; i < schedules.length; i++) {
-        if (now.isAfterIgnoringTimezone(schedules[i].startDate) &&
-            now.isBeforeIgnoringTimezone(schedules[i].endDate)) {
+        if (now.isAfter(schedules[i].startDate) &&
+            now.isBefore(schedules[i].endDate)) {
           schedule = schedules[i];
           break;
         }

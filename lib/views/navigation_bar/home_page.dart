@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
         nextMed = element;
       }
     }
-    if (nextMed == null) {
+    if (nextMed == null || (nextMed != null && nextMed.nextDosing == null)) {
       return SizedBox();
     }
     if (nextMed.nextDosing!.scheduledDosingTime!.isToday()) {
