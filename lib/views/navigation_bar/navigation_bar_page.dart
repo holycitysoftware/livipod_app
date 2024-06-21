@@ -105,34 +105,44 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        canPop: false,
-        child: Consumer<MessagingController>(
-            builder: (context, messagingController, child) {
+      canPop: false,
+      child: Consumer<MessagingController>(
+        builder: (context, messagingController, child) {
           if (messagingController.fcmToken.isNotEmpty) {
             updateUserFcmToken(messagingController.fcmToken);
           }
 
           return Scaffold(
             backgroundColor: LiviThemes.colors.baseWhite,
-            bottomNavigationBar: BottomNavigationBar(
-              items: navigationBarItems,
-              backgroundColor: LiviThemes.colors.baseWhite94,
-              currentIndex: currentPageIndex,
-              showUnselectedLabels: true,
-              unselectedItemColor: LiviThemes.colors.randomGray,
-              selectedItemColor: LiviThemes.colors.brand600,
-              onTap: selectItem,
-              selectedLabelStyle:
-                  LiviThemes.typography.interSemiBold_11.copyWith(
-                color: LiviThemes.colors.brand600,
-              ),
-              unselectedLabelStyle:
-                  LiviThemes.typography.interMedium_11.copyWith(
-                color: LiviThemes.colors.randomGray,
-              ),
+            bottomNavigationBar: IndexedStack(
+              children: [
+                BottomNavigationBar(
+                  items: navigationBarItems,
+                  backgroundColor: LiviThemes.colors.baseWhite94,
+                  currentIndex: currentPageIndex,
+                  showUnselectedLabels: true,
+                  unselectedItemColor: LiviThemes.colors.randomGray,
+                  selectedItemColor: LiviThemes.colors.brand600,
+                  onTap: selectItem,
+                  selectedLabelStyle:
+                      LiviThemes.typography.interSemiBold_11.copyWith(
+                    color: LiviThemes.colors.brand600,
+                  ),
+                  unselectedLabelStyle:
+                      LiviThemes.typography.interMedium_11.copyWith(
+                    color: LiviThemes.colors.randomGray,
+                  ),
+                ),
+              ],
             ),
-            body: navigationBarPages[currentPageIndex],
+            body: IndexedStack(
+              children: [
+                navigationBarPages[currentPageIndex],
+              ],
+            ),
           );
-        }));
+        },
+      ),
+    );
   }
 }

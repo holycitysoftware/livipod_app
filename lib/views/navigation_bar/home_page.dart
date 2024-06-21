@@ -347,28 +347,28 @@ class _HomePageState extends State<HomePage> {
     List<Medication> medications,
     int? index, {
     int takenQuantity = 0,
-    int qtySkipped = 0,
     DosingOutcome outcome = DosingOutcome.taken,
   }) async {
     if (medications.first.nextDosing != null) {
       medications.first.nextDosing!.outcome = outcome;
 
-      final schedule = medications.first.getCurrentSchedule();
       if (medications.first.isAsNeeded() && takenQuantity != null) {
         medications.first.nextDosing!.qtyRequested = takenQuantity.toDouble();
         medications.first.nextDosing!.qtyDispensed = takenQuantity.toDouble();
+        medications.first.nextDosing!.qtyRemainingForDay -= takenQuantity;
       } else {
+        final schedule = medications.first.getCurrentSchedule();
         final currentScheduleDosing = schedule.getCurrentScheduleDosing();
         medications.first.nextDosing!.qtyRequested = currentScheduleDosing.qty;
         medications.first.nextDosing!.qtyDispensed = currentScheduleDosing.qty;
       }
-      if (medications.first.schedules.isNotEmpty &&
-          medications.first.isAsNeeded()) {
-        medications.first.nextDosing!.qtyRemainingForDay -= takenQuantity;
-      }
 
       ///ASK bill about this
       const qtyMissed = 0;
+      var qtySkipped = 0;
+      if (outcome == DosingOutcome.skipped) {
+        qtySkipped = takenQuantity;
+      }
       medications.first.nextDosing!.qtyRemaining -=
           qtyMissed + qtySkipped + takenQuantity;
       medications.first.lastDosing = medications.first.nextDosing;
@@ -419,7 +419,7 @@ class _HomePageState extends State<HomePage> {
         quantity = qtyRemaining.toInt();
       }
 
-      await takeMedication([medication], null);
+      await takeMedication([medication], null, takenQuantity: quantity);
     }
   }
 

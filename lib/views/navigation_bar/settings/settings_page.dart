@@ -23,13 +23,13 @@ class SettingsPage extends StatelessWidget {
   Future<void> logout(
       AuthController authController, BuildContext context) async {
     await LiviAlertDialog.showAlertDialog(context);
-    // await authController.signOut();
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => WelcomePage(),
-    //   ),
-    // );
+    await authController.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WelcomePage(),
+      ),
+    );
   }
 
   Future<void> goToMyPodsPage(BuildContext context) async {
