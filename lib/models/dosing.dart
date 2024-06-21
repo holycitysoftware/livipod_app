@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'dosing.g.dart';
@@ -16,7 +18,9 @@ enum DosingOutcome {
 @JsonSerializable(explicitToJson: true)
 class Dosing {
   int dosingId = 0;
+  @JsonKey(fromJson: fromJsonDateTime)
   DateTime? scheduledDosingTime;
+  @JsonKey(fromJson: fromJsonDateTime)
   DateTime? lastDosingTime;
   double qtyRequested = 0;
   double qtyRemaining = 0;
@@ -34,11 +38,16 @@ class Dosing {
 
   factory Dosing.fromJson(Map<String, dynamic> json) => _$DosingFromJson(json);
 
-  DateTime? get scheduledDosingTimeLocal {
-    if (scheduledDosingTime == null) {
-      return scheduledDosingTime;
+  static DateTime? fromJsonDateTime(String? date) {
+    if (date != null) {
+      print('here');
+
+      var a = DateTime.parse(date).toLocal();
+      print(a);
+      return a;
+    } else {
+      return null;
     }
-    return scheduledDosingTime!.toLocal();
   }
 
   Map<String, dynamic> toJson() => _$DosingToJson(this);

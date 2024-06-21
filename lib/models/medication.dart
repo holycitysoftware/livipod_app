@@ -44,11 +44,12 @@ class Medication {
     }
 
     final schedule = getCurrentSchedule();
-    return now.isAfterIgnoringTimezone(nextDosing!.scheduledDosingTime!) &&
+    return now.isAfterIgnoringTimezone(
+            nextDosing!.scheduledDosingTime!.toLocal()) &&
         now.isBeforeIgnoringTimezone(
-          nextDosing!.scheduledDosingTime!.add(
-            Duration(minutes: schedule.stopWarningMinutes ~/ 2),
-          ),
+          nextDosing!.scheduledDosingTime!.toLocal().add(
+                Duration(minutes: schedule.stopWarningMinutes ~/ 2),
+              ),
         );
   }
 
