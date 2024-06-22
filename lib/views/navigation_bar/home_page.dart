@@ -160,7 +160,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('build home page');
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -346,9 +345,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> takeMedication(
     List<Medication> medications,
     int? index, {
-    int takenQuantity = 0,
+    int takenQuantity = 1,
     DosingOutcome outcome = DosingOutcome.taken,
   }) async {
+    var qtySkipped = 0;
+
     if (medications.first.nextDosing != null) {
       medications.first.nextDosing!.outcome = outcome;
 
@@ -361,14 +362,13 @@ class _HomePageState extends State<HomePage> {
         final currentScheduleDosing = schedule.getCurrentScheduleDosing();
         medications.first.nextDosing!.qtyRequested = currentScheduleDosing.qty;
         medications.first.nextDosing!.qtyDispensed = currentScheduleDosing.qty;
+        if (outcome == DosingOutcome.skipped) {
+          qtySkipped = takenQuantity;
+        }
       }
 
-      ///ASK bill about this
       const qtyMissed = 0;
-      var qtySkipped = 0;
-      if (outcome == DosingOutcome.skipped) {
-        qtySkipped = takenQuantity;
-      }
+
       medications.first.nextDosing!.qtyRemaining -=
           qtyMissed + qtySkipped + takenQuantity;
       medications.first.lastDosing = medications.first.nextDosing;
@@ -446,11 +446,14 @@ class _HomePageState extends State<HomePage> {
     final qtyRemaining = medications[index].nextDosing!.qtyRemaining.toInt();
 
     if (qtyRemaining == minQty || minQty == maxQty) {
+      final qty =
+          medications.first.getCurrentSchedule().prnDosing!.maxQty.toInt();
       return Row(
         children: [
           Expanded(
             child: LiviOutlinedButton(
-              onTap: () => takeMedication(medications, index),
+              onTap: () =>
+                  takeMedication(medications, index, takenQuantity: qty),
               text: Strings.take,
             ),
           ),
@@ -463,7 +466,9 @@ class _HomePageState extends State<HomePage> {
       children: [
         Expanded(
           child: LiviOutlinedButton(
-            onTap: () => showQuantityModal(medications[index!]),
+            onTap: () => showQuantityModal(
+              medications[index!],
+            ),
             text: Strings.confirmQuantity,
           ),
         ),

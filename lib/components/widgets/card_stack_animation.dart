@@ -124,7 +124,6 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   }
 
   Widget _buildCard(int index) {
-    print('_buildCard ');
     const double initialTop = 20.0; // Initial top position for the first card
     final double expandedTop =
         20.0 + index * cardHeight; // Top position for expanded cards
@@ -187,7 +186,6 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   @override
   Widget build(BuildContext context) {
-    print('CardStackAnimation build');
     if (widget.medications.isEmpty) {
       return SizedBox();
     } else if (widget.medications.length == 1) {

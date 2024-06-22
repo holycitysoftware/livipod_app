@@ -40,11 +40,7 @@ class Dosing {
 
   static DateTime? fromJsonDateTime(String? date) {
     if (date != null) {
-      print('here');
-
-      var a = DateTime.parse(date).toLocal();
-      print(a);
-      return a;
+      return DateTime.parse(date).toLocal();
     } else {
       return null;
     }
