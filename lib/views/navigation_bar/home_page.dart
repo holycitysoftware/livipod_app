@@ -63,17 +63,15 @@ class _HomePageState extends State<HomePage> {
     bool lateMedications = false;
     bool availableMedications = false;
     bool dueMeds = false;
-    medications.forEach(
-      (element) {
-        if (element.isLate()) {
-          lateMedications = true;
-        } else if (element.isAvailable()) {
-          availableMedications = true;
-        } else if (element.isDue()) {
-          dueMeds = true;
-        }
-      },
-    );
+    for (final element in medications) {
+      if (element.isLate()) {
+        lateMedications = true;
+      } else if (element.isAvailable()) {
+        availableMedications = true;
+      } else if (element.isDue()) {
+        dueMeds = true;
+      }
+    }
     if (lateMedications) {
       return LiviTextStyles.interRegular16(Strings.youHaveLateMedicines,
           color: LiviThemes.colors.baseBlack);
@@ -100,8 +98,12 @@ class _HomePageState extends State<HomePage> {
         nextMed = element;
       }
     }
-    if (nextMed == null || (nextMed != null && nextMed.nextDosing == null)) {
-      return SizedBox();
+    if (nextMed == null ||
+        (nextMed != null && nextMed.nextDosing == null) ||
+        (nextMed.isAsNeeded())) {
+      return nextMeds(
+        'There is nothing due',
+      );
     }
     // for UI convert to local time
     final localTime = nextMed.nextDosing!.scheduledDosingTime!.toLocal();

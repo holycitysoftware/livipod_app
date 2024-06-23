@@ -32,13 +32,12 @@ class Strings {
   static const String searching = 'Searching...';
   static const String availablePods = 'Available Pods';
   static const String youHaveNoPods = 'You have no Pods';
-  static const String youHaveNoMedicines = 'You have no medicines available';
+  static const String youHaveNoMedicines = 'You have no meds available';
   static const String remove = 'Remove';
   static const String nextMedsDueTomorrowAt = 'Next meds due tomorrow at';
-  static const String youHaveLateMedicines = 'You have late medicines';
-  static const String youHaveAvailableMedicines =
-      'You have available medicines';
-  static const String youHaveDueMedicines = 'You have due medicines';
+  static const String youHaveLateMedicines = 'Your meds are past due';
+  static const String youHaveAvailableMedicines = 'Your meds are available';
+  static const String youHaveDueMedicines = 'Your meds are due';
   static const String podSettings = 'Pod Settings';
   static const String areYouSureYouWantToRemove =
       'Are you sure you want to remove';
@@ -204,7 +203,7 @@ class Strings {
   static const String noLiviPodsAdded = 'No LiviPods added yet.';
 
   static const String typeTheNameOfTheMedicine =
-      'Type the name of the medicine in the search bar below to add your first medication.';
+      'Type the name in the search bar below to add your first medication.';
   static const String searchByName = 'Search by name';
   static const String home = 'Home';
   static const String medications = 'Medications';
