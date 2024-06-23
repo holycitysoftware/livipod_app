@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 
-
 // ignore: avoid_classes_with_only_static_members
 class Formatter {
   static String formatDate(DateTime? dateTime) {
@@ -56,19 +55,19 @@ extension DateTimeExt on DateTime {
         0;
   }
 
-  bool isBeforeIgnoringTimezone(DateTime date) {
-    return DateTime(year, month, day, hour, minute, second).isBefore(
-      DateTime(
-          date.year, date.month, date.day, date.hour, date.minute, date.second),
-    );
-  }
+  // bool isBeforeIgnoringTimezone(DateTime date) {
+  //   return DateTime(year, month, day, hour, minute, second).isBefore(
+  //     DateTime(
+  //         date.year, date.month, date.day, date.hour, date.minute, date.second),
+  //   );
+  // }
 
-  bool isAfterIgnoringTimezone(DateTime date) {
-    return DateTime(year, month, day, hour, minute, second).isAfter(
-      DateTime(
-          date.year, date.month, date.day, date.hour, date.minute, date.second),
-    );
-  }
+  // bool isAfterIgnoringTimezone(DateTime date) {
+  //   return DateTime(year, month, day, hour, minute, second).isAfter(
+  //     DateTime(
+  //         date.year, date.month, date.day, date.hour, date.minute, date.second),
+  //   );
+  // }
 }
 
 extension IntExt on int {

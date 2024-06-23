@@ -57,7 +57,6 @@ class MedicationService {
 
   Future<void> updateMedication(Medication medication) async {
     medication.hasChanged = true;
-    medication.nextDosing = null;
     final jsonMap = medication.toJson();
     await FirebaseFirestore.instance
         .collection('medications')

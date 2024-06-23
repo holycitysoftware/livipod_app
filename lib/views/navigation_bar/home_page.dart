@@ -51,9 +51,6 @@ class _HomePageState extends State<HomePage> {
             .sunSetting1Icon(color: LiviThemes.colors.baseBlack);
       case PeriodOfDay.night:
         return LiviThemes.icons.moon1Icon(color: LiviThemes.colors.baseBlack);
-
-      default:
-        return LiviThemes.icons.sunIcon(color: LiviThemes.colors.baseBlack);
     }
   }
 
@@ -106,17 +103,19 @@ class _HomePageState extends State<HomePage> {
     if (nextMed == null || (nextMed != null && nextMed.nextDosing == null)) {
       return SizedBox();
     }
-    if (nextMed.nextDosing!.scheduledDosingTime!.isToday()) {
+    // for UI convert to local time
+    final localTime = nextMed.nextDosing!.scheduledDosingTime!.toLocal();
+    if (localTime.isToday()) {
       return nextMeds(
-        '${Strings.nextMedsDueAt} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
+        '${Strings.nextMedsDueAt} ${DateFormat.jm().format(localTime)}',
       );
-    } else if (nextMed.nextDosing!.scheduledDosingTime!.isTomorrow()) {
+    } else if (localTime.isTomorrow()) {
       return nextMeds(
-        '${Strings.nextMedsDueTomorrowAt} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
+        '${Strings.nextMedsDueTomorrowAt} ${DateFormat.jm().format(localTime)}',
       );
     } else {
       return nextMeds(
-        '${Strings.nextMedsDueAt} ${DateFormat.yMMMMd('en_US').format(nextMed.nextDosing!.scheduledDosingTime!)} ${DateFormat.jm().format(nextMed.nextDosing!.scheduledDosingTime!)}',
+        '${Strings.nextMedsDueAt} ${DateFormat.yMMMMd('en_US').format(localTime)} ${DateFormat.jm().format(localTime)}',
       );
     }
   }
@@ -315,7 +314,9 @@ class _HomePageState extends State<HomePage> {
     final asNeededList = <Medication>[];
     final missedDuelist = <Medication>[];
     for (final element in snapshot.data!) {
-      if (element.isAsNeeded()) {
+      if (element.isAsNeeded() &&
+          element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
+              DateTime.now().millisecondsSinceEpoch) {
         asNeededList.add(element);
       } else if (element.isDue() || element.isLate() || element.isAvailable()) {
         missedDuelist.add(element);
@@ -351,33 +352,47 @@ class _HomePageState extends State<HomePage> {
     var qtySkipped = 0;
 
     if (medications.first.nextDosing != null) {
-      medications.first.nextDosing!.outcome = outcome;
+      const qtyMissed = 0;
+      final medication = medications.first;
+      final nextDosing = medication.nextDosing!;
+      final lastDosing = Dosing();
 
-      if (medications.first.isAsNeeded() && takenQuantity != null) {
-        medications.first.nextDosing!.qtyRequested = takenQuantity.toDouble();
-        medications.first.nextDosing!.qtyDispensed = takenQuantity.toDouble();
-        medications.first.nextDosing!.qtyRemainingForDay -= takenQuantity;
+      nextDosing.qtyRemaining -=
+          qtyMissed + qtySkipped + takenQuantity; // this was missing
+      lastDosing.dosingId = nextDosing.dosingId;
+      lastDosing.qtyMissed = 0;
+      lastDosing.qtySkipped = 0;
+      lastDosing.qtyRemaining = nextDosing.qtyRemaining;
+      lastDosing.scheduledDosingTime = nextDosing.scheduledDosingTime;
+      lastDosing.lastDosingTime = DateTime.now().toUtc();
+      lastDosing.outcome = outcome;
+
+      if (medication.isAsNeeded() && takenQuantity != null) {
+        nextDosing.qtyRemainingForDay -= takenQuantity;
+        lastDosing.qtyRequested = takenQuantity.toDouble();
+        lastDosing.qtyDispensed = takenQuantity.toDouble();
       } else {
         final schedule = medications.first.getCurrentSchedule();
         final currentScheduleDosing = schedule.getCurrentScheduleDosing();
-        medications.first.nextDosing!.qtyRequested = currentScheduleDosing.qty;
-        medications.first.nextDosing!.qtyDispensed = currentScheduleDosing.qty;
+        lastDosing.qtyRequested = currentScheduleDosing.qty;
+        lastDosing.qtyDispensed = currentScheduleDosing.qty;
         if (outcome == DosingOutcome.skipped) {
           qtySkipped = takenQuantity;
         }
       }
 
-      const qtyMissed = 0;
+      // update inventory if not using a POD
+      medication.inventoryQuantity -= lastDosing.qtyDispensed.toInt();
+      if (medication.inventoryQuantity < 0) {
+        medication.inventoryQuantity = 0;
+      }
 
-      medications.first.nextDosing!.qtyRemaining -=
-          qtyMissed + qtySkipped + takenQuantity;
-      medications.first.lastDosing = medications.first.nextDosing;
-      medications.first.lastDosing!.lastDosingTime = DateTime.now();
-      medications.first.lastDosing!.outcome = outcome;
+      medication.nextDosing = nextDosing;
+      medication.lastDosing = lastDosing;
 
-      await medicationService.updateMedication(medications.first);
+      await medicationService.updateMedication(medication);
       await medicationService.createMedicationHistory(
-        MedicationHistory.createMedicationHistory(medications.first,
+        MedicationHistory.createMedicationHistory(medication,
             Provider.of<AuthController>(context, listen: false).appUser!),
       );
     }

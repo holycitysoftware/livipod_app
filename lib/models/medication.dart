@@ -38,19 +38,27 @@ class Medication {
   }
 
   bool isDue() {
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
       return false;
     }
 
     final schedule = getCurrentSchedule();
-    return now.isAfterIgnoringTimezone(
-            nextDosing!.scheduledDosingTime!.toLocal()) &&
-        now.isBeforeIgnoringTimezone(
-          nextDosing!.scheduledDosingTime!.toLocal().add(
-                Duration(minutes: schedule.stopWarningMinutes ~/ 2),
-              ),
-        );
+    // return now.isAfterIgnoringTimezone(
+    //         nextDosing!.scheduledDosingTime!.toLocal()) &&
+    //     now.isBeforeIgnoringTimezone(
+    //       nextDosing!.scheduledDosingTime!.toLocal().add(
+    //             Duration(minutes: schedule.stopWarningMinutes ~/ 2),
+    //           ),
+    //     );
+    return now.millisecondsSinceEpoch >
+            nextDosing!.scheduledDosingTime!.microsecondsSinceEpoch &&
+        now.millisecondsSinceEpoch <=
+            nextDosing!.scheduledDosingTime!
+                .add(
+                  Duration(minutes: schedule.stopWarningMinutes ~/ 2),
+                )
+                .millisecondsSinceEpoch;
   }
 
   bool isLate() {
@@ -61,16 +69,29 @@ class Medication {
 
     final schedule = getCurrentSchedule();
 
-    return now.isAfter(
-          nextDosing!.scheduledDosingTime!.add(
-            Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
-          ),
-        ) &&
-        now.isBefore(
-          nextDosing!.scheduledDosingTime!.add(
-            Duration(minutes: schedule.stopWarningMinutes),
-          ),
-        );
+    return (now.millisecondsSinceEpoch >
+            nextDosing!.scheduledDosingTime!
+                .add(
+                  Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
+                )
+                .microsecondsSinceEpoch) &&
+        now.millisecondsSinceEpoch <=
+            nextDosing!.scheduledDosingTime!
+                .add(
+                  Duration(minutes: schedule.stopWarningMinutes),
+                )
+                .millisecondsSinceEpoch;
+
+    // now.isAfter(
+    //       nextDosing!.scheduledDosingTime!.add(
+    //         Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
+    //       ),
+    //     ) &&
+    //     now.isBefore(
+    //       nextDosing!.scheduledDosingTime!.add(
+    //         Duration(minutes: schedule.stopWarningMinutes),
+    //       ),
+    //     );
   }
 
   bool isAvailable() {
@@ -91,10 +112,13 @@ class Medication {
   Schedule getCurrentSchedule() {
     Schedule? schedule;
     final now = DateTime.now();
-    if (schedules.length > 1) {
+    if (schedules.isNotEmpty) {
+      // for some reason .length > 0 was not true
       for (var i = 0; i < schedules.length; i++) {
-        if (now.isAfter(schedules[i].startDate) &&
-            now.isBefore(schedules[i].endDate)) {
+        final isForever = schedules[i].startDate == schedules[i].endDate;
+        if ((now.isAfter(schedules[i].startDate) && isForever) ||
+            (now.isAfter(schedules[i].startDate) &&
+                now.isBefore(schedules[i].endDate))) {
           schedule = schedules[i];
           break;
         }

@@ -8,9 +8,12 @@ part of 'dosing.dart';
 
 Dosing _$DosingFromJson(Map<String, dynamic> json) => Dosing()
   ..dosingId = json['dosingId'] as int
-  ..scheduledDosingTime =
-      Dosing.fromJsonDateTime(json['scheduledDosingTime'] as String?)
-  ..lastDosingTime = Dosing.fromJsonDateTime(json['lastDosingTime'] as String?)
+  ..scheduledDosingTime = json['scheduledDosingTime'] == null
+      ? null
+      : DateTime.parse(json['scheduledDosingTime'] as String)
+  ..lastDosingTime = json['lastDosingTime'] == null
+      ? null
+      : DateTime.parse(json['lastDosingTime'] as String)
   ..qtyRequested = (json['qtyRequested'] as num).toDouble()
   ..qtyRemaining = (json['qtyRemaining'] as num).toDouble()
   ..qtyRemainingForDay = (json['qtyRemainingForDay'] as num?)?.toDouble() ?? 0

@@ -18,9 +18,9 @@ enum DosingOutcome {
 @JsonSerializable(explicitToJson: true)
 class Dosing {
   int dosingId = 0;
-  @JsonKey(fromJson: fromJsonDateTime)
+  //@JsonKey(fromJson: fromJsonDateTime)
   DateTime? scheduledDosingTime;
-  @JsonKey(fromJson: fromJsonDateTime)
+  //@JsonKey(fromJson: fromJsonDateTime)
   DateTime? lastDosingTime;
   double qtyRequested = 0;
   double qtyRemaining = 0;
@@ -38,13 +38,13 @@ class Dosing {
 
   factory Dosing.fromJson(Map<String, dynamic> json) => _$DosingFromJson(json);
 
-  static DateTime? fromJsonDateTime(String? date) {
-    if (date != null) {
-      return DateTime.parse(date).toLocal();
-    } else {
-      return null;
-    }
-  }
+  // static DateTime? fromJsonDateTime(String? date) {
+  //   if (date != null) {
+  //     return DateTime.parse(date).toLocal();
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   Map<String, dynamic> toJson() => _$DosingToJson(this);
 }
