@@ -184,9 +184,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
                     child: CustomScrollView(
                       slivers: [
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: MediaQuery.of(context).viewPadding.top,
+                          ),
+                        ),
                         SliverToBoxAdapter(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +324,8 @@ class _HomePageState extends State<HomePage> {
     final asNeededList = <Medication>[];
     final missedDuelist = <Medication>[];
     for (final element in snapshot.data!) {
-      if (element.isAsNeeded() &&
+      if (element.nextDosing != null &&
+          element.isAsNeeded() &&
           element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
               DateTime.now().millisecondsSinceEpoch) {
         asNeededList.add(element);
