@@ -140,7 +140,6 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
                   // focusedPinTheme: focusedPinTheme,
                   // submittedPinTheme: submittedPinTheme,
                   length: 6, controller: pinController,
-                  onCompleted: (pin) => print(pin),
                 )),
               ],
             ),
