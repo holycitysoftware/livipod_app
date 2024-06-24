@@ -72,7 +72,6 @@ class AuthController extends ChangeNotifier {
       String? emailController,
       required String phoneNumberController}) async {
     final timezone = await FlutterTimezone.getLocalTimezone();
-    print(timezone);
     //Cache timezone?
     _appUser = AppUser(
       name: fullNameController,

@@ -54,7 +54,8 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
         appUser: controller.appUser!,
         isAccountCreation: !widget.isLoginPage,
       );
-    } else if (controller.firebaseAuthUser != null) {
+    } else if (controller.firebaseAuthUser != null &&
+        controller.appUser != null) {
       return NavigationBarPage(
         showIdentifyPersonaPage: widget.showIdentifyPersonaPage,
       );

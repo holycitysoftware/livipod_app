@@ -75,17 +75,6 @@ class _LoginPageState extends State<LoginPage> {
     await verifyPhoneNumber();
   }
 
-  Future<void> goToCheckSmsPge() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CheckSmsPage(
-          appUser: appUser,
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     super.dispose();
