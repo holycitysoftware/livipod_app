@@ -145,6 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                     errorText: authController.verificationError.isEmpty
                         ? null
                         : authController.verificationError,
+                    keyboardType: TextInputType.number,
                     hint: Strings.steveJobsNumber,
                     prefix: CountryDropdownButton(
                       country: country,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/messaging_controller.dart';
@@ -104,44 +105,47 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      child: Consumer<MessagingController>(
-        builder: (context, messagingController, child) {
-          if (messagingController.fcmToken.isNotEmpty) {
-            updateUserFcmToken(messagingController.fcmToken);
-          }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: PopScope(
+        canPop: false,
+        child: Consumer<MessagingController>(
+          builder: (context, messagingController, child) {
+            if (messagingController.fcmToken.isNotEmpty) {
+              updateUserFcmToken(messagingController.fcmToken);
+            }
 
-          return Scaffold(
-            backgroundColor: LiviThemes.colors.baseWhite,
-            bottomNavigationBar: IndexedStack(
-              children: [
-                BottomNavigationBar(
-                  items: navigationBarItems,
-                  backgroundColor: LiviThemes.colors.baseWhite94,
-                  currentIndex: currentPageIndex,
-                  showUnselectedLabels: true,
-                  unselectedItemColor: LiviThemes.colors.randomGray,
-                  selectedItemColor: LiviThemes.colors.brand600,
-                  onTap: selectItem,
-                  selectedLabelStyle:
-                      LiviThemes.typography.interSemiBold_11.copyWith(
-                    color: LiviThemes.colors.brand600,
+            return Scaffold(
+              backgroundColor: LiviThemes.colors.baseWhite,
+              bottomNavigationBar: IndexedStack(
+                children: [
+                  BottomNavigationBar(
+                    items: navigationBarItems,
+                    backgroundColor: LiviThemes.colors.baseWhite94,
+                    currentIndex: currentPageIndex,
+                    showUnselectedLabels: true,
+                    unselectedItemColor: LiviThemes.colors.randomGray,
+                    selectedItemColor: LiviThemes.colors.brand600,
+                    onTap: selectItem,
+                    selectedLabelStyle:
+                        LiviThemes.typography.interSemiBold_11.copyWith(
+                      color: LiviThemes.colors.brand600,
+                    ),
+                    unselectedLabelStyle:
+                        LiviThemes.typography.interMedium_11.copyWith(
+                      color: LiviThemes.colors.randomGray,
+                    ),
                   ),
-                  unselectedLabelStyle:
-                      LiviThemes.typography.interMedium_11.copyWith(
-                    color: LiviThemes.colors.randomGray,
-                  ),
-                ),
-              ],
-            ),
-            body: IndexedStack(
-              children: [
-                navigationBarPages[currentPageIndex],
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+              body: IndexedStack(
+                children: [
+                  navigationBarPages[currentPageIndex],
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

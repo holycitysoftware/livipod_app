@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
 import '../../components/components.dart';
 import '../../controllers/controllers.dart';
@@ -36,8 +36,20 @@ class CheckSmsPage extends StatefulWidget {
 
 class _CheckSmsPageState extends State<CheckSmsPage> {
   final TextEditingController pinController = TextEditingController();
-  final FocusNode pinFocusNode = FocusNode();
   String code = '';
+  final defaultPinTheme = PinTheme(
+    width: 56,
+    height: 56,
+    textStyle: TextStyle(
+      fontSize: 20,
+      color: Color.fromRGBO(30, 60, 87, 1),
+      fontWeight: FontWeight.w600,
+    ),
+    decoration: BoxDecoration(
+      border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+      borderRadius: BorderRadius.circular(6.47),
+    ),
+  );
   @override
   void initState() {
     autoFill();
@@ -45,9 +57,9 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
   }
 
   Future<void> autoFill() async {
-    if (Platform.isAndroid) {
-      await SmsAutoFill().listenForCode();
-    }
+    // if (Platform.isAndroid) {
+    // await SmsAutoFill().listenForCode();
+    // }
   }
 
   Future<void> validateSmsCode() async {
@@ -71,9 +83,9 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
 
   @override
   void dispose() {
-    if (Platform.isAndroid) {
-      SmsAutoFill().unregisterListener();
-    }
+    // if (Platform.isAndroid) {
+    // SmsAutoFill().unregisterListener();
+    // }
     super.dispose();
   }
 
@@ -116,42 +128,20 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
           if (widget.appUser != null)
             Align(
                 child:
-                    LiviTextStyles.interRegular16(widget.appUser!.phoneNumber)),
+                    LiviTextStyles.interRegular16(widget.appUser.phoneNumber)),
           LiviThemes.spacing.heightSpacer24(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
                 Expanded(
-                  child: PinFieldAutoFill(
-                    controller: pinController,
-                    autoFocus: true,
-                    currentCode: code,
-                    onCodeSubmitted: goToIdentifyPersonPage,
-                    onCodeChanged: (code) {
-                      // if (code!.length == 6) {
-                      //   goToIdentifyPersonPage(code);
-                      // }
-                    },
-                    focusNode: pinFocusNode,
-                    decoration: BoxLooseDecoration(
-                        radius: Radius.circular(6.47),
-                        strokeWidth: 1.08,
-                        textStyle: LiviThemes.typography.interRegular_30
-                            .copyWith(color: LiviThemes.colors.baseBlack),
-                        strokeColorBuilder: FixedColorListBuilder([
-                          LiviThemes.colors.gray200,
-                          LiviThemes.colors.gray200,
-                          LiviThemes.colors.gray200,
-                          LiviThemes.colors.gray200,
-                          LiviThemes.colors.gray200,
-                          LiviThemes.colors.gray200
-                        ])),
-                    // decoration: // UnderlineDecoration, BoxLooseDecoration or BoxTightDecoration see https://github.com/TinoGuo/pin_input_text_field for more info,
-                    // onCodeSubmitted: //code submitted callback
-                    // onCodeChanged: //code changed callback
-                  ),
-                ),
+                    child: Pinput(
+                  defaultPinTheme: defaultPinTheme,
+                  // focusedPinTheme: focusedPinTheme,
+                  // submittedPinTheme: submittedPinTheme,
+                  length: 6, controller: pinController,
+                  onCompleted: (pin) => print(pin),
+                )),
               ],
             ),
           ),

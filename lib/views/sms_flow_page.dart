@@ -29,11 +29,6 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
     super.dispose();
   }
 
-  Future<void> goToWelcomePage() async {
-    await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => WelcomePage()));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthController>(builder: (context, controller, child) {
