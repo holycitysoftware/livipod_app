@@ -1,15 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
 import '../../../models/models.dart';
-import '../../../services/app_user_service.dart';
 import '../../../themes/livi_spacing/livi_spacing.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/countries.dart';

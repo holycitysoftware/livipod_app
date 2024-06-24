@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
@@ -12,7 +13,6 @@ import '../../../services/app_user_service.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
 import '../../views.dart';
-import 'package:in_app_review/in_app_review.dart';
 
 class SettingsPage extends StatelessWidget {
   final appUserService = AppUserService();

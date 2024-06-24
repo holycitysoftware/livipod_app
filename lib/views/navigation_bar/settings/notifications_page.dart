@@ -25,6 +25,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   bool isLoading = false;
   List<String> medications = [];
   late final AuthController authController;
+  AppUser? appUser;
   final appUserService = AppUserService();
 
   @override
@@ -42,9 +43,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   Future<void> saveUser() async {
-    authController.appUser!.lowInventoryQuantity =
-        int.parse(quantityController.text);
-    await appUserService.updateUser(authController.appUser!);
+    if (appUser != null) {
+      appUser!.lowInventoryQuantity = int.parse(quantityController.text);
+      await appUserService.updateUser(appUser!);
+    }
   }
 
   @override
@@ -58,8 +60,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
           stream: appUserService.listenToUserRealTime(
               Provider.of<AuthController>(context, listen: false).appUser!),
           builder: (context, snapshot) {
-            final user = snapshot.data;
-            if (user == null) {
+            appUser = snapshot.data;
+            if (appUser == null) {
               return const Center(child: CircularProgressIndicator());
             }
             return ListView(
@@ -69,13 +71,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     Strings.notifications, Strings.stayInformedAboutImportant),
                 notificationOption(
                   Strings.appNotification,
-                  user.usePushNotifications,
-                  (e) => onChangedUseNotification(e, user),
+                  appUser!.usePushNotifications,
+                  (e) => onChangedUseNotification(e, appUser!),
                 ),
                 notificationOption(
                   Strings.email,
-                  user.useEmail,
-                  (e) => onChangedUseEmail(e, user),
+                  appUser!.useEmail,
+                  (e) => onChangedUseEmail(e, appUser!),
                 ),
                 LiviThemes.spacing.heightSpacer8(),
                 LiviDivider(height: 8),
@@ -84,24 +86,26 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     Strings.chooseWithNotifications),
                 notificationOption(
                   Strings.medicationsAvailable,
-                  user.medicationAvailable,
-                  (e) =>
-                      onChanged(NotificationType.medicationAvailable, e, user),
+                  appUser!.medicationAvailable,
+                  (e) => onChanged(
+                      NotificationType.medicationAvailable, e, appUser!),
                 ),
                 notificationOption(
                   Strings.medicationsLate,
-                  user.medicationLate,
-                  (e) => onChanged(NotificationType.medicationLate, e, user),
+                  appUser!.medicationLate,
+                  (e) =>
+                      onChanged(NotificationType.medicationLate, e, appUser!),
                 ),
                 notificationOption(
                   Strings.medicationsDue,
-                  user.medicationDue,
-                  (e) => onChanged(NotificationType.medicationDue, e, user),
+                  appUser!.medicationDue,
+                  (e) => onChanged(NotificationType.medicationDue, e, appUser!),
                 ),
                 notificationOption(
                   Strings.medicationsMissed,
-                  user.medicationMissed,
-                  (e) => onChanged(NotificationType.medicationMissed, e, user),
+                  appUser!.medicationMissed,
+                  (e) =>
+                      onChanged(NotificationType.medicationMissed, e, appUser!),
                 ),
                 LiviThemes.spacing.heightSpacer8(),
                 LiviDivider(height: 8),
@@ -120,18 +124,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 ),
                 notificationOption(
                   Strings.notifyWhenPodInventoryIsLow,
-                  user.inventoryLow,
-                  (e) => onChanged(NotificationType.inventoryLow, e, user),
+                  appUser!.inventoryLow,
+                  (e) => onChanged(NotificationType.inventoryLow, e, appUser!),
                 ),
                 notificationOption(
                   Strings.notifyWhenPodInventoryIsEmpty,
-                  user.inventoryEmpty,
-                  (e) => onChanged(NotificationType.inventoryEmpty, e, user),
+                  appUser!.inventoryEmpty,
+                  (e) =>
+                      onChanged(NotificationType.inventoryEmpty, e, appUser!),
                 ),
                 notificationOption(
                   Strings.notifyWhenWifiIsUnavailable,
-                  user.wifiUnavailable,
-                  (e) => onChanged(NotificationType.wifiUnavailable, e, user),
+                  appUser!.wifiUnavailable,
+                  (e) =>
+                      onChanged(NotificationType.wifiUnavailable, e, appUser!),
                 ),
                 LiviThemes.spacing.heightSpacer16(),
               ],

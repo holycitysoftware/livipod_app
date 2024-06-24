@@ -52,7 +52,7 @@ class Medication {
     //           ),
     //     );
     return now.millisecondsSinceEpoch >
-            nextDosing!.scheduledDosingTime!.microsecondsSinceEpoch &&
+            nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch &&
         now.millisecondsSinceEpoch <=
             nextDosing!.scheduledDosingTime!
                 .add(
@@ -74,7 +74,7 @@ class Medication {
                 .add(
                   Duration(minutes: schedules.first.stopWarningMinutes ~/ 2),
                 )
-                .microsecondsSinceEpoch) &&
+                .millisecondsSinceEpoch) &&
         now.millisecondsSinceEpoch <=
             nextDosing!.scheduledDosingTime!
                 .add(

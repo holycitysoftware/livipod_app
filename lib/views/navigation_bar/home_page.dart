@@ -166,6 +166,9 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body:
             Consumer<AuthController>(builder: (context, authController, child) {
+          if (authController.appUser == null) {
+            return SizedBox();
+          }
           return StreamBuilder<List<Medication>>(
               stream: MedicationService()
                   .listenToMedicationsRealTime(authController.appUser!),
@@ -493,13 +496,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  String getTimeDescription(DateTime scheduledDosingTime) {
-    if (scheduledDosingTime.isToday()) {
-      return DateFormat.jm().format(scheduledDosingTime);
-    } else if (scheduledDosingTime.isTomorrow()) {
-      return '${Strings.tomorrow} ${DateFormat.jm().format(scheduledDosingTime)}';
-    } else {
-      return '${DateFormat.MMMMd('en_US').format(scheduledDosingTime)} ${DateFormat.jm().format(scheduledDosingTime)}';
-    }
-  }
+  // String getTimeDescription(DateTime scheduledDosingTime) {
+  //   if (scheduledDosingTime.isToday()) {
+  //     return DateFormat.jm().format(scheduledDosingTime);
+  //   } else if (scheduledDosingTime.isTomorrow()) {
+  //     return '${Strings.tomorrow} ${DateFormat.jm().format(scheduledDosingTime)}';
+  //   } else {
+  //     return '${DateFormat.MMMMd('en_US').format(scheduledDosingTime)} ${DateFormat.jm().format(scheduledDosingTime)}';
+  //   }
+  // }
 }
