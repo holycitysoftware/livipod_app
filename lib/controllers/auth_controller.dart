@@ -8,6 +8,7 @@ import '../models/models.dart';
 import '../services/account_service.dart';
 import '../services/app_user_service.dart';
 import '../utils/logger.dart';
+import '../utils/shared_prefs.dart';
 import '../utils/string_ext.dart';
 
 class AuthController extends ChangeNotifier {
@@ -30,6 +31,8 @@ class AuthController extends ChangeNotifier {
   bool get promptForUserCode => _promptForUserCode;
 
   AuthController() {
+    isFirstLogin();
+
     FirebaseAuth.instance.authStateChanges().listen(
         (user) async {
           _user = user;
@@ -50,6 +53,15 @@ class AuthController extends ChangeNotifier {
 
   void clearVerificationError() {
     _verificationError = '';
+  }
+
+  Future<void> isFirstLogin() async {
+    final appCache = AppCache();
+    final isFirstLogin = await appCache.getIsFirstLogin();
+    if (isFirstLogin && FirebaseAuth.instance.currentUser != null) {
+      signOut();
+    }
+    await appCache.cacheisFirstLogin(false);
   }
 
   Future<void> getAppUser() async {
@@ -302,8 +314,7 @@ class AuthController extends ChangeNotifier {
       if (userCredential != null &&
           userCredential.user != null &&
           !isAccountCreation) {
-        _appUser = await _appUserService.getUserById(userCredential.user!.uid);
-        notifyListeners();
+        getAppUser();
       }
       _promptForUserCode = false;
 

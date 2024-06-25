@@ -12,6 +12,7 @@ import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
 import 'privacy_policy_page.dart';
 import 'terms_of_service_page.dart';
+import 'welcome_page.dart';
 
 class CreateAccountPage extends StatefulWidget {
   static const String routeName = '/create-account-page';
@@ -161,7 +162,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               children: [
-                BackBar(),
+                BackBar(onTap: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => WelcomePage()));
+                }),
                 LiviThemes.icons.logo,
                 LiviThemes.spacing.heightSpacer16(),
                 Align(

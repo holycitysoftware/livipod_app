@@ -167,7 +167,7 @@ class _LiviInputFieldState extends State<LiviInputField> {
                 errorStyle: LiviThemes.typography.interRegular_12
                     .copyWith(color: LiviThemes.colors.error500),
                 disabledBorder: border(),
-                focusedErrorBorder: border(),
+                focusedErrorBorder: errorBorder(),
                 hintText: widget.hint,
                 hintStyle: LiviThemes.typography.interRegular_16
                     .copyWith(color: LiviThemes.colors.gray400),

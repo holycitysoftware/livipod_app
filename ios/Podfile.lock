@@ -857,8 +857,6 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sms_autofill (0.0.1):
-    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
   - wifi_scan (0.0.1):
@@ -883,7 +881,6 @@ DEPENDENCIES:
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - sms_autofill (from `.symlinks/plugins/sms_autofill/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - wifi_scan (from `.symlinks/plugins/wifi_scan/ios`)
 
@@ -952,8 +949,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
-  sms_autofill:
-    :path: ".symlinks/plugins/sms_autofill/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   wifi_scan:
@@ -1003,7 +998,6 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
-  sms_autofill: c461043483362c3f1709ee76eaae6eb570b31686
   url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
   wifi_scan: 6d20b3b4f59bbad1ddcf3e241560f3acd62f6cbe
 
