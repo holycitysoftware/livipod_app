@@ -314,7 +314,7 @@ class AuthController extends ChangeNotifier {
       if (userCredential != null &&
           userCredential.user != null &&
           !isAccountCreation) {
-        getAppUser();
+        await getAppUser();
       }
       _promptForUserCode = false;
 
