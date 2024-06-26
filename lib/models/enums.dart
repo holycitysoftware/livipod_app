@@ -484,21 +484,26 @@ enum PeriodOfDay {
 
   static PeriodOfDay getPeriodOfDayColors() {
     final now = DateTime.now();
-    if ((now.hour >= morning.startTime.hour &&
-            now.hour <= morning.endTime.hour) &&
-        (now.minute >= morning.startTime.minute &&
-            now.minute <= morning.endTime.minute)) {
+    final morningStartTime = DateTime(now.year, now.month, now.day,
+        morning.startTime.hour, morning.startTime.minute);
+    final morningEndTime = DateTime(now.year, now.month, now.day,
+        morning.endTime.hour, morning.endTime.minute);
+    final afternoonStartTime = DateTime(now.year, now.month, now.day,
+        night.startTime.hour, afternoon.startTime.minute);
+    final afternoonEndTime = DateTime(now.year, now.month, now.day,
+        afternoon.endTime.hour, afternoon.endTime.minute);
+    final nightStartTime = DateTime(now.year, now.month, now.day,
+        night.startTime.hour, night.startTime.minute);
+    final nightEndTime = DateTime(now.year, now.month, now.day + 1,
+        night.endTime.hour, night.endTime.minute);
+
+    if (now.isAfter(morningStartTime) && now.isBefore(morningEndTime)) {
       return morning;
     }
-    if ((now.hour >= afternoon.startTime.hour &&
-            now.hour <= afternoon.endTime.hour) &&
-        (now.minute >= afternoon.startTime.minute &&
-            now.minute <= afternoon.endTime.minute)) {
+    if (now.isAfter(afternoonStartTime) && now.isBefore(afternoonEndTime)) {
       return afternoon;
     }
-    if ((now.hour >= night.startTime.hour && now.hour <= night.endTime.hour) &&
-        (now.minute >= night.startTime.minute &&
-            now.minute <= night.endTime.minute)) {
+    if (now.isAfter(nightStartTime) && now.isBefore(nightEndTime)) {
       return night;
     }
     return morning;
