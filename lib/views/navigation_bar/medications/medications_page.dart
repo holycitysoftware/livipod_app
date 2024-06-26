@@ -47,6 +47,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('build meds');
     return Scaffold(
       backgroundColor: LiviThemes.colors.gray100,
       appBar: LiviAppBar(
@@ -66,6 +67,8 @@ class _MedicationsPageState extends State<MedicationsPage> {
               stream: MedicationService()
                   .listenToMedicationsRealTime(value.appUser!),
               builder: (context, snapshot) {
+                print('streambuilder meds');
+
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }

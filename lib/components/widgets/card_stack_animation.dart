@@ -116,9 +116,20 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   List<Widget> cards() {
     final List<Widget> list = [];
     for (int i = widget.medications.length - 1; i > -1; i--) {
-      list.add(
-        _buildCard(i),
-      );
+      print(widget.medications[i]);
+      if (widget.medications[i].lastDosing != null &&
+          widget.medications[i].nextDosing != null) {
+        print(widget.medications[i].lastDosing!.dosingId !=
+            widget.medications[i].nextDosing!.dosingId);
+      }
+      if (widget.medications[i].lastDosing != null &&
+          widget.medications[i].nextDosing != null &&
+          widget.medications[i].lastDosing!.dosingId !=
+              widget.medications[i].nextDosing!.dosingId) {
+        list.add(
+          _buildCard(i),
+        );
+      }
     }
     return list;
   }
@@ -198,11 +209,17 @@ class _CardStackAnimationState extends State<CardStackAnimation>
             ],
           ),
           LiviThemes.spacing.heightSpacer8(),
-          Container(
-            height: cardHeight,
-            margin: EdgeInsets.only(bottom: 24),
-            child: _buildCardUI(0),
-          )
+          if (widget.medications[0].lastDosing != null &&
+              widget.medications[0].nextDosing != null &&
+              widget.medications[0].lastDosing!.dosingId ==
+                  widget.medications[0].nextDosing!.dosingId)
+            SizedBox()
+          else
+            Container(
+              height: cardHeight,
+              margin: EdgeInsets.only(bottom: 24),
+              child: _buildCardUI(0),
+            )
         ],
       );
     } else {

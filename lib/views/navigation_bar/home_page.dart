@@ -30,10 +30,25 @@ class _HomePageState extends State<HomePage> {
   final now = DateTime.now();
   final medicationService = MedicationService();
   final _modalTextController = TextEditingController();
+  late final StreamSubscription<List<Medication>> _stream;
+  var medicationsList = <Medication>[];
 
   @override
   void initState() {
+    final authenticatedUser =
+        Provider.of<AuthController>(context, listen: false).appUser!;
+    _stream = MedicationService()
+        .listenToMedicationsRealTime(authenticatedUser)
+        .listen(listenToMedications);
     super.initState();
+  }
+
+  StreamSubscription<List<Medication>> listenToMedications(
+      List<Medication> list) {
+    setState(() {
+      medicationsList = list;
+    });
+    return _stream;
   }
 
   PeriodOfDay getPeriodOfDayColors() {
@@ -54,16 +69,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget descriptionNextMeds(List<Medication> medications) {
+  Widget descriptionNextMeds() {
     Medication? nextMed;
-    if (medications.isEmpty) {
+    if (medicationsList.isEmpty) {
       return LiviTextStyles.interRegular16(Strings.youHaveNoMedicines,
           color: LiviThemes.colors.baseBlack);
     }
     bool lateMedications = false;
     bool availableMedications = false;
     bool dueMeds = false;
-    for (final element in medications) {
+    for (final element in medicationsList) {
       if (element.isLate()) {
         lateMedications = true;
       } else if (element.isAvailable()) {
@@ -85,7 +100,7 @@ class _HomePageState extends State<HomePage> {
           color: LiviThemes.colors.baseBlack);
     }
 
-    for (final element in medications) {
+    for (final element in medicationsList) {
       if (nextMed == null) {
         nextMed = element;
       } else if (element.nextDosing != null &&
@@ -160,7 +175,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    _stream.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('build');
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -169,161 +191,153 @@ class _HomePageState extends State<HomePage> {
           if (authController.appUser == null) {
             return SizedBox();
           }
-          return StreamBuilder<List<Medication>>(
-              stream: MedicationService()
-                  .listenToMedicationsRealTime(authController.appUser!),
-              builder: (context, snapshot) {
-                return Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: getPeriodOfDayColors().colors,
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: getPeriodOfDayColors().colors,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).viewPadding.top,
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: MediaQuery.of(context).viewPadding.top,
-                          ),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LiviThemes.spacing.heightSpacer24(),
+                        LiviTextStyles.interMedium12(
+                            '${DateFormat('EEEE').format(now)}, ${now.day} ${DateFormat('MMMM').format(now)}'
+                                .toUpperCase(),
+                            color: LiviThemes.colors.gray600),
+                        Row(
+                          children: [
+                            getIcon(),
+                            LiviThemes.spacing.widthSpacer8(),
+                            LiviTextStyles.interSemiBold24(
+                              '${getPeriodOfDayColors().description}, ${authController.appUser!.name.getFirstWord()}',
+                            )
+                          ],
                         ),
-                        SliverToBoxAdapter(
-                          child: Column(
+                        if (medicationsList.isNotEmpty)
+                          descriptionNextMeds()
+                        else
+                          SizedBox(),
+                        // if (snapshot.connectionState == ConnectionState.waiting)
+                        //   SizedBox()
+                        // else
+                        if (medicationsList.isEmpty)
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              LiviThemes.spacing.heightSpacer24(),
-                              LiviTextStyles.interMedium12(
-                                  '${DateFormat('EEEE').format(now)}, ${now.day} ${DateFormat('MMMM').format(now)}'
-                                      .toUpperCase(),
-                                  color: LiviThemes.colors.gray600),
+                              LiviThemes.spacing.heightSpacer16(),
                               Row(
                                 children: [
-                                  getIcon(),
+                                  LiviThemes.icons.rocket2Icon(
+                                      color: LiviThemes.colors.gray600,
+                                      height: 16),
                                   LiviThemes.spacing.widthSpacer8(),
-                                  LiviTextStyles.interSemiBold24(
-                                    '${getPeriodOfDayColors().description}, ${authController.appUser!.name.getFirstWord()}',
-                                  )
+                                  LiviTextStyles.interMedium12(
+                                      Strings.letsGetYouOnboarded.toUpperCase(),
+                                      color: LiviThemes.colors.gray600)
                                 ],
                               ),
-                              if (snapshot.data != null)
-                                descriptionNextMeds(snapshot.data!)
-                              else
-                                SizedBox(),
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting)
-                                SizedBox()
-                              else if (snapshot.data!.isEmpty)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    LiviThemes.spacing.heightSpacer16(),
-                                    Row(
-                                      children: [
-                                        LiviThemes.icons.rocket2Icon(
-                                            color: LiviThemes.colors.gray600,
-                                            height: 16),
-                                        LiviThemes.spacing.widthSpacer8(),
-                                        LiviTextStyles.interMedium12(
-                                            Strings.letsGetYouOnboarded
-                                                .toUpperCase(),
-                                            color: LiviThemes.colors.gray600)
-                                      ],
-                                    ),
-                                    LiviThemes.spacing.heightSpacer4(),
-                                    OnboardingCardHome(
-                                      title: Strings.addYourFirstMedication,
-                                      subtitle:
-                                          Strings.addYourselfOrImportFromCSV,
-                                      icon: LiviThemes.icons.alarmAddIcon(
-                                        height: 24,
-                                        color: LiviThemes.colors.brand600,
-                                      ),
-                                      onTap: goToSearchMedications,
-                                    ),
-                                    StreamBuilder<List<AppUser>>(
-                                      stream: AppUserService()
-                                          .listenToCaregiversRealTime(
-                                              authController.appUser!),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data == null ||
-                                            (snapshot.data != null &&
-                                                snapshot.data!.isEmpty)) {
-                                          return SizedBox();
-                                        }
-                                        final user = snapshot.data!;
-
-                                        return OnboardingCardHome(
-                                          title: Strings.addYourCaregiver,
-                                          subtitle: Strings
-                                              .diveIntoTheEditorAndStartCreating,
-                                          icon: LiviThemes.icons.caregiverIcon(
-                                            height: 24,
-                                            color: LiviThemes.colors.green500,
-                                          ),
-                                          onTap: goToAddCaregiver,
-                                        );
-                                      },
-                                    ),
-                                    OnboardingCardHome(
-                                      title: Strings.addYourCaregiver,
-                                      subtitle: Strings
-                                          .diveIntoTheEditorAndStartCreating,
-                                      icon: LiviThemes.icons.caregiverIcon(
-                                        height: 24,
-                                        color: LiviThemes.colors.green500,
-                                      ),
-                                      onTap: goToAddCaregiver,
-                                    ),
-                                    OnboardingCardHome(
-                                      title:
-                                          Strings.setYourNotificationSettings,
-                                      subtitle:
-                                          Strings.addYourselfOrImportFromCSV,
-                                      icon: Icon(
-                                        Icons.notifications,
-                                        size: 24,
-                                        color: LiviThemes.colors.error500,
-                                      ),
-                                      onTap: goToNotificationsPage,
-                                    ),
-                                  ],
+                              LiviThemes.spacing.heightSpacer4(),
+                              OnboardingCardHome(
+                                title: Strings.addYourFirstMedication,
+                                subtitle: Strings.addYourselfOrImportFromCSV,
+                                icon: LiviThemes.icons.alarmAddIcon(
+                                  height: 24,
+                                  color: LiviThemes.colors.brand600,
                                 ),
-                              LiviThemes.spacing.heightSpacer16(),
-                              cards(snapshot),
-                              LiviThemes.spacing.heightSpacer12(),
+                                onTap: goToSearchMedications,
+                              ),
+                              StreamBuilder<List<AppUser>>(
+                                stream: AppUserService()
+                                    .listenToCaregiversRealTime(
+                                        authController.appUser!),
+                                builder: (context, snapshot) {
+                                  if (snapshot.data == null ||
+                                      (snapshot.data != null &&
+                                          snapshot.data!.isEmpty)) {
+                                    return SizedBox();
+                                  }
+                                  final user = snapshot.data!;
+
+                                  return OnboardingCardHome(
+                                    title: Strings.addYourCaregiver,
+                                    subtitle: Strings
+                                        .diveIntoTheEditorAndStartCreating,
+                                    icon: LiviThemes.icons.caregiverIcon(
+                                      height: 24,
+                                      color: LiviThemes.colors.green500,
+                                    ),
+                                    onTap: goToAddCaregiver,
+                                  );
+                                },
+                              ),
+                              OnboardingCardHome(
+                                title: Strings.addYourCaregiver,
+                                subtitle:
+                                    Strings.diveIntoTheEditorAndStartCreating,
+                                icon: LiviThemes.icons.caregiverIcon(
+                                  height: 24,
+                                  color: LiviThemes.colors.green500,
+                                ),
+                                onTap: goToAddCaregiver,
+                              ),
+                              OnboardingCardHome(
+                                title: Strings.setYourNotificationSettings,
+                                subtitle: Strings.addYourselfOrImportFromCSV,
+                                icon: Icon(
+                                  Icons.notifications,
+                                  size: 24,
+                                  color: LiviThemes.colors.error500,
+                                ),
+                                onTap: goToNotificationsPage,
+                              ),
                             ],
                           ),
-                        ),
+                        LiviThemes.spacing.heightSpacer16(),
+                        cards(),
+                        LiviThemes.spacing.heightSpacer12(),
                       ],
                     ),
                   ),
-                );
-              });
+                ],
+              ),
+            ),
+          );
         }),
       ),
     );
   }
 
-  Widget cards(AsyncSnapshot<List<Medication>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(
-        child: Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
-            child: CircularProgressIndicator()),
-      );
-    } else if (snapshot.data!.isEmpty) {
+  Widget cards() {
+    // if (snapshot.connectionState == ConnectionState.waiting) {
+    //   return Center(
+    //     child: Padding(
+    //         padding:
+    //             EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+    //         child: CircularProgressIndicator()),
+    //   );
+    // } else
+    if (medicationsList.isEmpty) {
       return SizedBox();
     }
 
     final asNeededList = <Medication>[];
     final missedDuelist = <Medication>[];
-    for (final element in snapshot.data!) {
+    for (final element in medicationsList) {
       if (element.nextDosing != null &&
           element.isAsNeeded() &&
           element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
@@ -368,8 +382,10 @@ class _HomePageState extends State<HomePage> {
       final nextDosing = medication.nextDosing!;
       final lastDosing = Dosing();
 
-      nextDosing.qtyRemaining -=
-          qtyMissed + qtySkipped + takenQuantity; // this was missing
+      medicationsList.remove(medication);
+      setState(() {});
+
+      nextDosing.qtyRemaining -= qtyMissed + qtySkipped + takenQuantity;
       lastDosing.dosingId = nextDosing.dosingId;
       lastDosing.qtyMissed = 0;
       lastDosing.qtySkipped = 0;
