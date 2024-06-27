@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   final medicationService = MedicationService();
   final _modalTextController = TextEditingController();
   late final StreamSubscription<List<Medication>> _stream;
-  var medicationsList = <Medication>[];
+  List<Medication>? medicationsList = null;
 
   @override
   void initState() {
@@ -71,14 +71,17 @@ class _HomePageState extends State<HomePage> {
 
   Widget descriptionNextMeds() {
     Medication? nextMed;
-    if (medicationsList.isEmpty) {
+    if (medicationsList == null) {
+      return SizedBox();
+    }
+    if (medicationsList!.isEmpty) {
       return LiviTextStyles.interRegular16(Strings.youHaveNoMedicines,
           color: LiviThemes.colors.baseBlack);
     }
     bool lateMedications = false;
     bool availableMedications = false;
     bool dueMeds = false;
-    for (final element in medicationsList) {
+    for (final element in medicationsList!) {
       if (element.isLate()) {
         lateMedications = true;
       } else if (element.isAvailable()) {
@@ -100,7 +103,7 @@ class _HomePageState extends State<HomePage> {
           color: LiviThemes.colors.baseBlack);
     }
 
-    for (final element in medicationsList) {
+    for (final element in medicationsList!) {
       if (nextMed == null) {
         nextMed = element;
       } else if (element.nextDosing != null &&
@@ -182,7 +185,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -228,14 +230,14 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
-                        if (medicationsList.isNotEmpty)
+                        if (medicationsList != null &&
+                            medicationsList!.isNotEmpty)
                           descriptionNextMeds()
                         else
                           SizedBox(),
-                        // if (snapshot.connectionState == ConnectionState.waiting)
-                        //   SizedBox()
-                        // else
-                        if (medicationsList.isEmpty)
+                        if (medicationsList == null)
+                          SizedBox()
+                        else if (medicationsList!.isEmpty)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -323,21 +325,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget cards() {
-    // if (snapshot.connectionState == ConnectionState.waiting) {
-    //   return Center(
-    //     child: Padding(
-    //         padding:
-    //             EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
-    //         child: CircularProgressIndicator()),
-    //   );
-    // } else
-    if (medicationsList.isEmpty) {
+    if (medicationsList == null) {
+      return Center(
+        child: Padding(
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+            child: CircularProgressIndicator()),
+      );
+    } else if (medicationsList == null ||
+        (medicationsList != null && medicationsList!.isEmpty)) {
       return SizedBox();
     }
 
     final asNeededList = <Medication>[];
     final missedDuelist = <Medication>[];
-    for (final element in medicationsList) {
+    for (final element in medicationsList!) {
       if (element.nextDosing != null &&
           element.isAsNeeded() &&
           element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
@@ -382,8 +384,10 @@ class _HomePageState extends State<HomePage> {
       final nextDosing = medication.nextDosing!;
       final lastDosing = Dosing();
 
-      medicationsList.remove(medication);
-      setState(() {});
+      if (medicationsList != null) {
+        medicationsList!.remove(medication);
+        setState(() {});
+      }
 
       nextDosing.qtyRemaining -= qtyMissed + qtySkipped + takenQuantity;
       lastDosing.dosingId = nextDosing.dosingId;

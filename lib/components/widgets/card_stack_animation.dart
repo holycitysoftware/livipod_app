@@ -114,24 +114,20 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   }
 
   List<Widget> cards() {
-    final List<Widget> list = [];
+    final List<Widget> cardsList = [];
     for (int i = widget.medications.length - 1; i > -1; i--) {
-      print(widget.medications[i]);
-      if (widget.medications[i].lastDosing != null &&
-          widget.medications[i].nextDosing != null) {
-        print(widget.medications[i].lastDosing!.dosingId !=
-            widget.medications[i].nextDosing!.dosingId);
-      }
-      if (widget.medications[i].lastDosing != null &&
-          widget.medications[i].nextDosing != null &&
-          widget.medications[i].lastDosing!.dosingId !=
-              widget.medications[i].nextDosing!.dosingId) {
-        list.add(
+      if (widget.medications[0].lastDosing != null &&
+          widget.medications[0].nextDosing != null &&
+          widget.medications[0].lastDosing!.dosingId ==
+              widget.medications[0].nextDosing!.dosingId) {
+        SizedBox();
+      } else {
+        cardsList.add(
           _buildCard(i),
         );
       }
     }
-    return list;
+    return cardsList;
   }
 
   Widget _buildCard(int index) {
@@ -197,32 +193,34 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   @override
   Widget build(BuildContext context) {
+    final cardsList = cards();
     if (widget.medications.isEmpty) {
       return SizedBox();
     } else if (widget.medications.length == 1) {
-      return Column(
-        children: [
-          Row(
-            children: [
-              title(),
-              Spacer(),
-            ],
-          ),
-          LiviThemes.spacing.heightSpacer8(),
-          if (widget.medications[0].lastDosing != null &&
-              widget.medications[0].nextDosing != null &&
-              widget.medications[0].lastDosing!.dosingId ==
-                  widget.medications[0].nextDosing!.dosingId)
-            SizedBox()
-          else
+      if (widget.medications[0].lastDosing != null &&
+          widget.medications[0].nextDosing != null &&
+          widget.medications[0].lastDosing!.dosingId ==
+              widget.medications[0].nextDosing!.dosingId) {
+        return SizedBox();
+      } else {
+        return Column(
+          children: [
+            Row(
+              children: [
+                title(),
+                Spacer(),
+              ],
+            ),
+            LiviThemes.spacing.heightSpacer8(),
             Container(
               height: cardHeight,
               margin: EdgeInsets.only(bottom: 24),
               child: _buildCardUI(0),
             )
-        ],
-      );
-    } else {
+          ],
+        );
+      }
+    } else if (cardsList.isNotEmpty) {
       return Column(
         children: [
           Row(
@@ -263,11 +261,13 @@ class _CardStackAnimationState extends State<CardStackAnimation>
           SizedBox(
             height: getHeight(),
             child: Stack(
-              children: cards(),
+              children: cardsList,
             ),
           )
         ],
       );
+    } else {
+      return SizedBox();
     }
   }
 }
