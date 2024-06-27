@@ -171,7 +171,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
       dosageForm: widget.medications[index].dosageForm,
       name: widget.medications[index].name,
       medInfo: widget.medications[index].getMedicationInfo(),
-      schedules: widget.medications[index].schedules,
+      schedule: widget.medications[index].getCurrentSchedule(),
     );
   }
 

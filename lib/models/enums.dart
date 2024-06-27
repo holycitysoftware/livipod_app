@@ -24,7 +24,7 @@ enum DosageForm implements Comparable<DosageForm> {
       description: Strings.capsule_film_coated_extended_release),
   capsule_gelatin_coated(description: Strings.capsule_gelatin_coated),
   capsule_liquid_filled(description: Strings.capsule_liquid_filled),
-  cellular_sheet(description: Strings.cellular_sheet),
+  cellular_sheet(description: Strings.cellular_sheet),  
   chewable_gel(description: Strings.chewable_gel),
   cloth(description: Strings.cloth),
   concentrate(description: Strings.concentrate),

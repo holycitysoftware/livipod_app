@@ -182,7 +182,11 @@ class Medication {
   }
 
   String getMedicationInfo() {
-    return '$name $strength $dosageForm';
+    var dosageFormDescription = dosageForm.description;
+    if (dosageForm == DosageForm.none) {
+      dosageFormDescription = '';
+    }
+    return '$name $strength $dosageFormDescription';
   }
 
   // @override

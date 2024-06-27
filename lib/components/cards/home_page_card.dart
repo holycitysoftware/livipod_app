@@ -17,7 +17,7 @@ class HomePageCard extends StatelessWidget {
   final DosageForm dosageForm;
   final String name;
   final String medInfo;
-  final List<Schedule> schedules;
+  final Schedule schedule;
   const HomePageCard({
     super.key,
     required this.margin,
@@ -30,13 +30,12 @@ class HomePageCard extends StatelessWidget {
     required this.dosageForm,
     required this.name,
     required this.medInfo,
-    required this.schedules,
+    required this.schedule,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: cardHeight,
       margin: margin,
       child: GestureDetector(
         onTap: onTap,
@@ -84,11 +83,11 @@ class HomePageCard extends StatelessWidget {
                               medInfo,
                               color: LiviThemes.colors.gray700,
                               overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
+                              maxLines: 3,
                             ),
                             LiviTextStyles.interRegular14(
-                              schedules.first.getScheduleDescription(),
-                              maxLines: 1,
+                              schedule.getScheduleDescription(),
+                              maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               color: LiviThemes.colors.brand600,
                             ),

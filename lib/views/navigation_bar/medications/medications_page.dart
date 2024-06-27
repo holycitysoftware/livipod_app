@@ -47,7 +47,6 @@ class _MedicationsPageState extends State<MedicationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('build meds');
     return Scaffold(
       backgroundColor: LiviThemes.colors.gray100,
       appBar: LiviAppBar(
