@@ -10,7 +10,8 @@ Notification _$NotificationFromJson(Map<String, dynamic> json) => Notification(
       notificationType: $enumDecodeNullable(
               _$NotificationTypeEnumMap, json['notificationType']) ??
           NotificationType.none,
-    )..enabled = json['enabled'] as bool;
+      enabled: json['enabled'] as bool? ?? false,
+    );
 
 Map<String, dynamic> _$NotificationToJson(Notification instance) =>
     <String, dynamic>{

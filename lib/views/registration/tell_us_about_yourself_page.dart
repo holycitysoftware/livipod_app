@@ -72,6 +72,7 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
         backgroundColor: LiviThemes.colors.baseWhite,
         bottomNavigationBar: Padding(
           padding: EdgeInsets.only(
+              top: MediaQuery.of(context).viewPadding.bottom + 32,
               bottom: MediaQuery.of(context).viewPadding.bottom + 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

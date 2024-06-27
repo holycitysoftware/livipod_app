@@ -56,7 +56,10 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
         showIdentifyPersonaPage: widget.showIdentifyPersonaPage,
       );
     } else {
-      return LoginPage();
+      if (widget.isLoginPage) {
+        return LoginPage();
+      }
+      return CreateAccountPage();
     }
   }
 }

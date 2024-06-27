@@ -422,7 +422,7 @@ String getDay(int index) {
 String getFirstLettersOfName(String name) {
   String firstLetter = '';
   String secondLetter = '';
-  final splittedNames = name.split(' ');
+  final splittedNames = name.split('');
   firstLetter = splittedNames.first[0];
   if (splittedNames.length > 1) {
     secondLetter = splittedNames.last[0];

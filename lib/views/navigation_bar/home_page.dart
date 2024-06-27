@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   final _modalTextController = TextEditingController();
   late final StreamSubscription<List<Medication>> _stream;
   List<Medication>? medicationsList = null;
+  bool isFirstLogin = false;
 
   @override
   void initState() {

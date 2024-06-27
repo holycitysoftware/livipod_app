@@ -56,7 +56,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> goToCreateAccountPage(BuildContext context) async {
     await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SmsFlowPage()));
+      context,
+      MaterialPageRoute(
+        builder: (context) => SmsFlowPage(
+          showIdentifyPersonaPage: true,
+        ),
+      ),
+    );
   }
 
   Future<void> verifyPhoneNumber() async {

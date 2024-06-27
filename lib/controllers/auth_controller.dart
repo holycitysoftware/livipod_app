@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 
 import '../models/models.dart';
+import '../models/notification.dart';
+import '../models/notification_type.dart';
 import '../services/account_service.dart';
 import '../services/app_user_service.dart';
 import '../utils/logger.dart';
@@ -275,6 +277,7 @@ class AuthController extends ChangeNotifier {
           user.language = Platform.localeName.split('_').first;
           user.authId =
               userCredential.user!.uid; // security link to Firebase Auth
+          user.notifications = createNotifications();
 
           // STEP 3: ASSOCIATE OWNER
           account.ownerId = user.id;
@@ -333,6 +336,20 @@ class AuthController extends ChangeNotifier {
   Future<void> signOut() async {
     _appUser = null;
     await FirebaseAuth.instance.signOut();
+    clearVerificationError();
+  }
+
+  List<Notification> createNotifications() {
+    return [
+      Notification(notificationType: NotificationType.medicationTaken),
+      Notification(notificationType: NotificationType.medicationAvailable),
+      Notification(notificationType: NotificationType.medicationLate),
+      Notification(notificationType: NotificationType.medicationDue),
+      Notification(notificationType: NotificationType.medicationMissed),
+      Notification(notificationType: NotificationType.inventoryLow),
+      Notification(notificationType: NotificationType.inventoryEmpty),
+      Notification(notificationType: NotificationType.wifiUnavailable),
+    ];
   }
 
   Future<void> refreshToken() async {}

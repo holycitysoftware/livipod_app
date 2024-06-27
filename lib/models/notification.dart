@@ -9,7 +9,8 @@ class Notification {
   NotificationType notificationType;
   bool enabled = false;
 
-  Notification({this.notificationType = NotificationType.none});
+  Notification(
+      {this.notificationType = NotificationType.none, this.enabled = false});
 
   factory Notification.fromJson(Map<String, dynamic> json) =>
       _$NotificationFromJson(json);
