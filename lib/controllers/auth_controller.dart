@@ -259,7 +259,7 @@ class AuthController extends ChangeNotifier {
       //Check if user already exists
       if (userCredential != null && userCredential.user != null) {
         final user =
-            await _appUserService.getUserById(userCredential.user!.uid);
+            await _appUserService.getUserByAuthId(userCredential.user!.uid);
         if (user != null) {
           throw Exception('User already exists.');
         }
@@ -322,6 +322,7 @@ class AuthController extends ChangeNotifier {
     } catch (e, s) {
       _verificationError = e.toString().removeExceptionString();
       await signOut();
+      _promptForUserCode = false;
       await setLoading(false);
       notifyListeners();
       logger(e.toString());
