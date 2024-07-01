@@ -38,9 +38,11 @@ class MedicationHistory {
     history.medicationName = med.name;
     if (med.lastDosing != null) {
       history.qtyDispensed = med.lastDosing!.qtyDispensed;
+      history.outcome = med.lastDosing!.outcome!;
       history.qtyMissed = med.lastDosing!.qtyMissed;
       history.qtyRemaining = med.lastDosing!.qtyRemaining;
       history.qtyRequested = med.lastDosing!.qtyRequested;
+      history.dateTime = med.lastDosing!.scheduledDosingTime!;
       history.qtySkipped = med.lastDosing!.qtySkipped;
       history.scheduledDosingTime = med.lastDosing!.scheduledDosingTime;
     }
