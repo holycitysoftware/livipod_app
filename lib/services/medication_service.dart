@@ -40,7 +40,7 @@ class MedicationService {
                 medication.id = snapshot.id;
                 return medication;
               }).toList();
-              _medicationController.add(medications) ;
+              _medicationController.add(medications);
             } else {
               _medicationController.add([]);
             }
@@ -72,7 +72,7 @@ class MedicationService {
     try {
       await FirebaseFirestore.instance
           .collection('medications')
-          .where('userId', isEqualTo: appUser.id)
+          .where('appUserId', isEqualTo: appUser.id)
           .get()
           .then((querySnapshot) {
         for (final result in querySnapshot.docs) {

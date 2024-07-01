@@ -50,17 +50,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void refreshData() {
-    if (timerCards != null) {
-      timerCards!.cancel();
-      timerCards = null;
-    }
-    timerCards ??= Timer.periodic(const Duration(seconds: 5), (timer) {
+    timerCards ??= Timer.periodic(const Duration(seconds: 20), (timer) async {
       print('hahaha');
 
       final localAsNeededList = asNeededList;
       final localMissedDuelist = missedDuelist;
 
-      getDueMedications();
+      await getDueMedications();
 
       var isAsNeededDifferent = true;
       for (final e in localAsNeededList) {
@@ -68,13 +64,17 @@ class _HomePageState extends State<HomePage> {
           if (e.id == a.id) {
             isAsNeededDifferent = false;
             break;
+          } else if (asNeededList.last == a) {
+            isAsNeededDifferent = true;
+            print(a.name);
+            print('HERE');
           }
         }
         if (isAsNeededDifferent) {
           if (mounted) {
+            print(' oh im setting the state');
             setState(() {});
           }
-          return;
         }
       }
 
@@ -84,15 +84,18 @@ class _HomePageState extends State<HomePage> {
           if (e.id == a.id) {
             isMissedDifferent = false;
             break;
+          } else if (missedDuelist.last == a) {
+            isMissedDifferent = true;
+            print(a.name);
+            print('HERE');
           }
         }
 
         if (isMissedDifferent) {
           if (mounted) {
+            print(' oh im setting the state');
             setState(() {});
           }
-
-          return;
         }
       }
       timerCards!.cancel();
@@ -387,9 +390,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void getDueMedications() {
+  Future<void> getDueMedications() async {
     asNeededList.clear();
     missedDuelist.clear();
+    // final list = await MedicationService().getUserMedications(
+    //     Provider.of<AuthController>(context, listen: false).appUser!);
     for (final element in medicationsList!) {
       if (element.nextDosing != null &&
           element.isAsNeeded() &&
