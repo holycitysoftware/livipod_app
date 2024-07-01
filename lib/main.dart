@@ -19,6 +19,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseAppCheck.instance.activate(
+      // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+      // androidProvider: AndroidProvider.playIntegrity,
+      // appleProvider: AppleProvider.deviceCheck,
+      );
 
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -26,11 +31,7 @@ void main() async {
   if (!kIsWeb) {
     await setupFlutterNotifications();
   }
-  await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.debug,
-    appleProvider: AppleProvider.appAttest,
-  );
+
   // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
   //   if (!isAllowed) {
   //     // This is just a basic example. For real apps, you must show some
