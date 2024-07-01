@@ -45,14 +45,12 @@ class _HomePageState extends State<HomePage> {
     _stream = MedicationService()
         .listenToMedicationsRealTime(authenticatedUser)
         .listen(listenToMedications);
-    refreshData();
+    // refreshData();
     super.initState();
   }
 
   void refreshData() {
     timerCards ??= Timer.periodic(const Duration(seconds: 20), (timer) async {
-      print('hahaha');
-
       final localAsNeededList = asNeededList;
       final localMissedDuelist = missedDuelist;
 
