@@ -27,14 +27,14 @@ class CardStackAnimation extends StatefulWidget {
 class _CardStackAnimationState extends State<CardStackAnimation>
     with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
-  var cardHeight = 182.0;
+  var cardHeight = 184.0;
 
   @override
   void initState() {
     if (widget.medications.isNotEmpty &&
         widget.medications.first.schedules.first.type ==
             ScheduleType.asNeeded) {
-      cardHeight = 160;
+      cardHeight = 164;
     }
     super.initState();
   }
