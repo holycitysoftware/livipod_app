@@ -33,6 +33,10 @@ class _HomePageState extends State<HomePage> {
   late final StreamSubscription<List<Medication>> _stream;
   List<Medication>? medicationsList = null;
   bool isFirstLogin = false;
+  Timer? timerCards;
+
+  final asNeededList = <Medication>[];
+  final missedDuelist = <Medication>[];
 
   @override
   void initState() {
@@ -41,14 +45,69 @@ class _HomePageState extends State<HomePage> {
     _stream = MedicationService()
         .listenToMedicationsRealTime(authenticatedUser)
         .listen(listenToMedications);
+    refreshData();
     super.initState();
+  }
+
+  void refreshData() {
+    if (timerCards != null) {
+      timerCards!.cancel();
+      timerCards = null;
+    }
+    timerCards ??= Timer.periodic(const Duration(seconds: 5), (timer) {
+      print('hahaha');
+
+      final localAsNeededList = asNeededList;
+      final localMissedDuelist = missedDuelist;
+
+      getDueMedications();
+
+      var isAsNeededDifferent = true;
+      for (final e in localAsNeededList) {
+        for (final a in asNeededList) {
+          if (e.id == a.id) {
+            isAsNeededDifferent = false;
+            break;
+          }
+        }
+        if (isAsNeededDifferent) {
+          if (mounted) {
+            setState(() {});
+          }
+          return;
+        }
+      }
+
+      var isMissedDifferent = true;
+      for (final e in localMissedDuelist) {
+        for (final a in missedDuelist) {
+          if (e.id == a.id) {
+            isMissedDifferent = false;
+            break;
+          }
+        }
+
+        if (isMissedDifferent) {
+          if (mounted) {
+            setState(() {});
+          }
+
+          return;
+        }
+      }
+      timerCards!.cancel();
+      timerCards = null;
+      refreshData();
+    });
   }
 
   StreamSubscription<List<Medication>> listenToMedications(
       List<Medication> list) {
-    setState(() {
-      medicationsList = list;
-    });
+    if (mounted) {
+      setState(() {
+        medicationsList = list;
+      });
+    }
     return _stream;
   }
 
@@ -155,7 +214,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> goToAddCaregiver() async {
@@ -165,7 +226,9 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => AddCaregiverPage(),
       ),
     );
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> goToNotificationsPage() async {
@@ -180,7 +243,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _stream.cancel();
     super.dispose();
   }
 
@@ -325,6 +387,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void getDueMedications() {
+    asNeededList.clear();
+    missedDuelist.clear();
+    for (final element in medicationsList!) {
+      if (element.nextDosing != null &&
+          element.isAsNeeded() &&
+          element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
+              DateTime.now().millisecondsSinceEpoch) {
+        asNeededList.add(element);
+      } else if (element.isDue() || element.isLate() || element.isAvailable()) {
+        missedDuelist.add(element);
+      }
+    }
+  }
+
   Widget cards() {
     if (medicationsList == null) {
       return Center(
@@ -337,20 +414,7 @@ class _HomePageState extends State<HomePage> {
         (medicationsList != null && medicationsList!.isEmpty)) {
       return SizedBox();
     }
-
-    final asNeededList = <Medication>[];
-    final missedDuelist = <Medication>[];
-    for (final element in medicationsList!) {
-      if (element.nextDosing != null &&
-          element.isAsNeeded() &&
-          element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
-              DateTime.now().millisecondsSinceEpoch) {
-        asNeededList.add(element);
-      } else if (element.isDue() || element.isLate() || element.isAvailable()) {
-        missedDuelist.add(element);
-      }
-    }
-
+    getDueMedications();
     return Column(
       children: [
         CardStackAnimation(
@@ -379,9 +443,9 @@ class _HomePageState extends State<HomePage> {
   }) async {
     var qtySkipped = 0;
 
-    if (medications.first.nextDosing != null) {
+    if (medications[index ?? 0].nextDosing != null) {
       const qtyMissed = 0;
-      final medication = medications.first;
+      final medication = medications[index ?? 0];
       final nextDosing = medication.nextDosing!;
       final lastDosing = Dosing();
 

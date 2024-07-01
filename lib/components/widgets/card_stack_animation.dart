@@ -110,10 +110,10 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   List<Widget> cards() {
     final List<Widget> cardsList = [];
     for (int i = widget.medications.length - 1; i > -1; i--) {
-      if (widget.medications[0].lastDosing != null &&
-          widget.medications[0].nextDosing != null &&
-          widget.medications[0].lastDosing!.dosingId ==
-              widget.medications[0].nextDosing!.dosingId) {
+      if (widget.medications[i].lastDosing != null &&
+          widget.medications[i].nextDosing != null &&
+          widget.medications[i].lastDosing!.dosingId ==
+              widget.medications[i].nextDosing!.dosingId) {
         SizedBox();
       } else {
         cardsList.add(

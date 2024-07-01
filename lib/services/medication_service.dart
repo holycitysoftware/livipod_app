@@ -40,7 +40,7 @@ class MedicationService {
                 medication.id = snapshot.id;
                 return medication;
               }).toList();
-              _medicationController.add(medications);
+              _medicationController.add(medications) ;
             } else {
               _medicationController.add([]);
             }

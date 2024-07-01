@@ -101,12 +101,11 @@ class Medication {
     }
     final schedule = getCurrentSchedule();
 
-    return now.isAfter(
-          nextDosing!.scheduledDosingTime!.subtract(
-            Duration(minutes: schedule.startWarningMinutes),
-          ),
-        ) &&
-        now.isBefore(nextDosing!.scheduledDosingTime!);
+    return now.millisecondsSinceEpoch >
+            (nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch -
+                (schedule.startWarningMinutes * 60000)) &&
+        now.millisecondsSinceEpoch <
+            nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch;
   }
 
   Schedule getCurrentSchedule() {
