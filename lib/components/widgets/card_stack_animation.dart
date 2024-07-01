@@ -31,7 +31,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   void setCardHeight(double textFactor14, double textFactor16) {
     final double textFactor =
-        ((textFactor14 + textFactor14 + textFactor16) / 3) * .075;
+        ((textFactor14 + textFactor14 + textFactor16) / 3) * .082;
     cardHeight = 184 * textFactor;
     if (widget.medications.isNotEmpty &&
         widget.medications.first.schedules.first.type ==

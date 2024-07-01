@@ -11,7 +11,7 @@ class LiviFilledButton extends StatelessWidget {
   final EdgeInsets? margin;
   final bool showArrow;
   final bool? isCloseToNotch;
-  final bool? isLoading;
+  final bool isLoading;
   final Color? color;
   final bool? enabled;
   final Color? textColor;
@@ -60,8 +60,8 @@ class LiviFilledButton extends StatelessWidget {
                   ? LiviThemes.colors.brand600
                   : LiviThemes.colors.gray200),
         ),
-        onPressed: (enabled ?? false) ? onTap : null,
-        child: (isLoading ?? false)
+        onPressed: ((enabled ?? false) && !isLoading) ? onTap : null,
+        child: isLoading
             ? SizedBox(
                 height: 24,
                 width: 24,
