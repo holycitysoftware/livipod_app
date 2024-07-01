@@ -36,6 +36,7 @@ class HomePageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: cardHeight,
       margin: margin,
       child: GestureDetector(
         onTap: onTap,
@@ -54,8 +55,9 @@ class HomePageCard extends StatelessWidget {
             child: Column(
               children: [
                 pillIcon,
-                LiviThemes.spacing.heightSpacer12(),
+                Spacer(),
                 Expanded(
+                  flex: 6,
                   child: Row(
                     children: [
                       if (showDosageForm)
@@ -83,11 +85,11 @@ class HomePageCard extends StatelessWidget {
                               medInfo,
                               color: LiviThemes.colors.gray700,
                               overflow: TextOverflow.ellipsis,
-                              maxLines: 3,
+                              maxLines: 1,
                             ),
                             LiviTextStyles.interRegular14(
                               schedule.getScheduleDescription(),
-                              maxLines: 3,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               color: LiviThemes.colors.brand600,
                             ),
@@ -98,7 +100,7 @@ class HomePageCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                LiviThemes.spacing.heightSpacer12(),
+                Spacer(),
                 buttons,
               ],
             ),

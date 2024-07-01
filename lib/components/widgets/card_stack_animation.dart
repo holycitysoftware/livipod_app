@@ -263,7 +263,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
             child: Stack(
               children: cardsList,
             ),
-          )
+          ),
         ],
       );
     } else {
