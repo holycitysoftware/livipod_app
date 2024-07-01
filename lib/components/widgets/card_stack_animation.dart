@@ -29,25 +29,19 @@ class _CardStackAnimationState extends State<CardStackAnimation>
   bool _isExpanded = false;
   var cardHeight = 184.0;
 
-  @override
-  void initState() {
+  void setCardHeight(double textFactor14, double textFactor16) {
+    final double textFactor =
+        ((textFactor14 + textFactor14 + textFactor16) / 3) * .075;
+    cardHeight = 184 * textFactor;
     if (widget.medications.isNotEmpty &&
         widget.medications.first.schedules.first.type ==
             ScheduleType.asNeeded) {
-      cardHeight = 164;
+      cardHeight = 150 * textFactor;
     }
-    super.initState();
+    if (cardHeight > 200) {
+      cardHeight = cardHeight * .85;
+    }
   }
-
-  // Schedule iterateOverSchedules(List<Schedule> schedules) {
-  //   final now = DateTime.now();
-  //   for (var schedule in schedules) {
-  //     if (schedule.) {
-  //       return schedule;
-  //     }
-  //   }
-  //   return schedules.first;
-  // }
 
   Widget getPill(int index) {
     if (widget.medications[index].nextDosing == null ||
@@ -193,6 +187,8 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   @override
   Widget build(BuildContext context) {
+    setCardHeight(MediaQuery.of(context).textScaler.scale(14),
+        MediaQuery.of(context).textScaler.scale(16));
     final cardsList = cards();
     if (widget.medications.isEmpty) {
       return SizedBox();
