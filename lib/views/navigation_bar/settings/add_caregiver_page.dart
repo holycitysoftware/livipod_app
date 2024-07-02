@@ -46,7 +46,11 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
 
   bool enabledSaveButton() {
     return fullNameController.text.isNotEmpty &&
-        phoneNumberController.text.isNotEmpty;
+        phoneNumberController.text.isNotEmpty &&
+        (appUser != null &&
+            (appUser.name != fullNameController.text ||
+                !appUser.phoneNumber.contains(phoneNumberController.text) ||
+                imageWasChanged));
   }
 
   @override

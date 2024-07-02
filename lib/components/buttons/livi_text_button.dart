@@ -36,7 +36,7 @@ class LiviTextButton extends StatelessWidget {
         onPressed: onTap,
         style: ButtonStyle(
           shape: MaterialStatePropertyAll(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
           maximumSize: MaterialStatePropertyAll(
             Size(double.infinity, 52),
           ),

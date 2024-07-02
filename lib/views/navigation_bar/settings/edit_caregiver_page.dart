@@ -49,7 +49,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
             (appUser!.name != fullNameController.text ||
-                !phoneNumberController.text.contains(appUser!.phoneNumber) ||
+                !appUser!.phoneNumber.contains(phoneNumberController.text) ||
                 imageWasChanged));
   }
 
