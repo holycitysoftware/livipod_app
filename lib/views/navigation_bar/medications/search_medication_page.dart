@@ -29,6 +29,7 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
   Medication? medication;
   bool isLoading = false;
   List<String> medications = [];
+  var customMed = false;
 
   @override
   void initState() {
@@ -108,7 +109,13 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
               child: LiviSearchBar(
                 controller: _controller,
                 focusNode: _focusNode,
+                onFieldSubmitted: (p0) {
+                  setState(() {
+                    customMed = true;
+                  });
+                },
                 onChanged: (value) {
+                  customMed = false;
                   if (value.isEmpty) {
                     setState(() {
                       medications.clear();
@@ -125,7 +132,8 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
                   child: CircularProgressIndicator(),
                 ),
               )
-            else if (medications.length == 0 && _controller.text.isNotEmpty)
+            else if ((medications.length == 0 && _controller.text.isNotEmpty) ||
+                customMed)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: LiviInkWell(
@@ -177,9 +185,6 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
                             LiviTextStyles.interSemiBold14(
                               medications[index].capitalizeFirstLetter(),
                             ),
-                            // LiviTextStyles.interRegular16(
-                            //     'Manufacturer: Pfizer Inc.',
-                            //     color: LiviThemes.colors.gray500),
                             LiviThemes.spacing.heightSpacer16(),
                             LiviDivider(),
                           ],
