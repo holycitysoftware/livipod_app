@@ -190,9 +190,9 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   @override
   Widget build(BuildContext context) {
-    print('isasneeded ${widget.medications.first.isAsNeeded()}');
-    print(widget.medications.length);
-    print('--');
+    // print('isasneeded ${widget.medications.first.isAsNeeded()}');
+    // print(widget.medications.length);
+    // print('--');
     setCardHeight(MediaQuery.of(context).textScaler.scale(14),
         MediaQuery.of(context).textScaler.scale(16));
     final cardsList = cards();

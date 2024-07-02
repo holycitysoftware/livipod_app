@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -431,9 +432,7 @@ String getFirstLettersOfName(String name) {
 }
 
 Future<String?> updateImage(BuildContext context, String base64) async {
-  final ImagePicker picker = ImagePicker();
   String? imageValue;
-  XFile? file;
   await showModalBottomSheet(
     context: context,
     builder: (context) => Container(
@@ -454,8 +453,8 @@ Future<String?> updateImage(BuildContext context, String base64) async {
                   ),
                   title: LiviTextStyles.interRegular16(Strings.takePicture),
                   onTap: () async {
-                    file = await picker.pickImage(source: ImageSource.camera);
-                    if (file != null) {
+                    imageValue = await takePicture(ImageSource.camera);
+                    if (imageValue != null) {
                       Navigator.pop(context);
                     }
                   },
@@ -476,8 +475,8 @@ Future<String?> updateImage(BuildContext context, String base64) async {
                   ),
                   title: LiviTextStyles.interRegular16(Strings.pickImage),
                   onTap: () async {
-                    file = await picker.pickImage(source: ImageSource.gallery);
-                    if (file != null) {
+                    imageValue = await takePicture(ImageSource.gallery);
+                    if (imageValue != null) {
                       Navigator.pop(context);
                     }
                   },
@@ -508,13 +507,66 @@ Future<String?> updateImage(BuildContext context, String base64) async {
       ),
     ),
   );
-  if (file != null) {
-    final fileListInt = await convertToListInt(file);
-    if (fileListInt != null) {
-      imageValue = base64Encode(fileListInt);
-    }
-  }
+
   return imageValue;
+}
+
+final ImagePicker _picker = ImagePicker();
+
+Future<String?> takePicture(
+  ImageSource source,
+) async {
+  try {
+    final xfile = _picker.pickImage(
+      source: source,
+      requestFullMetadata: false,
+      imageQuality: 20,
+    );
+    final resultImage = await xfile;
+    if (resultImage == null) {
+      return null;
+    }
+    final croppedFile = await _cropImage(resultImage);
+    if (croppedFile == null) {
+      return null;
+    }
+    final xfileCropped = XFile.fromData(await croppedFile.readAsBytes());
+    final imageList = await convertToListInt(xfileCropped);
+    if (imageList != null) {
+      return base64Encode(imageList);
+    }
+    return null;
+  } catch (e, s) {
+    print(e.toString());
+    print(s.toString());
+  }
+}
+
+Future<CroppedFile?> _cropImage(XFile file) async {
+  if (file != null) {
+    return ImageCropper().cropImage(
+      sourcePath: file.path,
+      cropStyle: CropStyle.circle,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Edit image',
+          toolbarWidgetColor: LiviThemes.colors.brand500,
+          toolbarColor: LiviThemes.colors.baseWhite,
+          cropGridColor: LiviThemes.colors.brand500,
+          activeControlsWidgetColor: LiviThemes.colors.brand500,
+          initAspectRatio: CropAspectRatioPreset.ratio4x3,
+          cropGridColumnCount: 1,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Edit image',
+          aspectRatioLockEnabled: true,
+          aspectRatioPickerButtonHidden: true,
+        ),
+      ],
+    );
+  }
+  return null;
 }
 
 Future<List<int>?> convertToListInt(XFile? file) async {

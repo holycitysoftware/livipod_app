@@ -240,6 +240,7 @@ class SettingsPage extends StatelessWidget {
                       stream: appUserService
                           .listenToCaregiversRealTime(authController.appUser!),
                       builder: (context, snapshot) {
+                        print(authController.appUser!.name);
                         if (snapshot.data == null) {
                           return SizedBox();
                         }

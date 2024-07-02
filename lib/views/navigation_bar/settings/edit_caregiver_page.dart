@@ -48,8 +48,9 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
     return fullNameController.text.isNotEmpty &&
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
-            (widget.appUser.name != fullNameController.text ||
-                widget.appUser.phoneNumber != phoneNumberController.text));
+            (appUser!.name != fullNameController.text ||
+                !phoneNumberController.text.contains(appUser!.phoneNumber) ||
+                imageWasChanged));
   }
 
   @override
@@ -164,9 +165,8 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
           children: [
             LiviThemes.spacing.heightSpacer16(),
             NameCircleBox(
-              profilePic: imageWasChanged
-                  ? base64Image
-                  : value.appUser!.base64EncodedImage,
+              profilePic:
+                  imageWasChanged ? base64Image : appUser!.base64EncodedImage,
               name: appUser!.name,
             ),
             LiviThemes.spacing.heightSpacer8(),

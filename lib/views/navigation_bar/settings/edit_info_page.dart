@@ -45,7 +45,8 @@ class _EditInfoPageState extends State<EditInfoPage> {
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
             (appUser!.name != fullNameController.text ||
-                appUser!.phoneNumber != phoneNumberController.text));
+                appUser!.phoneNumber != phoneNumberController.text ||
+                imageWasChanged));
   }
 
   @override

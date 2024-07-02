@@ -66,28 +66,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
       }
     });
     // country = getCountryByCode(authController.appUser!.phoneNumber);
-    doAsyncStuff();
     super.initState();
-  }
-
-  Future<void> doAsyncStuff() async {
-    await getCountry();
-  }
-
-  Future<void> getCountry() async {
-    if (appUser.phoneNumber.isEmpty) {
-      return;
-    }
-    number =
-        await PhoneNumber.getRegionInfoFromPhoneNumber(appUser.phoneNumber);
-    if (number != null) {
-      final String parsableNumber = number!.dialCode ?? '';
-      country = getCountryByCode('+$parsableNumber');
-      if (number != null && number!.phoneNumber != null) {
-        phoneNumberController.text = number!.parseNumber().replaceAll('+', '');
-      }
-      setState(() {});
-    }
   }
 
   Future<void> setAppUser(
@@ -111,6 +90,8 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
           fullNameController: fullNameController.text,
           emailController: emailController.text,
           phoneNumberController: phoneNumberController.text);
+      appUser.base64EncodedImage = base64Image == null ? '' : base64Image!;
+      appUser.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
       final user = await appUserService.createUser(appUser);
       final loggedUser = authController.appUser;
       final list = <String>[];
@@ -119,9 +100,8 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
         list.add(user.id);
       }
       loggedUser.caregiverIds = list;
-      appUser.base64EncodedImage = base64Image == null ? '' : base64Image!;
-      appUser.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
-      await appUserService.updateUser(appUser);
+
+      await appUserService.updateUser(loggedUser);
       Navigator.pop(context);
     }
   }

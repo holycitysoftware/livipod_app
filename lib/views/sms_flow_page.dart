@@ -43,7 +43,7 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
       }
       return CreateAccountPage();
     } else if (controller.promptForUserCode &&
-        controller.firebaseAuthUser == null &&
+        controller.firebaseAuthUser == null &&  
         controller.appUser != null) {
       return CheckSmsPage(
         appUser: controller.appUser!,
