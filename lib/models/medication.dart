@@ -102,8 +102,9 @@ class Medication {
     final schedule = getCurrentSchedule();
 
     return now.millisecondsSinceEpoch >
-            (nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch -
-                (schedule.startWarningMinutes * 60000)) &&
+            (nextDosing!.scheduledDosingTime!
+                .subtract(Duration(minutes: schedule.startWarningMinutes))
+                .millisecondsSinceEpoch) &&
         now.millisecondsSinceEpoch <
             nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch;
   }

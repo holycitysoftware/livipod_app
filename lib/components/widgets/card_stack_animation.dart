@@ -143,6 +143,9 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   double cardOpacity(int index) {
     final isOnlyOneCard = widget.medications.length == 1;
+    if (isOnlyOneCard) {
+      return 1;
+    }
     return (_isExpanded && index == widget.medications.length - 1) &&
             !isOnlyOneCard
         ? 0.5
@@ -187,12 +190,16 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   @override
   Widget build(BuildContext context) {
+    print('isasneeded ${widget.medications.first.isAsNeeded()}');
+    print(widget.medications.length);
+    print('--');
     setCardHeight(MediaQuery.of(context).textScaler.scale(14),
         MediaQuery.of(context).textScaler.scale(16));
     final cardsList = cards();
     if (widget.medications.isEmpty) {
       return SizedBox();
     } else if (widget.medications.length == 1) {
+      _isExpanded = false;
       if (widget.medications[0].lastDosing != null &&
           widget.medications[0].nextDosing != null &&
           widget.medications[0].lastDosing!.dosingId ==

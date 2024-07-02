@@ -43,9 +43,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   Future<void> saveUser() async {
-    if (appUser != null) {
-      appUser!.lowInventoryQuantity = int.parse(quantityController.text);
+    final int typedQuantity = int.parse(quantityController.text);
+    if (appUser != null && typedQuantity != appUser!.lowInventoryQuantity) {
+      appUser!.lowInventoryQuantity = typedQuantity;
       await appUserService.updateUser(appUser!);
+      await authController.getAppUser();
     }
   }
 

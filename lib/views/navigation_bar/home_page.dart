@@ -45,57 +45,74 @@ class _HomePageState extends State<HomePage> {
     _stream = MedicationService()
         .listenToMedicationsRealTime(authenticatedUser)
         .listen(listenToMedications);
-    // refreshData();
+    refreshData();
     super.initState();
   }
 
   void refreshData() {
-    timerCards ??= Timer.periodic(const Duration(seconds: 20), (timer) async {
-      final localAsNeededList = asNeededList;
-      final localMissedDuelist = missedDuelist;
-
+    timerCards ??= Timer.periodic(const Duration(seconds: 5), (timer) async {
+      final localAsNeededList = <Medication>[]..addAll(asNeededList);
+      final localMissedDuelist = <Medication>[]..addAll(missedDuelist);
+      print('refreshing data on home page');
       await getDueMedications();
-
-      var isAsNeededDifferent = true;
-      for (final e in localAsNeededList) {
-        for (final a in asNeededList) {
-          if (e.id == a.id) {
-            isAsNeededDifferent = false;
-            break;
-          } else if (asNeededList.last == a) {
-            isAsNeededDifferent = true;
-            print(a.name);
-            print('HERE');
-          }
+      if (asNeededList.length != localAsNeededList.length ||
+          localMissedDuelist.length != missedDuelist.length) {
+        print('setting state by length');
+        if (mounted) {
+          setState(() {});
         }
-        if (isAsNeededDifferent) {
-          if (mounted) {
-            print(' oh im setting the state');
-            setState(() {});
-          }
-        }
+        return;
       }
+      // var isAsNeededDifferent = true;
+      // for (int i = 0; i < asNeededList.length; i++) {
+      //   final e = asNeededList[i];
+      //   isAsNeededDifferent = true;
+      //   for (int j = 0; j < localAsNeededList.length; j++) {
+      //     final a = localAsNeededList[j];
+      //     if (isAsNeededDifferent) {
+      //       if (e.id == a.id) {
+      //         isAsNeededDifferent = false;
+      //         continue;
+      //       } else if (j == localAsNeededList.length - 1) {
+      //         isAsNeededDifferent = true;
+      //         break;
+      //       }
+      //     }
+      //   }
+      //   if (isAsNeededDifferent) {
+      //     if (mounted) {
+      //       print('setting state');
+      //       setState(() {});
+      //       break;
+      //     }
+      //   }
+      // }
 
-      var isMissedDifferent = true;
-      for (final e in localMissedDuelist) {
-        for (final a in missedDuelist) {
-          if (e.id == a.id) {
-            isMissedDifferent = false;
-            break;
-          } else if (missedDuelist.last == a) {
-            isMissedDifferent = true;
-            print(a.name);
-            print('HERE');
-          }
-        }
+      // var isMissedDifferent = true;
+      // for (int i = 0; i < missedDuelist.length; i++) {
+      //   final e = missedDuelist[i];
+      //   isMissedDifferent = true;
+      //   for (int j = 0; j < localMissedDuelist.length; j++) {
+      //     final a = localMissedDuelist[j];
+      //     if (isMissedDifferent) {
+      //       if (e.id == a.id) {
+      //         isMissedDifferent = false;
+      //         continue;
+      //       } else if (j == localMissedDuelist.length - 1) {
+      //         isMissedDifferent = true;
+      //         break;
+      //       }
+      //     }
+      //   }
 
-        if (isMissedDifferent) {
-          if (mounted) {
-            print(' oh im setting the state');
-            setState(() {});
-          }
-        }
-      }
+      //   if (isMissedDifferent) {
+      //     if (mounted) {
+      //       print('setting state');
+      //       setState(() {});
+      //       break;
+      //     }
+      //   }
+      // }
       timerCards!.cancel();
       timerCards = null;
       refreshData();
@@ -105,8 +122,10 @@ class _HomePageState extends State<HomePage> {
   StreamSubscription<List<Medication>> listenToMedications(
       List<Medication> list) {
     if (mounted) {
+      medicationsList = [];
+      print('updated list');
       setState(() {
-        medicationsList = list;
+        medicationsList!.addAll(list);
       });
     }
     return _stream;
@@ -454,7 +473,7 @@ class _HomePageState extends State<HomePage> {
 
       if (medicationsList != null) {
         medicationsList!.remove(medication);
-        setState(() {});
+        refreshData();
       }
 
       nextDosing.qtyRemaining -= qtyMissed + qtySkipped + takenQuantity;

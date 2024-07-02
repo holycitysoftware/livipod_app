@@ -314,7 +314,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                     ),
                     LiviThemes.spacing.heightSpacer8(),
                     LiviTextStyles.interSemiBold18(
-                        '${Strings.delete} ${widget.medication.getNameStrengthDosageForm()}?'),
+                        '${Strings.delete} ${widget.medication.getNameStrengthDosageForm()}?',
+                        maxLines: 2),
                     LiviTextStyles.interRegular16(
                         Strings.areYouSureYouWantToDelete),
                     Spacer(),
