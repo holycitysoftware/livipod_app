@@ -208,6 +208,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     }
   }
 
+  void setNoToExceed(int value) {
+    prnDose().nteQty = value.toDouble();
+    notToExceedList = List<int>.generate(value, (e) => e + 1);
+  }
+
   List<Widget> listBuilder() {
     return [
       startDateWidget(),
@@ -530,6 +535,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                       orElse: () => prnDose().nteQty.toInt()),
                   onChanged: (int? value) {
                     prnDose().hourInterval = value!;
+                    setNoToExceed((24 /
+                            prnDose().hourInterval *
+                            int.parse(_quantityController[currentIndex].text))
+                        .toInt());
+
                     setState(() {});
                   },
                   items: intervalBetweenDosesList
@@ -1305,6 +1315,10 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   Widget quantityWidget() {
     return LiviInputField(
       title: Strings.quantity,
+      onFieldSubmitted: (e) => setNoToExceed((24 /
+              prnDose().hourInterval *
+              int.parse(_quantityController[currentIndex].text))
+          .toInt()),
       focusNode: _quantityFocus,
       controller: _quantityController[currentIndex],
       keyboardType: TextInputType.number,
