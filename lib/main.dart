@@ -19,12 +19,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await FirebaseAppCheck.instance.activate(
-      // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-      // androidProvider: AndroidProvider.playIntegrity,
-      // appleProvider: AppleProvider.deviceCheck,
-      );
-
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+  );
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 

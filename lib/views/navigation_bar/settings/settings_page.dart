@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
@@ -14,11 +15,29 @@ import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
 import '../../views.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
   final appUserService = AppUserService();
   final InAppReview inAppReview = InAppReview.instance;
+  String buildNumber = '';
 
-  SettingsPage({super.key});
+  @override
+  void initState() {
+    super.initState();
+    getBuildNumber();
+  }
+
+  Future<void> getBuildNumber() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    buildNumber = packageInfo.version + packageInfo.buildNumber;
+    setState(() {});
+  }
 
   Future<void> logout(
       AuthController authController, BuildContext context) async {
@@ -343,6 +362,10 @@ class SettingsPage extends StatelessWidget {
                 textColor: LiviThemes.colors.error600,
                 onTap: () => logout(authController, context),
               ),
+              LiviThemes.spacing.widthSpacer32(),
+              LiviTextStyles.interRegular14(buildNumber,
+                  color: LiviThemes.colors.gray700),
+              LiviThemes.spacing.widthSpacer24(),
             ],
           ),
         );
