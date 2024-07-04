@@ -15,7 +15,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '7'
+    flutterVersionCode = '8'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
@@ -58,7 +58,7 @@ android {
         minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         multiDexEnabled true
-        versionCode 7
+        versionCode 8
         versionName '1.0.2'
     }
 

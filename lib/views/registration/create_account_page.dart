@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
@@ -33,6 +34,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   bool navigateToCheckSmsPage = false;
   bool agreedToTOS = false;
   Country country = getUS();
+  String buildNumber = '';
 
   @override
   void initState() {
@@ -42,7 +44,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     phoneNumberController.addListener(() {
       setState(() {});
     });
+    getBuildNumber();
     super.initState();
+  }
+
+  Future<void> getBuildNumber() async {
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    buildNumber = '${packageInfo.version}+${packageInfo.buildNumber}';
+    setState(() {});
   }
 
   void _setAgreedToTOS(bool newValue) {
@@ -162,10 +171,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               children: [
-                BackBar(onTap: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => WelcomePage()));
-                }),
+                BackBar(
+                  onTap: () {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => WelcomePage()));
+                  },
+                  trailing: LiviTextStyles.interRegular14(buildNumber,
+                      color: LiviThemes.colors.gray700),
+                ),
                 LiviThemes.icons.logo,
                 LiviThemes.spacing.heightSpacer16(),
                 Align(

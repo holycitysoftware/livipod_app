@@ -8,12 +8,14 @@ class BackBar extends StatelessWidget {
   final String? title;
   final EdgeInsets? padding;
   final bool? hasTrailing;
+  final Widget? trailing;
   final Function()? onTap;
 
   const BackBar(
       {super.key,
       this.title,
       this.padding,
+      this.trailing,
       this.hasTrailing = true,
       this.onTap});
 
@@ -38,12 +40,12 @@ class BackBar extends StatelessWidget {
           if (title != null) Spacer(),
           if (title != null) ...[
             LiviTextStyles.interSemiBold16(title!),
-            if (title != null) Spacer(),
-            _backBar(context, isHidden: true),
           ],
-          if (hasTrailing ?? false)
-            SizedBox()
-          else ...[
+          if ((hasTrailing ?? false) && trailing != null) ...[
+            Spacer(),
+            trailing!,
+            LiviThemes.spacing.widthSpacer16(),
+          ] else ...[
             if (title != null) Spacer(),
             _backBar(context, isHidden: true),
           ]
