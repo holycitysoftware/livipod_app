@@ -46,8 +46,10 @@ class BackBar extends StatelessWidget {
             trailing!,
             LiviThemes.spacing.widthSpacer16(),
           ] else ...[
-            if (title != null) Spacer(),
-            _backBar(context, isHidden: true),
+            if (title != null) ...[
+              Spacer(),
+              _backBar(context, isHidden: true),
+            ]
           ]
         ],
       ),

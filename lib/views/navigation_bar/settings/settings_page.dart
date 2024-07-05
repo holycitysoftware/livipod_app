@@ -362,10 +362,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 textColor: LiviThemes.colors.error600,
                 onTap: () => logout(authController, context),
               ),
-              LiviThemes.spacing.widthSpacer32(),
-              LiviTextStyles.interRegular14(buildNumber,
-                  color: LiviThemes.colors.gray700),
-              LiviThemes.spacing.widthSpacer24(),
+              LiviThemes.spacing.heightSpacer16(),
+              Align(
+                child: LiviTextStyles.interRegular14('Build $buildNumber',
+                    color: LiviThemes.colors.gray700),
+              ),
+              LiviThemes.spacing.heightSpacer12(),
             ],
           ),
         );

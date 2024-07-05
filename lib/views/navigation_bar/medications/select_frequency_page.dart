@@ -283,6 +283,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       element.type = scheduleType;
     }
 
+    if (widget.medication.schedules.first.type == ScheduleType.asNeeded) {
+      setNoToExceed((24 /
+              prnDose().hourInterval *
+              int.parse(_quantityController[currentIndex].text))
+          .toInt());
+    }
     setState(() {});
   }
 
