@@ -296,11 +296,11 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     showDialog(
         context: context,
         builder: (context) => Dialog(
+              insetPadding: EdgeInsets.all(24),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0)), //this right here
               child: Container(
-                height: 320,
-                width: 400.0,
+                height: 355,
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,11 +324,20 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                       ],
                     ),
                     LiviThemes.spacing.heightSpacer8(),
-                    LiviTextStyles.interSemiBold18(
-                        '${Strings.delete} ${widget.medication.getNameStrengthDosageForm()}?',
-                        maxLines: 2),
-                    LiviTextStyles.interRegular16(
-                        Strings.areYouSureYouWantToDelete),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 24),
+                      child: Column(
+                        children: [
+                          LiviTextStyles.interSemiBold18(
+                              '${Strings.delete} ${widget.medication.getNameStrengthDosageForm()}?',
+                              maxLines: 2),
+                          LiviThemes.spacing.heightSpacer4(),
+                          LiviTextStyles.interRegular16(
+                              Strings.areYouSureYouWantToDelete,
+                              color: LiviThemes.colors.gray700),
+                        ],
+                      ),
+                    ),
                     Spacer(),
                     LiviFilledButton(
                       color: LiviThemes.colors.error600,

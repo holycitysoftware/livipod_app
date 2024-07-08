@@ -52,24 +52,17 @@ class _SplashPageState extends State<SplashPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        body: Container(
-          width: double.maxFinite,
-          height: double.maxFinite,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: LiviThemes.icons.splashBackgroundImage,
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              LiviThemes.icons.logoWhite,
-              LiviTextStyles.interMedium24(Strings.welcomeToLiviPod,
-                  color: LiviThemes.colors.baseWhite),
-              LiviThemes.icons.livipodText,
-            ],
-          ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(flex: 4),
+            Align(child: LiviThemes.icons.logoRoundedBackground()),
+            // LiviTextStyles.interMedium24(Strings.welcomeToLiviPod,
+            //     color: LiviThemes.colors.baseWhite),
+            Spacer(flex: 3),
+            LiviThemes.icons.livipodTextWhite,
+            Spacer(),
+          ],
         ),
       ),
     );

@@ -124,6 +124,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
                     backgroundColor: LiviThemes.colors.baseWhite94,
                     currentIndex: currentPageIndex,
                     showUnselectedLabels: true,
+                    type: BottomNavigationBarType.fixed,
                     unselectedItemColor: LiviThemes.colors.randomGray,
                     selectedItemColor: LiviThemes.colors.brand600,
                     onTap: selectItem,

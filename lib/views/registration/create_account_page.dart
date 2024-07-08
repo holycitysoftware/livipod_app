@@ -11,13 +11,18 @@ import '../../themes/livi_themes.dart';
 import '../../utils/countries.dart';
 import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
+import 'login_page.dart';
 import 'privacy_policy_page.dart';
 import 'terms_of_service_page.dart';
 import 'welcome_page.dart';
 
 class CreateAccountPage extends StatefulWidget {
   static const String routeName = '/create-account-page';
-  const CreateAccountPage({super.key});
+  final bool fromLoginPage;
+  const CreateAccountPage({
+    super.key,
+    this.fromLoginPage = false,
+  });
   @override
   _CreateAccountPageState createState() => _CreateAccountPageState();
 }
@@ -25,7 +30,6 @@ class CreateAccountPage extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController fullNameController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final FocusNode fullNameFocus = FocusNode();
@@ -167,14 +171,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         body: Form(
           key: formKey,
           child: SingleChildScrollView(
-            controller: scrollController,
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               children: [
                 BackBar(
                   onTap: () {
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => WelcomePage()));
+                        MaterialPageRoute(builder: (context) {
+                      if (widget.fromLoginPage) {
+                        return LoginPage();
+                      } else {
+                        return WelcomePage();
+                      }
+                    }));
                   },
                   trailing: LiviTextStyles.interRegular14(buildNumber,
                       color: LiviThemes.colors.gray700),

@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
@@ -15,20 +16,24 @@ class CountryDropdownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<Country>(
-      underline: SizedBox(),
-      padding: EdgeInsets.only(left: 16, right: 8),
+    return DropdownButton2<Country>(
+      underline: Text(''),
       value: country,
+      buttonStyleData: ButtonStyleData(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+      ),
+      dropdownStyleData: DropdownStyleData(width: 85, maxHeight: 300),
+      iconStyleData: IconStyleData(
+        icon: LiviThemes.icons.chevronDownGray,
+      ),
       onChanged: onChanged,
       style: LiviThemes.typography.interRegular_16
           .copyWith(color: LiviThemes.colors.baseBlack),
-      menuMaxHeight: 320,
-      borderRadius: BorderRadius.circular(8),
-      icon: LiviThemes.icons.chevronDownGray,
       items: countriesList
           .map<DropdownMenuItem<Country>>(
             (Country country) => DropdownMenuItem<Country>(
               value: country,
+              alignment: Alignment.center,
               child: Text(
                 country.code,
                 style: LiviThemes.typography.interRegular_16

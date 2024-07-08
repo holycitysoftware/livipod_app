@@ -93,6 +93,20 @@ class LiviIcons {
     );
   }
 
+  String get _logoRoundedBackground => '$svgPath/logo_rounded_background.svg';
+
+  Widget logoRoundedBackground({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.brand600;
+
+    return SvgPicture.asset(
+      _logoRoundedBackground,
+      height: height,
+    );
+  }
+
   String get _moon1Path => '$svgPath/moon_01.svg';
 
   Widget moon1Icon({
@@ -264,6 +278,10 @@ class LiviIcons {
 
   Widget get livipodText => SvgPicture.asset(
         '$svgPath/livipod_text.svg',
+      );
+
+  Widget get livipodTextWhite => SvgPicture.asset(
+        '$svgPath/livipod_text_white.svg',
       );
 
   final String _messageChatCirclePath = '$svgPath/message_chat_circle.svg';

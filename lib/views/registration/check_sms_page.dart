@@ -42,7 +42,7 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
     height: 56,
     textStyle: TextStyle(
       fontSize: 20,
-      color: Color.fromRGBO(30, 60, 87, 1),
+      color: LiviThemes.colors.baseBlack,
       fontWeight: FontWeight.w600,
     ),
     decoration: BoxDecoration(

@@ -4,6 +4,7 @@ class Strings {
   static const String yourAccountHasBeenCreated =
       'Your account has been created!';
   static const String loginToYourAccount = 'Log in to your account';
+  static const String welcomeBack = 'Welcome Back!';
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
   static const String ssid = 'SSID';
@@ -95,6 +96,9 @@ class Strings {
   static const String deleteSchedule = 'Delete Schedule';
   static const String welcomeBackPleaseEnterDetails =
       'Welcome back! Please enter your details.';
+  static const String enterYourDetailsToLogIn =
+      'Enter your details to log in to your account.';
+
   static const String yourAccountHasBeenCreatedStart =
       'Your account has been created, start by registering your first medication.';
   static const String welcomeToLiviPod = 'Welcome to LiviPod®';

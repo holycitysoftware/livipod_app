@@ -28,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   bool loading = false;
   late AppUser appUser;
   Country country = getUS();
-  
 
   @override
   void initState() {
@@ -60,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(
         builder: (context) => SmsFlowPage(
+          isFromLoginPage: true,
           showIdentifyPersonaPage: true,
         ),
       ),
@@ -120,21 +120,27 @@ class _LoginPageState extends State<LoginPage> {
           ),
           body: Form(
             key: _formKey,
-            child: ListView(
-              controller: scrollController,
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Column(
+              // controller: scrollController,
+              // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               children: [
-                LiviThemes.spacing.heightSpacer8(),
-                LiviThemes.icons.logo,
-                LiviThemes.spacing.heightSpacer16(),
+                BackBar(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WelcomePage(),
+                        ),
+                      );
+                    },
+                    title: Strings.logIn),
                 Align(
-                  child: LiviTextStyles.interSemiBold24(
-                      Strings.loginToYourAccount),
+                  child: LiviTextStyles.interSemiBold24(Strings.welcomeBack),
                 ),
                 LiviThemes.spacing.heightSpacer4(),
                 Align(
                   child: LiviTextStyles.interRegular16(
-                      Strings.welcomeBackPleaseEnterDetails),
+                      Strings.enterYourDetailsToLogIn),
                 ),
                 LiviThemes.spacing.heightSpacer8(),
                 const SizedBox(height: kSpacer_16),
@@ -165,6 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: phoneNumberController,
                   );
                 }),
+                Spacer(),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
