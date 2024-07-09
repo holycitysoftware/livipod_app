@@ -37,6 +37,17 @@ class Medication {
     return schedules.isNotEmpty && schedules[0].type == ScheduleType.asNeeded;
   }
 
+  bool asNeededAvailable() {
+    final now = DateTime.now().toUtc();
+    return schedules.isNotEmpty &&
+        schedules[0].type == ScheduleType.asNeeded &&
+        nextDosing != null &&
+        now.millisecondsSinceEpoch >
+            nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch &&
+        nextDosing!.qtyRemaining > 0 &&
+        nextDosing!.qtyRemainingForDay > 0;
+  }
+
   bool isDue() {
     final now = DateTime.now().toUtc();
     if (nextDosing == null || nextDosing!.scheduledDosingTime == null) {
