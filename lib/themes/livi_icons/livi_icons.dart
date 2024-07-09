@@ -500,11 +500,11 @@ class LiviIcons {
     Color? color,
     double? height,
   }) {
-    // color ??= LiviThemes.colors.randomGray;
+    color ??= LiviThemes.colors.randomGray;
 
     return SvgPicture.asset(
       _calendarPath,
-      // colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       height: height,
     );
   }

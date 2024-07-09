@@ -143,8 +143,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 64),
               child: LiviTextButton(
-                  text: !imageWasChanged &&
-                          value.appUser!.base64EncodedImage.isEmpty
+                  text: value.appUser!.base64EncodedImage.isEmpty
                       ? Strings.addImage
                       : Strings.edit,
                   onTap: () async {

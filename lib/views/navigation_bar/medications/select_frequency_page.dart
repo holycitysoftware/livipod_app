@@ -483,19 +483,28 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             height: 40,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: LiviThemes.colors.gray300,
+              border: Border(
+                bottom: BorderSide(color: LiviThemes.colors.gray300),
+                left: BorderSide(color: LiviThemes.colors.gray300),
+                right: BorderSide(color: LiviThemes.colors.gray300),
+                top: BorderSide(color: LiviThemes.colors.gray300),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 frequencyWidget(ScheduleType.asNeeded, flex: 4),
-                divider(),
+                if (schedules.first.type != ScheduleType.asNeeded &&
+                    schedules.first.type != ScheduleType.daily)
+                  divider(),
                 frequencyWidget(ScheduleType.daily),
-                divider(),
+                if (schedules.first.type != ScheduleType.weekly &&
+                    schedules.first.type != ScheduleType.daily)
+                  divider(),
                 frequencyWidget(ScheduleType.weekly),
-                divider(),
+                if (schedules.first.type != ScheduleType.monthly &&
+                    schedules.first.type != ScheduleType.weekly)
+                  divider(),
                 frequencyWidget(ScheduleType.monthly),
               ],
             ),
@@ -595,7 +604,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       controller: _startDateController[currentIndex],
       prefix: Padding(
         padding: const EdgeInsets.all(16),
-        child: LiviThemes.icons.calendarIcon(),
+        child: LiviThemes.icons.calendarIcon(color: LiviThemes.colors.gray500),
       ),
     );
   }
@@ -626,7 +635,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       controller: _endDateController[currentIndex],
       prefix: Padding(
         padding: const EdgeInsets.all(16),
-        child: LiviThemes.icons.calendarIcon(),
+        child: LiviThemes.icons.calendarIcon(color: LiviThemes.colors.gray500),
       ),
     );
   }
@@ -788,11 +797,18 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
               color: schedules.first.type == scheduleType
                   ? LiviThemes.colors.brand50
                   : LiviThemes.colors.baseWhite),
-          child: Align(
-            child: LiviTextStyles.interBold14(scheduleType.description,
-                color: schedules.first.type == scheduleType
-                    ? LiviThemes.colors.brand600
-                    : LiviThemes.colors.gray500),
+          child: Container(
+            decoration: BoxDecoration(
+                border: schedules.first.type == scheduleType
+                    ? Border.all(color: LiviThemes.colors.brand300)
+                    : null),
+            padding: const EdgeInsets.all(8),
+            child: Align(
+              child: LiviTextStyles.interBold14(scheduleType.description,
+                  color: schedules.first.type == scheduleType
+                      ? LiviThemes.colors.brand600
+                      : LiviThemes.colors.gray500),
+            ),
           ),
         ),
       ),
@@ -805,7 +821,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LiviTextStyles.interSemiBold14(Strings.days),
+          LiviTextStyles.interMedium16(Strings.days,
+              color: LiviThemes.colors.gray500),
           LiviThemes.spacing.heightSpacer16(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -927,7 +944,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                     schedules[currentIndex].dayPattern[dayOfWeek] == 1
                 ? LiviThemes.colors.brand600
                 : dayOfWeek.isWeekend()
-                    ? LiviThemes.colors.brand50
+                    ? LiviThemes.colors.gray50
                     : LiviThemes.colors.baseWhite,
             border: Border.all(
                 color: LiviThemes.colors.gray300,
@@ -939,7 +956,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                       schedules[currentIndex].dayPattern[dayOfWeek] == 1
                   ? LiviThemes.colors.baseWhite
                   : dayOfWeek.isWeekend()
-                      ? LiviThemes.colors.brand600
+                      ? LiviThemes.colors.gray500
                       : LiviThemes.colors.baseBlack),
         ),
       ),

@@ -137,7 +137,9 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
           text: Strings.removeCaregiver,
           borderColor: LiviThemes.colors.error300,
           textColor: LiviThemes.colors.error600,
-          onTap: () => removeCaregiver(),
+          onTap: () {
+            removeCaregiver();
+          },
         ),
       ),
       backgroundColor: LiviThemes.colors.baseWhite,
@@ -173,8 +175,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 64),
               child: LiviTextButton(
-                  text: !imageWasChanged &&
-                          value.appUser!.base64EncodedImage.isEmpty
+                  text: appUser!.base64EncodedImage.isEmpty
                       ? Strings.addImage
                       : Strings.edit,
                   onTap: () async {

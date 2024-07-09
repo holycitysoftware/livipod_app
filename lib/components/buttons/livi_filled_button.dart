@@ -34,7 +34,7 @@ class LiviFilledButton extends StatelessWidget {
   bool get isButtonCloseToNotch => Platform.isIOS && (isCloseToNotch ?? false);
 
   BorderSide border() {
-    if (enabled == false) {
+    if (enabled == false && borderColor == null) {
       return BorderSide(color: LiviThemes.colors.gray200);
     }
     if (borderColor != null) {
@@ -49,6 +49,8 @@ class LiviFilledButton extends StatelessWidget {
       padding: EdgeInsets.only(bottom: isButtonCloseToNotch ? 32 : 0),
       child: ElevatedButton(
         style: ButtonStyle(
+          surfaceTintColor:
+              MaterialStatePropertyAll(LiviThemes.colors.baseWhite),
           foregroundColor: MaterialStatePropertyAll(textColor),
           overlayColor: MaterialStatePropertyAll(textColor?.withOpacity(.1)),
           shape: MaterialStatePropertyAll(
