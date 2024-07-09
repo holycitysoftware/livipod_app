@@ -727,6 +727,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   Future<void> showTimerPickerWidget(StateSetter setStates) async {
     _timeOfDay = (await showTimePicker(
           context: context,
+          barrierColor: Colors.transparent,
           cancelText: Strings.cancel,
           confirmText: Strings.ok,
           initialTime: _timeOfDay ?? TimeOfDay(hour: 8, minute: 0),
@@ -744,7 +745,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     required bool isStartDate,
   }) async {
     final dateTime = await showDatePicker(
-      context: context,
+      context: context, barrierColor: Colors.black54,
       cancelText: isStartDate ? Strings.now : Strings.forever,
       confirmText: Strings.apply,
       initialDate:
@@ -1167,48 +1168,56 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
+          contentPadding: EdgeInsets.zero,
           backgroundColor: LiviThemes.colors.baseWhite,
           surfaceTintColor: LiviThemes.colors.baseWhite,
           insetPadding: EdgeInsets.symmetric(horizontal: 32),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
           title: const Text(Strings.enterDates),
           content: Container(
-            height: 250,
+            height: 120,
             width: 400,
             color: LiviThemes.colors.baseWhite,
             child: Column(
               children: [
-                LiviThemes.spacing.heightSpacer64(),
+                LiviThemes.spacing.heightSpacer8(),
                 LiviDivider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: Strings.take,
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                        ),
-                        focusNode: FocusNode(),
-                        keyboardType: TextInputType.number,
-                        controller: _takeDosesController,
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: TextField(
+                LiviThemes.spacing.heightSpacer32(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              labelText: Strings.at,
-                              hintText: _timeOfDay == null
-                                  ? formartTimeOfDay(
-                                      TimeOfDay(hour: 8, minute: 0))
-                                  : formartTimeOfDay(_timeOfDay!)),
-                          readOnly: true,
-                          onTap: () async => showTimerPickerWidget(setState)),
-                    ),
-                  ],
+                            border: OutlineInputBorder(),
+                            labelText: Strings.take,
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          focusNode: FocusNode(),
+                          keyboardType: TextInputType.number,
+                          controller: _takeDosesController,
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: TextField(
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                labelText: Strings.at,
+                                hintText: _timeOfDay == null
+                                    ? formartTimeOfDay(
+                                        TimeOfDay(hour: 8, minute: 0))
+                                    : formartTimeOfDay(_timeOfDay!)),
+                            readOnly: true,
+                            onTap: () async => showTimerPickerWidget(setState)),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
