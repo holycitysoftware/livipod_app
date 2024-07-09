@@ -12,12 +12,14 @@ class LiviAppBar extends StatefulWidget implements PreferredSizeWidget {
   final List<Widget>? tail;
   final double? elevation;
   final Widget? mainWidget;
+  final Color? color;
   const LiviAppBar({
     super.key,
     required this.title,
     this.onPressed,
     this.mainWidget,
     this.elevation,
+    this.color,
     this.backButton = false,
     this.tail,
   });
@@ -34,8 +36,8 @@ class _LiviAppBarState extends State<LiviAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      foregroundColor: LiviThemes.colors.baseWhite,
-      backgroundColor: LiviThemes.colors.baseWhite,
+      foregroundColor: widget.color ?? LiviThemes.colors.baseWhite,
+      backgroundColor: widget.color ?? LiviThemes.colors.baseWhite,
       shadowColor: LiviThemes.colors.baseWhite,
       elevation: widget.elevation ?? 0, centerTitle: true,
       surfaceTintColor: LiviThemes.colors.baseWhite,

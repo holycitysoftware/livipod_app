@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../components/components.dart';
 import '../../../models/models.dart';
 import '../../../services/services.dart';
+import '../../../themes/livi_theme.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/strings.dart';
@@ -65,7 +66,7 @@ class _SelectMedicationStrengthState extends State<SelectMedicationStrength> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LiviThemes.colors.baseWhite,
+      backgroundColor: LiviThemes.colors.gray100,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: LiviFilledButton(
@@ -78,6 +79,7 @@ class _SelectMedicationStrengthState extends State<SelectMedicationStrength> {
       ),
       appBar: LiviAppBar(
         title: widget.medication.getNameStrengthDosageForm(),
+        color: LiviThemes.colors.gray100,
       ),
       body: Column(
         children: [
@@ -98,35 +100,58 @@ class _SelectMedicationStrengthState extends State<SelectMedicationStrength> {
                 itemCount: strengthList.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: LiviThemes.colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: selectedStrength == strengthList[index]
-                            ? LiviThemes.colors.brand600
-                            : LiviThemes.colors.gray300,
+                    decoration: BoxDecoration(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: LiviThemes.colors.baseWhite,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: selectedStrength == strengthList[index]
+                              ? LiviThemes.colors.brand300
+                              : LiviThemes.colors.transparent,
+                        ),
+                        boxShadow: selectedStrength == strengthList[index]
+                            ? [
+                                BoxShadow(
+                                  color: LiviThemes.colors.brand600
+                                      .withOpacity(.2),
+                                  spreadRadius: 4,
+                                  blurRadius: 4,
+                                  blurStyle: BlurStyle.solid,
+                                ),
+                              ]
+                            : [
+                                BoxShadow(
+                                  color:
+                                      LiviThemes.colors.gray900.withOpacity(.2),
+                                  spreadRadius: .2,
+                                  blurRadius: .2,
+                                ),
+                              ],
                       ),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        selectedStrength = strengthList[index];
-                        setState(() {});
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: LiviTextStyles.interSemiBold16(
-                                strengthList[index],
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.ellipsis,
+                      // color: LiviThemes.colors.baseWhite,
+
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 16),
+                      child: InkWell(
+                        onTap: () {
+                          selectedStrength = strengthList[index];
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: LiviTextStyles.interSemiBold16(
+                                  strengthList[index],
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

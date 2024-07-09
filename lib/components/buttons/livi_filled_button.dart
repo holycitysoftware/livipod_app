@@ -33,6 +33,16 @@ class LiviFilledButton extends StatelessWidget {
 
   bool get isButtonCloseToNotch => Platform.isIOS && (isCloseToNotch ?? false);
 
+  BorderSide border() {
+    if (enabled == false) {
+      return BorderSide(color: LiviThemes.colors.gray200);
+    }
+    if (borderColor != null) {
+      return BorderSide(color: borderColor!);
+    }
+    return BorderSide.none;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,10 +53,9 @@ class LiviFilledButton extends StatelessWidget {
           overlayColor: MaterialStatePropertyAll(textColor?.withOpacity(.1)),
           shape: MaterialStatePropertyAll(
             RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: borderColor != null
-                    ? BorderSide(color: borderColor!)
-                    : BorderSide.none),
+              borderRadius: BorderRadius.circular(8),
+              side: border(),
+            ),
           ),
           maximumSize: MaterialStatePropertyAll(
             Size(double.infinity, 48),
@@ -58,7 +67,7 @@ class LiviFilledButton extends StatelessWidget {
               ? MaterialStatePropertyAll(color)
               : MaterialStatePropertyAll(enabled ?? false
                   ? LiviThemes.colors.brand600
-                  : LiviThemes.colors.gray200),
+                  : LiviThemes.colors.gray100),
         ),
         onPressed: ((enabled ?? false) && !isLoading) ? onTap : null,
         child: isLoading
