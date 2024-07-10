@@ -567,10 +567,7 @@ class _HomePageState extends State<HomePage> {
   Widget confirmQuantityButton(List<Medication> medications, int? index) {
     index ??= 0;
 
-    if (medications[index].nextDosing == null ||
-        (medications[index].nextDosing != null &&
-            medications[index].nextDosing!.qtyRemaining == null) ||
-        medications[index].schedules.first.prnDosing == null) {
+    if (!medications[index].asNeededAvailable()) {
       return SizedBox();
     }
 

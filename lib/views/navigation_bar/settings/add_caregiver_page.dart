@@ -145,7 +145,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 64),
               child: LiviTextButton(
-                  text: !imageWasChanged &&
+                  text:
                           value.appUser!.base64EncodedImage.isEmpty
                       ? Strings.addImage
                       : Strings.edit,

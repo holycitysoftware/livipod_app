@@ -39,6 +39,9 @@ class LiviTheme {
                 .copyWith(color: LiviThemes.colors.brand600),
             hourMinuteTextColor: LiviThemes.colors.baseBlack),
         datePickerTheme: DatePickerThemeData(
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: LiviThemes.colors.gray300,
+          dividerColor: LiviThemes.colors.transparent,
           // dayOverlayColor: MaterialStatePropertyAll(LiviThemes.colors.brand600),
           // dayForegroundColor:
           //     MaterialStatePropertyAll(LiviThemes.colors.gray700),color
@@ -46,7 +49,7 @@ class LiviTheme {
             shape: MaterialStatePropertyAll(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
-                side: BorderSide(color: LiviThemes.colors.gray300),
+                side: BorderSide(color: LiviThemes.colors.gray400),
               ),
             ),
             padding:

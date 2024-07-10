@@ -82,7 +82,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: LiviThemes.colors.baseWhite,
+      backgroundColor: LiviThemes.colors.gray100,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: LiviFilledButton(
@@ -95,9 +95,9 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
       ),
       appBar: LiviAppBar(
         title: widget.medication.getNameStrengthDosageForm(),
+        color: LiviThemes.colors.gray100,
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           LiviTextStyles.interSemiBold36(
             Strings.selectDosageForm,
@@ -142,6 +142,15 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
     return dosageFormIcon(dosageForm: dosageForm, color: color);
   }
 
+  Color getTextColor(DosageForm cardDosage) {
+    if (dosageForm == DosageForm.none) {
+      return LiviThemes.colors.baseBlack;
+    }
+    return dosageForm == cardDosage
+        ? LiviThemes.colors.brand600
+        : LiviThemes.colors.gray400;
+  }
+
   Widget _buildDosageFormCard({required DosageForm dosageForm}) {
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -184,10 +193,7 @@ class _SelectDosageFormPageState extends State<SelectDosageFormPage> {
                   isSelected: isSelected,
                 ),
                 LiviTextStyles.interRegular16(dosageForm.description,
-                    color: this.dosageForm == dosageForm
-                        ? LiviThemes.colors.brand600
-                        : LiviThemes.colors.gray400,
-                    maxLines: 2),
+                    color: getTextColor(dosageForm), maxLines: 2),
               ],
             ),
           ),

@@ -232,7 +232,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         inventoryQuantityWidget(),
       if (getShowInstructions && currentIndex == 0) instructionsWidget(),
       LiviThemes.spacing.heightSpacer16(),
-      if (widget.isEdit && schedules.length > 1) deleteScheduleWidget(),
+      if (schedules.length > 1) deleteScheduleWidget(),
       if (widget.isEdit) deleteMedicationWidget(),
       if (!widget.isEdit) addAnotherScheduleWidget(schedules.length),
       if (!widget.isEdit) saveWidget(),
@@ -273,13 +273,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   void selectFrequency(ScheduleType scheduleType) {
-    final backup = widget.medication;
-    widget.medication = Medication(name: backup.name);
-    widget.medication.schedules = backup.schedules;
-    widget.medication.strength = backup.strength;
-    widget.medication.dosageForm = backup.dosageForm;
-
+    final asNeededWasNotSelected = scheduleType != ScheduleType.asNeeded;
     for (final element in schedules) {
+      if (widget.medication.schedules.first.type == ScheduleType.asNeeded &&
+          asNeededWasNotSelected) {
+        element.prnDosing = null;
+      }
       element.type = scheduleType;
     }
 
@@ -371,15 +370,21 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   hint: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.43,
                     child: LiviTextStyles.interSemiBold16(
-                        widget.medication.getNameStrengthDosageForm(),
-                        maxLines: 1),
+                      widget.medication.getNameStrengthDosageForm(),
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   value: null,
+                  isExpanded: widget.isEdit ? true : false,
                   onChanged: (int? value) {
                     currentIndex = value!;
                     dropdownIsSelected = false;
                     setState(() {});
                   },
+                  icon: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.arrow_drop_down)),
                   items: schedules.asMap().entries.map(
                     (entry) {
                       return DropdownMenuItem<int>(
@@ -421,7 +426,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   ),
                 )
               ]
-            : null,
+            : [Spacer()],
       ),
       body: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -483,19 +488,28 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
             height: 40,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: LiviThemes.colors.gray300,
+              border: Border(
+                bottom: BorderSide(color: LiviThemes.colors.gray300),
+                left: BorderSide(color: LiviThemes.colors.gray300),
+                right: BorderSide(color: LiviThemes.colors.gray300),
+                top: BorderSide(color: LiviThemes.colors.gray300),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 frequencyWidget(ScheduleType.asNeeded, flex: 4),
-                divider(),
+                if (schedules.first.type != ScheduleType.asNeeded &&
+                    schedules.first.type != ScheduleType.daily)
+                  divider(),
                 frequencyWidget(ScheduleType.daily),
-                divider(),
+                if (schedules.first.type != ScheduleType.weekly &&
+                    schedules.first.type != ScheduleType.daily)
+                  divider(),
                 frequencyWidget(ScheduleType.weekly),
-                divider(),
+                if (schedules.first.type != ScheduleType.monthly &&
+                    schedules.first.type != ScheduleType.weekly)
+                  divider(),
                 frequencyWidget(ScheduleType.monthly),
               ],
             ),
@@ -595,7 +609,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       controller: _startDateController[currentIndex],
       prefix: Padding(
         padding: const EdgeInsets.all(16),
-        child: LiviThemes.icons.calendarIcon(),
+        child: LiviThemes.icons.calendarIcon(color: LiviThemes.colors.gray500),
       ),
     );
   }
@@ -626,7 +640,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       controller: _endDateController[currentIndex],
       prefix: Padding(
         padding: const EdgeInsets.all(16),
-        child: LiviThemes.icons.calendarIcon(),
+        child: LiviThemes.icons.calendarIcon(color: LiviThemes.colors.gray500),
       ),
     );
   }
@@ -718,6 +732,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   Future<void> showTimerPickerWidget(StateSetter setStates) async {
     _timeOfDay = (await showTimePicker(
           context: context,
+          barrierColor: Colors.transparent,
           cancelText: Strings.cancel,
           confirmText: Strings.ok,
           initialTime: _timeOfDay ?? TimeOfDay(hour: 8, minute: 0),
@@ -735,7 +750,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     required bool isStartDate,
   }) async {
     final dateTime = await showDatePicker(
-      context: context,
+      context: context, barrierColor: Colors.black54,
       cancelText: isStartDate ? Strings.now : Strings.forever,
       confirmText: Strings.apply,
       initialDate:
@@ -788,11 +803,18 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
               color: schedules.first.type == scheduleType
                   ? LiviThemes.colors.brand50
                   : LiviThemes.colors.baseWhite),
-          child: Align(
-            child: LiviTextStyles.interBold14(scheduleType.description,
-                color: schedules.first.type == scheduleType
-                    ? LiviThemes.colors.brand600
-                    : LiviThemes.colors.gray500),
+          child: Container(
+            decoration: BoxDecoration(
+                border: schedules.first.type == scheduleType
+                    ? Border.all(color: LiviThemes.colors.brand300)
+                    : null),
+            padding: const EdgeInsets.all(8),
+            child: Align(
+              child: LiviTextStyles.interBold14(scheduleType.description,
+                  color: schedules.first.type == scheduleType
+                      ? LiviThemes.colors.brand600
+                      : LiviThemes.colors.gray500),
+            ),
           ),
         ),
       ),
@@ -805,7 +827,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LiviTextStyles.interSemiBold14(Strings.days),
+          LiviTextStyles.interMedium16(Strings.days,
+              color: LiviThemes.colors.gray500),
           LiviThemes.spacing.heightSpacer16(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -868,7 +891,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         endDate: startDateValue(stillAdding: true).add(Duration(days: 1)),
         scheduledDosings: [
           ScheduledDose(
-            timeOfDay: TimeOfDay.now(),
+            timeOfDay: TimeOfDay(hour: 8, minute: 0),
           )
         ],
       ),
@@ -927,7 +950,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                     schedules[currentIndex].dayPattern[dayOfWeek] == 1
                 ? LiviThemes.colors.brand600
                 : dayOfWeek.isWeekend()
-                    ? LiviThemes.colors.brand50
+                    ? LiviThemes.colors.gray50
                     : LiviThemes.colors.baseWhite,
             border: Border.all(
                 color: LiviThemes.colors.gray300,
@@ -939,7 +962,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                       schedules[currentIndex].dayPattern[dayOfWeek] == 1
                   ? LiviThemes.colors.baseWhite
                   : dayOfWeek.isWeekend()
-                      ? LiviThemes.colors.brand600
+                      ? LiviThemes.colors.gray500
                       : LiviThemes.colors.baseBlack),
         ),
       ),
@@ -1150,48 +1173,56 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
+          contentPadding: EdgeInsets.zero,
           backgroundColor: LiviThemes.colors.baseWhite,
           surfaceTintColor: LiviThemes.colors.baseWhite,
           insetPadding: EdgeInsets.symmetric(horizontal: 32),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
           title: const Text(Strings.enterDates),
           content: Container(
-            height: 250,
+            height: 120,
             width: 400,
             color: LiviThemes.colors.baseWhite,
             child: Column(
               children: [
-                LiviThemes.spacing.heightSpacer64(),
+                LiviThemes.spacing.heightSpacer8(),
                 LiviDivider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: Strings.take,
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                        ),
-                        focusNode: FocusNode(),
-                        keyboardType: TextInputType.number,
-                        controller: _takeDosesController,
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: TextField(
+                LiviThemes.spacing.heightSpacer32(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
                           decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              labelText: Strings.at,
-                              hintText: _timeOfDay == null
-                                  ? formartTimeOfDay(
-                                      TimeOfDay(hour: 8, minute: 0))
-                                  : formartTimeOfDay(_timeOfDay!)),
-                          readOnly: true,
-                          onTap: () async => showTimerPickerWidget(setState)),
-                    ),
-                  ],
+                            border: OutlineInputBorder(),
+                            labelText: Strings.take,
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                          ),
+                          focusNode: FocusNode(),
+                          keyboardType: TextInputType.number,
+                          controller: _takeDosesController,
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: TextField(
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                labelText: Strings.at,
+                                hintText: _timeOfDay == null
+                                    ? formartTimeOfDay(
+                                        TimeOfDay(hour: 8, minute: 0))
+                                    : formartTimeOfDay(_timeOfDay!)),
+                            readOnly: true,
+                            onTap: () async => showTimerPickerWidget(setState)),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
