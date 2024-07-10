@@ -11,6 +11,9 @@ Dosing _$DosingFromJson(Map<String, dynamic> json) => Dosing()
   ..scheduledDosingTime = json['scheduledDosingTime'] == null
       ? null
       : DateTime.parse(json['scheduledDosingTime'] as String)
+  ..dailyPrnIntervalStartTime = json['dailyPrnIntervalStartTime'] == null
+      ? null
+      : DateTime.parse(json['dailyPrnIntervalStartTime'] as String)
   ..lastDosingTime = json['lastDosingTime'] == null
       ? null
       : DateTime.parse(json['lastDosingTime'] as String)
@@ -25,6 +28,8 @@ Dosing _$DosingFromJson(Map<String, dynamic> json) => Dosing()
 Map<String, dynamic> _$DosingToJson(Dosing instance) => <String, dynamic>{
       'dosingId': instance.dosingId,
       'scheduledDosingTime': instance.scheduledDosingTime?.toIso8601String(),
+      'dailyPrnIntervalStartTime':
+          instance.dailyPrnIntervalStartTime?.toIso8601String(),
       'lastDosingTime': instance.lastDosingTime?.toIso8601String(),
       'qtyRequested': instance.qtyRequested,
       'qtyRemaining': instance.qtyRemaining,
