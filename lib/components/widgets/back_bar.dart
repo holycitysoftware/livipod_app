@@ -10,12 +10,14 @@ class BackBar extends StatelessWidget {
   final bool? hasTrailing;
   final Widget? trailing;
   final Function()? onTap;
+  final bool? cancelDescription;
 
   const BackBar(
       {super.key,
       this.title,
       this.padding,
       this.trailing,
+      this.cancelDescription = false,
       this.hasTrailing = true,
       this.onTap});
 
@@ -64,12 +66,18 @@ class BackBar extends StatelessWidget {
           LiviInkWell(
             padding: const EdgeInsets.all(16),
             onTap: isHidden ? () {} : () => pop(context),
-            child: LiviThemes.icons.chevronLeft,
+            child: LiviThemes.icons.chevroLeftIcon(
+                color: cancelDescription == true
+                    ? LiviThemes.colors.error600
+                    : LiviThemes.colors.brand600),
           ),
           LiviGestureDetector(
             onTap: isHidden ? () {} : () => pop(context),
-            child: LiviTextStyles.interRegular16(Strings.back,
-                color: LiviThemes.colors.brand600),
+            child: LiviTextStyles.interRegular16(
+                cancelDescription == true ? Strings.cancel : Strings.back,
+                color: cancelDescription == true
+                    ? LiviThemes.colors.error600
+                    : LiviThemes.colors.brand600),
           ),
         ],
       ),

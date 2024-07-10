@@ -71,6 +71,8 @@ class _MedicationsPageState extends State<MedicationsPage> {
                 }
                 if (snapshot.data != null && snapshot.data!.isNotEmpty) {
                   final medications = snapshot.data!;
+                  medications.sort((a, b) =>
+                      a.name.toLowerCase().compareTo(b.name.toLowerCase()));
                   return ListView.builder(
                     itemCount: medications.length,
                     itemBuilder: (context, index) {
