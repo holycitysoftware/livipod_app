@@ -266,6 +266,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     widget.medication.instructions = _instructionsController.text;
     goToHomePage();
     if (widget.isEdit) {
+      widget.medication.nextDosing = null;
       await MedicationService().updateMedication(widget.medication);
       return;
     }
