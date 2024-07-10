@@ -102,6 +102,9 @@ class Strings {
   static const String yourAccountHasBeenCreatedStart =
       'Your account has been created, start by registering your first medication.';
   static const String welcomeToLiviPod = 'Welcome to LiviPod®';
+  static const String welcomeToLiviPodClean = 'Welcome to LiviPod';
+  static const String yourAccountHasBeenCreatedLets =
+      "Your account has been created! Let's start by registering your first medication.";
   static const String back = 'Back';
   static const String days = 'Days';
   static const String didntReceiveTheSMS = "Didn't receive the SMS?";

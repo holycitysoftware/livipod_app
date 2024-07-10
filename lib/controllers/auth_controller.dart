@@ -57,7 +57,7 @@ class AuthController extends ChangeNotifier {
     _verificationError = '';
   }
 
-  Future<void> isFirstLogin() async {
+Future<void> isFirstLogin() async {
     final appCache = AppCache();
     final isFirstLogin = await appCache.getIsFirstLogin();
     if (isFirstLogin && FirebaseAuth.instance.currentUser != null) {

@@ -695,6 +695,11 @@ class LiviIcons {
         '$imagesPath/livipod.png',
       );
 
+  Widget get welcomeImage => Image.asset(
+        '$imagesPath/welcome.png',
+        fit: BoxFit.fill,
+      );
+
   Widget get liviPodImageSmaller => Image.asset(
         'assets/images/livipod.png',
         height: 40,
