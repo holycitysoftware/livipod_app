@@ -44,9 +44,11 @@ class _EditInfoPageState extends State<EditInfoPage> {
     return fullNameController.text.isNotEmpty &&
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
-            (appUser!.name != fullNameController.text ||
-                !appUser!.phoneNumber.contains(phoneNumberController.text) ||
-                imageWasChanged));
+                (appUser!.name != fullNameController.text ||
+                    !appUser!.phoneNumber
+                        .contains(phoneNumberController.text) ||
+                    appUser!.email != emailController.text) ||
+            imageWasChanged);
   }
 
   @override
@@ -56,6 +58,9 @@ class _EditInfoPageState extends State<EditInfoPage> {
       setState(() {});
     });
     phoneNumberController.addListener(() {
+      setState(() {});
+    });
+    emailController.addListener(() {
       setState(() {});
     });
     // country = getCountryByCode(authController.appUser!.phoneNumber);
@@ -112,6 +117,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
       backgroundColor: LiviThemes.colors.baseWhite,
       appBar: LiviAppBar(
         title: Strings.editInfo,
+        cancelDescription: true,
         onPressed: () {},
         tail: [
           LiviTextIcon(

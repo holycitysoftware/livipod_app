@@ -232,7 +232,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         inventoryQuantityWidget(),
       if (getShowInstructions && currentIndex == 0) instructionsWidget(),
       LiviThemes.spacing.heightSpacer16(),
-      if (widget.isEdit && schedules.length > 1) deleteScheduleWidget(),
+      if (schedules.length > 1) deleteScheduleWidget(),
       if (widget.isEdit) deleteMedicationWidget(),
       if (!widget.isEdit) addAnotherScheduleWidget(schedules.length),
       if (!widget.isEdit) saveWidget(),
@@ -371,15 +371,21 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   hint: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.43,
                     child: LiviTextStyles.interSemiBold16(
-                        widget.medication.getNameStrengthDosageForm(),
-                        maxLines: 1),
+                      widget.medication.getNameStrengthDosageForm(),
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   value: null,
+                  isExpanded: widget.isEdit ? true : false,
                   onChanged: (int? value) {
                     currentIndex = value!;
                     dropdownIsSelected = false;
                     setState(() {});
                   },
+                  icon: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.arrow_drop_down)),
                   items: schedules.asMap().entries.map(
                     (entry) {
                       return DropdownMenuItem<int>(
@@ -421,7 +427,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                   ),
                 )
               ]
-            : null,
+            : [Spacer()],
       ),
       body: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -886,7 +892,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
         endDate: startDateValue(stillAdding: true).add(Duration(days: 1)),
         scheduledDosings: [
           ScheduledDose(
-            timeOfDay: TimeOfDay.now(),
+            timeOfDay: TimeOfDay(hour: 8, minute: 0),
           )
         ],
       ),

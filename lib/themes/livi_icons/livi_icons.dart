@@ -669,6 +669,23 @@ class LiviIcons {
   Widget get chevronLeft => SvgPicture.asset(
         '$svgPath/chevron_left.svg',
       );
+
+  String get _chevronLeftPath => '$svgPath/chevron_left.svg';
+
+  Widget chevroLeftIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _chevronLeftPath,
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      height: height,
+    );
+  }
+
   Widget get chevronDownGray => SvgPicture.asset('$svgPath/chevron_down.svg',
       colorFilter:
           ColorFilter.mode(LiviThemes.colors.gray400, BlendMode.srcIn));
