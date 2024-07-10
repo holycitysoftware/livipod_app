@@ -18,6 +18,7 @@ class Dosing {
   int dosingId = 0;
   //@JsonKey(fromJson: fromJsonDateTime)
   DateTime? scheduledDosingTime;
+  DateTime? dailyPrnIntervalStartTime;
   //@JsonKey(fromJson: fromJsonDateTime)
   DateTime? lastDosingTime;
   double qtyRequested = 0;
