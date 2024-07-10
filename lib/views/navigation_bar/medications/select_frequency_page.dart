@@ -273,13 +273,12 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
   }
 
   void selectFrequency(ScheduleType scheduleType) {
-    final backup = widget.medication;
-    widget.medication = Medication(name: backup.name);
-    widget.medication.schedules = backup.schedules;
-    widget.medication.strength = backup.strength;
-    widget.medication.dosageForm = backup.dosageForm;
-
+    final asNeededWasNotSelected = scheduleType != ScheduleType.asNeeded;
     for (final element in schedules) {
+      if (widget.medication.schedules.first.type == ScheduleType.asNeeded &&
+          asNeededWasNotSelected) {
+        element.prnDosing = null;
+      }
       element.type = scheduleType;
     }
 
