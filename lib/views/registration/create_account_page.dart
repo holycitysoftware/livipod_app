@@ -228,6 +228,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     title: Strings.phoneNumber.requiredSymbol(),
                     controller: phoneNumberController,
                     focusNode: phoneFocus,
+                    staticHint: country.dialCode,
                     errorText: authController.verificationError.isEmpty
                         ? null
                         : authController.verificationError,

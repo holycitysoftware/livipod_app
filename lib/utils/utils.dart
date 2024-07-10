@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:regexed_validator/regexed_validator.dart';
 
 import '../components/components.dart';
 import '../models/enums.dart';
@@ -539,6 +540,31 @@ Future<String?> takePicture(
   } catch (e, s) {
     print(e.toString());
     print(s.toString());
+  }
+}
+
+String? validateEmail(String email) {
+  var validEmail = true;
+
+  if (email.isNotEmpty) {
+    validEmail = validator.email(email);
+  } else {
+    return null;
+  }
+  if (!validEmail) {
+    return 'Invalid email';
+  } else {
+    return null;
+  }
+}
+
+String? validatePhone(String phone) {
+  final validPhone = validator.phone(phone);
+
+  if (!validPhone) {
+    return 'Invalid phone number.';
+  } else {
+    return null;
   }
 }
 

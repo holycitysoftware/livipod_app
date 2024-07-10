@@ -12,6 +12,7 @@ import '../services/app_user_service.dart';
 import '../utils/logger.dart';
 import '../utils/shared_prefs.dart';
 import '../utils/string_ext.dart';
+import '../utils/utils.dart';
 
 class AuthController extends ChangeNotifier {
   User? _user;
@@ -57,7 +58,7 @@ class AuthController extends ChangeNotifier {
     _verificationError = '';
   }
 
-Future<void> isFirstLogin() async {
+  Future<void> isFirstLogin() async {
     final appCache = AppCache();
     final isFirstLogin = await appCache.getIsFirstLogin();
     if (isFirstLogin && FirebaseAuth.instance.currentUser != null) {
@@ -159,7 +160,7 @@ Future<void> isFirstLogin() async {
       notifyListeners();
       _promptForUserCode = false;
       _verificationId = '';
-
+      _verificationError = validatePhone(phoneNumber) ?? '';
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         forceResendingToken: resendToken,

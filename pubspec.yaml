@@ -68,7 +68,8 @@ dependencies:
   image_cropper: ^5.0.1
   package_info_plus: ^8.0.0
   dropdown_button2: ^2.3.9
-
+  regexed_validator: ^2.0.0+1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
