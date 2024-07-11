@@ -152,6 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                         horizontal: kSpacer_16, vertical: kSpacer_8),
                     title: Strings.phoneNumber.requiredSymbol(),
                     focusNode: phoneFocus,
+                    staticHint: country.dialCode,
                     onFieldSubmitted: (value) {
                       verifyNumber();
                     },

@@ -163,11 +163,9 @@ class _LiviInputFieldState extends State<LiviInputField> {
                 errorMaxLines: 5,
                 errorText: widget.errorText,
                 border: border(),
-                prefix: widget.staticHint != null
-                    ? Text(
-                        widget.staticHint! + ' ',
-                        style: LiviThemes.typography.interRegular_16,
-                      )
+                prefix: widget.staticHint != null && widget.focusNode.hasFocus
+                    ? LiviTextStyles.interRegular16(widget.staticHint! + ' ',
+                        color: LiviThemes.colors.gray400)
                     : null,
                 errorBorder: errorBorder(),
                 enabledBorder: border(),
