@@ -236,8 +236,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: LiviThemes.theme.getAppTheme(),
-        home:
-            TellUsAboutYourselfPage(), // const FdaSearchTest() // const TestCreateUser()
+        home: SplashPage(), // const FdaSearchTest() // const TestCreateUser()
       ),
     );
   }

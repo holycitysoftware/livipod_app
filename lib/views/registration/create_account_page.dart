@@ -66,6 +66,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       if (number != null && number.phoneNumber != null) {
         phoneNumberController.text = number.parseNumber().replaceAll('+', '');
       }
+      Provider.of<AuthController>(context, listen: false).clearAppUser();
       setState(() {});
     }
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
@@ -36,13 +38,26 @@ class _LoginPageState extends State<LoginPage> {
     phoneNumberController.addListener(() {
       setState(() {});
     });
-    fillForms();
+    getCountry();
     super.initState();
   }
 
-  void fillForms() {
-    if (widget.appUser != null) {
-      phoneNumberController.text = widget.appUser!.phoneNumber;
+  Future<void> getCountry() async {
+    if (widget.appUser == null ||
+        (widget.appUser != null && widget.appUser!.phoneNumber.isEmpty)) {
+      return;
+    }
+    final number = await PhoneNumber.getRegionInfoFromPhoneNumber(
+        widget.appUser!.phoneNumber);
+    if (number != null) {
+      final String parsableNumber = number.dialCode ?? '';
+      country = getCountryByCode('+$parsableNumber');
+      if (number != null && number.phoneNumber != null) {
+        phoneNumberController.text = number.parseNumber().replaceAll('+', '');
+      }
+      Provider.of<AuthController>(context, listen: false)
+          .clearAppUser();
+      setState(() {});
     }
   }
 

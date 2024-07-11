@@ -99,6 +99,11 @@ class AuthController extends ChangeNotifier {
 
   void goBackBySettingPromptForUserCode() {
     _promptForUserCode = false;
+    // _appUser = null;
+    notifyListeners();
+  }
+
+  void clearAppUser() {
     _appUser = null;
     notifyListeners();
   }
