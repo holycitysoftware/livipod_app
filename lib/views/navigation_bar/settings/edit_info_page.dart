@@ -42,6 +42,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
   final FocusNode phoneFocus = FocusNode();
   String? errorTextPhone;
   String? errorTextEmail;
+  bool loading = false;
 
   bool enabledSaveButton() {
     return fullNameController.text.isNotEmpty &&
@@ -104,6 +105,9 @@ class _EditInfoPageState extends State<EditInfoPage> {
   }
 
   Future<void> saveUserInfo() async {
+    setState(() {
+      loading = true;
+    });
     errorTextPhone = null;
     errorTextEmail = null;
     errorTextEmail = validateEmail(emailController.text);
@@ -123,6 +127,9 @@ class _EditInfoPageState extends State<EditInfoPage> {
         appUser!.phoneNumber =
             '${country.dialCode}${phoneNumberController.text}';
         await authController.editAppUser(appUser!);
+        setState(() {
+          loading = false;
+        });
         Navigator.pop(context);
       }
     }
@@ -141,6 +148,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
             onPressed: enabledSaveButton() ? saveUserInfo : () {},
             enabled: enabledSaveButton(),
             text: Strings.save,
+            loading: loading,
             icon: Padding(
               padding: const EdgeInsets.only(left: 4),
               child: LiviThemes.icons.checkIcon(

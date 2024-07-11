@@ -45,6 +45,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   final FocusNode fullNameFocus = FocusNode();
   final FocusNode emailFocus = FocusNode();
   final FocusNode phoneFocus = FocusNode();
+  bool loading = false;
 
   bool enabledSaveButton() {
     return fullNameController.text.isNotEmpty &&
@@ -124,6 +125,9 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   }
 
   Future<void> saveUserInfo() async {
+    setState(() {
+      loading = true;
+    });
     errorTextPhone = null;
     errorTextEmail = null;
     errorTextEmail = validateEmail(emailController.text);
@@ -142,6 +146,9 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
         appUser!.phoneNumber =
             '${country.dialCode}${phoneNumberController.text}';
         await authController.editAppUser(appUser!);
+        setState(() {
+          loading = false;
+        });
         Navigator.pop(context);
       }
     }
@@ -171,6 +178,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
             onPressed: enabledSaveButton() ? saveUserInfo : () {},
             enabled: enabledSaveButton(),
             text: Strings.save,
+            loading: loading,
             icon: Padding(
               padding: const EdgeInsets.only(left: 4),
               child: LiviThemes.icons.checkIcon(

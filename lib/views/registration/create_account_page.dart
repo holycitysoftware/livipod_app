@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -199,110 +200,112 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         ),
         body: Form(
           key: formKey,
-          child: ListView(
-            children: [
-              BackBar(
-                padding: EdgeInsets.zero,
-                trailing: LiviTextStyles.interRegular14(buildNumber,
-                    color: LiviThemes.colors.gray700),
-              ),
-              LiviThemes.icons.logo,
-              LiviThemes.spacing.heightSpacer16(),
-              Align(
-                child: LiviTextStyles.interSemiBold24(Strings.createAnAccount),
-              ),
-              LiviThemes.spacing.heightSpacer8(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
-                child: LiviTextStyles.interRegular16(
-                  Strings.afterCreatingYourAccount,
-                  textAlign: TextAlign.center,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                BackBar(
+                  trailing: LiviTextStyles.interRegular14(buildNumber,
+                      color: LiviThemes.colors.gray700),
                 ),
-              ),
-              const SizedBox(height: kSpacer_16),
-              LiviInputField(
-                focusNode: fullNameFocus,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.fullName.requiredSymbol(),
-                textCapitalization: TextCapitalization.words,
-                hint: Strings.steveJobsFullName,
-                controller: fullNameController,
-              ),
-              LiviInputField(
-                focusNode: emailFocus,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSpacer_16, vertical: kSpacer_8),
-                title: Strings.email,
-                subTitle: Strings.optional,
-                hint: Strings.steveJobsEmail,
-                controller: emailController,
-              ),
-              Consumer<AuthController>(
-                  builder: (context, authController, child) {
-                return LiviInputField(
+                LiviThemes.icons.logo,
+                LiviThemes.spacing.heightSpacer16(),
+                Align(
+                  child:
+                      LiviTextStyles.interSemiBold24(Strings.createAnAccount),
+                ),
+                LiviThemes.spacing.heightSpacer8(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
+                  child: LiviTextStyles.interRegular16(
+                    Strings.afterCreatingYourAccount,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: kSpacer_16),
+                LiviInputField(
+                  focusNode: fullNameFocus,
                   padding: const EdgeInsets.symmetric(
                       horizontal: kSpacer_16, vertical: kSpacer_8),
-                  title: Strings.phoneNumber.requiredSymbol(),
-                  controller: phoneNumberController,
-                  focusNode: phoneFocus,
-                  keyboardType: TextInputType.phone,
-                  staticHint: country.dialCode,
-                  errorText: authController.verificationError.isEmpty
-                      ? null
-                      : authController.verificationError,
-                  prefix: CountryDropdownButton(
-                    country: country,
-                    onChanged: (Country? value) {
-                      setState(() {
-                        country = value!;
-                      });
-                    },
-                  ),
-                  hint: Strings.steveJobsNumber,
-                );
-              }),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Checkbox(
-                        activeColor: LiviThemes.colors.brand600,
-                        value: agreedToTOS,
-                        onChanged: (e) => _setAgreedToTOS(!agreedToTOS)),
-                    Expanded(
-                      child: RichText(
-                          text: TextSpan(children: [
-                        TextSpan(
-                          text: '${Strings.iHaveReadAndAgreeToThe} ',
-                          style: LiviThemes.typography.interRegular_16
-                              .copyWith(color: LiviThemes.colors.baseBlack),
-                        ),
-                        TextSpan(
-                          text: Strings.termsOfService,
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = goToTermsOfServicePage,
-                          style: LiviThemes.typography.interRegular_16
-                              .copyWith(color: LiviThemes.colors.brand600),
-                        ),
-                        TextSpan(
-                          text: ' ${Strings.and} ',
-                          style: LiviThemes.typography.interRegular_16
-                              .copyWith(color: LiviThemes.colors.baseBlack),
-                        ),
-                        TextSpan(
-                          text: Strings.privacyPolicy,
-                          style: LiviThemes.typography.interRegular_16
-                              .copyWith(color: LiviThemes.colors.brand600),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = goToPrivacyPolicyPage,
-                        ),
-                      ])),
-                    ),
-                  ],
+                  title: Strings.fullName.requiredSymbol(),
+                  textCapitalization: TextCapitalization.words,
+                  hint: Strings.steveJobsFullName,
+                  controller: fullNameController,
                 ),
-              ),
-            ],
+                LiviInputField(
+                  focusNode: emailFocus,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: kSpacer_16, vertical: kSpacer_8),
+                  title: Strings.email,
+                  subTitle: Strings.optional,
+                  hint: Strings.steveJobsEmail,
+                  controller: emailController,
+                ),
+                Consumer<AuthController>(
+                    builder: (context, authController, child) {
+                  return LiviInputField(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: kSpacer_16, vertical: kSpacer_8),
+                    title: Strings.phoneNumber.requiredSymbol(),
+                    controller: phoneNumberController,
+                    focusNode: phoneFocus,
+                    keyboardType: TextInputType.phone,
+                    staticHint: country.dialCode,
+                    errorText: authController.verificationError.isEmpty
+                        ? null
+                        : authController.verificationError,
+                    prefix: CountryDropdownButton(
+                      country: country,
+                      onChanged: (Country? value) {
+                        setState(() {
+                          country = value!;
+                        });
+                      },
+                    ),
+                    hint: Strings.steveJobsNumber,
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                          activeColor: LiviThemes.colors.brand600,
+                          value: agreedToTOS,
+                          onChanged: (e) => _setAgreedToTOS(!agreedToTOS)),
+                      Expanded(
+                        child: RichText(
+                            text: TextSpan(children: [
+                          TextSpan(
+                            text: '${Strings.iHaveReadAndAgreeToThe} ',
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.baseBlack),
+                          ),
+                          TextSpan(
+                            text: Strings.termsOfService,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = goToTermsOfServicePage,
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.brand600),
+                          ),
+                          TextSpan(
+                            text: ' ${Strings.and} ',
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.baseBlack),
+                          ),
+                          TextSpan(
+                            text: Strings.privacyPolicy,
+                            style: LiviThemes.typography.interRegular_16
+                                .copyWith(color: LiviThemes.colors.brand600),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = goToPrivacyPolicyPage,
+                          ),
+                        ])),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
