@@ -18,11 +18,9 @@ import 'welcome_page.dart';
 
 class CreateAccountPage extends StatefulWidget {
   static const String routeName = '/create-account-page';
-  final bool fromLoginPage;
   final AppUser? appUser;
   const CreateAccountPage({
     super.key,
-    this.fromLoginPage = false,
     this.appUser,
   });
   @override
@@ -172,7 +170,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 isLoading: authController.loading,
                 isCloseToNotch: true,
                 onTap: () {
-                  verifyNumber(authController);
+                  verifyNumber(authController,);
                 },
               );
             }),
@@ -184,16 +182,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             child: Column(
               children: [
                 BackBar(
-                  onTap: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) {
-                      if (widget.fromLoginPage) {
-                        return LoginPage();
-                      } else {
-                        return WelcomePage();
-                      }
-                    }));
-                  },
                   trailing: LiviTextStyles.interRegular14(buildNumber,
                       color: LiviThemes.colors.gray700),
                 ),

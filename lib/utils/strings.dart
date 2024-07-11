@@ -13,6 +13,10 @@ class Strings {
   static const String removeMedication = 'Remove Medication';
   static const String unclaim = 'Unclaim';
   static const String delete = 'Delete';
+  static const String noUsersPhoneNumber =
+      'There is no users with this phone number';
+  static const String phoneNumberExists =
+      'A user with this phone number already exists.';
   static const String collapse = 'Collapse';
   static const String deleteImage = 'Delete image';
   static const String livipod = 'LiviPod';

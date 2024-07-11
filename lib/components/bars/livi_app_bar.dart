@@ -14,6 +14,7 @@ class LiviAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget? mainWidget;
   final Color? color;
   final bool? cancelDescription;
+  final bool? shouldNeverShowBackButton;
   const LiviAppBar({
     super.key,
     required this.title,
@@ -22,6 +23,7 @@ class LiviAppBar extends StatefulWidget implements PreferredSizeWidget {
     this.elevation,
     this.color,
     this.cancelDescription = false,
+    this.shouldNeverShowBackButton = false,
     this.backButton = false,
     this.tail,
   });
@@ -43,8 +45,11 @@ class _LiviAppBarState extends State<LiviAppBar> {
       shadowColor: LiviThemes.colors.baseWhite,
       elevation: widget.elevation ?? 0, centerTitle: true,
       surfaceTintColor: LiviThemes.colors.baseWhite,
-      leading: widget.backButton ||
-              (ModalRoute.of(context)?.impliesAppBarDismissal ?? false)
+      automaticallyImplyLeading: false,
+
+      leading: (widget.backButton ||
+                  (ModalRoute.of(context)?.impliesAppBarDismissal ?? false)) &&
+              widget.shouldNeverShowBackButton == false
           ? BackBar(
               cancelDescription: widget.cancelDescription,
             )

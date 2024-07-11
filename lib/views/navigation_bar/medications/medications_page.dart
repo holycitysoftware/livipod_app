@@ -47,79 +47,84 @@ class _MedicationsPageState extends State<MedicationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: LiviThemes.colors.gray100,
-      appBar: LiviAppBar(
-        title: Strings.yourMedications,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: goToSearchMedications,
-        backgroundColor: LiviThemes.colors.brand600,
-        child: LiviThemes.icons.plusIcon(
-          color: LiviThemes.colors.baseWhite,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: LiviThemes.colors.gray100,
+        appBar: LiviAppBar(
+          title: Strings.yourMedications,
+          shouldNeverShowBackButton: true,
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<AuthController>(builder: (context, value, child) {
-          return StreamBuilder<List<Medication>>(
-              stream: MedicationService()
-                  .listenToMedicationsRealTime(value.appUser!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                  final medications = snapshot.data!;
-                  medications.sort((a, b) =>
-                      a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-                  return ListView.builder(
-                    itemCount: medications.length,
-                    itemBuilder: (context, index) {
-                      final medication = medications[index];
-                      return MedicationCard(
-                        dosageForm: medication.dosageForm,
-                        medication: medication,
-                        onTap: () => goToEditMedication(medication),
-                      );
-                    },
-                  );
-                }
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 48),
-                            child: LiviTextStyles.interSemiBold36(
-                                Strings.noMedicationsAddedYet,
+        floatingActionButton: FloatingActionButton(
+          onPressed: goToSearchMedications,
+          backgroundColor: LiviThemes.colors.brand600,
+          child: LiviThemes.icons.plusIcon(
+            color: LiviThemes.colors.baseWhite,
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Consumer<AuthController>(builder: (context, value, child) {
+            return StreamBuilder<List<Medication>>(
+                stream: MedicationService()
+                    .listenToMedicationsRealTime(value.appUser!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+                    final medications = snapshot.data!;
+                    medications.sort((a, b) =>
+                        a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+                    return ListView.builder(
+                      itemCount: medications.length,
+                      itemBuilder: (context, index) {
+                        final medication = medications[index];
+                        return MedicationCard(
+                          dosageForm: medication.dosageForm,
+                          medication: medication,
+                          onTap: () => goToEditMedication(medication),
+                        );
+                      },
+                    );
+                  }
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Spacer(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 48),
+                              child: LiviTextStyles.interSemiBold36(
+                                  Strings.noMedicationsAddedYet,
+                                  textAlign: TextAlign.center),
+                            ),
+                            LiviThemes.spacing.heightSpacer16(),
+                            LiviTextStyles.interRegular16(
+                                Strings.typeTheNameOfTheMedicine,
                                 textAlign: TextAlign.center),
-                          ),
-                          LiviThemes.spacing.heightSpacer16(),
-                          LiviTextStyles.interRegular16(
-                              Strings.typeTheNameOfTheMedicine,
-                              textAlign: TextAlign.center),
-                          LiviThemes.spacing.heightSpacer16(),
-                          LiviSearchBar(
-                            onTap: () => goToSearchMedications(
-                                medication: searchTextController.text),
-                            controller: searchTextController,
-                            onFieldSubmitted: (e) {
-                              goToSearchMedications(medication: e);
-                            },
-                            focusNode: focusNode,
-                          ),
-                          Spacer(
-                            flex: 2,
-                          ),
-                        ]),
-                  ),
-                );
-              });
-        }),
+                            LiviThemes.spacing.heightSpacer16(),
+                            LiviSearchBar(
+                              onTap: () => goToSearchMedications(
+                                  medication: searchTextController.text),
+                              controller: searchTextController,
+                              onFieldSubmitted: (e) {
+                                goToSearchMedications(medication: e);
+                              },
+                              focusNode: focusNode,
+                            ),
+                            Spacer(
+                              flex: 2,
+                            ),
+                          ]),
+                    ),
+                  );
+                });
+          }),
+        ),
       ),
     );
   }

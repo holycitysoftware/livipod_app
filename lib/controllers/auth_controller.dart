@@ -166,6 +166,14 @@ class AuthController extends ChangeNotifier {
         throw Exception(Strings.invalidPhoneNumber);
       }
 
+      final phoneNumberIsRegistered =
+          await AppUserService().phoneNumberExists(appUser, phoneNumber);
+      if (!phoneNumberIsRegistered && !isAccountCreation) {
+        throw Exception(Strings.noUsersPhoneNumber);
+      } else if (phoneNumberIsRegistered && isAccountCreation) {
+        throw Exception(Strings.phoneNumberExists);
+      }
+
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         forceResendingToken: resendToken,

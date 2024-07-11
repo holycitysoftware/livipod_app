@@ -14,7 +14,8 @@ import '../views.dart';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = '/login-page';
-  const LoginPage({super.key});
+  final AppUser? appUser;
+  const LoginPage({super.key, this.appUser});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -35,7 +36,14 @@ class _LoginPageState extends State<LoginPage> {
     phoneNumberController.addListener(() {
       setState(() {});
     });
+    fillForms();
     super.initState();
+  }
+
+  void fillForms() {
+    if (widget.appUser != null) {
+      phoneNumberController.text = widget.appUser!.phoneNumber;
+    }
   }
 
   void setFocusListeners() {
@@ -59,7 +67,6 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(
         builder: (context) => SmsFlowPage(
-          isFromLoginPage: true,
           showIdentifyPersonaPage: true,
         ),
       ),
