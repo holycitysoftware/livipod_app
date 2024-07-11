@@ -198,12 +198,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
             }),
           ),
         ),
-        body: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
+        body: SafeArea(
+          child: Form(
+            key: formKey,
+            child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               children: [
                 BackBar(
+                  padding: EdgeInsets.zero,
                   trailing: LiviTextStyles.interRegular14(buildNumber,
                       color: LiviThemes.colors.gray700),
                 ),
