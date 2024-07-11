@@ -12,6 +12,7 @@ import '../services/app_user_service.dart';
 import '../utils/logger.dart';
 import '../utils/shared_prefs.dart';
 import '../utils/string_ext.dart';
+import '../utils/strings.dart';
 import '../utils/utils.dart';
 
 class AuthController extends ChangeNotifier {
@@ -160,7 +161,11 @@ class AuthController extends ChangeNotifier {
       notifyListeners();
       _promptForUserCode = false;
       _verificationId = '';
-      _verificationError = validatePhone(phoneNumber) ?? '';
+
+      if ((validatePhone(phoneNumber) ?? '').isNotEmpty) {
+        throw Exception(Strings.invalidPhoneNumber);
+      }
+
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         forceResendingToken: resendToken,

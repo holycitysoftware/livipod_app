@@ -133,6 +133,7 @@ class Strings {
   static const String steveJobsFullName = 'Steven Paul Jobs';
   static const String steveJobsNumber = '555 000-0000';
   static const String continueText = 'Continue';
+  static const String invalidPhoneNumber = 'Invalid phone number.';
   static const String howComfortableAreYou =
       'How comfortable are you with using smartphone apps and technology in general?';
   static const String doYouUsuallyRememberToTake =

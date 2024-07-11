@@ -19,9 +19,11 @@ import 'welcome_page.dart';
 class CreateAccountPage extends StatefulWidget {
   static const String routeName = '/create-account-page';
   final bool fromLoginPage;
+  final AppUser? appUser;
   const CreateAccountPage({
     super.key,
     this.fromLoginPage = false,
+    this.appUser,
   });
   @override
   _CreateAccountPageState createState() => _CreateAccountPageState();
@@ -50,6 +52,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     });
     getBuildNumber();
     super.initState();
+  }
+
+  void fillForms() {
+    if (widget.appUser != null) {
+      fullNameController.text = widget.appUser!.name;
+      emailController.text = widget.appUser!.email ?? '';
+      phoneNumberController.text = widget.appUser!.phoneNumber;
+    }
   }
 
   Future<void> getBuildNumber() async {
@@ -228,6 +238,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     title: Strings.phoneNumber.requiredSymbol(),
                     controller: phoneNumberController,
                     focusNode: phoneFocus,
+                    keyboardType: TextInputType.phone,
                     staticHint: country.dialCode,
                     errorText: authController.verificationError.isEmpty
                         ? null
