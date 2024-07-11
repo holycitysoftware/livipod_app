@@ -41,15 +41,17 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> logout(
       AuthController authController, BuildContext context) async {
-    await LiviAlertDialog.showAlertDialog(context);
+    final logout = await LiviAlertDialog.showAlertDialog(context);
     // Navigator.popUntil(context, (route) => route.isFirst);
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WelcomePage(),
-      ),
-    );
-    await authController.signOut();
+    if (logout) {
+      await authController.signOut();
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WelcomePage(),
+        ),
+      );
+    }
   }
 
   Future<void> goToMyPodsPage(BuildContext context) async {
