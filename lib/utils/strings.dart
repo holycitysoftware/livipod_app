@@ -14,7 +14,7 @@ class Strings {
   static const String unclaim = 'Unclaim';
   static const String delete = 'Delete';
   static const String noUsersPhoneNumber =
-      'There is no users with this phone number';
+      'No user found with this phone number.';
   static const String phoneNumberExists =
       'A user with this phone number already exists.';
   static const String collapse = 'Collapse';

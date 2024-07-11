@@ -5,14 +5,21 @@ import '../../components/components.dart';
 import '../../models/models.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
+import '../navigation_bar/medications/search_medication_page.dart';
 
 class FinishRegistrationPage extends StatelessWidget {
   const FinishRegistrationPage({super.key});
 
-  Future<void> goToLoginPage(BuildContext context) async {
+  Future<void> goToHomePage(BuildContext context) async {
     Navigator.popUntil(context, (route) {
       return route.settings.name == '/sms-flow-page';
     });
+  }
+
+  Future<void> goToMedsPage(BuildContext context) async {
+    await goToHomePage(context);
+    await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => SearchMedicationPage()));
   }
 
   String getUserType(AppUserType userType) {
@@ -46,17 +53,14 @@ class FinishRegistrationPage extends StatelessWidget {
                 text: Strings.addMedication,
                 showArrow: true,
                 onTap: () {
-                  //TOOD: herre
-                  goToLoginPage(context);
+                  goToMedsPage(context);
                 }),
           ),
           body: Column(
             children: [
               BackBar(
                 trailing: TextButton(
-                    onPressed: () {
-                      //TODO: herre
-                    },
+                    onPressed: () => goToHomePage(context),
                     child: LiviTextStyles.interMedium16(Strings.skip,
                         color: LiviThemes.colors.gray500)),
               ),

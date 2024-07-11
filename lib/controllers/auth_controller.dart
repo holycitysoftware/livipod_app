@@ -108,8 +108,11 @@ class AuthController extends ChangeNotifier {
   }) async {
     personaType ??= calculatePersona();
     this.personaType = personaType;
-    if (_appUser != null) {
-      _appUser!.appUserType = personaType;
+  }
+
+  Future<void> savePersona() async {
+    if (_appUser != null && personaType != null) {
+      _appUser!.appUserType = personaType!;
       await _appUserService.updateUser(_appUser!);
     }
   }

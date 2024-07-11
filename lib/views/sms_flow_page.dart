@@ -36,6 +36,8 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
     });
   }
 
+  
+
   Widget getView(AuthController controller) {
     if (!controller.promptForUserCode && controller.firebaseAuthUser == null) {
       if (widget.isLoginPage) {
