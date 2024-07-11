@@ -42,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> logout(
       AuthController authController, BuildContext context) async {
     await LiviAlertDialog.showAlertDialog(context);
-    Navigator.popUntil(context, (route) => route.isFirst);
+    // Navigator.popUntil(context, (route) => route.isFirst);
     await Navigator.pushReplacement(
       context,
       MaterialPageRoute(

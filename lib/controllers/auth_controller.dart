@@ -291,6 +291,7 @@ class AuthController extends ChangeNotifier {
       if (userCredential.user != null) {
         // STEP 1: CREATE ACCOUNT SHELL
         final account = await _accountService.createAccount(
+          
           Account(), // create account shell
         );
         try {

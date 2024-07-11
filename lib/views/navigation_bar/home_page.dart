@@ -337,15 +337,18 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                               LiviThemes.spacing.heightSpacer4(),
-                              OnboardingCardHome(
-                                title: Strings.addYourFirstMedication,
-                                subtitle: Strings.addYourselfOrImportFromCSV,
-                                icon: LiviThemes.icons.alarmAddIcon(
-                                  height: 24,
-                                  color: LiviThemes.colors.brand600,
+                              if (medicationsList == null ||
+                                  (medicationsList != null &&
+                                      medicationsList!.isEmpty))
+                                OnboardingCardHome(
+                                  title: Strings.addYourFirstMedication,
+                                  subtitle: Strings.addYourselfOrImportFromCSV,
+                                  icon: LiviThemes.icons.alarmAddIcon(
+                                    height: 24,
+                                    color: LiviThemes.colors.brand600,
+                                  ),
+                                  onTap: goToSearchMedications,
                                 ),
-                                onTap: goToSearchMedications,
-                              ),
                               StreamBuilder<List<AppUser>>(
                                 stream: AppUserService()
                                     .listenToCaregiversRealTime(
@@ -354,31 +357,20 @@ class _HomePageState extends State<HomePage> {
                                   if (snapshot.data == null ||
                                       (snapshot.data != null &&
                                           snapshot.data!.isEmpty)) {
-                                    return SizedBox();
+                                    return OnboardingCardHome(
+                                      title: Strings.addYourCaregiver,
+                                      subtitle: Strings
+                                          .diveIntoTheEditorAndStartCreating,
+                                      icon: LiviThemes.icons.caregiverIcon(
+                                        height: 24,
+                                        color: LiviThemes.colors.green500,
+                                      ),
+                                      onTap: goToAddCaregiver,
+                                    );
                                   }
-                                  final user = snapshot.data!;
 
-                                  return OnboardingCardHome(
-                                    title: Strings.addYourCaregiver,
-                                    subtitle: Strings
-                                        .diveIntoTheEditorAndStartCreating,
-                                    icon: LiviThemes.icons.caregiverIcon(
-                                      height: 24,
-                                      color: LiviThemes.colors.green500,
-                                    ),
-                                    onTap: goToAddCaregiver,
-                                  );
+                                  return SizedBox();
                                 },
-                              ),
-                              OnboardingCardHome(
-                                title: Strings.addYourCaregiver,
-                                subtitle:
-                                    Strings.diveIntoTheEditorAndStartCreating,
-                                icon: LiviThemes.icons.caregiverIcon(
-                                  height: 24,
-                                  color: LiviThemes.colors.green500,
-                                ),
-                                onTap: goToAddCaregiver,
                               ),
                               OnboardingCardHome(
                                 title: Strings.setYourNotificationSettings,

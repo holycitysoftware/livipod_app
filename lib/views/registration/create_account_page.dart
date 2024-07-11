@@ -67,7 +67,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       if (number != null && number.phoneNumber != null) {
         phoneNumberController.text = number.parseNumber().replaceAll('+', '');
       }
-      Provider.of<AuthController>(context, listen: false).clearAppUser();
       setState(() {});
     }
   }
@@ -170,6 +169,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         if (mounted) {
           Provider.of<AuthController>(context, listen: false)
               .clearVerificationError();
+          Provider.of<AuthController>(context, listen: false).clearAppUser();
         }
       },
       child: Scaffold(

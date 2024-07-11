@@ -50,6 +50,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: LiviThemes.colors.gray100,
         appBar: LiviAppBar(
           title: Strings.yourMedications,
@@ -91,35 +92,33 @@ class _MedicationsPageState extends State<MedicationsPage> {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Spacer(),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 48),
-                              child: LiviTextStyles.interSemiBold36(
-                                  Strings.noMedicationsAddedYet,
+                      child: SingleChildScrollView(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 48),
+                                child: LiviTextStyles.interSemiBold36(
+                                    Strings.noMedicationsAddedYet,
+                                    textAlign: TextAlign.center),
+                              ),
+                              LiviThemes.spacing.heightSpacer16(),
+                              LiviTextStyles.interRegular16(
+                                  Strings.typeTheNameOfTheMedicine,
                                   textAlign: TextAlign.center),
-                            ),
-                            LiviThemes.spacing.heightSpacer16(),
-                            LiviTextStyles.interRegular16(
-                                Strings.typeTheNameOfTheMedicine,
-                                textAlign: TextAlign.center),
-                            LiviThemes.spacing.heightSpacer16(),
-                            LiviSearchBar(
-                              onTap: () => goToSearchMedications(
-                                  medication: searchTextController.text),
-                              controller: searchTextController,
-                              onFieldSubmitted: (e) {
-                                goToSearchMedications(medication: e);
-                              },
-                              focusNode: focusNode,
-                            ),
-                            Spacer(
-                              flex: 2,
-                            ),
-                          ]),
+                              LiviThemes.spacing.heightSpacer16(),
+                              LiviSearchBar(
+                                onTap: () => goToSearchMedications(
+                                    medication: searchTextController.text),
+                                controller: searchTextController,
+                                onFieldSubmitted: (e) {
+                                  goToSearchMedications(medication: e);
+                                },
+                                focusNode: focusNode,
+                              ),
+                            ]),
+                      ),
                     ),
                   );
                 });
