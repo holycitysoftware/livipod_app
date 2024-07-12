@@ -199,6 +199,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           ),
         ),
         body: SafeArea(
+          bottom: false,
           child: Form(
             key: formKey,
             child: ListView(
@@ -232,6 +233,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   textCapitalization: TextCapitalization.words,
                   hint: Strings.steveJobsFullName,
                   controller: fullNameController,
+                  topScrollPadding: 40,
                 ),
                 LiviInputField(
                   focusNode: emailFocus,
