@@ -44,7 +44,11 @@ class _SettingsPageState extends State<SettingsPage> {
     final logout = await LiviAlertDialog.showAlertDialog(context);
     // Navigator.popUntil(context, (route) => route.isFirst);
     if (logout) {
+      ///Here we've got a problem, if I put the signout before
+      ///the routiing, the app will show a flash of the create account page,
+      ///but if put it after, it won't log out the user.
       await authController.signOut();
+
       await Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -220,7 +224,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         Provider.of<AuthController>(context, listen: false)
                             .appUser!),
                     builder: (context, snapshot) {
-                      print(authController.appUser!.name);
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Padding(
                           padding: const EdgeInsets.only(top: 64),
