@@ -77,7 +77,7 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
     if (appUser != null) {
       await Provider.of<AuthController>(context, listen: false)
           .verifyPhoneNumber(appUser.phoneNumber.trim(),
-              isAccountCreation: true);
+              isAccountCreation: widget.isAccountCreation);
     }
   }
 
@@ -145,28 +145,31 @@ class _CheckSmsPageState extends State<CheckSmsPage> {
             ),
           ),
           Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: verifyPhoneNumber,
-                child: LiviTextStyles.interRegular16(
-                  Strings.didntReceiveTheSMS,
-                  textAlign: TextAlign.start,
-                  maxLines: 3,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: verifyPhoneNumber,
+                  child: LiviTextStyles.interRegular16(
+                    Strings.didntReceiveTheSMS,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                  ),
                 ),
-              ),
-              LiviThemes.spacing.widthSpacer4(),
-              GestureDetector(
-                onTap: verifyPhoneNumber,
-                child: LiviTextStyles.interSemiBold16(
-                  Strings.clickToResend,
-                  color: LiviThemes.colors.brand600,
-                  textAlign: TextAlign.start,
-                  maxLines: 3,
+                LiviThemes.spacing.widthSpacer4(),
+                GestureDetector(
+                  onTap: verifyPhoneNumber,
+                  child: LiviTextStyles.interSemiBold16(
+                    Strings.clickToResend,
+                    color: LiviThemes.colors.brand600,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

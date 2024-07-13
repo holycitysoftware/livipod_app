@@ -5,6 +5,7 @@ import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
 import '../../../models/models.dart';
 import '../../../services/medication_service.dart';
+import '../../../services/services.dart';
 import '../../../themes/livi_themes.dart';
 import '../../../utils/strings.dart';
 import '../../views.dart';
@@ -47,80 +48,105 @@ class _MedicationsPageState extends State<MedicationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: LiviThemes.colors.gray100,
-      appBar: LiviAppBar(
-        title: Strings.yourMedications,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: goToSearchMedications,
-        backgroundColor: LiviThemes.colors.brand600,
-        child: LiviThemes.icons.plusIcon(
-          color: LiviThemes.colors.baseWhite,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: LiviThemes.colors.gray100,
+        appBar: LiviAppBar(
+          title: Strings.yourMedications,
+          shouldNeverShowBackButton: true,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: goToSearchMedications,
+          backgroundColor: LiviThemes.colors.brand600,
+          child: LiviThemes.icons.plusIcon(
+            color: LiviThemes.colors.baseWhite,
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: StreamBuilder(
+              initialData:
+                  Provider.of<AuthController>(context, listen: false).appUser,
+              stream: AppUserService().listenToUserRealTime(
+                  Provider.of<AuthController>(context, listen: false).appUser!),
+              builder: (context, appUserSnapshot) {
+                final appUser = appUserSnapshot.data;
+
+                return StreamBuilder<List<Medication>>(
+                    stream: MedicationService()
+                        .listenToMedicationsRealTime(appUser!),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return LiviCircularAnimation();
+                      }
+                      if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+                        final medications = snapshot.data!;
+                        medications.sort((a, b) => a.name
+                            .toLowerCase()
+                            .compareTo(b.name.toLowerCase()));
+                        return ListView.builder(
+                          itemCount: medications.length,
+                          itemBuilder: (context, index) {
+                            final medication = medications[index];
+                            return MedicationCard(
+                              useMilitaryTime: appUser.useMilitaryTime,
+                              dosageForm: medication.dosageForm,
+                              medication: medication,
+                              onTap: () => goToEditMedication(medication),
+                            );
+                          },
+                        );
+                      }
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SingleChildScrollView(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 48),
+                                    child: LiviTextStyles.interSemiBold36(
+                                        Strings.noMedicationsAddedYet,
+                                        textAlign: TextAlign.center),
+                                  ),
+                                  LiviThemes.spacing.heightSpacer16(),
+                                  LiviTextStyles.interRegular16(
+                                      Strings.typeTheNameOfTheMedicine,
+                                      textAlign: TextAlign.center),
+                                  LiviThemes.spacing.heightSpacer16(),
+                                  LiviSearchBar(
+                                    onTap: () => goToSearchMedications(
+                                        medication: searchTextController.text),
+                                    controller: searchTextController,
+                                    onFieldSubmitted: (e) {
+                                      goToSearchMedications(medication: e);
+                                    },
+                                    focusNode: focusNode,
+                                  ),
+                                ]),
+                          ),
+                        ),
+                      );
+                    });
+              }),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Consumer<AuthController>(builder: (context, value, child) {
-          return StreamBuilder<List<Medication>>(
-              stream: MedicationService()
-                  .listenToMedicationsRealTime(value.appUser!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                  final medications = snapshot.data!;
-                  medications.sort((a, b) =>
-                      a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-                  return ListView.builder(
-                    itemCount: medications.length,
-                    itemBuilder: (context, index) {
-                      final medication = medications[index];
-                      return MedicationCard(
-                        dosageForm: medication.dosageForm,
-                        medication: medication,
-                        onTap: () => goToEditMedication(medication),
-                      );
-                    },
-                  );
-                }
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 48),
-                            child: LiviTextStyles.interSemiBold36(
-                                Strings.noMedicationsAddedYet,
-                                textAlign: TextAlign.center),
-                          ),
-                          LiviThemes.spacing.heightSpacer16(),
-                          LiviTextStyles.interRegular16(
-                              Strings.typeTheNameOfTheMedicine,
-                              textAlign: TextAlign.center),
-                          LiviThemes.spacing.heightSpacer16(),
-                          LiviSearchBar(
-                            onTap: () => goToSearchMedications(
-                                medication: searchTextController.text),
-                            controller: searchTextController,
-                            onFieldSubmitted: (e) {
-                              goToSearchMedications(medication: e);
-                            },
-                            focusNode: focusNode,
-                          ),
-                          Spacer(
-                            flex: 2,
-                          ),
-                        ]),
-                  ),
-                );
-              });
-        }),
-      ),
     );
+  }
+}
+
+class LiviCircularAnimation extends StatelessWidget {
+  const LiviCircularAnimation({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: CircularProgressIndicator(
+      key: Key('circular-animation'),
+    ));
   }
 }

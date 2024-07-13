@@ -12,6 +12,8 @@ import '../services/app_user_service.dart';
 import '../utils/logger.dart';
 import '../utils/shared_prefs.dart';
 import '../utils/string_ext.dart';
+import '../utils/strings.dart';
+import '../utils/utils.dart';
 
 class AuthController extends ChangeNotifier {
   User? _user;
@@ -97,6 +99,11 @@ class AuthController extends ChangeNotifier {
 
   void goBackBySettingPromptForUserCode() {
     _promptForUserCode = false;
+    // _appUser = null;
+    notifyListeners();
+  }
+
+  void clearAppUser() {
     _appUser = null;
     notifyListeners();
   }
@@ -106,8 +113,11 @@ class AuthController extends ChangeNotifier {
   }) async {
     personaType ??= calculatePersona();
     this.personaType = personaType;
-    if (_appUser != null) {
-      _appUser!.appUserType = personaType;
+  }
+
+  Future<void> savePersona() async {
+    if (_appUser != null && personaType != null) {
+      _appUser!.appUserType = personaType!;
       await _appUserService.updateUser(_appUser!);
     }
   }
@@ -159,6 +169,18 @@ class AuthController extends ChangeNotifier {
       notifyListeners();
       _promptForUserCode = false;
       _verificationId = '';
+
+      if ((validatePhone(phoneNumber) ?? '').isNotEmpty) {
+        throw Exception(Strings.invalidPhoneNumber);
+      }
+
+      final phoneNumberIsRegistered =
+          await AppUserService().phoneNumberExists(appUser, phoneNumber);
+      if (!phoneNumberIsRegistered && !isAccountCreation) {
+        throw Exception(Strings.noUsersPhoneNumber);
+      } else if (phoneNumberIsRegistered && isAccountCreation) {
+        throw Exception(Strings.phoneNumberExists);
+      }
 
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,

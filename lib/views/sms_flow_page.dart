@@ -7,12 +7,10 @@ import 'views.dart';
 class SmsFlowPage extends StatefulWidget {
   static const String routeName = '/sms-flow-page';
   final bool isLoginPage;
-  final bool isFromLoginPage;
   final bool showIdentifyPersonaPage;
   const SmsFlowPage({
     super.key,
     this.isLoginPage = false,
-    this.isFromLoginPage = false,
     this.showIdentifyPersonaPage = false,
   });
 
@@ -41,13 +39,14 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
   Widget getView(AuthController controller) {
     if (!controller.promptForUserCode && controller.firebaseAuthUser == null) {
       if (widget.isLoginPage) {
-        return LoginPage();
+        return LoginPage(
+          appUser: controller.appUser,
+        );
       }
       return CreateAccountPage(
-        fromLoginPage: widget.isFromLoginPage,
+        appUser: controller.appUser,
       );
     } else if (controller.promptForUserCode &&
-        controller.firebaseAuthUser == null &&
         controller.appUser != null) {
       return CheckSmsPage(
         appUser: controller.appUser!,
@@ -61,9 +60,13 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
       );
     } else {
       if (widget.isLoginPage) {
-        return LoginPage();
+        return LoginPage(
+          appUser: controller.appUser,
+        );
       }
-      return CreateAccountPage(fromLoginPage: widget.isFromLoginPage);
+      return CreateAccountPage(
+        appUser: controller.appUser,
+      );
     }
   }
 }

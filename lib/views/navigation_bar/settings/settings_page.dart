@@ -41,14 +41,21 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> logout(
       AuthController authController, BuildContext context) async {
-    await LiviAlertDialog.showAlertDialog(context);
-    await Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => WelcomePage(),
-      ),
-    );
-    await authController.signOut();
+    final logout = await LiviAlertDialog.showAlertDialog(context);
+    // Navigator.popUntil(context, (route) => route.isFirst);
+    if (logout) {
+      ///Here we've got a problem, if I put the signout before
+      ///the routiing, the app will show a flash of the create account page,
+      ///but if put it after, it won't log out the user.
+      await authController.signOut();
+
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WelcomePage(),
+        ),
+      );
+    }
   }
 
   Future<void> goToMyPodsPage(BuildContext context) async {
@@ -137,253 +144,256 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> updateAllowAutomaticDispensing(AppUser user, bool value) async {
     user.allowAutomaticDispensing = value;
+    if (mounted) {
+      setState(() {});
+    }
     await appUserService.updateUser(user);
   }
 
   Future<void> updateAllowRemoteDispensing(AppUser user, bool value) async {
     user.allowRemoteDispensing = value;
+    if (mounted) {
+      setState(() {});
+    }
     await appUserService.updateUser(user);
   }
 
   Future<void> updateMilitaryTime(AppUser user, bool value) async {
     user.useMilitaryTime = value;
+    if (mounted) {
+      setState(() {});
+    }
     await appUserService.updateUser(user);
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: LiviThemes.colors.gray100,
-      child:
-          Consumer<AuthController>(builder: (context, authController, child) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              NameCircleBox(
-                name: authController.appUser!.name,
-                profilePic: authController.appUser!.base64EncodedImage,
-              ),
-              LiviThemes.spacing.heightSpacer8(),
-              LiviTextStyles.interBold20(
-                authController.appUser!.name,
-                color: LiviThemes.colors.baseBlack,
-                textAlign: TextAlign.center,
-              ),
-              if (authController.appUser!.email != null)
-                LiviTextStyles.interRegular14(
-                  authController.appUser!.email!,
+    return PopScope(
+      canPop: false,
+      child: CupertinoPageScaffold(
+        backgroundColor: LiviThemes.colors.gray100,
+        child:
+            Consumer<AuthController>(builder: (context, authController, child) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: ListView(
+              children: [
+                NameCircleBox(
+                  name: authController.appUser!.name,
+                  profilePic: authController.appUser!.base64EncodedImage,
+                ),
+                LiviThemes.spacing.heightSpacer8(),
+                LiviTextStyles.interBold20(
+                  authController.appUser!.name,
                   color: LiviThemes.colors.baseBlack,
                   textAlign: TextAlign.center,
                 ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkWell(
-                    onTap: () => goToEditInfoPage(context),
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      // margin: EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                          color: LiviThemes.colors.baseWhite,
-                          border: Border.all(
-                            color: LiviThemes.colors.gray300,
-                          ),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: LiviTextStyles.interMedium14(
-                        Strings.editInfo,
-                        color: LiviThemes.colors.baseBlack,
-                        textAlign: TextAlign.center,
+                if (authController.appUser!.email != null)
+                  LiviTextStyles.interRegular14(
+                    authController.appUser!.email!,
+                    color: LiviThemes.colors.baseBlack,
+                    textAlign: TextAlign.center,
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () => goToEditInfoPage(context),
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        // margin: EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                            color: LiviThemes.colors.baseWhite,
+                            border: Border.all(
+                              color: LiviThemes.colors.gray300,
+                            ),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: LiviTextStyles.interMedium14(
+                          Strings.editInfo,
+                          color: LiviThemes.colors.baseBlack,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              StreamBuilder<AppUser>(
-                  stream: appUserService.listenToUserRealTime(
-                      Provider.of<AuthController>(context, listen: false)
-                          .appUser!),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 64),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    if (snapshot.data == null) {
-                      return SizedBox();
-                    }
-                    final user = snapshot.data!;
-                    return Column(
-                      children: [
-                        contentBlock(
-                          children: [
-                            ListTile(
-                              onTap: () => goToMyPodsPage(context),
-                              leading: LiviThemes.icons.devicesIcon(),
-                              title: Text(Strings.myPods),
-                              trailing: LiviThemes.icons.chevronRight(),
-                            ),
-                            LiviDivider(),
-                            ListTile(
-                              leading: LiviThemes.icons.wifiIcon(),
-                              title: Text(Strings.setupWifi),
-                              onTap: () => goToSetupWifi(context),
-                              trailing: LiviThemes.icons.chevronRight(),
-                            ),
-                            LiviDivider(),
-                            //TODO: BLE:Those options must be hidden if wifi is not setup
-                            ListTile(
-                              title: Text(Strings.allowAutomaticDispensing),
-                              trailing: LiviSwitchButton(
-                                value: user.allowAutomaticDispensing,
-                                onChanged: (value) {
-                                  updateAllowAutomaticDispensing(user, value);
-                                },
+                  ],
+                ),
+                StreamBuilder<AppUser>(
+                    stream: appUserService.listenToUserRealTime(
+                        Provider.of<AuthController>(context, listen: false)
+                            .appUser!),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 64),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      if (snapshot.data == null) {
+                        return SizedBox();
+                      }
+                      final user = snapshot.data!;
+                      return Column(
+                        children: [
+                          contentBlock(
+                            children: [
+                              ListTile(
+                                onTap: () => goToMyPodsPage(context),
+                                leading: LiviThemes.icons.devicesIcon(),
+                                title: Text(Strings.myPods),
+                                trailing: LiviThemes.icons.chevronRight(),
                               ),
-                            ),
-                            LiviDivider(),
-                            ListTile(
-                              title: Text(Strings.allowRemoteDispensing),
-                              trailing: LiviSwitchButton(
-                                value: user.allowRemoteDispensing,
-                                onChanged: (value) {
-                                  updateAllowRemoteDispensing(user, value);
-                                },
+                              LiviDivider(),
+                              ListTile(
+                                leading: LiviThemes.icons.wifiIcon(),
+                                title: Text(Strings.setupWifi),
+                                onTap: () => goToSetupWifi(context),
+                                trailing: LiviThemes.icons.chevronRight(),
                               ),
-                            ),
-                          ],
-                          titleIcon: LiviThemes.icons.smallLiviPodIcon(),
-                          title: Strings.podSettings,
-                        ),
-                        contentBlock(
-                          children: [
-                            StreamBuilder<List<AppUser>>(
-                                stream:
-                                    appUserService.listenToCaregiversRealTime(
-                                        authController.appUser!),
-                                builder: (context, snapshot) {
-                                  print(authController.appUser!.name);
-                                  if (snapshot.data == null) {
-                                    return SizedBox();
-                                  }
-                                  final user = snapshot.data!;
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: snapshot.data?.length ?? 0,
-                                    itemBuilder: (context, index) {
-                                      final item = snapshot.data![index];
-                                      return caregiverWidget(item, context);
-                                    },
-                                  );
-                                }),
-                            LiviInkWell(
-                              onTap: () => goToAddCaregiver(context),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    LiviThemes.icons.plusIcon(),
-                                    LiviThemes.spacing.widthSpacer8(),
-                                    LiviTextStyles.interMedium16(
-                                      Strings.addCaregiver,
-                                      color: LiviThemes.colors.brand600,
-                                    )
-                                  ],
+                              LiviDivider(),
+                              //TODO: BLE:Those options must be hidden if wifi is not setup
+                              ListTile(
+                                title: Text(Strings.allowAutomaticDispensing),
+                                trailing: LiviSwitchButton(
+                                  value: user.allowAutomaticDispensing,
+                                  onChanged: (value) {
+                                    updateAllowAutomaticDispensing(user, value);
+                                  },
                                 ),
                               ),
-                            ),
-                          ],
-                          titleIcon: LiviThemes.icons
-                              .caregiverIcon(color: LiviThemes.colors.gray500),
-                          title: Strings.caregivers,
-                        ),
-                        // contentBlock([]),
+                              LiviDivider(),
+                              ListTile(
+                                title: Text(Strings.allowRemoteDispensing),
+                                trailing: LiviSwitchButton(
+                                  value: user.allowRemoteDispensing,
+                                  onChanged: (value) {
+                                    updateAllowRemoteDispensing(user, value);
+                                  },
+                                ),
+                              ),
+                            ],
+                            titleIcon: LiviThemes.icons.smallLiviPodIcon(),
+                            title: Strings.podSettings,
+                          ),
+                          contentBlock(
+                            children: [
+                              StreamBuilder<List<AppUser>>(
+                                  stream:
+                                      appUserService.listenToCaregiversRealTime(
+                                          authController.appUser!),
+                                  builder: (context, snapshot) {
+                                    print(authController.appUser!.name);
+                                    if (snapshot.data == null) {
+                                      return SizedBox();
+                                    }
+                                    final user = snapshot.data!;
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: snapshot.data?.length ?? 0,
+                                      itemBuilder: (context, index) {
+                                        final item = snapshot.data![index];
+                                        return caregiverWidget(item, context);
+                                      },
+                                    );
+                                  }),
+                              LiviInkWell(
+                                onTap: () => goToAddCaregiver(context),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      LiviThemes.icons.plusIcon(),
+                                      LiviThemes.spacing.widthSpacer8(),
+                                      LiviTextStyles.interMedium16(
+                                        Strings.addCaregiver,
+                                        color: LiviThemes.colors.brand600,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                            titleIcon: LiviThemes.icons.caregiverIcon(
+                                color: LiviThemes.colors.gray500),
+                            title: Strings.caregivers,
+                          ),
+                          // contentBlock([]),
 
-                        contentBlock(
-                          children: [
-                            ListTile(
-                              onTap: () => goToNotificationsPage(context),
-                              leading: Icon(
-                                Icons.notifications,
-                                color: LiviThemes.colors.error500,
+                          contentBlock(
+                            children: [
+                              ListTile(
+                                onTap: () => goToNotificationsPage(context),
+                                leading: Icon(
+                                  Icons.notifications,
+                                  color: LiviThemes.colors.error500,
+                                ),
+                                title: Text(Strings.notifications),
+                                trailing: LiviThemes.icons.chevronRight(),
                               ),
-                              title: Text(Strings.notifications),
-                              trailing: LiviThemes.icons.chevronRight(),
-                            ),
-                            LiviDivider(),
-                            // StreamBuilder<AppUser>(
-                            //     stream: appUserService.listenToUserRealTime(
-                            //         Provider.of<AuthController>(context, listen: false)
-                            //             .appUser!),
-                            //     builder: (context, snapshot) {
-                            //       if (snapshot.data == null) {
-                            //         return SizedBox();
-                            //       }
-                            //       final user = snapshot.data!;
-                            //       return ListTile(
-                            //         leading: Icon(
-                            //           Icons.access_time_filled,
-                            //           color: LiviThemes.colors.blue400,
-                            //         ),
-                            //         title: Text(Strings.militaryTime),
-                            //         trailing: LiviSwitchButton(
-                            //           value: user.useMilitaryTime,
-                            //           onChanged: (value) {
-                            //             updateMilitaryTime(user, value);
-                            //           },
-                            //         ),
-                            //       );
-                            //     }),
-                            ListTile(
-                              onTap: showAppReview,
-                              leading: Icon(
-                                Icons.feedback,
-                                color: LiviThemes.colors.purple500,
+                              LiviDivider(),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.access_time_filled,
+                                  color: LiviThemes.colors.blue400,
+                                ),
+                                title: Text(Strings.militaryTime),
+                                trailing: LiviSwitchButton(
+                                  value: user.useMilitaryTime,
+                                  onChanged: (value) {
+                                    updateMilitaryTime(user, value);
+                                  },
+                                ),
                               ),
-                              title: Text(Strings.shareFeedback),
-                            ),
-                            LiviDivider(),
-                            ListTile(
-                              onTap: () => goToTermsPrivacyPage(context),
-                              leading: Icon(
-                                Icons.lock_rounded,
-                                color: LiviThemes.colors.green500,
+                              LiviDivider(),
+                              ListTile(
+                                onTap: showAppReview,
+                                leading: Icon(
+                                  Icons.feedback,
+                                  color: LiviThemes.colors.purple500,
+                                ),
+                                title: Text(Strings.shareFeedback),
                               ),
-                              title: Text(Strings.termsAndPrivacy),
-                              trailing: LiviThemes.icons.chevronRight(),
-                            ),
-                          ],
-                          titleIcon: LiviThemes.icons.settingsIcon(
-                              height: 16, color: LiviThemes.colors.gray500),
-                          title: Strings.settings,
-                        ),
-                        LiviFilledButton(
-                          color: LiviThemes.colors.baseWhite,
-                          text: Strings.logout,
-                          borderColor: LiviThemes.colors.error300,
-                          textColor: LiviThemes.colors.error600,
-                          onTap: () => logout(authController, context),
-                        ),
-                        LiviThemes.spacing.heightSpacer16(),
-                        Align(
-                          child: LiviTextStyles.interRegular14(
-                              'Build $buildNumber',
-                              color: LiviThemes.colors.gray700),
-                        ),
-                        LiviThemes.spacing.heightSpacer12(),
-                      ],
-                    );
-                  }),
-            ],
-          ),
-        );
-      }),
+                              LiviDivider(),
+                              ListTile(
+                                onTap: () => goToTermsPrivacyPage(context),
+                                leading: Icon(
+                                  Icons.lock_rounded,
+                                  color: LiviThemes.colors.green500,
+                                ),
+                                title: Text(Strings.termsAndPrivacy),
+                                trailing: LiviThemes.icons.chevronRight(),
+                              ),
+                            ],
+                            titleIcon: LiviThemes.icons.settingsIcon(
+                                height: 16, color: LiviThemes.colors.gray500),
+                            title: Strings.settings,
+                          ),
+                          LiviFilledButton(
+                            color: LiviThemes.colors.baseWhite,
+                            text: Strings.logout,
+                            borderColor: LiviThemes.colors.error300,
+                            textColor: LiviThemes.colors.error600,
+                            onTap: () => logout(authController, context),
+                          ),
+                          LiviThemes.spacing.heightSpacer16(),
+                          Align(
+                            child: LiviTextStyles.interRegular14(
+                                'Build $buildNumber',
+                                color: LiviThemes.colors.gray700),
+                          ),
+                          LiviThemes.spacing.heightSpacer12(),
+                        ],
+                      );
+                    }),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 

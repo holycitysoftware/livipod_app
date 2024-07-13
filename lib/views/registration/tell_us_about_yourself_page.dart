@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
@@ -35,10 +36,19 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
     );
   }
 
-  Future<void> goToFinishRegistrationPage(AppUserType personaType) async {
-    await Provider.of<AuthController>(context, listen: false)
+  Future<void> setPersona(AppUserType personaType) async {
+    Provider.of<AuthController>(context, listen: false)
         .setPersona(personaType: personaType);
-    Navigator.pushReplacement(
+    setState(() {});
+  }
+
+  Future<void> savePersona(AppUserType personaType) async {
+    Provider.of<AuthController>(context, listen: false).savePersona();
+  }
+
+  Future<void> goToFinishRegistrationPage(AppUserType personaType) async {
+    await Provider.of<AuthController>(context, listen: false).savePersona();
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => FinishRegistrationPage(),
@@ -46,22 +56,25 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
     );
   }
 
-  Widget buildUserTypeCard({
-    required String title,
-    required String description,
-    required AppUserType personaType,
-  }) {
-    return BoundingCard(
-      key: Key(title),
-      onTap: () => goToFinishRegistrationPage(personaType),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LiviTextStyles.interSemiBold16(title),
-          LiviTextStyles.interRegular16(description),
-        ],
-      ),
-    );
+  Widget buildUserTypeCard(
+      {required String title,
+      required String description,
+      required AppUserType personaType,
+      required BuildContext context}) {
+    return Consumer<AuthController>(builder: (context, value, child) {
+      return BoundingCard(
+        key: Key(title),
+        onTap: () => setPersona(personaType),
+        isSelected: personaType == value.personaType,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LiviTextStyles.interSemiBold16(title),
+            LiviTextStyles.interRegular16(description),
+          ],
+        ),
+      );
+    });
   }
 
   @override
@@ -70,34 +83,19 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: LiviThemes.colors.baseWhite,
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(
-              top: MediaQuery.of(context).viewPadding.bottom + 32,
-              bottom: MediaQuery.of(context).viewPadding.bottom + 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: goToIdentifyPersonPage,
-                child: LiviTextStyles.interRegular16(
-                  Strings.notSure,
-                  textAlign: TextAlign.start,
-                  maxLines: 3,
-                ),
-              ),
-              LiviThemes.spacing.widthSpacer4(),
-              GestureDetector(
-                onTap: goToIdentifyPersonPage,
-                child: LiviTextStyles.interSemiBold16(
-                  Strings.letUsHelpYouFindOut,
-                  color: LiviThemes.colors.brand600,
-                  textAlign: TextAlign.start,
-                  maxLines: 3,
-                ),
-              ),
-            ],
-          ),
-        ),
+        bottomNavigationBar:
+            Consumer<AuthController>(builder: (context, value, child) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            child: LiviFilledButton(
+              showArrow: true,
+              enabled: value.personaType != null,
+              text: Strings.confirm,
+              isCloseToNotch: true,
+              onTap: () => goToFinishRegistrationPage(value.personaType!),
+            ),
+          );
+        }),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SingleChildScrollView(
@@ -119,20 +117,48 @@ class _TellUsAboutYourselfPageState extends State<TellUsAboutYourselfPage> {
                 buildUserTypeCard(
                   personaType: AppUserType.selfGuidedUser,
                   title: Strings.selfGuidedUsers,
+                  context: context,
                   description: Strings.iAmFullyIndependentAndCapable,
                 ),
                 LiviThemes.spacing.heightSpacer12(),
                 buildUserTypeCard(
+                  context: context,
                   personaType: AppUserType.assistedUser,
                   title: Strings.assistedUsers,
                   description: Strings.iMayRequireSomeLevelOf,
                 ),
                 LiviThemes.spacing.heightSpacer12(),
                 buildUserTypeCard(
+                  context: context,
                   personaType: AppUserType.caredForUser,
                   title: Strings.caredForUsers,
                   description: Strings.iRelyHeavily,
                 ),
+                LiviThemes.spacing.heightSpacer12(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: goToIdentifyPersonPage,
+                      child: LiviTextStyles.interRegular16(
+                        Strings.notSure,
+                        textAlign: TextAlign.start,
+                        maxLines: 3,
+                      ),
+                    ),
+                    LiviThemes.spacing.widthSpacer4(),
+                    GestureDetector(
+                      onTap: goToIdentifyPersonPage,
+                      child: LiviTextStyles.interSemiBold16(
+                        Strings.letUsHelpYouFindOut,
+                        color: LiviThemes.colors.brand600,
+                        textAlign: TextAlign.start,
+                        maxLines: 3,
+                      ),
+                    ),
+                  ],
+                ),
+                LiviThemes.spacing.heightSpacer12(),
               ],
             ),
           ),

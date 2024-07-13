@@ -36,6 +36,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   String? base64Image;
   bool imageWasChanged = false;
   PhoneNumber? number;
+  bool loading = false;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -90,6 +91,9 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
 
   Future<void> saveUserInfo() async {
     if (appUser != null) {
+      setState(() {
+        loading = true;
+      });
       await setAppUser(
           fullNameController: fullNameController.text,
           emailController: emailController.text,
@@ -106,6 +110,9 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
       loggedUser.caregiverIds = list;
 
       await appUserService.updateUser(loggedUser);
+      setState(() {
+        loading = false;
+      });
       Navigator.pop(context);
     }
   }
@@ -121,6 +128,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
           LiviTextIcon(
             onPressed: enabledSaveButton() ? saveUserInfo : () {},
             enabled: enabledSaveButton(),
+            loading: loading,
             text: Strings.save,
             icon: Padding(
               padding: const EdgeInsets.only(left: 4),
@@ -145,8 +153,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 64),
               child: LiviTextButton(
-                  text:
-                          value.appUser!.base64EncodedImage.isEmpty
+                  text: value.appUser!.base64EncodedImage.isEmpty
                       ? Strings.addImage
                       : Strings.edit,
                   onTap: () async {

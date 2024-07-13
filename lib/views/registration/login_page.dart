@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
@@ -14,7 +16,8 @@ import '../views.dart';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = '/login-page';
-  const LoginPage({super.key});
+  final AppUser? appUser;
+  const LoginPage({super.key, this.appUser});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -35,7 +38,27 @@ class _LoginPageState extends State<LoginPage> {
     phoneNumberController.addListener(() {
       setState(() {});
     });
+    getCountry();
     super.initState();
+  }
+
+  Future<void> getCountry() async {
+    if (widget.appUser == null ||
+        (widget.appUser != null && widget.appUser!.phoneNumber.isEmpty)) {
+      return;
+    }
+    final number = await PhoneNumber.getRegionInfoFromPhoneNumber(
+        widget.appUser!.phoneNumber);
+    if (number != null) {
+      final String parsableNumber = number.dialCode ?? '';
+      country = getCountryByCode('+$parsableNumber');
+      if (number != null && number.phoneNumber != null) {
+        phoneNumberController.text = number.parseNumber().replaceAll('+', '');
+      }
+      Provider.of<AuthController>(context, listen: false)
+          .clearAppUser();
+      setState(() {});
+    }
   }
 
   void setFocusListeners() {
@@ -59,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(
         builder: (context) => SmsFlowPage(
-          isFromLoginPage: true,
           showIdentifyPersonaPage: true,
         ),
       ),
@@ -152,6 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                         horizontal: kSpacer_16, vertical: kSpacer_8),
                     title: Strings.phoneNumber.requiredSymbol(),
                     focusNode: phoneFocus,
+                    staticHint: country.dialCode,
                     onFieldSubmitted: (value) {
                       verifyNumber();
                     },

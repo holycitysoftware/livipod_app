@@ -13,6 +13,10 @@ class Strings {
   static const String removeMedication = 'Remove Medication';
   static const String unclaim = 'Unclaim';
   static const String delete = 'Delete';
+  static const String noUsersPhoneNumber =
+      'No user found with this phone number.';
+  static const String phoneNumberExists =
+      'A user with this phone number already exists.';
   static const String collapse = 'Collapse';
   static const String deleteImage = 'Delete image';
   static const String livipod = 'LiviPod';
@@ -102,6 +106,9 @@ class Strings {
   static const String yourAccountHasBeenCreatedStart =
       'Your account has been created, start by registering your first medication.';
   static const String welcomeToLiviPod = 'Welcome to LiviPod®';
+  static const String welcomeToLiviPodClean = 'Welcome to LiviPod';
+  static const String yourAccountHasBeenCreatedLets =
+      "Your account has been created! Let's start by registering your first medication.";
   static const String back = 'Back';
   static const String days = 'Days';
   static const String didntReceiveTheSMS = "Didn't receive the SMS?";
@@ -130,6 +137,7 @@ class Strings {
   static const String steveJobsFullName = 'Steven Paul Jobs';
   static const String steveJobsNumber = '555 000-0000';
   static const String continueText = 'Continue';
+  static const String invalidPhoneNumber = 'Invalid phone number.';
   static const String howComfortableAreYou =
       'How comfortable are you with using smartphone apps and technology in general?';
   static const String doYouUsuallyRememberToTake =

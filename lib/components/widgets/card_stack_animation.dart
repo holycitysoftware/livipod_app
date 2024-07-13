@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
+import '../../controllers/controllers.dart';
 import '../../models/models.dart';
 import '../../models/schedule_type.dart';
 import '../../themes/livi_themes.dart';
@@ -137,7 +139,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
       top: !_isExpanded ? expandedTop : collapsedTop,
       left: 0,
       right: 0,
-      child: _buildCardUI(index),
+      child: _buildCardUI(context, index),
     );
   }
 
@@ -152,8 +154,10 @@ class _CardStackAnimationState extends State<CardStackAnimation>
         : 1;
   }
 
-  Widget _buildCardUI(int index) {
+  Widget _buildCardUI(BuildContext context, int index) {
     return HomePageCard(
+      useMilitaryTime:
+          Provider.of<AuthController>(context).appUser!.useMilitaryTime,
       margin: EdgeInsets.only(
         top: getTopMargin(index),
         left: getSideMargin(index),
@@ -218,7 +222,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
             Container(
               height: cardHeight,
               margin: EdgeInsets.only(bottom: 24),
-              child: _buildCardUI(0),
+              child: _buildCardUI(context, 0),
             )
           ],
         );

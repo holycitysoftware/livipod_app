@@ -211,7 +211,8 @@ class LiviAlertDialog {
   }
 
   // This shows a C upertinoModalPopup which hosts a CupertinoAlertDialog.
-  static Future<void> showAlertDialog(BuildContext context) async {
+  static Future<bool> showAlertDialog(BuildContext context) async {
+    var logout = false;
     await showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
@@ -236,6 +237,7 @@ class LiviAlertDialog {
             /// the action's text color to red.
             isDestructiveAction: true,
             onPressed: () {
+              logout = true;
               Navigator.pop(context);
             },
             child: LiviTextStyles.interRegular17(Strings.logout,
@@ -244,6 +246,7 @@ class LiviAlertDialog {
         ],
       ),
     );
+    return logout;
   }
 
   static Future<bool> removeCaregiver(BuildContext context, String name) async {
