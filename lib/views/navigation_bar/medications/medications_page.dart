@@ -82,6 +82,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
                       itemBuilder: (context, index) {
                         final medication = medications[index];
                         return MedicationCard(
+                          useMilitaryTime: value.appUser!.useMilitaryTime,
                           dosageForm: medication.dosageForm,
                           medication: medication,
                           onTap: () => goToEditMedication(medication),

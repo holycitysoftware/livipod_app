@@ -615,14 +615,18 @@ String formartDay(int day) {
   }
 }
 
-String formartTimeOfDay(TimeOfDay timeOfDat) {
-  //ap pm hour
-  String ap = timeOfDat.period == DayPeriod.am ? 'AM' : 'PM';
-  String hour = timeOfDat.hourOfPeriod.toString();
-  String minute = timeOfDat.minute.toString();
-  hour = hour;
-  if (timeOfDat.minute < 10) {
-    minute = '0$minute';
+String formartTimeOfDay(TimeOfDay timeOfDat, bool useMilitaryTime) {
+  if (useMilitaryTime) {
+    return '${timeOfDat.hour.toString().padLeft(2, '0')}:${timeOfDat.minute.toString().padLeft(2, '0')}';
+  } else {
+    //ap pm hour
+    final String ap = timeOfDat.period == DayPeriod.am ? 'AM' : 'PM';
+    String hour = timeOfDat.hourOfPeriod.toString();
+    String minute = timeOfDat.minute.toString();
+    hour = hour;
+    if (timeOfDat.minute < 10) {
+      minute = '0$minute';
+    }
+    return '$hour:$minute $ap';
   }
-  return '$hour:$minute $ap';
 }

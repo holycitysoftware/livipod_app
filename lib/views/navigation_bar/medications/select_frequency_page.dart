@@ -1217,8 +1217,15 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                                 labelText: Strings.at,
                                 hintText: _timeOfDay == null
                                     ? formartTimeOfDay(
-                                        TimeOfDay(hour: 8, minute: 0))
-                                    : formartTimeOfDay(_timeOfDay!)),
+                                        TimeOfDay(hour: 8, minute: 0),
+                                        Provider.of<AuthController>(context)
+                                            .appUser!
+                                            .useMilitaryTime)
+                                    : formartTimeOfDay(
+                                        _timeOfDay!,
+                                        Provider.of<AuthController>(context)
+                                            .appUser!
+                                            .useMilitaryTime)),
                             readOnly: true,
                             onTap: () async => showTimerPickerWidget(setState)),
                       ),
@@ -1299,7 +1306,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               LiviTextStyles.interRegular16(
-                                  'Take ${item.qty.toInt()} at ${formartTimeOfDay(item.timeOfDay)}'),
+                                  'Take ${item.qty.toInt()} at ${formartTimeOfDay(item.timeOfDay, Provider.of<AuthController>(context).appUser!.useMilitaryTime)}'),
                               IconCircleBox(
                                 tapPadding: EdgeInsets.fromLTRB(48, 16, 16, 16),
                                 onTap: () => removeScheduleDose(index),

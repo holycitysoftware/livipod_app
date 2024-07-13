@@ -140,16 +140,25 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> updateAllowAutomaticDispensing(AppUser user, bool value) async {
     user.allowAutomaticDispensing = value;
+    if (mounted) {
+      setState(() {});
+    }
     await appUserService.updateUser(user);
   }
 
   Future<void> updateAllowRemoteDispensing(AppUser user, bool value) async {
     user.allowRemoteDispensing = value;
+    if (mounted) {
+      setState(() {});
+    }
     await appUserService.updateUser(user);
   }
 
   Future<void> updateMilitaryTime(AppUser user, bool value) async {
     user.useMilitaryTime = value;
+    if (mounted) {
+      setState(() {});
+    }
     await appUserService.updateUser(user);
   }
 
@@ -211,6 +220,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         Provider.of<AuthController>(context, listen: false)
                             .appUser!),
                     builder: (context, snapshot) {
+                      print(authController.appUser!.name);
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Padding(
                           padding: const EdgeInsets.only(top: 64),
@@ -322,29 +332,20 @@ class _SettingsPageState extends State<SettingsPage> {
                                 trailing: LiviThemes.icons.chevronRight(),
                               ),
                               LiviDivider(),
-                              // StreamBuilder<AppUser>(
-                              //     stream: appUserService.listenToUserRealTime(
-                              //         Provider.of<AuthController>(context, listen: false)
-                              //             .appUser!),
-                              //     builder: (context, snapshot) {
-                              //       if (snapshot.data == null) {
-                              //         return SizedBox();
-                              //       }
-                              //       final user = snapshot.data!;
-                              //       return ListTile(
-                              //         leading: Icon(
-                              //           Icons.access_time_filled,
-                              //           color: LiviThemes.colors.blue400,
-                              //         ),
-                              //         title: Text(Strings.militaryTime),
-                              //         trailing: LiviSwitchButton(
-                              //           value: user.useMilitaryTime,
-                              //           onChanged: (value) {
-                              //             updateMilitaryTime(user, value);
-                              //           },
-                              //         ),
-                              //       );
-                              //     }),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.access_time_filled,
+                                  color: LiviThemes.colors.blue400,
+                                ),
+                                title: Text(Strings.militaryTime),
+                                trailing: LiviSwitchButton(
+                                  value: user.useMilitaryTime,
+                                  onChanged: (value) {
+                                    updateMilitaryTime(user, value);
+                                  },
+                                ),
+                              ),
+                              LiviDivider(),
                               ListTile(
                                 onTap: showAppReview,
                                 leading: Icon(

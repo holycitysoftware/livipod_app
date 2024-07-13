@@ -40,7 +40,7 @@ class AuthController extends ChangeNotifier {
     FirebaseAuth.instance.authStateChanges().listen(
         (user) async {
           _user = user;
-          await getAppUser();
+          await getAppUserFirstLogin();
           notifyListeners();
         },
         cancelOnError: true,
@@ -66,6 +66,16 @@ class AuthController extends ChangeNotifier {
       signOut();
     }
     await appCache.cacheisFirstLogin(false);
+  }
+
+  Future<void> getAppUserFirstLogin() async {
+    await getAppUser();
+    if (_appUser != null) {
+      _appUserService.listenToUserRealTime(_appUser!).listen((event) {
+        _appUser = event;
+        notifyListeners();
+      });
+    }
   }
 
   Future<void> getAppUser() async {
@@ -291,7 +301,6 @@ class AuthController extends ChangeNotifier {
       if (userCredential.user != null) {
         // STEP 1: CREATE ACCOUNT SHELL
         final account = await _accountService.createAccount(
-          
           Account(), // create account shell
         );
         try {

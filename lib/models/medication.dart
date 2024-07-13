@@ -184,10 +184,10 @@ class Medication {
     return '${Strings.take} ${nextDosing!.qtyRequested.toInt()} ${Strings.at} ${utils.getFormattedTime(offsetDosingTime)}';
   }
 
-  List<String> getScheduleDescriptions() {
+  List<String> getScheduleDescriptions(bool useMilitaryTime) {
     var list = <String>[];
     for (var schedule in schedules) {
-      list.add(schedule.getScheduleDescription());
+      list.add(schedule.getScheduleDescription(useMilitaryTime));
     }
     return list;
   }
