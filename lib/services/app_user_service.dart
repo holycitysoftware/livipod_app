@@ -157,7 +157,7 @@ class AppUserService {
     bool exists = true;
     await FirebaseFirestore.instance
         .collection('users')
-        .where('mobile', isEqualTo: mobile)
+        .where('phoneNumber', isEqualTo: mobile)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isEmpty) {

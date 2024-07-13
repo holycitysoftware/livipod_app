@@ -24,7 +24,7 @@ enum DosageForm implements Comparable<DosageForm> {
       description: Strings.capsule_film_coated_extended_release),
   capsule_gelatin_coated(description: Strings.capsule_gelatin_coated),
   capsule_liquid_filled(description: Strings.capsule_liquid_filled),
-  cellular_sheet(description: Strings.cellular_sheet),  
+  cellular_sheet(description: Strings.cellular_sheet),
   chewable_gel(description: Strings.chewable_gel),
   cloth(description: Strings.cloth),
   concentrate(description: Strings.concentrate),
@@ -489,13 +489,15 @@ enum PeriodOfDay {
     final morningEndTime = DateTime(now.year, now.month, now.day,
         morning.endTime.hour, morning.endTime.minute);
     final afternoonStartTime = DateTime(now.year, now.month, now.day,
-        night.startTime.hour, afternoon.startTime.minute);
+        afternoon.startTime.hour, afternoon.startTime.minute);
     final afternoonEndTime = DateTime(now.year, now.month, now.day,
         afternoon.endTime.hour, afternoon.endTime.minute);
     final nightStartTime = DateTime(now.year, now.month, now.day,
         night.startTime.hour, night.startTime.minute);
     final nightEndTime = DateTime(now.year, now.month, now.day + 1,
         night.endTime.hour, night.endTime.minute);
+    final midnight = DateTime(now.year, now.month, now.day, 23, 59);
+    final midnightFollowingDay = DateTime(now.year, now.month, now.day);
 
     if (now.isAfter(morningStartTime) && now.isBefore(morningEndTime)) {
       return morning;
@@ -503,7 +505,11 @@ enum PeriodOfDay {
     if (now.isAfter(afternoonStartTime) && now.isBefore(afternoonEndTime)) {
       return afternoon;
     }
-    if (now.isAfter(nightStartTime) && now.isBefore(nightEndTime)) {
+
+    if (now.isAfter(nightStartTime) && now.isBefore(midnight)) {
+      return night;
+    }
+    if (now.isAfter(midnightFollowingDay) && now.isBefore(nightEndTime)) {
       return night;
     }
     return morning;

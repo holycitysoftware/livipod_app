@@ -17,6 +17,7 @@ class LiviInputField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
   final EdgeInsets? padding;
+  final String? staticHint;
 
   final TextEditingController? controller;
   final Widget? prefix;
@@ -26,6 +27,7 @@ class LiviInputField extends StatefulWidget {
   final Color? color;
   final ValueChanged<String>? onChanged;
   final int maxLines;
+  final double? topScrollPadding;
 
   const LiviInputField({
     super.key,
@@ -48,6 +50,8 @@ class LiviInputField extends StatefulWidget {
     this.onChanged,
     this.textCapitalization,
     this.color,
+    this.staticHint,
+    this.topScrollPadding,
   });
 
   @override
@@ -145,7 +149,8 @@ class _LiviInputFieldState extends State<LiviInputField> {
               readOnly: widget.readOnly,
               validator: widget.validator,
               onChanged: widget.onChanged,
-              scrollPadding: EdgeInsets.only(bottom: double.maxFinite),
+              scrollPadding: EdgeInsets.only(
+                  bottom: double.maxFinite, top: widget.topScrollPadding ?? 0),
               textCapitalization: TextCapitalization.words,
               controller: widget.controller,
               style: LiviThemes.typography.interRegular_16,
@@ -161,6 +166,10 @@ class _LiviInputFieldState extends State<LiviInputField> {
                 errorMaxLines: 5,
                 errorText: widget.errorText,
                 border: border(),
+                prefix: widget.staticHint != null && widget.focusNode.hasFocus
+                    ? LiviTextStyles.interRegular16(widget.staticHint! + ' ',
+                        color: LiviThemes.colors.gray400)
+                    : null,
                 errorBorder: errorBorder(),
                 enabledBorder: border(),
                 focusedBorder: focusedBorder(),

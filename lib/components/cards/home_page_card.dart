@@ -18,6 +18,7 @@ class HomePageCard extends StatelessWidget {
   final String name;
   final String medInfo;
   final Schedule schedule;
+  final bool useMilitaryTime;
   const HomePageCard({
     super.key,
     required this.margin,
@@ -30,6 +31,7 @@ class HomePageCard extends StatelessWidget {
     required this.dosageForm,
     required this.name,
     required this.medInfo,
+    required this.useMilitaryTime,
     required this.schedule,
   });
 
@@ -88,7 +90,7 @@ class HomePageCard extends StatelessWidget {
                               maxLines: 1,
                             ),
                             LiviTextStyles.interRegular14(
-                              schedule.getScheduleDescription(),
+                              schedule.getScheduleDescription(useMilitaryTime),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               color: LiviThemes.colors.brand600,
