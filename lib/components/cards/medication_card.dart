@@ -10,11 +10,13 @@ class MedicationCard extends StatelessWidget {
   final Medication medication;
   final Function()? onTap;
   final DosageForm? dosageForm;
+  final bool useMilitaryTime;
   const MedicationCard({
     super.key,
     required this.medication,
     required this.onTap,
     this.dosageForm,
+    required this.useMilitaryTime,
   });
 
   @override
@@ -57,7 +59,7 @@ class MedicationCard extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: medication
-                                  .getScheduleDescriptions()
+                                  .getScheduleDescriptions(useMilitaryTime)
                                   .map((e) => LiviTextStyles.interRegular14(e,
                                       maxLines: 20))
                                   .toList(),

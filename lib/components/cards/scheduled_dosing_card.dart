@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:input_quantity/input_quantity.dart';
+import 'package:provider/provider.dart';
 
+import '../../controllers/controllers.dart';
 import '../../models/scheduled_dose.dart';
+import '../../utils/utils.dart' as utils;
 
 class ScheduledDosingCard extends StatefulWidget {
   final List<ScheduledDose> scheduledDosings;
@@ -138,10 +141,10 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
             itemCount: widget.scheduledDosings.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              var scheduledDose = widget.scheduledDosings[index];
+              final scheduledDose = widget.scheduledDosings[index];
               return Chip(
                 label: Text(
-                    '${scheduledDose.qty} at ${scheduledDose.timeOfDay.hour.toString().padLeft(2, '0')}:${scheduledDose.timeOfDay.minute.toString().padLeft(2, '0')}'),
+                    '${scheduledDose.qty} at ${utils.formartTimeOfDay(widget.scheduledDosings[index].timeOfDay, Provider.of<AuthController>(context).appUser!.useMilitaryTime)}'),
                 deleteIcon: const Icon(
                   Icons.close,
                   size: 20,

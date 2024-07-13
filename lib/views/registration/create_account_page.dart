@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
@@ -18,10 +20,10 @@ import 'welcome_page.dart';
 
 class CreateAccountPage extends StatefulWidget {
   static const String routeName = '/create-account-page';
-  final bool fromLoginPage;
+  final AppUser? appUser;
   const CreateAccountPage({
     super.key,
-    this.fromLoginPage = false,
+    this.appUser,
   });
   @override
   _CreateAccountPageState createState() => _CreateAccountPageState();
@@ -49,7 +51,32 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       setState(() {});
     });
     getBuildNumber();
+    fillForms();
     super.initState();
+  }
+
+  Future<void> getCountry() async {
+    if (widget.appUser!.phoneNumber.isEmpty) {
+      return;
+    }
+    final number = await PhoneNumber.getRegionInfoFromPhoneNumber(
+        widget.appUser!.phoneNumber);
+    if (number != null) {
+      final String parsableNumber = number.dialCode ?? '';
+      country = getCountryByCode('+$parsableNumber');
+      if (number != null && number.phoneNumber != null) {
+        phoneNumberController.text = number.parseNumber().replaceAll('+', '');
+      }
+      setState(() {});
+    }
+  }
+
+  void fillForms() {
+    if (widget.appUser != null) {
+      getCountry();
+      fullNameController.text = widget.appUser!.name;
+      emailController.text = widget.appUser!.email ?? '';
+    }
   }
 
   Future<void> getBuildNumber() async {
@@ -142,6 +169,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         if (mounted) {
           Provider.of<AuthController>(context, listen: false)
               .clearVerificationError();
+          Provider.of<AuthController>(context, listen: false).clearAppUser();
         }
       },
       child: Scaffold(
@@ -162,28 +190,23 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 isLoading: authController.loading,
                 isCloseToNotch: true,
                 onTap: () {
-                  verifyNumber(authController);
+                  verifyNumber(
+                    authController,
+                  );
                 },
               );
             }),
           ),
         ),
-        body: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
+        body: SafeArea(
+          bottom: false,
+          child: Form(
+            key: formKey,
+            child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               children: [
                 BackBar(
-                  onTap: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) {
-                      if (widget.fromLoginPage) {
-                        return LoginPage();
-                      } else {
-                        return WelcomePage();
-                      }
-                    }));
-                  },
+                  padding: EdgeInsets.zero,
                   trailing: LiviTextStyles.interRegular14(buildNumber,
                       color: LiviThemes.colors.gray700),
                 ),
@@ -210,6 +233,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   textCapitalization: TextCapitalization.words,
                   hint: Strings.steveJobsFullName,
                   controller: fullNameController,
+                  topScrollPadding: 40,
                 ),
                 LiviInputField(
                   focusNode: emailFocus,
@@ -228,6 +252,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     title: Strings.phoneNumber.requiredSymbol(),
                     controller: phoneNumberController,
                     focusNode: phoneFocus,
+                    keyboardType: TextInputType.phone,
+                    staticHint: country.dialCode,
                     errorText: authController.verificationError.isEmpty
                         ? null
                         : authController.verificationError,

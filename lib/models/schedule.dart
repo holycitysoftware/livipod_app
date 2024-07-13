@@ -101,14 +101,14 @@ class Schedule {
     return null;
   }
 
-  String getScheduleDescription() {
+  String getScheduleDescription(bool useMilitaryTime) {
     // var scheduleType = getScheduleType();
     var str = 'Take';
     if (type != ScheduleType.asNeeded) {
       if (scheduledDosings != null) {
         for (final dosing in scheduledDosings) {
           str =
-              '$str ${utils.removeDecimalZeroFormat(dosing.qty)} at ${dosing.timeOfDay.hour.toString().padLeft(2, '0')}:${dosing.timeOfDay.minute.toString().padLeft(2, '0')},';
+              '$str ${utils.removeDecimalZeroFormat(dosing.qty)} at ${utils.formartTimeOfDay(dosing.timeOfDay, useMilitaryTime)}';
         }
       }
 

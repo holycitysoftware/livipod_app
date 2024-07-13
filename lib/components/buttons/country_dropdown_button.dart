@@ -20,7 +20,7 @@ class CountryDropdownButton extends StatelessWidget {
       underline: Text(''),
       value: country,
       buttonStyleData: ButtonStyleData(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.fromLTRB(16, 0, 8, 0),
       ),
       dropdownStyleData: DropdownStyleData(width: 85, maxHeight: 300),
       iconStyleData: IconStyleData(

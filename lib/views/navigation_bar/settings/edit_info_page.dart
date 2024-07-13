@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
+import 'package:regexed_validator/regexed_validator.dart';
 
 import '../../../components/components.dart';
 import '../../../controllers/controllers.dart';
@@ -39,16 +40,19 @@ class _EditInfoPageState extends State<EditInfoPage> {
   final FocusNode fullNameFocus = FocusNode();
   final FocusNode emailFocus = FocusNode();
   final FocusNode phoneFocus = FocusNode();
+  String? errorTextPhone;
+  String? errorTextEmail;
+  bool loading = false;
 
   bool enabledSaveButton() {
     return fullNameController.text.isNotEmpty &&
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
-                (appUser!.name != fullNameController.text ||
-                    !appUser!.phoneNumber
-                        .contains(phoneNumberController.text) ||
-                    appUser!.email != emailController.text) ||
-            imageWasChanged);
+            (appUser!.name != fullNameController.text ||
+                appUser!.phoneNumber !=
+                    country.dialCode + phoneNumberController.text ||
+                appUser!.email != emailController.text ||
+                imageWasChanged));
   }
 
   @override
@@ -101,13 +105,33 @@ class _EditInfoPageState extends State<EditInfoPage> {
   }
 
   Future<void> saveUserInfo() async {
-    if (appUser != null) {
-      appUser!.name = fullNameController.text;
-      appUser!.email = emailController.text;
-      appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
-      appUser!.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
-      await authController.editAppUser(appUser!);
-      Navigator.pop(context);
+    setState(() {
+      loading = true;
+    });
+    errorTextPhone = null;
+    errorTextEmail = null;
+    errorTextEmail = validateEmail(emailController.text);
+    errorTextPhone =
+        validatePhone(country.dialCode + phoneNumberController.text);
+    if (errorTextPhone != null || errorTextEmail != null) {
+      setState(() {});
+    }
+
+    if (errorTextEmail == null && errorTextPhone == null) {
+      if (appUser != null) {
+        appUser!.name = fullNameController.text;
+        appUser!.email = emailController.text;
+        if (imageWasChanged) {
+          appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
+        }
+        appUser!.phoneNumber =
+            '${country.dialCode}${phoneNumberController.text}';
+        await authController.editAppUser(appUser!);
+        setState(() {
+          loading = false;
+        });
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -124,6 +148,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
             onPressed: enabledSaveButton() ? saveUserInfo : () {},
             enabled: enabledSaveButton(),
             text: Strings.save,
+            loading: loading,
             icon: Padding(
               padding: const EdgeInsets.only(left: 4),
               child: LiviThemes.icons.checkIcon(
@@ -186,18 +211,18 @@ class _EditInfoPageState extends State<EditInfoPage> {
               title: Strings.email,
               subTitle: Strings.optional,
               hint: Strings.steveJobsEmail,
+              errorText: errorTextEmail,
               controller: emailController,
             ),
             Consumer<AuthController>(builder: (context, authController, child) {
               return LiviInputField(
+                errorText: errorTextPhone,
+                staticHint: country.dialCode,
                 padding: const EdgeInsets.symmetric(
                     horizontal: kSpacer_16, vertical: kSpacer_8),
                 title: Strings.phoneNumber.requiredSymbol(),
                 controller: phoneNumberController,
                 focusNode: phoneFocus,
-                errorText: authController.verificationError.isEmpty
-                    ? null
-                    : authController.verificationError,
                 prefix: CountryDropdownButton(
                   country: country,
                   onChanged: (Country? value) {

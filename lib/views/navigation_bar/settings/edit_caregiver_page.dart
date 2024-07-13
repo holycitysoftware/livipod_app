@@ -35,6 +35,8 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   final appUserService = AppUserService();
   String? base64Image;
   bool imageWasChanged = false;
+  String? errorTextPhone;
+  String? errorTextEmail;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -43,16 +45,17 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   final FocusNode fullNameFocus = FocusNode();
   final FocusNode emailFocus = FocusNode();
   final FocusNode phoneFocus = FocusNode();
+  bool loading = false;
 
   bool enabledSaveButton() {
     return fullNameController.text.isNotEmpty &&
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
-                (appUser!.name != fullNameController.text ||
-                    !appUser!.phoneNumber
-                        .contains(phoneNumberController.text) ||
-                    appUser!.email != emailController.text) ||
-            imageWasChanged);
+            (appUser!.name != fullNameController.text ||
+                appUser!.phoneNumber !=
+                    country.dialCode + phoneNumberController.text ||
+                appUser!.email != emailController.text ||
+                imageWasChanged));
   }
 
   @override
@@ -122,13 +125,32 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   }
 
   Future<void> saveUserInfo() async {
-    if (appUser != null) {
-      appUser!.name = fullNameController.text;
-      appUser!.email = emailController.text;
-      appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
-      appUser!.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
-      await authController.editAppUser(appUser!);
-      Navigator.pop(context);
+    setState(() {
+      loading = true;
+    });
+    errorTextPhone = null;
+    errorTextEmail = null;
+    errorTextEmail = validateEmail(emailController.text);
+    errorTextPhone =
+        validatePhone(country.dialCode + phoneNumberController.text);
+    if (errorTextPhone != null || errorTextEmail != null) {
+      setState(() {});
+    }
+    if (errorTextEmail == null && errorTextPhone == null) {
+      if (appUser != null) {
+        appUser!.name = fullNameController.text;
+        appUser!.email = emailController.text;
+        if (imageWasChanged) {
+          appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
+        }
+        appUser!.phoneNumber =
+            '${country.dialCode}${phoneNumberController.text}';
+        await authController.editAppUser(appUser!);
+        setState(() {
+          loading = false;
+        });
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -156,6 +178,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
             onPressed: enabledSaveButton() ? saveUserInfo : () {},
             enabled: enabledSaveButton(),
             text: Strings.save,
+            loading: loading,
             icon: Padding(
               padding: const EdgeInsets.only(left: 4),
               child: LiviThemes.icons.checkIcon(
@@ -218,6 +241,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
               subTitle: Strings.optional,
               hint: Strings.steveJobsEmail,
               controller: emailController,
+              errorText: errorTextEmail,
             ),
             Consumer<AuthController>(builder: (context, authController, child) {
               return LiviInputField(
@@ -226,9 +250,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
                 title: Strings.phoneNumber.requiredSymbol(),
                 controller: phoneNumberController,
                 focusNode: phoneFocus,
-                errorText: authController.verificationError.isEmpty
-                    ? null
-                    : authController.verificationError,
+                errorText: errorTextPhone,
                 prefix: CountryDropdownButton(
                   country: country!,
                   onChanged: (Country? value) {

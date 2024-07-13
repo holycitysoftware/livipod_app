@@ -70,6 +70,7 @@ class _IdentifyPersonaPageState extends State<IdentifyPersonaPage> {
     if (widget.personaPageInfo.index == 8) {
       await addNewOption();
       await Provider.of<AuthController>(context, listen: false).setPersona();
+      await Provider.of<AuthController>(context, listen: false).savePersona();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
