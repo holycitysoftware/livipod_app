@@ -393,7 +393,7 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             LiviThemes.spacing.heightSpacer16(),
-                            cards(),
+                            cards(appUser),
                             LiviThemes.spacing.heightSpacer12(),
                           ],
                         ),
@@ -424,7 +424,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget cards() {
+  Widget cards(AppUser appUser) {
     if (medicationsList == null) {
       return Center(
         child: Padding(
@@ -445,9 +445,10 @@ class _HomePageState extends State<HomePage> {
           takeAllFunction: () => takeAll(missedDuelist),
           medications: missedDuelist,
           title: Strings.medsDue.toUpperCase(),
+          useMilitaryTime: appUser.useMilitaryTime,
         ),
         CardStackAnimation(
-          medications: asNeededList,
+          medications: asNeededList, useMilitaryTime: appUser.useMilitaryTime,
           key: Key('as-needed-cards'),
           // takeAllFunction: () => takeAll(asNeededList),
           buttons: confirmQuantityButton,

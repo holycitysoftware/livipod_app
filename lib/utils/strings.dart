@@ -53,7 +53,7 @@ class Strings {
   static const String afternoon = 'Afternoon';
   static const String notifications = 'Notifications';
   static const String notificationsSettings = 'Notifications Settings';
-  static const String militaryTime = 'Military Time (AM e PM)';
+  static const String militaryTime = 'Military Time';
   static const String shareFeedback = 'Share Feedback';
   static const String termsAndPrivacy = 'Terms & Privacy';
   static const String night = 'Night';

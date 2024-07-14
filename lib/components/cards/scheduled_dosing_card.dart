@@ -8,10 +8,14 @@ import '../../utils/utils.dart' as utils;
 
 class ScheduledDosingCard extends StatefulWidget {
   final List<ScheduledDose> scheduledDosings;
+  final bool useMilitaryTime;
   final Function onChange;
 
   const ScheduledDosingCard(
-      {super.key, required this.scheduledDosings, required this.onChange});
+      {super.key,
+      required this.scheduledDosings,
+      required this.onChange,
+      required this.useMilitaryTime});
 
   @override
   State<ScheduledDosingCard> createState() => _ScheduledDosingCardState();
@@ -144,7 +148,7 @@ class _ScheduledDosingCardState extends State<ScheduledDosingCard> {
               final scheduledDose = widget.scheduledDosings[index];
               return Chip(
                 label: Text(
-                    '${scheduledDose.qty} at ${utils.formartTimeOfDay(widget.scheduledDosings[index].timeOfDay, Provider.of<AuthController>(context).appUser!.useMilitaryTime)}'),
+                    '${scheduledDose.qty} at ${utils.formartTimeOfDay(widget.scheduledDosings[index].timeOfDay, widget.useMilitaryTime)}'),
                 deleteIcon: const Icon(
                   Icons.close,
                   size: 20,
