@@ -136,6 +136,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
           validatePhone(country.dialCode + phoneNumberController.text);
       if (errorTextPhone != null || errorTextEmail != null) {
         setState(() {});
+        throw Exception();
       }
       if (errorTextEmail == null && errorTextPhone == null) {
         if (appUser != null) {

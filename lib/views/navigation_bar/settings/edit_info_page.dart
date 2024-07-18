@@ -100,7 +100,6 @@ class _EditInfoPageState extends State<EditInfoPage> {
       if (appUser!.email != null && appUser!.email!.isNotEmpty) {
         emailController.text = appUser!.email!;
       }
-      phoneNumberController.text = appUser!.phoneNumber;
     }
   }
 
