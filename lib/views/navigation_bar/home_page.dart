@@ -393,7 +393,7 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             LiviThemes.spacing.heightSpacer16(),
-                            cards(),
+                            cards(appUser),
                             LiviThemes.spacing.heightSpacer12(),
                           ],
                         ),
@@ -412,19 +412,25 @@ class _HomePageState extends State<HomePage> {
     missedDuelist.clear();
     // final list = await MedicationService().getUserMedications(
     //     Provider.of<AuthController>(context, listen: false).appUser!);
-    for (final element in medicationsList!) {
-      if (element.nextDosing != null &&
-          element.isAsNeeded() &&
-          element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
-              DateTime.now().millisecondsSinceEpoch) {
-        asNeededList.add(element);
-      } else if (element.isDue() || element.isLate() || element.isAvailable()) {
-        missedDuelist.add(element);
+    if (medicationsList != null) {
+      for (final element in medicationsList!) {
+        if (element.nextDosing != null &&
+            element.isAsNeeded() &&
+            element.nextDosing!.scheduledDosingTime!.millisecondsSinceEpoch <
+                DateTime.now().millisecondsSinceEpoch) {
+          asNeededList.add(element);
+        } else if (element.isDue() ||
+            element.isLate() ||
+            element.isAvailable()) {
+          missedDuelist.add(element);
+        }
       }
     }
   }
 
-  Widget cards() {
+  Widget cards(AppUser appUser) {
+    getDueMedications();
+
     if (medicationsList == null) {
       return Center(
         child: Padding(
@@ -436,7 +442,6 @@ class _HomePageState extends State<HomePage> {
         (medicationsList != null && medicationsList!.isEmpty)) {
       return SizedBox();
     }
-    getDueMedications();
     return Column(
       children: [
         CardStackAnimation(
@@ -445,9 +450,10 @@ class _HomePageState extends State<HomePage> {
           takeAllFunction: () => takeAll(missedDuelist),
           medications: missedDuelist,
           title: Strings.medsDue.toUpperCase(),
+          useMilitaryTime: appUser.useMilitaryTime,
         ),
         CardStackAnimation(
-          medications: asNeededList,
+          medications: asNeededList, useMilitaryTime: appUser.useMilitaryTime,
           key: Key('as-needed-cards'),
           // takeAllFunction: () => takeAll(asNeededList),
           buttons: confirmQuantityButton,
@@ -472,8 +478,9 @@ class _HomePageState extends State<HomePage> {
       final lastDosing = Dosing();
 
       if (medicationsList != null) {
-        medicationsList!.remove(medication);
-        refreshData();
+        setState(() {
+          medicationsList!.remove(medication);
+        });
       }
 
       nextDosing.qtyRemaining -= qtyMissed + qtySkipped + takenQuantity;

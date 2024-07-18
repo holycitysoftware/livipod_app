@@ -80,18 +80,12 @@ class HomePageCard extends StatelessWidget {
                           children: [
                             LiviTextStyles.interSemiBold16(
                               name,
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                            ),
-                            LiviTextStyles.interRegular14(
-                              medInfo,
-                              color: LiviThemes.colors.gray700,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
                             ),
                             LiviTextStyles.interRegular14(
                               schedule.getScheduleDescription(useMilitaryTime),
-                              maxLines: 1,
+                              maxLines: name.length > 16 ? 1 : 2,
                               overflow: TextOverflow.ellipsis,
                               color: LiviThemes.colors.brand600,
                             ),
