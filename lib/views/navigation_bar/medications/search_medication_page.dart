@@ -170,7 +170,8 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
             ] else
               Expanded(
                 child: ListView.builder(
-                  itemCount: medications.length + 1,
+                  itemCount:
+                      medications.length > 0 ? medications.length + 1 : 0,
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
                   itemBuilder: (context, index) {
