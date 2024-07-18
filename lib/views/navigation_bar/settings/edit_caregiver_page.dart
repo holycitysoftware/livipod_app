@@ -125,32 +125,41 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
   }
 
   Future<void> saveUserInfo() async {
-    setState(() {
-      loading = true;
-    });
-    errorTextPhone = null;
-    errorTextEmail = null;
-    errorTextEmail = validateEmail(emailController.text);
-    errorTextPhone =
-        validatePhone(country.dialCode + phoneNumberController.text);
-    if (errorTextPhone != null || errorTextEmail != null) {
-      setState(() {});
-    }
-    if (errorTextEmail == null && errorTextPhone == null) {
-      if (appUser != null) {
-        appUser!.name = fullNameController.text;
-        appUser!.email = emailController.text;
-        if (imageWasChanged) {
-          appUser!.base64EncodedImage = base64Image == null ? '' : base64Image!;
-        }
-        appUser!.phoneNumber =
-            '${country.dialCode}${phoneNumberController.text}';
-        await authController.editAppUser(appUser!);
-        setState(() {
-          loading = false;
-        });
-        Navigator.pop(context);
+    try {
+      setState(() {
+        loading = true;
+      });
+      errorTextPhone = null;
+      errorTextEmail = null;
+      errorTextEmail = validateEmail(emailController.text);
+      errorTextPhone =
+          validatePhone(country.dialCode + phoneNumberController.text);
+      if (errorTextPhone != null || errorTextEmail != null) {
+        setState(() {});
       }
+      if (errorTextEmail == null && errorTextPhone == null) {
+        if (appUser != null) {
+          appUser!.name = fullNameController.text;
+          appUser!.email = emailController.text;
+          if (imageWasChanged) {
+            appUser!.base64EncodedImage =
+                base64Image == null ? '' : base64Image!;
+          }
+          appUser!.phoneNumber =
+              '${country.dialCode}${phoneNumberController.text}';
+          await authController.editAppUser(appUser!);
+          setState(() {
+            loading = false;
+          });
+          Navigator.pop(context);
+        }
+      }
+    } catch (e) {
+      print(e);
+      FocusScope.of(context).unfocus();
+      setState(() {
+        loading = false;
+      });
     }
   }
 
