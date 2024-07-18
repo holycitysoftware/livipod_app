@@ -15,10 +15,12 @@ class CardStackAnimation extends StatefulWidget {
   final List<Medication> medications;
   final Widget Function(List<Medication>, int?) buttons;
   final Function()? takeAllFunction;
+  final bool useMilitaryTime;
   const CardStackAnimation({
     super.key,
     required this.medications,
     required this.title,
+    required this.useMilitaryTime,
     required this.buttons,
     this.takeAllFunction,
   });
@@ -156,8 +158,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
 
   Widget _buildCardUI(BuildContext context, int index) {
     return HomePageCard(
-      useMilitaryTime:
-          Provider.of<AuthController>(context).appUser!.useMilitaryTime,
+      useMilitaryTime: widget.useMilitaryTime,
       margin: EdgeInsets.only(
         top: getTopMargin(index),
         left: getSideMargin(index),
