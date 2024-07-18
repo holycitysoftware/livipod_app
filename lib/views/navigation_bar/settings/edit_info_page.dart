@@ -49,8 +49,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
         phoneNumberController.text.isNotEmpty &&
         (appUser != null &&
             (appUser!.name != fullNameController.text ||
-                appUser!.phoneNumber !=
-                    country.dialCode + phoneNumberController.text ||
+                appUser!.phoneNumber != phoneNumberController.text ||
                 appUser!.email != emailController.text ||
                 imageWasChanged));
   }
@@ -87,7 +86,8 @@ class _EditInfoPageState extends State<EditInfoPage> {
       final String parsableNumber = number!.dialCode ?? '';
       country = getCountryByCode('+$parsableNumber');
       if (number != null && number!.phoneNumber != null) {
-        phoneNumberController.text = number!.parseNumber().replaceAll('+', '');
+        phoneNumberController.text =
+            country.dialCode + number!.parseNumber().replaceAll('+', '');
       }
       setState(() {});
     }
@@ -111,8 +111,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
       errorTextPhone = null;
       errorTextEmail = null;
       errorTextEmail = validateEmail(emailController.text);
-      errorTextPhone =
-          validatePhone(country.dialCode + phoneNumberController.text);
+      errorTextPhone = validatePhone(phoneNumberController.text);
       if (errorTextPhone != null || errorTextEmail != null) {
         setState(() {});
         throw Exception();
@@ -126,8 +125,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
             appUser!.base64EncodedImage =
                 base64Image == null ? '' : base64Image!;
           }
-          appUser!.phoneNumber =
-              '${country.dialCode}${phoneNumberController.text}';
+          appUser!.phoneNumber = phoneNumberController.text;
           await authController.editAppUser(appUser!);
           setState(() {
             loading = false;
@@ -226,19 +224,21 @@ class _EditInfoPageState extends State<EditInfoPage> {
             Consumer<AuthController>(builder: (context, authController, child) {
               return LiviInputField(
                 errorText: errorTextPhone,
-                staticHint: country.dialCode,
+                // staticHint: country.dialCode,
                 padding: const EdgeInsets.symmetric(
                     horizontal: kSpacer_16, vertical: kSpacer_8),
                 title: Strings.phoneNumber.requiredSymbol(),
                 controller: phoneNumberController,
                 focusNode: phoneFocus,
-                prefix: CountryDropdownButton(
-                  country: country,
-                  onChanged: (Country? value) {
-                    setState(() {
-                      country = value!;
-                    });
-                  },
+                readOnly: true,
+                prefix: Container(
+                  height: 32,
+                  width: 32,
+                  alignment: Alignment.center,
+                  child: LiviTextStyles.interRegular14(
+                    country.code,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 hint: Strings.steveJobsNumber,
               );
