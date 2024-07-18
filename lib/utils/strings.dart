@@ -91,7 +91,8 @@ class Strings {
   static const String timeOfDay = 'Time of Day';
   static const String monthlyOnTheDay = 'Monthly on the Day';
   static const String addTime = 'Add Time';
-  static const String enterDates = 'Enter dates';
+  static const String enterDates = 'Enter date';
+  static const String enterTime = 'Enter time';
   static const String selectDates = 'Select Dates';
   static const String addDay = 'Add day';
   static const String newSchedule = 'New Schedule';
@@ -222,7 +223,7 @@ class Strings {
   static const String history = 'History';
   static const String settings = 'Settings';
   static const String addMedication = 'Add Medication';
-  static const String noResults = 'No results';
+  static const String noResultsFound = 'No results found';
   static const String continueWith = 'Continue with ';
   static const String selectDosageForm = 'Select Dosage Form';
   static const String capsule = 'Capsule';

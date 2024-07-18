@@ -102,7 +102,8 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
       ),
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(16),
@@ -133,49 +134,73 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
                 ),
               )
             else if ((medications.length == 0 && _controller.text.isNotEmpty) ||
-                customMed)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                customMed) ...[
+              Spacer(),
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                height: 120,
+                width: 250,
                 child: LiviInkWell(
                   borderRadius: 8,
                   onTap: () => goToSelectFrequencyPage(_controller.text),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LiviTextStyles.interRegular16(
-                          Strings.noResults,
-                          color: LiviThemes.colors.gray500,
-                        ),
-                        Row(
-                          children: [
-                            LiviTextStyles.interRegular16(Strings.continueWith),
-                            LiviTextStyles.interRegular16(
-                                '"${_controller.text}"',
-                                color: LiviThemes.colors.brand600),
-                          ],
-                        )
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LiviTextStyles.interMedium16(
+                        Strings.noResultsFound,
+                      ),
+                      SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          LiviThemes.icons
+                              .searchLgIcon(color: LiviThemes.colors.brand600),
+                          SizedBox(width: 6),
+                          LiviTextStyles.interRegular16(
+                              '${Strings.continueWith} "${_controller.text}"',
+                              color: LiviThemes.colors.brand600),
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              )
-            else
+              ),
+              Spacer(),
+            ] else
               Expanded(
                 child: ListView.builder(
-                  itemCount: medications.length,
+                  itemCount: medications.length + 1,
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
                   itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return LiviInkWell(
+                        borderRadius: 8,
+                        onTap: () => goToSelectFrequencyPage(_controller.text),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
+                          child: Row(
+                            children: [
+                              LiviTextStyles.interRegular16(
+                                  Strings.continueWith),
+                              LiviTextStyles.interRegular16(
+                                  '"${_controller.text}"',
+                                  color: LiviThemes.colors.brand600),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    final medication = medications[index - 1];
                     return InkWell(
                       radius: 8,
                       borderRadius: BorderRadius.circular(8),
                       overlayColor: MaterialStatePropertyAll(
                         LiviThemes.colors.brand600.withOpacity(0.1),
                       ),
-                      onTap: () => goToSelectDosageForm(medications[index]),
+                      onTap: () => goToSelectDosageForm(medication),
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                         child: Column(
@@ -183,7 +208,7 @@ class _SearchMedicationPageState extends State<SearchMedicationPage> {
                           children: [
                             LiviThemes.spacing.heightSpacer16(),
                             LiviTextStyles.interSemiBold14(
-                              medications[index].capitalizeFirstLetter(),
+                              medication.capitalizeFirstLetter(),
                             ),
                             LiviThemes.spacing.heightSpacer16(),
                             LiviDivider(),
