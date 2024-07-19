@@ -38,6 +38,7 @@ class _ScheduleDailyState extends State<ScheduleDaily> {
         ),
         ScheduledDosingCard(
           scheduledDosings: widget.schedule.scheduledDosings,
+          useMilitaryTime: true,
           onChange: () {
             widget.onChange();
             setState(() {});

@@ -1181,7 +1181,7 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          title: const Text(Strings.enterDates),
+          title: const Text(Strings.enterTime),
           content: Container(
             height: 120,
             width: 400,
