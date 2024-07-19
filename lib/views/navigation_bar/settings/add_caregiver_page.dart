@@ -37,6 +37,8 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   bool imageWasChanged = false;
   PhoneNumber? number;
   bool loading = false;
+  String? errorTextPhone;
+  String? errorTextEmail;
 
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -90,30 +92,50 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
   }
 
   Future<void> saveUserInfo() async {
-    if (appUser != null) {
-      setState(() {
-        loading = true;
-      });
-      await setAppUser(
-          fullNameController: fullNameController.text,
-          emailController: emailController.text,
-          phoneNumberController: phoneNumberController.text);
-      appUser.base64EncodedImage = base64Image == null ? '' : base64Image!;
-      appUser.phoneNumber = '${country.dialCode}${phoneNumberController.text}';
-      final user = await appUserService.createUser(appUser);
-      final loggedUser = authController.appUser;
-      final list = <String>[];
-      if (loggedUser!.caregiverIds != null) {
-        list.addAll(loggedUser.caregiverIds);
-        list.add(user.id);
-      }
-      loggedUser.caregiverIds = list;
+    try {
+      if (appUser != null) {
+        setState(() {
+          loading = true;
+        });
+        errorTextPhone = null;
+        errorTextEmail = null;
+        errorTextEmail = validateEmail(emailController.text);
+        errorTextPhone =
+            validatePhone(country.dialCode + phoneNumberController.text);
+        if (errorTextPhone != null || errorTextEmail != null) {
+          setState(() {});
+          throw Exception();
+        }
+        if (errorTextEmail == null && errorTextPhone == null) {
+          await setAppUser(
+              fullNameController: fullNameController.text,
+              emailController: emailController.text,
+              phoneNumberController: phoneNumberController.text);
+          appUser.base64EncodedImage = base64Image == null ? '' : base64Image!;
+          appUser.phoneNumber =
+              '${country.dialCode}${phoneNumberController.text}';
+          final user = await appUserService.createUser(appUser);
+          final loggedUser = authController.appUser;
+          final list = <String>[];
+          if (loggedUser!.caregiverIds != null) {
+            list.addAll(loggedUser.caregiverIds);
+            list.add(user.id);
+          }
+          loggedUser.caregiverIds = list;
 
-      await appUserService.updateUser(loggedUser);
+          await appUserService.updateUser(loggedUser);
+          setState(() {
+            loading = false;
+          });
+          Navigator.pop(context);
+        }
+      }
+    } catch (e) {
+      print(e);
+      FocusScope.of(context).unfocus();
       setState(() {
         loading = false;
       });
-      Navigator.pop(context);
     }
   }
 
@@ -189,6 +211,7 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
                   horizontal: kSpacer_16, vertical: kSpacer_8),
               title: Strings.email,
               subTitle: Strings.optional,
+              errorText: errorTextEmail,
               hint: Strings.steveJobsEmail,
               controller: emailController,
             ),
@@ -200,11 +223,9 @@ class _AddCaregiverPageState extends State<AddCaregiverPage> {
                 title: Strings.phoneNumber.requiredSymbol(),
                 controller: phoneNumberController,
                 focusNode: phoneFocus,
-                errorText: authController.verificationError.isEmpty
-                    ? null
-                    : authController.verificationError,
+                errorText: errorTextPhone,
                 prefix: CountryDropdownButton(
-                  country: country!,
+                  country: country,
                   onChanged: (Country? value) {
                     setState(() {
                       country = value!;
