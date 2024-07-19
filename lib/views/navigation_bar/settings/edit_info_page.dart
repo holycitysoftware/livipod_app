@@ -125,7 +125,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
             appUser!.base64EncodedImage =
                 base64Image == null ? '' : base64Image!;
           }
-          appUser!.phoneNumber = phoneNumberController.text;
+          // appUser!.phoneNumber = phoneNumberController.text;
           await authController.editAppUser(appUser!);
           setState(() {
             loading = false;

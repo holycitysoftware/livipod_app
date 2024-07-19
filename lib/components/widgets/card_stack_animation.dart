@@ -102,7 +102,7 @@ class _CardStackAnimationState extends State<CardStackAnimation>
       return cardHeight + 50;
     } else {
       if (_isExpanded) {
-        return cardHeight + (20 * widget.medications.length) + 20;
+        return cardHeight + (10 * widget.medications.length) + 20;
       } else {
         return (cardHeight * widget.medications.length.toDouble()) +
             (20 * widget.medications.length) +
