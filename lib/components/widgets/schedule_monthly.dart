@@ -39,6 +39,7 @@ class _ScheduleMonthlyState extends State<ScheduleMonthly> {
         ),
         ScheduledDosingCard(
           scheduledDosings: widget.schedule.scheduledDosings,
+          useMilitaryTime: true,
           onChange: () {
             setState(() {});
           },
