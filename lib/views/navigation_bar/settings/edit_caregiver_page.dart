@@ -90,7 +90,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
       final String parsableNumber = number!.dialCode ?? '';
       country = getCountryByCode('+$parsableNumber');
       if (number != null && number!.phoneNumber != null) {
-        phoneNumberController.text = number!.parseNumber().replaceAll('+', '');
+        phoneNumberController.text = parseNumber(number!.phoneNumber!, country);
       }
       setState(() {});
     }

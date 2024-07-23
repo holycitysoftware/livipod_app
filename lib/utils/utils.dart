@@ -9,6 +9,7 @@ import 'package:regexed_validator/regexed_validator.dart';
 import '../components/components.dart';
 import '../models/enums.dart';
 
+import '../models/models.dart';
 import '../themes/livi_spacing/livi_spacing.dart';
 import '../themes/livi_themes.dart';
 import 'strings.dart';
@@ -566,6 +567,10 @@ String? validatePhone(String phone) {
   } else {
     return null;
   }
+}
+
+String parseNumber(String phoneNumber, Country country) {
+  return phoneNumber.replaceAll(country.dialCode, '');
 }
 
 Future<CroppedFile?> _cropImage(XFile file) async {

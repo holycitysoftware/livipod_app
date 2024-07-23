@@ -13,6 +13,7 @@ import '../../themes/livi_themes.dart';
 import '../../utils/countries.dart';
 import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
+import '../../utils/utils.dart';
 import 'login_page.dart';
 import 'privacy_policy_page.dart';
 import 'terms_of_service_page.dart';
@@ -64,8 +65,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     if (number != null) {
       final String parsableNumber = number.dialCode ?? '';
       country = getCountryByCode('+$parsableNumber');
+
       if (number != null && number.phoneNumber != null) {
-        phoneNumberController.text = number.parseNumber().replaceAll('+', '');
+        phoneNumberController.text = parseNumber(number.phoneNumber!, country);
       }
       setState(() {});
     }
