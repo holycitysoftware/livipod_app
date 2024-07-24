@@ -439,4 +439,26 @@ class LiviTextStyles {
         ),
         textAlign: textAlign,
       );
+  static LiviTextComponent interMedium20(
+    String data, {
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+    TextAlign? textAlign,
+    double? height,
+    TextDecoration? lineThrough,
+    EdgeInsets? margin,
+  }) =>
+      LiviTextComponent(
+        data: data,
+        color: color,
+        maxLines: maxLines,
+        margin: margin,
+        overflow: overflow,
+        textStyle: LiviThemes.typography.interMedium_20.copyWith(
+          height: height,
+          decoration: lineThrough ?? TextDecoration.none,
+        ),
+        textAlign: textAlign,
+      );
 }

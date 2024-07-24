@@ -8,6 +8,7 @@ class Strings {
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
   static const String ssid = 'SSID';
+  static const String share = 'Share';
   static const String addImage = 'Add Image';
   static const String addCaregiver = 'Add Caregiver';
   static const String removeMedication = 'Remove Medication';
@@ -221,6 +222,9 @@ class Strings {
   static const String home = 'Home';
   static const String medications = 'Medications';
   static const String history = 'History';
+  static const String noRecordedHistoryYet = 'No recorded History yet';
+  static const String addMedicationsSoThat =
+      'Add medications so that the app records your use.';
   static const String settings = 'Settings';
   static const String addMedication = 'Add Medication';
   static const String noResultsFound = 'No results found';

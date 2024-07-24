@@ -8,6 +8,8 @@ import '../models/medication_history.dart';
 class MedicationService {
   final StreamController<List<Medication>> _medicationController =
       StreamController<List<Medication>>.broadcast();
+  final StreamController<List<MedicationHistory>> _historyController =
+      StreamController<List<MedicationHistory>>.broadcast();
 
   Future<Medication> createMedication(Medication medication) async {
     final json = await FirebaseFirestore.instance
@@ -94,11 +96,12 @@ class MedicationService {
     try {
       await FirebaseFirestore.instance
           .collection('medicationHistory')
-          .where('userId', isEqualTo: patient.id)
-          .where('dateTime', isLessThanOrEqualTo: stopDate.toIso8601String())
-          .where('dateTime',
+          .where('appUserId', isEqualTo: patient.id)
+          .where('scheduledDosingTime',
+              isLessThanOrEqualTo: stopDate.toIso8601String())
+          .where('scheduledDosingTime',
               isGreaterThanOrEqualTo: startDate.toIso8601String())
-          .orderBy('dateTime', descending: true)
+          .orderBy('scheduledDosingTime', descending: true)
           .get()
           .then((querySnapshot) {
         for (final result in querySnapshot.docs) {
@@ -111,6 +114,29 @@ class MedicationService {
       debugPrint('$e');
       return medicationHistory;
     }
+  }
+
+  Stream<List<MedicationHistory>> listenToHistoryRealTime(
+      AppUser patient, DateTime startDate, DateTime stopDate) {
+    final medicationHistory = <MedicationHistory>[];
+    FirebaseFirestore.instance
+        .collection('medicationHistory')
+        .where('appUserId', isEqualTo: patient.id)
+        .where('scheduledDosingTime',
+            isLessThanOrEqualTo: stopDate.toIso8601String())
+        .where('scheduledDosingTime',
+            isGreaterThanOrEqualTo: startDate.toIso8601String())
+        .orderBy('scheduledDosingTime', descending: true)
+        .snapshots()
+        .listen((querySnapshot) {
+      final list = <MedicationHistory>[];
+      for (final result in querySnapshot.docs) {
+        final mh = MedicationHistory.fromJson(result.data());
+        list.add(mh);
+      }
+      _historyController.add(list);
+    });
+    return _historyController.stream;
   }
 
   Future<void> createMedicationHistory(

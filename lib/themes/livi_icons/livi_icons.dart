@@ -329,6 +329,21 @@ class LiviIcons {
     );
   }
 
+  String get _sharePath => '$svgPath/share.svg';
+
+  Widget shareIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _sharePath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
   String get _searchMdPath => '$svgPath/search_md.svg';
 
   Widget searchMdIcon({

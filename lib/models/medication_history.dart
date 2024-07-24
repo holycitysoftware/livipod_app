@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'enums.dart';
 import 'models.dart';
 
 part 'medication_history.g.dart';
@@ -9,7 +10,9 @@ class MedicationHistory {
   String accountId = '';
   DateTime dateTime;
   String name = '';
+  DosageForm dosageForm = DosageForm.none;
   String medicationId = '';
+  String strength = '';
   String medicationName = '';
   DosingOutcome outcome = DosingOutcome.missed;
   double qtyDispensed = 0.0;
@@ -36,6 +39,8 @@ class MedicationHistory {
     history.name = appUser.name;
     history.medicationId = med.id;
     history.medicationName = med.name;
+    history.dosageForm = med.dosageForm;
+    history.strength = med.strength;
     if (med.lastDosing != null) {
       history.qtyDispensed = med.lastDosing!.qtyDispensed;
       history.outcome = med.lastDosing!.outcome!;
