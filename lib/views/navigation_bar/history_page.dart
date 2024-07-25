@@ -21,6 +21,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   late final AuthController authController;
   var daysFilterValue = DaysFilter.sevenDays;
+  var historyList = <MedicationHistory>[];
 
   @override
   void initState() {
@@ -123,7 +124,11 @@ class _HistoryPageState extends State<HistoryPage> {
             body: StreamBuilder<List<MedicationHistory>>(
                 stream: getMedicationHistory(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (snapshot.hasData) {
+                    historyList = snapshot.data!;
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting &&
+                      historyList.isEmpty) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 64),
                       child: Center(
@@ -181,53 +186,65 @@ class _HistoryPageState extends State<HistoryPage> {
                           ],
                         ),
                       ),
-                      SliverList.separated(
-                        separatorBuilder: (context, index) => Divider(
-                          height: 1,
-                          color: LiviThemes.colors.baseBlack.withOpacity(.08),
-                        ),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          final medicationHistory = snapshot.data![index];
+                      if (snapshot.connectionState == ConnectionState.waiting &&
+                          historyList.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 64),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        )
+                      else
+                        SliverList.separated(
+                          separatorBuilder: (context, index) => Divider(
+                            height: 1,
+                            color: LiviThemes.colors.baseBlack.withOpacity(.08),
+                          ),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final medicationHistory = snapshot.data![index];
 
-                          return ListTile(
-                            minLeadingWidth: -20,
-                            contentPadding: EdgeInsets.all(12),
-                            leading: Container(
-                              padding: EdgeInsets.all(12),
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                color: LiviThemes.colors.gray200,
-                                shape: BoxShape.circle,
+                            return ListTile(
+                              minLeadingWidth: -20,
+                              contentPadding: EdgeInsets.all(12),
+                              leading: Container(
+                                padding: EdgeInsets.all(12),
+                                width: 70,
+                                height: 70,
+                                decoration: BoxDecoration(
+                                  color: LiviThemes.colors.gray200,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: dosageFormIcon(
+                                    dosageForm: DosageForm.aerosol_spray,
+                                    color: LiviThemes.colors.gray700),
                               ),
-                              child: dosageFormIcon(
-                                  dosageForm: DosageForm.aerosol_spray,
-                                  color: LiviThemes.colors.gray700),
-                            ),
-                            title: Container(
-                              child: LiviTextStyles.interMedium16(
-                                  medicationHistory.medicationName),
-                            ),
-                            trailing:
-                                medicationHistory.scheduledDosingTime != null
-                                    ? LiviTextStyles.interRegular14(
-                                        formartTimeOfDay(
-                                            TimeOfDay(
-                                                hour: medicationHistory
-                                                    .scheduledDosingTime!.hour,
-                                                minute: medicationHistory
-                                                    .scheduledDosingTime!
-                                                    .minute),
-                                            authController
-                                                .appUser!.useMilitaryTime),
-                                        color: LiviThemes.colors.gray500,
-                                      )
-                                    : null,
-                            // subtitle: LiviTextStyles.interRegular14(),
-                          );
-                        },
-                      ),
+                              title: Container(
+                                child: LiviTextStyles.interMedium16(
+                                    medicationHistory.medicationName),
+                              ),
+                              trailing:
+                                  medicationHistory.scheduledDosingTime != null
+                                      ? LiviTextStyles.interRegular14(
+                                          formartTimeOfDay(
+                                              TimeOfDay(
+                                                  hour: medicationHistory
+                                                      .scheduledDosingTime!
+                                                      .hour,
+                                                  minute: medicationHistory
+                                                      .scheduledDosingTime!
+                                                      .minute),
+                                              authController
+                                                  .appUser!.useMilitaryTime),
+                                          color: LiviThemes.colors.gray500,
+                                        )
+                                      : null,
+                              // subtitle: LiviTextStyles.interRegular14(),
+                            );
+                          },
+                        ),
                     ],
                   );
                 })),
