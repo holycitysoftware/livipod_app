@@ -9,6 +9,8 @@ import 'package:regexed_validator/regexed_validator.dart';
 import '../components/components.dart';
 import '../models/enums.dart';
 
+import '../models/medication_history.dart';
+import '../models/models.dart';
 import '../themes/livi_spacing/livi_spacing.dart';
 import '../themes/livi_themes.dart';
 import 'strings.dart';

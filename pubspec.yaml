@@ -69,6 +69,7 @@ dependencies:
   package_info_plus: ^8.0.0
   dropdown_button2: ^2.3.9
   regexed_validator: ^2.0.0+1
+  pdf: ^3.11.0
   
 dev_dependencies:
   flutter_test:

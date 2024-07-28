@@ -12,10 +12,13 @@ MedicationHistory _$MedicationHistoryFromJson(Map<String, dynamic> json) =>
     )
       ..accountId = json['accountId'] as String
       ..name = json['name'] as String
-      ..dosageForm = $enumDecode(_$DosageFormEnumMap, json['dosageForm'])
+      ..dosageForm =
+          $enumDecodeNullable(_$DosageFormEnumMap, json['dosageForm'])
       ..medicationId = json['medicationId'] as String
-      ..strength = json['strength'] as String
+      ..strength = json['strength'] as String?
       ..medicationName = json['medicationName'] as String
+      ..scheduleType =
+          $enumDecodeNullable(_$ScheduleTypeEnumMap, json['scheduleType'])
       ..outcome = $enumDecode(_$DosingOutcomeEnumMap, json['outcome'])
       ..qtyDispensed = (json['qtyDispensed'] as num).toDouble()
       ..qtyMissed = (json['qtyMissed'] as num).toDouble()
@@ -32,10 +35,11 @@ Map<String, dynamic> _$MedicationHistoryToJson(MedicationHistory instance) =>
       'accountId': instance.accountId,
       'dateTime': instance.dateTime.toIso8601String(),
       'name': instance.name,
-      'dosageForm': _$DosageFormEnumMap[instance.dosageForm]!,
+      'dosageForm': _$DosageFormEnumMap[instance.dosageForm],
       'medicationId': instance.medicationId,
       'strength': instance.strength,
       'medicationName': instance.medicationName,
+      'scheduleType': _$ScheduleTypeEnumMap[instance.scheduleType],
       'outcome': _$DosingOutcomeEnumMap[instance.outcome]!,
       'qtyDispensed': instance.qtyDispensed,
       'qtyMissed': instance.qtyMissed,
@@ -222,6 +226,13 @@ const _$DosageFormEnumMap = {
   DosageForm.troche: 'troche',
   DosageForm.other: 'other',
   DosageForm.wafer: 'wafer',
+};
+
+const _$ScheduleTypeEnumMap = {
+  ScheduleType.asNeeded: 'asNeeded',
+  ScheduleType.daily: 'daily',
+  ScheduleType.weekly: 'weekly',
+  ScheduleType.monthly: 'monthly',
 };
 
 const _$DosingOutcomeEnumMap = {
