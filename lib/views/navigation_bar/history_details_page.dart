@@ -6,6 +6,7 @@ import '../../components/components.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/enums.dart';
 import '../../models/medication_history.dart';
+import '../../models/models.dart';
 import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
@@ -13,29 +14,43 @@ import '../../utils/utils.dart';
 
 final _dateFormat = DateFormat('E, MMM d - ');
 
-class HistoryDetailsPage extends StatelessWidget {
+class HistoryDetailsPage extends StatefulWidget {
   final MedicationHistory medicationHistory;
 
   const HistoryDetailsPage({super.key, required this.medicationHistory});
 
-  String getDateTime(BuildContext context) {
-    return _dateFormat.format(medicationHistory.dateTime) +
+  @override
+  State<HistoryDetailsPage> createState() => _HistoryDetailsPageState();
+}
+
+class _HistoryDetailsPageState extends State<HistoryDetailsPage> {
+  var loading = false;
+  String getDateTime() {
+    return _dateFormat.format(widget.medicationHistory.dateTime) +
         formartTimeOfDay(
             TimeOfDay(
-              hour: medicationHistory.dateTime.hour,
-              minute: medicationHistory.dateTime.minute,
+              hour: widget.medicationHistory.dateTime.hour,
+              minute: widget.medicationHistory.dateTime.minute,
             ),
             Provider.of<AuthController>(context, listen: false)
                 .appUser!
                 .useMilitaryTime);
   }
 
-  takeMedication(BuildContext context, MedicationHistory medicationHistory) {
+  Future<void> takeMedication(MedicationHistory medicationHistory) async {
+    setState(() {
+      loading = true;
+    });
     medicationHistory.isOverride = true;
-    // MedicationService().updateMedication(medicationHistory);
+    medicationHistory.outcome = DosingOutcome.taken;
+    await MedicationService().updateMedicationHistory(medicationHistory);
+    setState(() {
+      loading = false;
+    });
+    Navigator.of(context).pop();
   }
 
-  void dispenseFromPod(BuildContext context) {
+  void dispenseFromPod() {
     //TODO: dispense from pod
     print('Dispense from POD');
   }
@@ -68,18 +83,19 @@ class HistoryDetailsPage extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: dosageFormIcon(
-                  dosageForm:
-                      medicationHistory.dosageForm ?? DosageForm.aerosol_spray,
+                  dosageForm: widget.medicationHistory.dosageForm ??
+                      DosageForm.aerosol_spray,
                   color: LiviThemes.colors.gray700),
             ),
             Spacer(),
-            LiviTextStyles.interMedium16(getDateTime(context),
+            LiviTextStyles.interMedium16(getDateTime(),
                 color: LiviThemes.colors.gray500),
-            LiviTextStyles.interSemiBold20(medicationHistory.medicationName,
+            LiviTextStyles.interSemiBold20(
+                widget.medicationHistory.medicationName,
                 color: LiviThemes.colors.gray500),
-            if (medicationHistory.dosageForm != null)
+            if (widget.medicationHistory.dosageForm != null)
               LiviTextStyles.interRegular16(
-                  '${medicationHistory.dosageForm!.description}, ${medicationHistory.strength}',
+                  '${widget.medicationHistory.dosageForm!.description}, ${widget.medicationHistory.strength}',
                   color: LiviThemes.colors.gray500),
             Spacer(flex: 2),
             Row(
@@ -90,7 +106,7 @@ class HistoryDetailsPage extends StatelessWidget {
                     InkWell(
                       radius: 80,
                       borderRadius: BorderRadius.circular(80),
-                      onTap: () => takeMedication(context, medicationHistory),
+                      onTap: () => takeMedication(widget.medicationHistory),
                       child: Ink(
                           padding: EdgeInsets.all(16),
                           width: 60,
@@ -99,8 +115,16 @@ class HistoryDetailsPage extends StatelessWidget {
                             color: LiviThemes.colors.gray200,
                             shape: BoxShape.circle,
                           ),
-                          child: LiviThemes.icons.checkCircleFilledIcon(
-                              color: LiviThemes.colors.gray700)),
+                          child: loading
+                              ? SizedBox(
+                                  height: 12,
+                                  width: 12,
+                                  child: CircularProgressIndicator(
+                                    color: LiviThemes.colors.gray700,
+                                  ),
+                                )
+                              : LiviThemes.icons.checkCircleFilledIcon(
+                                  color: LiviThemes.colors.gray700)),
                     ),
                     SizedBox(height: 12),
                     LiviTextStyles.interSemiBold14(Strings.yesIHaveTakenIt,
@@ -112,7 +136,7 @@ class HistoryDetailsPage extends StatelessWidget {
                     InkWell(
                       radius: 80,
                       borderRadius: BorderRadius.circular(80),
-                      onTap: () => dispenseFromPod(context),
+                      onTap: () => dispenseFromPod(),
                       child: Ink(
                           padding: EdgeInsets.all(16),
                           width: 60,

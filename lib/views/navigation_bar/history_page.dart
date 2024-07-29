@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
@@ -171,8 +170,7 @@ class _HistoryPageState extends State<HistoryPage> {
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/${'receipt'}.pdf');
     await file.writeAsBytes(bytes);
-    OpenFile.open(file.path);
-    // shareOnTap(file, bytes);
+    shareOnTap(file, bytes);
   }
 
   shareOnTap(File file, Uint8List bytes) async {
@@ -519,23 +517,56 @@ class _HistoryPageState extends State<HistoryPage> {
         ListTile(
           onTap: () => goToHistoryDetailsPage(history),
           contentPadding: EdgeInsets.all(12),
-          leading: Container(
-            padding: EdgeInsets.all(12),
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              color: LiviThemes.colors.gray200,
-              shape: BoxShape.circle,
-            ),
-            child: dosageFormIcon(
-                dosageForm: history.dosageForm ?? DosageForm.aerosol_spray,
-                color: LiviThemes.colors.gray700),
+          leading: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              Container(
+                padding: EdgeInsets.all(12),
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  color: LiviThemes.colors.gray200,
+                  shape: BoxShape.circle,
+                ),
+                child: dosageFormIcon(
+                    dosageForm: history.dosageForm ?? DosageForm.aerosol_spray,
+                    color: LiviThemes.colors.gray700),
+              ),
+              if (history.isOverride == true)
+                Container(
+                  padding: EdgeInsets.all(6),
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 3,
+                      color: LiviThemes.colors.baseWhite,
+                    ),
+                    color: LiviThemes.colors.gray500,
+                    shape: BoxShape.circle,
+                  ),
+                  child: LiviThemes.icons
+                      .pencilWidget(color: LiviThemes.colors.baseWhite),
+                ),
+            ],
           ),
-          title: Container(
-            child: LiviTextStyles.interMedium16(history.medicationName),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                child: LiviTextStyles.interMedium16(history.medicationName),
+              ),
+              if (history.dosageForm != null)
+                LiviTextStyles.interRegular14(
+                    '${history.dosageForm!.description}, ${history.strength}'),
+            ],
           ),
-          trailing: history.scheduledDosingTime != null
-              ? LiviTextStyles.interRegular14(
+          trailing: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (history.scheduledDosingTime != null)
+                LiviTextStyles.interRegular14(
                   formartTimeOfDay(
                       TimeOfDay(
                           hour: history.scheduledDosingTime!.hour,
@@ -543,7 +574,15 @@ class _HistoryPageState extends State<HistoryPage> {
                       authController.appUser!.useMilitaryTime),
                   color: LiviThemes.colors.gray500,
                 )
-              : null,
+              else
+                SizedBox(),
+              if (history.isOverride == true)
+                LiviTextStyles.interRegular14(
+                  '(${Strings.overriden})',
+                  color: LiviThemes.colors.gray500,
+                ),
+            ],
+          ),
           // subtitle: LiviTextStyles.interRegular14(),
         ),
       ],

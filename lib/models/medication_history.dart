@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/string_ext.dart';
 import 'enums.dart';
 import 'models.dart';
 import 'schedule_type.dart';
@@ -58,6 +59,18 @@ class MedicationHistory {
     }
     history.appUserId = appUser.id;
     return history;
+  }
+
+  String getNameStrengthDosageForm() {
+    final name = medicationName.capitalizeFirstLetter();
+    if (strength != null) {
+      medicationName = '$medicationName $strength';
+    }
+    if (dosageForm != null && dosageForm != DosageForm.none) {
+      medicationName =
+          '$medicationName ${dosageForm!.description.capitalizeFirstLetter()}';
+    }
+    return medicationName;
   }
 
   Map<String, dynamic> toJson() => _$MedicationHistoryToJson(this);

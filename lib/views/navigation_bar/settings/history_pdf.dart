@@ -10,6 +10,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../controllers/auth_controller.dart';
 import '../../../models/medication_history.dart';
+import '../../../themes/livi_theme.dart';
+import '../../../utils/string_ext.dart';
 import '../../../utils/utils.dart';
 
 String svgRaw = '''
@@ -24,11 +26,19 @@ final svgImage = pw.SvgImage(svg: svgRaw, height: 120);
 final dateFormat = DateFormat('MM/dd');
 
 class HistoryPdf {
-  static String getDateTime(BuildContext context, MedicationHistory history) {
-    return '${dateFormat.format(history.dateTime)} ${formartTimeOfDay(TimeOfDay(
-          hour: history.dateTime.hour,
-          minute: history.dateTime.minute,
+  static String getDateTime(BuildContext context, DateTime dateTime) {
+    return '${dateFormat.format(dateTime)} ${formartTimeOfDay(TimeOfDay(
+          hour: dateTime.hour,
+          minute: dateTime.minute,
         ), Provider.of<AuthController>(context, listen: false).appUser!.useMilitaryTime)}';
+  }
+
+  static pw.Widget getOutcome(MedicationHistory history) {
+    if (history.outcome != null) {
+      return pw.Text(history.outcome!.name.capitalizeFirstLetter());
+    } else {
+      return pw.SizedBox();
+    }
   }
 
   static Future<pw.MultiPage> historyPDF(
@@ -37,42 +47,72 @@ class HistoryPdf {
     return pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: pw.EdgeInsets.all(30),
+        header: (context) => pw.Header(
+            level: 0,
+            child: pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                children: [
+                  pw.Center(
+                    child: svgImage,
+                  ),
+                  pw.Text(
+                    'Medication History',
+                    style: pw.TextStyle(
+                        fontSize: 24, fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.SizedBox(height: 40)
+                ])),
         build: (pw.Context context) {
           return <pw.Widget>[
-            pw.Header(
-                level: 0,
-                child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                    children: [
-                      pw.Center(
-                        child: svgImage,
-                      ),
-                      pw.Text(
-                        'Medication History',
-                        style: pw.TextStyle(
-                            fontSize: 24, fontWeight: pw.FontWeight.bold),
-                      ),
-                      pw.SizedBox(height: 40)
-                    ])),
-            pw.SizedBox(height: 40),
             pw.Table(
-              
-              children: [
-              pw.TableRow(children: [
-                pw.Text('Date',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text('Name',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text('Outcome',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-              ]),
-              for (var history in medicationHistory)
-                pw.TableRow(children: [
-                  pw.Text(getDateTime(buildContext, history)),
-                  pw.Text(history.name),
-                  if (history.outcome != null) pw.Text(history.outcome!.name),
+                // border: pw.TableBorder.all(color: PdfColors.indigo),
+                defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
+                children: [
+                  pw.TableRow(children: [
+                    pw.Text(
+                      'Date',
+                      style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
+                    pw.Text(
+                      'Name',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.Text(
+                      'Outcome',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.Text(
+                      'Due Time',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.Text(
+                      'Remaining',
+                      textAlign: pw.TextAlign.center,
+                      style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
+                  ]),
+                  for (var history in medicationHistory)
+                    pw.TableRow(
+                        decoration: pw.BoxDecoration(
+                          border: pw.Border(
+                              bottom: pw.BorderSide(color: PdfColors.grey)),
+                        ),
+                        children: [
+                          pw.Text(getDateTime(buildContext, history.dateTime)),
+                          pw.Text(history.getNameStrengthDosageForm()),
+                          getOutcome(history),
+                          if (history.scheduledDosingTime != null)
+                            pw.Text(getDateTime(
+                                buildContext, history.scheduledDosingTime!)),
+                          if (history.scheduledDosingTime != null)
+                            pw.Text(history.qtyRemaining.toInt().toString(),
+                                textAlign: pw.TextAlign.center),
+                        ]),
                 ]),
-            ]),
           ];
         });
   }

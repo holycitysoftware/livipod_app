@@ -12,6 +12,8 @@ class Strings {
   static const String adherence = 'Adherence (%)';
   static const String scheduled = 'Scheduled';
   static const String overrideDose = 'Override Dose';
+
+  static const String overriden = 'Overriden';
   static const String dispenseFromPOD = 'Dispense from POD';
   static const String yesIHaveTakenIt = 'Yes, I have taken it';
   static const String areYouSureYouHaveTakeThisDose =
