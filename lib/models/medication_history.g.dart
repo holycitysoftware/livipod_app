@@ -10,16 +10,18 @@ MedicationHistory _$MedicationHistoryFromJson(Map<String, dynamic> json) =>
     MedicationHistory(
       dateTime: DateTime.parse(json['dateTime'] as String),
     )
+      ..id = json['id'] as String?
       ..accountId = json['accountId'] as String
       ..name = json['name'] as String
       ..dosageForm =
           $enumDecodeNullable(_$DosageFormEnumMap, json['dosageForm'])
       ..medicationId = json['medicationId'] as String
       ..strength = json['strength'] as String?
+      ..isOverride = json['isOverride'] as bool?
       ..medicationName = json['medicationName'] as String
       ..scheduleType =
           $enumDecodeNullable(_$ScheduleTypeEnumMap, json['scheduleType'])
-      ..outcome = $enumDecode(_$DosingOutcomeEnumMap, json['outcome'])
+      ..outcome = $enumDecodeNullable(_$DosingOutcomeEnumMap, json['outcome'])
       ..qtyDispensed = (json['qtyDispensed'] as num).toDouble()
       ..qtyMissed = (json['qtyMissed'] as num).toDouble()
       ..qtyRemaining = (json['qtyRemaining'] as num).toDouble()
@@ -32,15 +34,17 @@ MedicationHistory _$MedicationHistoryFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$MedicationHistoryToJson(MedicationHistory instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'accountId': instance.accountId,
       'dateTime': instance.dateTime.toIso8601String(),
       'name': instance.name,
       'dosageForm': _$DosageFormEnumMap[instance.dosageForm],
       'medicationId': instance.medicationId,
       'strength': instance.strength,
+      'isOverride': instance.isOverride,
       'medicationName': instance.medicationName,
       'scheduleType': _$ScheduleTypeEnumMap[instance.scheduleType],
-      'outcome': _$DosingOutcomeEnumMap[instance.outcome]!,
+      'outcome': _$DosingOutcomeEnumMap[instance.outcome],
       'qtyDispensed': instance.qtyDispensed,
       'qtyMissed': instance.qtyMissed,
       'qtyRemaining': instance.qtyRemaining,

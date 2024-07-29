@@ -1,7 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../components/components.dart';
 import '../../controllers/auth_controller.dart';
@@ -15,6 +22,7 @@ import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
 import '../../utils/utils.dart';
 import '../views.dart';
+import 'settings/history_pdf.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -145,11 +153,52 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  shareHistory() {}
+  Future<void> goToHistoryDetailsPage(MedicationHistory medication) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HistoryDetailsPage(
+          medicationHistory: medication,
+        ),
+      ),
+    );
+  }
+
+  Future<void> shareHistory(List<MedicationHistory> med) async {
+    var bytes = await generateReceipt(
+        page: HistoryPdf.historyPDF(
+            medicationHistory: med, buildContext: context));
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/${'receipt'}.pdf');
+    await file.writeAsBytes(bytes);
+    OpenFile.open(file.path);
+    // shareOnTap(file, bytes);
+  }
+
+  shareOnTap(File file, Uint8List bytes) async {
+    final dir = await getApplicationDocumentsDirectory();
+    file = File('${dir.path}/${'history'}.pdf');
+    await file.writeAsBytes(bytes);
+    var xfile = XFile(file.path);
+    Share.shareXFiles([xfile]);
+  }
+
+  Future<Uint8List> generateReceipt(
+      {required Future<pw.MultiPage> page}) async {
+    try {
+      final pdf = pw.Document();
+
+      pdf.addPage(await page);
+      final bytes = await pdf.save();
+      return bytes;
+    } catch (e, s) {
+      print('🟥 generateReceipt-> $e $s');
+      return Uint8List(0);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     return SafeArea(
       child: PopScope(
         canPop: false,
@@ -158,7 +207,6 @@ class _HistoryPageState extends State<HistoryPage> {
           body: StreamBuilder<List<MedicationHistory>>(
             stream: getMedicationHistory(),
             builder: (context, snapshot) {
-              print('stream');
               if (snapshot.hasData) {
                 historyList = snapshot.data!;
               }
@@ -181,6 +229,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   SliverAppBar(
                     pinned: true,
                     elevation: 40,
+                    automaticallyImplyLeading: false,
                     snap: true,
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.white,
@@ -194,7 +243,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           LiviTextStyles.interSemiBold36(Strings.history),
                           InkWell(
                             borderRadius: BorderRadius.circular(12),
-                            onTap: shareHistory,
+                            onTap: () => shareHistory(snapshot.data!),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                               child: Row(
@@ -468,6 +517,7 @@ class _HistoryPageState extends State<HistoryPage> {
             color: LiviThemes.colors.baseBlack.withOpacity(.08),
           ),
         ListTile(
+          onTap: () => goToHistoryDetailsPage(history),
           contentPadding: EdgeInsets.all(12),
           leading: Container(
             padding: EdgeInsets.all(12),
@@ -478,7 +528,7 @@ class _HistoryPageState extends State<HistoryPage> {
               shape: BoxShape.circle,
             ),
             child: dosageFormIcon(
-                dosageForm: DosageForm.aerosol_spray,
+                dosageForm: history.dosageForm ?? DosageForm.aerosol_spray,
                 color: LiviThemes.colors.gray700),
           ),
           title: Container(
@@ -502,7 +552,6 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget daysFilter() {
     return Container(
-      width: double.maxFinite,
       margin: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: LiviThemes.colors.gray100,
@@ -521,35 +570,40 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget textDaysFiter(DaysFilter daysFilter) {
-    return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: LiviThemes.colors.gray100)),
-      alignment: Alignment.center,
-      margin: EdgeInsets.all(4),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () {
-          setState(() {
-            daysFilterValue = daysFilter;
-          });
-        },
-        child: Ink(
-          padding: EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: daysFilterValue == daysFilter
-                ? LiviThemes.colors.baseWhite
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Material(
-            borderRadius: BorderRadius.circular(8),
-            color: LiviThemes.colors.gray100,
-            elevation: daysFilterValue == daysFilter ? 2 : 0,
-            child: LiviTextStyles.interSemiBold14(
-              daysFilter.description,
-              color: daysFilter == daysFilterValue
-                  ? LiviThemes.colors.gray700
-                  : LiviThemes.colors.gray500,
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Material(
+          borderRadius: BorderRadius.circular(6),
+          color: Colors.transparent,
+          elevation: daysFilterValue == daysFilter ? 2 : 0,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(6),
+            onTap: () {
+              if (daysFilterValue != daysFilter) {
+                setState(() {
+                  daysFilterValue = daysFilter;
+                });
+              }
+            },
+            child: Container(
+              height: 30,
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(4),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: daysFilterValue == daysFilter
+                    ? LiviThemes.colors.baseWhite
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: LiviTextStyles.interSemiBold14(
+                daysFilter.description,
+                textAlign: TextAlign.center,
+                color: daysFilter == daysFilterValue
+                    ? LiviThemes.colors.gray700
+                    : LiviThemes.colors.gray500,
+              ),
             ),
           ),
         ),

@@ -8,15 +8,17 @@ part 'medication_history.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class MedicationHistory {
+  String? id = '';
   String accountId = '';
   DateTime dateTime;
   String name = '';
   DosageForm? dosageForm = DosageForm.none;
   String medicationId = '';
   String? strength = '';
+  bool? isOverride = false;
   String medicationName = '';
   ScheduleType? scheduleType;
-  DosingOutcome outcome = DosingOutcome.missed;
+  DosingOutcome? outcome = DosingOutcome.missed;
   double qtyDispensed = 0.0;
   double qtyMissed = 0.0;
   double qtyRemaining = 0.0;

@@ -11,6 +11,11 @@ class Strings {
   static const String share = 'Share';
   static const String adherence = 'Adherence (%)';
   static const String scheduled = 'Scheduled';
+  static const String overrideDose = 'Override Dose';
+  static const String dispenseFromPOD = 'Dispense from POD';
+  static const String yesIHaveTakenIt = 'Yes, I have taken it';
+  static const String areYouSureYouHaveTakeThisDose =
+      'Are you sure you have taken this dose?';
   static const String addImage = 'Add Image';
   static const String addCaregiver = 'Add Caregiver';
   static const String removeMedication = 'Remove Medication';

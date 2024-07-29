@@ -106,6 +106,7 @@ class MedicationService {
           .then((querySnapshot) {
         for (final result in querySnapshot.docs) {
           final mh = MedicationHistory.fromJson(result.data());
+          mh.id = result.id;
           medicationHistory.add(mh);
         }
       });
@@ -132,6 +133,7 @@ class MedicationService {
       final list = <MedicationHistory>[];
       for (final result in querySnapshot.docs) {
         final mh = MedicationHistory.fromJson(result.data());
+        mh.id = result.id;
         list.add(mh);
       }
       _historyController.add(list);
@@ -144,5 +146,13 @@ class MedicationService {
     await FirebaseFirestore.instance
         .collection('medicationHistory')
         .add(medicationHistory.toJson());
+  }
+
+  Future<void> updateMedicationHistory(
+      MedicationHistory medicationHistory) async {
+    await FirebaseFirestore.instance
+        .collection('medicationHistory')
+        .doc(medicationHistory.id)
+        .update(medicationHistory.toJson());
   }
 }
