@@ -617,6 +617,10 @@ String formartDay(int day) {
   }
 }
 
+String parseNumber(String phoneNumber, Country country) {
+  return phoneNumber.replaceAll(country.dialCode, '');
+}
+
 String formartTimeOfDay(TimeOfDay timeOfDat, bool useMilitaryTime) {
   if (useMilitaryTime) {
     return '${timeOfDat.hour.toString().padLeft(2, '0')}:${timeOfDat.minute.toString().padLeft(2, '0')}';

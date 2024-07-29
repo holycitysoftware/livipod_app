@@ -12,6 +12,7 @@ import '../../themes/livi_themes.dart';
 import '../../utils/countries.dart';
 import '../../utils/string_ext.dart';
 import '../../utils/strings.dart';
+import '../../utils/utils.dart';
 import '../views.dart';
 
 class LoginPage extends StatefulWidget {
@@ -53,10 +54,9 @@ class _LoginPageState extends State<LoginPage> {
       final String parsableNumber = number.dialCode ?? '';
       country = getCountryByCode('+$parsableNumber');
       if (number != null && number.phoneNumber != null) {
-        phoneNumberController.text = number.parseNumber().replaceAll('+', '');
+        phoneNumberController.text = parseNumber(number.phoneNumber!, country);
       }
-      Provider.of<AuthController>(context, listen: false)
-          .clearAppUser();
+      Provider.of<AuthController>(context, listen: false).clearAppUser();
       setState(() {});
     }
   }
@@ -142,87 +142,90 @@ class _LoginPageState extends State<LoginPage> {
           ),
           body: Form(
             key: _formKey,
-            child: Column(
-              // controller: scrollController,
-              // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              children: [
-                BackBar(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WelcomePage(),
-                        ),
-                      );
-                    },
-                    title: Strings.logIn),
-                Align(
-                  child: LiviTextStyles.interSemiBold24(Strings.welcomeBack),
-                ),
-                LiviThemes.spacing.heightSpacer4(),
-                Align(
-                  child: LiviTextStyles.interRegular16(
-                      Strings.enterYourDetailsToLogIn),
-                ),
-                LiviThemes.spacing.heightSpacer8(),
-                const SizedBox(height: kSpacer_16),
-                Consumer<AuthController>(
-                    builder: (context, authController, child) {
-                  return LiviInputField(
-                    key: Key('phone-number-field'),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: kSpacer_16, vertical: kSpacer_8),
-                    title: Strings.phoneNumber.requiredSymbol(),
-                    focusNode: phoneFocus,
-                    staticHint: country.dialCode,
-                    onFieldSubmitted: (value) {
-                      verifyNumber();
-                    },
-                    errorText: authController.verificationError.isEmpty
-                        ? null
-                        : authController.verificationError,
-                    keyboardType: TextInputType.number,
-                    hint: Strings.steveJobsNumber,
-                    prefix: CountryDropdownButton(
-                      country: country,
-                      onChanged: (Country? value) {
-                        setState(() {
-                          country = value!;
-                        });
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kSpacer_16),
+              child: Column(
+                // controller: scrollController,
+                // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                children: [
+                  BackBar(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WelcomePage(),
+                          ),
+                        );
                       },
-                    ),
-                    controller: phoneNumberController,
-                  );
-                }),
-                Spacer(),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () => goToCreateAccountPage(context),
-                        child: LiviTextStyles.interRegular16(
-                          Strings.dontHaveAnAccount,
-                          textAlign: TextAlign.start,
-                          maxLines: 3,
-                        ),
-                      ),
-                      LiviThemes.spacing.widthSpacer4(),
-                      GestureDetector(
-                        onTap: () => goToCreateAccountPage(context),
-                        child: LiviTextStyles.interSemiBold16(
-                          Strings.signUp,
-                          color: LiviThemes.colors.brand600,
-                          textAlign: TextAlign.start,
-                          maxLines: 3,
-                        ),
-                      ),
-                    ],
+                      title: Strings.logIn),
+                  Align(
+                    child: LiviTextStyles.interSemiBold24(Strings.welcomeBack),
                   ),
-                ),
-              ],
+                  LiviThemes.spacing.heightSpacer4(),
+                  Align(
+                    child: LiviTextStyles.interRegular16(
+                        Strings.enterYourDetailsToLogIn),
+                  ),
+                  LiviThemes.spacing.heightSpacer8(),
+                  const SizedBox(height: kSpacer_16),
+                  Consumer<AuthController>(
+                      builder: (context, authController, child) {
+                    return LiviInputField(
+                      key: Key('phone-number-field'),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: kSpacer_16, vertical: kSpacer_8),
+                      title: Strings.phoneNumber.requiredSymbol(),
+                      focusNode: phoneFocus,
+                      staticHint: country.dialCode,
+                      onFieldSubmitted: (value) {
+                        verifyNumber();
+                      },
+                      errorText: authController.verificationError.isEmpty
+                          ? null
+                          : authController.verificationError,
+                      keyboardType: TextInputType.number,
+                      hint: Strings.steveJobsNumber,
+                      prefix: CountryDropdownButton(
+                        country: country,
+                        onChanged: (Country? value) {
+                          setState(() {
+                            country = value!;
+                          });
+                        },
+                      ),
+                      controller: phoneNumberController,
+                    );
+                  }),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () => goToCreateAccountPage(context),
+                          child: LiviTextStyles.interRegular16(
+                            Strings.dontHaveAnAccount,
+                            textAlign: TextAlign.start,
+                            maxLines: 3,
+                          ),
+                        ),
+                        LiviThemes.spacing.widthSpacer4(),
+                        GestureDetector(
+                          onTap: () => goToCreateAccountPage(context),
+                          child: LiviTextStyles.interSemiBold16(
+                            Strings.signUp,
+                            color: LiviThemes.colors.brand600,
+                            textAlign: TextAlign.start,
+                            maxLines: 3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
