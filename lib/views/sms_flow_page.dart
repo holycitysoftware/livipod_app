@@ -46,8 +46,7 @@ class _SmsFlowPageState extends State<SmsFlowPage> {
       return CreateAccountPage(
         appUser: controller.appUser,
       );
-    } else if (controller.promptForUserCode &&
-        controller.appUser != null) {
+    } else if (controller.promptForUserCode && controller.appUser != null) {
       return CheckSmsPage(
         appUser: controller.appUser!,
         isAccountCreation: !widget.isLoginPage,

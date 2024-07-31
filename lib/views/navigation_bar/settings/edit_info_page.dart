@@ -86,8 +86,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
       final String parsableNumber = number!.dialCode ?? '';
       country = getCountryByCode('+$parsableNumber');
       if (number != null && number!.phoneNumber != null) {
-        phoneNumberController.text =
-            country.dialCode + number!.parseNumber().replaceAll('+', '');
+        phoneNumberController.text = parseNumber(number!.phoneNumber!, country);
       }
       setState(() {});
     }
