@@ -8,11 +8,24 @@ class Strings {
   static const String dontHaveAnAccount = "Don’t have an account?";
   static const String none = 'None';
   static const String ssid = 'SSID';
+  static const String share = 'Share';
+  static const String adherence = 'Adherence (%)';
+  static const String scheduled = 'Scheduled';
+  static const String overrideDose = 'Override Dose';
+
+  static const String overriden = 'Overriden';
+  static const String dispenseFromPOD = 'Dispense from POD';
+  static const String yesIHaveTakenIt = 'Yes, I have taken it';
+  static const String areYouSureYouHaveTakeThisDose =
+      'Are you sure you have taken this dose?';
   static const String addImage = 'Add Image';
   static const String addCaregiver = 'Add Caregiver';
   static const String removeMedication = 'Remove Medication';
   static const String unclaim = 'Unclaim';
   static const String delete = 'Delete';
+  static const String taken = 'Taken';
+  static const String missed = 'Missed';
+  static const String skipped = 'Skipped';
   static const String noUsersPhoneNumber =
       'No user found with this phone number.';
   static const String phoneNumberExists =
@@ -27,6 +40,7 @@ class Strings {
   static const String takePicture = 'Take a picture';
   static const String pickImage = 'Pick image';
   static const String search = 'Search';
+  static const String complianceRate = 'Compliance Rate';
   static const String takeAll = 'Take All';
   static const String edit = 'Edit';
   static const String due = 'Due';
@@ -221,6 +235,9 @@ class Strings {
   static const String home = 'Home';
   static const String medications = 'Medications';
   static const String history = 'History';
+  static const String noRecordedHistoryYet = 'No recorded History yet';
+  static const String addMedicationsSoThat =
+      'Add medications so that the app records your use.';
   static const String settings = 'Settings';
   static const String addMedication = 'Add Medication';
   static const String noResultsFound = 'No results found';

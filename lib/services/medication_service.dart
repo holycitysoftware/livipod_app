@@ -8,6 +8,8 @@ import '../models/medication_history.dart';
 class MedicationService {
   final StreamController<List<Medication>> _medicationController =
       StreamController<List<Medication>>.broadcast();
+  final StreamController<List<MedicationHistory>> _historyController =
+      StreamController<List<MedicationHistory>>.broadcast();
 
   Future<Medication> createMedication(Medication medication) async {
     final json = await FirebaseFirestore.instance
@@ -88,21 +90,45 @@ class MedicationService {
     }
   }
 
+  Future<Medication?> getMedication(String medicationId) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection('medications')
+          .doc(medicationId)
+          .get()
+          .then(
+        (snapshot) {
+          if (snapshot.data() != null) {
+            final med = Medication.fromJson(snapshot.data()!);
+            med.id = snapshot.id;
+            return med;
+          }
+          return Future.value();
+        },
+      );
+    } catch (e) {
+      debugPrint('$e');
+      return null;
+    }
+  }
+
   Future<List<MedicationHistory>> getPatientMedicationHistory(
       AppUser patient, DateTime startDate, DateTime stopDate) async {
     var medicationHistory = <MedicationHistory>[];
     try {
       await FirebaseFirestore.instance
           .collection('medicationHistory')
-          .where('userId', isEqualTo: patient.id)
-          .where('dateTime', isLessThanOrEqualTo: stopDate.toIso8601String())
-          .where('dateTime',
+          .where('appUserId', isEqualTo: patient.id)
+          .where('scheduledDosingTime',
+              isLessThanOrEqualTo: stopDate.toIso8601String())
+          .where('scheduledDosingTime',
               isGreaterThanOrEqualTo: startDate.toIso8601String())
-          .orderBy('dateTime', descending: true)
+          .orderBy('scheduledDosingTime', descending: true)
           .get()
           .then((querySnapshot) {
         for (final result in querySnapshot.docs) {
           final mh = MedicationHistory.fromJson(result.data());
+          mh.id = result.id;
           medicationHistory.add(mh);
         }
       });
@@ -113,10 +139,42 @@ class MedicationService {
     }
   }
 
+  Stream<List<MedicationHistory>> listenToHistoryRealTime(
+      AppUser patient, DateTime startDate, DateTime stopDate) {
+    final medicationHistory = <MedicationHistory>[];
+    FirebaseFirestore.instance
+        .collection('medicationHistory')
+        .where('appUserId', isEqualTo: patient.id)
+        .where('scheduledDosingTime',
+            isLessThanOrEqualTo: stopDate.toIso8601String())
+        .where('scheduledDosingTime',
+            isGreaterThanOrEqualTo: startDate.toIso8601String())
+        .orderBy('scheduledDosingTime', descending: true)
+        .snapshots()
+        .listen((querySnapshot) {
+      final list = <MedicationHistory>[];
+      for (final result in querySnapshot.docs) {
+        final mh = MedicationHistory.fromJson(result.data());
+        mh.id = result.id;
+        list.add(mh);
+      }
+      _historyController.add(list);
+    });
+    return _historyController.stream;
+  }
+
   Future<void> createMedicationHistory(
       MedicationHistory medicationHistory) async {
     await FirebaseFirestore.instance
         .collection('medicationHistory')
         .add(medicationHistory.toJson());
+  }
+
+  Future<void> updateMedicationHistory(
+      MedicationHistory medicationHistory) async {
+    await FirebaseFirestore.instance
+        .collection('medicationHistory')
+        .doc(medicationHistory.id)
+        .update(medicationHistory.toJson());
   }
 }
