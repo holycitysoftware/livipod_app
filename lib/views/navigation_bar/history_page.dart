@@ -168,12 +168,12 @@ class _HistoryPageState extends State<HistoryPage> {
         page: HistoryPdf.historyPDF(
             medicationHistory: med, buildContext: context));
     final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/${'receipt'}.pdf');
+    final file = File('${dir.path}/${'history'}.pdf');
     await file.writeAsBytes(bytes);
     shareOnTap(file, bytes);
   }
 
-  shareOnTap(File file, Uint8List bytes) async {
+  Future<void> shareOnTap(File file, Uint8List bytes) async {
     final dir = await getApplicationDocumentsDirectory();
     file = File('${dir.path}/${'history'}.pdf');
     await file.writeAsBytes(bytes);

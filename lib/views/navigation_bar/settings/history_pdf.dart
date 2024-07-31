@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:intl/intl.dart';
@@ -47,6 +48,16 @@ class HistoryPdf {
   static Future<pw.MultiPage> historyPDF(
       {required List<MedicationHistory> medicationHistory,
       required BuildContext buildContext}) async {
+    Map<int, pw.TableColumnWidth> widths = Map();
+    widths = {
+      0: pw.FractionColumnWidth(0.1),
+      1: pw.FractionColumnWidth(0.235),
+      2: pw.FractionColumnWidth(0.1),
+      3: pw.FractionColumnWidth(0.11),
+      4: pw.FractionColumnWidth(0.235),
+      5: pw.FractionColumnWidth(0.1),
+      6: pw.FractionColumnWidth(0.12),
+    };
     return pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         orientation: pw.PageOrientation.natural,
@@ -69,10 +80,11 @@ class HistoryPdf {
         build: (pw.Context context) {
           return <pw.Widget>[
             pw.Table(
+                columnWidths: widths,
                 // border: pw.TableBorder.all(color: PdfColors.indigo),
                 defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
                 children: [
-                  pw.TableRow(children: [
+                  pw.TableRow(repeat: true, children: [
                     pw.Text(
                       'Date',
                       style: pw.TextStyle(
@@ -109,7 +121,6 @@ class HistoryPdf {
                   ]),
                   for (var history in medicationHistory)
                     pw.TableRow(
-                        repeat: true,
                         decoration: pw.BoxDecoration(
                           border: pw.Border(
                               bottom: pw.BorderSide(color: PdfColors.grey)),
