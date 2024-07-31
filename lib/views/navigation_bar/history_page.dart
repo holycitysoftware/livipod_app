@@ -164,7 +164,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Future<void> shareHistory(List<MedicationHistory> med) async {
-    var bytes = await generateReceipt(
+    var bytes = await generatePDF(
         page: HistoryPdf.historyPDF(
             medicationHistory: med, buildContext: context));
     final dir = await getApplicationDocumentsDirectory();
@@ -181,8 +181,7 @@ class _HistoryPageState extends State<HistoryPage> {
     Share.shareXFiles([xfile]);
   }
 
-  Future<Uint8List> generateReceipt(
-      {required Future<pw.MultiPage> page}) async {
+  Future<Uint8List> generatePDF({required Future<pw.MultiPage> page}) async {
     try {
       final pdf = pw.Document();
 
@@ -190,7 +189,7 @@ class _HistoryPageState extends State<HistoryPage> {
       final bytes = await pdf.save();
       return bytes;
     } catch (e, s) {
-      print('🟥 generateReceipt-> $e $s');
+      print('🟥 generatePDF-> $e $s');
       return Uint8List(0);
     }
   }
@@ -515,7 +514,12 @@ class _HistoryPageState extends State<HistoryPage> {
             color: LiviThemes.colors.baseBlack.withOpacity(.08),
           ),
         ListTile(
-          onTap: () => goToHistoryDetailsPage(history),
+          onTap: Provider.of<AuthController>(context, listen: false)
+                      .appUser!
+                      .appUserType ==
+                  AppUserType.selfGuidedUser
+              ? () => goToHistoryDetailsPage(history)
+              : null,
           contentPadding: EdgeInsets.all(12),
           leading: Stack(
             alignment: Alignment.bottomRight,
@@ -532,7 +536,11 @@ class _HistoryPageState extends State<HistoryPage> {
                     dosageForm: history.dosageForm ?? DosageForm.aerosol_spray,
                     color: LiviThemes.colors.gray700),
               ),
-              if (history.isOverride == true)
+              if (history.isOverride == true &&
+                  Provider.of<AuthController>(context, listen: false)
+                          .appUser!
+                          .appUserType ==
+                      AppUserType.selfGuidedUser)
                 Container(
                   padding: EdgeInsets.all(6),
                   width: 30,

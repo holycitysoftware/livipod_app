@@ -18,7 +18,9 @@ class MedicationHistory {
   String? strength = '';
   bool? isOverride = false;
   String medicationName = '';
+  int? inventoryQuantity = 0;
   ScheduleType? scheduleType;
+  String? schedules = '';
   DosingOutcome? outcome = DosingOutcome.missed;
   double qtyDispensed = 0.0;
   double qtyMissed = 0.0;
@@ -47,9 +49,15 @@ class MedicationHistory {
     history.dosageForm = med.dosageForm;
     history.strength = med.strength;
     history.scheduleType = med.schedules.first.type;
+    history.inventoryQuantity = med.inventoryQuantity;
+    history.schedules = '';
+    med.schedules.forEach((schedule) {
+      history.schedules =
+          '${history.schedules!} ${schedule.getScheduleDescription(appUser.useMilitaryTime)}';
+    });
     if (med.lastDosing != null) {
       history.qtyDispensed = med.lastDosing!.qtyDispensed;
-      history.outcome = med.lastDosing!.outcome!;
+      history.outcome = med.lastDosing!.outcome;
       history.qtyMissed = med.lastDosing!.qtyMissed;
       history.qtyRemaining = med.lastDosing!.qtyRemaining;
       history.qtyRequested = med.lastDosing!.qtyRequested;

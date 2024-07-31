@@ -26,7 +26,10 @@ final svgImage = pw.SvgImage(svg: svgRaw, height: 120);
 final dateFormat = DateFormat('MM/dd');
 
 class HistoryPdf {
-  static String getDateTime(BuildContext context, DateTime dateTime) {
+  static String getDateTime(BuildContext context, DateTime? dateTime) {
+    if (dateTime == null) {
+      return '';
+    }
     return '${dateFormat.format(dateTime)} ${formartTimeOfDay(TimeOfDay(
           hour: dateTime.hour,
           minute: dateTime.minute,
@@ -46,6 +49,7 @@ class HistoryPdf {
       required BuildContext buildContext}) async {
     return pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
+        orientation: pw.PageOrientation.natural,
         margin: pw.EdgeInsets.all(30),
         header: (context) => pw.Header(
             level: 0,
@@ -80,7 +84,15 @@ class HistoryPdf {
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                     ),
                     pw.Text(
+                      'Quantity',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.Text(
                       'Outcome',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                    ),
+                    pw.Text(
+                      'Schedule',
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                     ),
                     pw.Text(
@@ -97,6 +109,7 @@ class HistoryPdf {
                   ]),
                   for (var history in medicationHistory)
                     pw.TableRow(
+                        repeat: true,
                         decoration: pw.BoxDecoration(
                           border: pw.Border(
                               bottom: pw.BorderSide(color: PdfColors.grey)),
@@ -104,13 +117,13 @@ class HistoryPdf {
                         children: [
                           pw.Text(getDateTime(buildContext, history.dateTime)),
                           pw.Text(history.getNameStrengthDosageForm()),
+                          pw.Text(history.qtyDispensed.toInt().toString()),
                           getOutcome(history),
-                          if (history.scheduledDosingTime != null)
-                            pw.Text(getDateTime(
-                                buildContext, history.scheduledDosingTime!)),
-                          if (history.scheduledDosingTime != null)
-                            pw.Text(history.qtyRemaining.toInt().toString(),
-                                textAlign: pw.TextAlign.center),
+                          pw.Text(history.schedules ?? ''),
+                          pw.Text(getDateTime(
+                              buildContext, history.scheduledDosingTime)),
+                          pw.Text(history.qtyRemaining.toInt().toString(),
+                              textAlign: pw.TextAlign.center),
                         ]),
                 ]),
           ];

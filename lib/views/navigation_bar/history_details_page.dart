@@ -25,6 +25,18 @@ class HistoryDetailsPage extends StatefulWidget {
 
 class _HistoryDetailsPageState extends State<HistoryDetailsPage> {
   var loading = false;
+  Medication? medication;
+  @override
+  void initState() {
+    getMedication();
+    super.initState();
+  }
+
+  Future<void> getMedication() async {
+    medication = await MedicationService()
+        .getMedication(widget.medicationHistory.medicationId);
+  }
+
   String getDateTime() {
     return _dateFormat.format(widget.medicationHistory.dateTime) +
         formartTimeOfDay(

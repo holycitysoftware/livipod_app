@@ -172,8 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (context, authController, child) {
                     return LiviInputField(
                       key: Key('phone-number-field'),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: kSpacer_16, vertical: kSpacer_8),
+                      padding: const EdgeInsets.symmetric(vertical: kSpacer_8),
                       title: Strings.phoneNumber.requiredSymbol(),
                       focusNode: phoneFocus,
                       staticHint: country.dialCode,

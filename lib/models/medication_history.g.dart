@@ -19,8 +19,10 @@ MedicationHistory _$MedicationHistoryFromJson(Map<String, dynamic> json) =>
       ..strength = json['strength'] as String?
       ..isOverride = json['isOverride'] as bool?
       ..medicationName = json['medicationName'] as String
+      ..inventoryQuantity = json['inventoryQuantity'] as int?
       ..scheduleType =
           $enumDecodeNullable(_$ScheduleTypeEnumMap, json['scheduleType'])
+      ..schedules = json['schedules'] as String?
       ..outcome = $enumDecodeNullable(_$DosingOutcomeEnumMap, json['outcome'])
       ..qtyDispensed = (json['qtyDispensed'] as num).toDouble()
       ..qtyMissed = (json['qtyMissed'] as num).toDouble()
@@ -43,7 +45,9 @@ Map<String, dynamic> _$MedicationHistoryToJson(MedicationHistory instance) =>
       'strength': instance.strength,
       'isOverride': instance.isOverride,
       'medicationName': instance.medicationName,
+      'inventoryQuantity': instance.inventoryQuantity,
       'scheduleType': _$ScheduleTypeEnumMap[instance.scheduleType],
+      'schedules': instance.schedules,
       'outcome': _$DosingOutcomeEnumMap[instance.outcome],
       'qtyDispensed': instance.qtyDispensed,
       'qtyMissed': instance.qtyMissed,

@@ -90,6 +90,28 @@ class MedicationService {
     }
   }
 
+  Future<Medication?> getMedication(String medicationId) async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection('medications')
+          .doc(medicationId)
+          .get()
+          .then(
+        (snapshot) {
+          if (snapshot.data() != null) {
+            final med = Medication.fromJson(snapshot.data()!);
+            med.id = snapshot.id;
+            return med;
+          }
+          return Future.value();
+        },
+      );
+    } catch (e) {
+      debugPrint('$e');
+      return null;
+    }
+  }
+
   Future<List<MedicationHistory>> getPatientMedicationHistory(
       AppUser patient, DateTime startDate, DateTime stopDate) async {
     var medicationHistory = <MedicationHistory>[];
