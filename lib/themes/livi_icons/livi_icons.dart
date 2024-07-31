@@ -329,6 +329,51 @@ class LiviIcons {
     );
   }
 
+  String get _sharePath => '$svgPath/share.svg';
+
+  Widget shareIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _sharePath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _alarmClockOffPath => '$svgPath/alarm_clock_off.svg';
+
+  Widget alarmClockOffIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _alarmClockOffPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
+  String get _skipForwardPath => '$svgPath/skip_forward.svg';
+
+  Widget skipForwardIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _skipForwardPath,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      height: height,
+    );
+  }
+
   String get _searchMdPath => '$svgPath/search_md.svg';
 
   Widget searchMdIcon({
@@ -662,9 +707,53 @@ class LiviIcons {
             ColorFilter.mode(LiviThemes.colors.gray400, BlendMode.srcIn),
       );
 
-  Widget get checkCircle => SvgPicture.asset(
-        '$svgPath/check_circle.svg',
-      );
+  String get _checkCirclePath => '$svgPath/check_circle.svg';
+
+  Widget checkCircleIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _checkCirclePath,
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      height: height,
+    );
+  }
+
+  String get _checkCircleFilledPath => '$svgPath/check_circle_filled.svg';
+
+  Widget checkCircleFilledIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _checkCircleFilledPath,
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      height: height,
+    );
+  }
+
+  String get _graphPath => '$svgPath/graph.svg';
+
+  Widget graphIcon({
+    Color? color,
+    double? height,
+  }) {
+    color ??= LiviThemes.colors.randomGray;
+
+    return SvgPicture.asset(
+      _graphPath,
+      colorFilter:
+          color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      height: height,
+    );
+  }
 
   Widget get chevronLeft => SvgPicture.asset(
         '$svgPath/chevron_left.svg',
