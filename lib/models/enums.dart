@@ -461,18 +461,18 @@ enum Days implements Comparable<Days> {
 enum PeriodOfDay {
   morning(
       description: Strings.morning,
-      startTime: TimeOfDay(hour: 6, minute: 0),
-      endTime: TimeOfDay(hour: 11, minute: 59),
+      startTime: TimeOfDay(hour: 6, minute: 1),
+      endTime: TimeOfDay(hour: 12, minute: 0),
       colors: [Color(0xffDEEDF6), Color(0xffEBEDE2)]),
   afternoon(
       description: Strings.afternoon,
-      startTime: TimeOfDay(hour: 12, minute: 0),
-      endTime: TimeOfDay(hour: 16, minute: 59),
+      startTime: TimeOfDay(hour: 12, minute: 1),
+      endTime: TimeOfDay(hour: 18, minute: 0),
       colors: [Color(0xffF9F7F0), Color(0xffEED3CB)]),
   night(
       description: Strings.night,
-      startTime: TimeOfDay(hour: 17, minute: 0),
-      endTime: TimeOfDay(hour: 5, minute: 59),
+      startTime: TimeOfDay(hour: 18, minute: 1),
+      endTime: TimeOfDay(hour: 6, minute: 0),
       colors: [Color(0xffE4E2DD), Color(0xffBFC2D7)]);
 
   const PeriodOfDay({

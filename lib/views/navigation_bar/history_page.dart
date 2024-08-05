@@ -577,8 +577,8 @@ class _HistoryPageState extends State<HistoryPage> {
                 LiviTextStyles.interRegular14(
                   formartTimeOfDay(
                       TimeOfDay(
-                          hour: history.scheduledDosingTime!.hour,
-                          minute: history.scheduledDosingTime!.minute),
+                          hour: history.dateTime.hour,
+                          minute: history.dateTime.minute),
                       authController.appUser!.useMilitaryTime),
                   color: LiviThemes.colors.gray500,
                 )
