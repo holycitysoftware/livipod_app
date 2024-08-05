@@ -258,6 +258,7 @@ class _EditCaregiverPageState extends State<EditCaregiverPage> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: kSpacer_16, vertical: kSpacer_8),
                 title: Strings.phoneNumber.requiredSymbol(),
+                staticHint: country.dialCode,
                 controller: phoneNumberController,
                 focusNode: phoneFocus,
                 errorText: errorTextPhone,

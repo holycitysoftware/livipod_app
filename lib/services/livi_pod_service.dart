@@ -8,11 +8,11 @@ class LiviPodService {
   final StreamController<List<LiviPod>> _liviPodStreamController =
       StreamController<List<LiviPod>>.broadcast();
 
-  Future<List<LiviPod>> getLiviPods(/* accountId */) async {
+  Future<List<LiviPod>> getLiviPods(AppUser appUser) async {
     final List<LiviPod> liviPods = [];
     await FirebaseFirestore.instance
         .collection('livipods')
-        //.where('accountId', isEqualTo: )
+        .where('appUserId', isEqualTo: appUser.id)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {

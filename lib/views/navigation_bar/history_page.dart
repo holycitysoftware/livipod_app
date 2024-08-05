@@ -293,7 +293,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                 LiviTextStyles.interRegular14(Strings.adherence,
                                     color: LiviThemes.colors.gray500),
                                 LiviTextStyles.interBold36(
-                                    '${calculateAdherence(snapshot.data!)}%'),
+                                    '${calculateAdherence(snapshot.data!)}'),
                               ],
                             ),
                             Column(

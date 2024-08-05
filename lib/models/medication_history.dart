@@ -61,7 +61,6 @@ class MedicationHistory {
       history.qtyMissed = med.lastDosing!.qtyMissed;
       history.qtyRemaining = med.lastDosing!.qtyRemaining;
       history.qtyRequested = med.lastDosing!.qtyRequested;
-      history.dateTime = med.lastDosing!.scheduledDosingTime!;
       history.qtySkipped = med.lastDosing!.qtySkipped;
       history.scheduledDosingTime = med.lastDosing!.scheduledDosingTime;
     }

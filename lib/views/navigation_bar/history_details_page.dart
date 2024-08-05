@@ -7,6 +7,7 @@ import '../../controllers/auth_controller.dart';
 import '../../models/enums.dart';
 import '../../models/medication_history.dart';
 import '../../models/models.dart';
+import '../../services/livi_pod_service.dart';
 import '../../services/medication_service.dart';
 import '../../themes/livi_themes.dart';
 import '../../utils/strings.dart';
@@ -101,48 +102,62 @@ class _HistoryDetailsPageState extends State<HistoryDetailsPage> {
             ),
             Spacer(),
             LiviTextStyles.interMedium16(getDateTime(),
-                color: LiviThemes.colors.gray500),
+                color: LiviThemes.colors.gray500, textAlign: TextAlign.center),
             LiviTextStyles.interSemiBold20(
                 widget.medicationHistory.medicationName,
-                color: LiviThemes.colors.gray500),
+                color: LiviThemes.colors.gray500,
+                textAlign: TextAlign.center),
             if (widget.medicationHistory.dosageForm != null)
               LiviTextStyles.interRegular16(
                   '${widget.medicationHistory.dosageForm!.description}, ${widget.medicationHistory.strength}',
-                  color: LiviThemes.colors.gray500),
+                  color: LiviThemes.colors.gray500,
+                  textAlign: TextAlign.center),
             Spacer(flex: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  children: [
-                    InkWell(
-                      radius: 80,
-                      borderRadius: BorderRadius.circular(80),
-                      onTap: () => takeMedication(widget.medicationHistory),
-                      child: Ink(
-                          padding: EdgeInsets.all(16),
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: LiviThemes.colors.gray200,
-                            shape: BoxShape.circle,
-                          ),
-                          child: loading
-                              ? SizedBox(
-                                  height: 12,
-                                  width: 12,
-                                  child: CircularProgressIndicator(
-                                    color: LiviThemes.colors.gray700,
+                StreamBuilder<List<LiviPod>>(
+                    stream: LiviPodService().listenToLiviPodsRealTime(
+                        Provider.of<AuthController>(context, listen: false)
+                            .appUser!),
+                    builder: (context, snapshot) {
+                      if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+                        return SizedBox();
+                      } else {
+                        return Column(
+                          children: [
+                            InkWell(
+                              radius: 80,
+                              borderRadius: BorderRadius.circular(80),
+                              onTap: () =>
+                                  takeMedication(widget.medicationHistory),
+                              child: Ink(
+                                  padding: EdgeInsets.all(16),
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: LiviThemes.colors.gray200,
+                                    shape: BoxShape.circle,
                                   ),
-                                )
-                              : LiviThemes.icons.checkCircleFilledIcon(
-                                  color: LiviThemes.colors.gray700)),
-                    ),
-                    SizedBox(height: 12),
-                    LiviTextStyles.interSemiBold14(Strings.yesIHaveTakenIt,
-                        color: LiviThemes.colors.gray700)
-                  ],
-                ),
+                                  child: loading
+                                      ? SizedBox(
+                                          height: 12,
+                                          width: 12,
+                                          child: CircularProgressIndicator(
+                                            color: LiviThemes.colors.gray700,
+                                          ),
+                                        )
+                                      : LiviThemes.icons.checkCircleFilledIcon(
+                                          color: LiviThemes.colors.gray700)),
+                            ),
+                            SizedBox(height: 12),
+                            LiviTextStyles.interSemiBold14(
+                                Strings.yesIHaveTakenIt,
+                                color: LiviThemes.colors.gray700)
+                          ],
+                        );
+                      }
+                    }),
                 Column(
                   children: [
                     InkWell(
