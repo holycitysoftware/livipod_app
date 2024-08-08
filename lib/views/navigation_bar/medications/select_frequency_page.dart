@@ -85,6 +85,8 @@ class _SelectFrequencyPageState extends State<SelectFrequencyPage> {
     if (widget.isEdit) {
       _inventoryQuantityController.text =
           widget.medication.inventoryQuantity.toString();
+      _quantityController.clear();
+
       for (var i = 0; i < schedules.length; i++) {
         _startDateController.add(TextEditingController());
         _endDateController.add(TextEditingController());
